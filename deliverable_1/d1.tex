@@ -1,0 +1,194 @@
+\documentclass{article}
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[italian]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with`a4paper' for UK/EU standard size
+\usepackage[a4paper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{marginnote}
+\usepackage{enumitem}
+\usepackage{todonotes}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Deliverable 1 v0.2}
+\author{Riccardo Sandru, Ernesto Beltrami, Taufge Songne}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+	\todo{Add abstract}
+\end{abstract}
+
+\setcounter{tocdepth}{2}  % includi section e subsection
+\tableofcontents
+\newpage
+
+\section{Il Progetto IoSonoTrento}
+
+\subsection{Il problema che stiamo risolvendo}
+
+Il problema che stiamo affrontando riguarda il basso coinvolgimento dei cittadini nei processi decisionali del Comune.
+Attualmente, seguire i processi decisionali del comune o informarsi sugli argomenti di discussione amministrativa, risulta spesso poco accessibile e presenta criticità  in termini di comodità d'uso.
+I cittadini di per sé hanno diritto a partecipare nella vita comunale in diversi modi, tramite diversi strumenti come le istanze, le petizioni e proposte di deliberazione e infine le elezioni comunali. 
+La legge 241/1990 è una legge che regola tutto l’operato di un'amministrazione e tratta un tema molto importante come la trasparenza. Un comune che rende accessibile i dati (a seconda del tipo di sensibilità) riceve una maggior fiducia da parte dei cittadini, aumentando il senso di benessere comune.
+I cittadini quindi in genere percepiscono una lontananza dall’amministrazione, non si rendono conto di quanto il loro ruolo sia importante per il futuro della città e di come le loro scelte possano contribuire allo sviluppo della città. La loro voce si sente lontana.
+In un epoca in cui la tecnologia digitale fa parte della vita quotidiana, bisogna cercare di  adottare strumenti innovativi per migliorare la comunicazione tra Comune e cittadini.
+
+\subsection{Obiettivo del progetto}
+
+Il progetto ha come obiettivo la realizzazione di un'applicazione web dedicata alla partecipazione civica, accessibile via browser e destinata a due principali categorie di utenti: cittadini e amministrazione comunale.  Il sistema sarà progettato per facilitare l’inclusione dei cittadini nei processi decisionali del Comune. Infatti, i cittadini saranno in grado di proporre e votare idee, partecipare a sondaggi rapidi e saranno in grado di vedere i risultati conoscendo anche l’opinione dei loro concittadini.
+Gli operatori del comune invece potranno realizzare dei sondaggi riguardanti l'ordine del giorno che discutono, le assemblee e le proposte di iniziative che vorrebbero portare avanti. Inoltre potranno osservare in maniera dettagliata il risultato dei sondaggi, usandolo per fare un'analisi più profonda ed accurata ad esempio in base alla struttura demografica.
+L'app avrà un linguaggio chiaro, semplice e diretto, facilmente comprensibile da tutti. E' necessario che sia conforme alle normative europee e dunque la protezione dei dati dei cittadini sarà una priorità assoluta. I dati sensibili saranno protetti in modo rigoroso e verrà garantito l’anonimato dell’utente che vota. E’ importante che ciò venga fatto per proteggere la privacy dell’utente e le sue opinioni personali.
+
+\subsection{Vantaggi per il comune}
+\begin{enumerate}
+      \item \textbf{scelte data-driven}: Il comune avrà una risorsa in più, sulla quale orientare le sue decisioni osservando ad esempio a livello demografico quale sia la fascia più interessata ad una determinata proposta.
+      \item \textbf{migliore gestione delle risorse}: Le risorse del comune potranno essere gestite ancora meglio di prima, facendo scelte più precise e mirate. Dunque si tratta di uno strumento che può avere impatto anche a livello economico.
+      \item \textbf{trasparenza sui progetti in corso}: Il comune nel caso in cui prendesse in considerazione una delle proposte avanzate sulla piattaforma, terrà aggiornati gli utenti sull’andamento del progetto.
+      \item \textbf{fiducia istituzionale}: La trasparenza comporta un aumento della fiducia istituzionale dei cittadini verso il Comune. Ciò contribuisce ad un aumento della qualità di vita, aspetto che comporta ad avere una città sana ed ottimista.
+\end{enumerate}
+
+\subsection{Vantaggi per gli utenti}
+\begin{enumerate}
+      \item \textbf{cittadinanza attiva}: I cittadini non rimangono in disparte, ma passano anche all’azione. Nasce un reale coinvolgimento di tutti che si sentono partecipe di un movimento, di una città unita e che guarda verso il futuro.
+      \item \textbf{maggior consapevolezza}: Da un lato, il cittadino conosce in parte cosa succede in città e dall’altra sa che le sue scelte possono contribuire ad un cambiamento.
+      \item \textbf{strumento intuitivo}: L'utente ha a disposizione uno strumento semplice, intuitivo e facile da utilizzare. La grafica della piattaforma è pensata per rendere chiaro quali siano le azioni che si possano compiere, ignorando informazioni superflue.
+\end{enumerate}
+
+\subsection{Limitazioni dell'applicazione}
+\begin{itemize}
+      \item \textbf{campione di voti non assoluto}: I voti o le risposte dei sondaggi non rappresentano l’opinione di tutta la cittadinanza di Trento. Probabilmente non tutti i cittadini di Trento utilizzeranno la piattaforma. Dunque, i dati rappresenteranno soltanto un gruppo di persone.
+      \item \textbf{limiti di accessibilità per quanto riguarda persone con fascia alta d'età}: Nonostante il fatto che la piattaforma sia pensata per essere di facile utilizzo, la partecipazione della fascia d’età più anziana potrebbe essere limitata. Ci aspettiamo quindi una concentrazione di utenti in una fascia di età compresa tra i 18 e 60 anni.
+      \item \textbf{Limitazione dell'accesso degli utenti}: L'applicazione è pensata per consentire l'accesso esclusivamente agli utenti residenti nel comune di Trento. Per implementare un controllo rigoroso dell’identità e della residenza sarebbe necessario integrare SPID come metodo di autenticazione, poiché permette di verificare in modo sicuro le informazioni personali degli utenti. Tuttavia, per motivi di certificazioni da parte di SPID e CieID, l’attuale versione dell’applicazione utilizzerà l’accesso tramite account Google come metodo sostitutivo, senza garanzia di limitazione geografica. Di conseguenza, la verifica della residenza non è pienamente garantita in questa release. prototitpo
+\end{itemize}
+
+\subsection{Cio' che ci aspettiamo}
+L’obiettivo finale quindi sarebbe quello di fornire uno strumento che possa avere un impatto sulla vita quotidiana trentina e sul futuro trentino, facendo scelte più accurate.
+
+\section{Requisiti Funzionali}
+
+\subsection{Requisiti funzionali comuni per operatore e utente}
+\begin{enumerate}[label=\textbf{RF\arabic*}]
+	\item \textbf{Gestione accessi}: La piattaforma deve consentire l’accesso agli utenti. Gli utenti si registrano tramite Google Authentication; al primo accesso, l’ID univoco Google viene memorizzato nel database insieme alle informazioni necessarie per consentire i successivi login. Gli operatori del Comune accedono alla dashboard amministrativa tramite nome utente e password predefiniti nel database.\todo{individuare esattamente delle funzioni}
+
+	\item \textbf{Accesso alla Dashboard}: Tutti gli utenti autenticati devono poter accedere alla propria dashboard:
+	\begin{itemize}
+		\item Ai cittadini viene mostrata una dashboard con le votazioni attive, i risultati delle votazioni concluse, i sondaggi disponibili e la bacheca delle iniziative cittadine.
+		\item Agli operatori comunali è riservata una dashboard estesa che consente di avviare votazioni e sondaggi, monitorare risultati e gestire i contenuti pubblicati dai cittadini. 
+	\end{itemize}
+	
+	\item  \textbf{Riepilogo}: Tutti gli utenti devono poter visualizzare un riepilogo dei risultati delle votazioni.I cittadini vedono un riepilogo sintetico e anonimizzato: percentuale e numero assoluto di voti per scelta, mentre gli operatori possono accedere a un livello di dettaglio maggiore per effettuare analisi sulle preferenze espresse.
+
+	\item \textbf{Ricerca}: L’applicazione deve consentire la ricerca di iniziative e contenuti pubblicati dai cittadini tramite una barra di ricerca, disponibile sia per utenti che per operatori. Potranno essere applicati filtri (ad esempio per argomento, per votazioni,per data,...) per ordinare i risultati rendendo la ricerca più rapida.
+\end{enumerate}
+
+\subsection{Requisiti funzionali solo per operatore}
+
+\begin{enumerate}[label=\textbf{RFO\arabic*}]
+	\item \textbf{Creazione e gestione delle votazioni}: Il sistema deve consentire agli operatori del Comune di creare, configurare e gestire le votazioni relative agli argomenti discussi in sede comunale. Ogni votazione potrà comprendere uno o più temi, ciascuno corredato da una breve descrizione e da eventuali materiali informativi allegati. Il sistema deve consentire all’operatore di inserire un numero fisso di risposte per ogni tema ed altre opzioni come votazione a risposta singola o multipla.  L’operatore deve avere la possibilità di impostare un limite di tempo per la durata della votazione, definendo una data e un’ora di chiusura oltre le quali non sarà più possibile esprimere voti. Inoltre, l’interfaccia dovrà permettere di modificare o eliminare votazioni già create, garantendo al contempo la tracciabilità delle operazioni effettuate per motivi di trasparenza e controllo.
+	\item \textbf{Creazione e gestione dei sondaggi}: L’applicazione deve permettere agli operatori di creare, pubblicare e gestire mini-sondaggi anonimi rivolti agli utenti registrati. Tali sondaggi possono essere collegati a specifiche votazioni o riguardare tematiche di interesse generale, con l’obiettivo di raccogliere rapidamente opinioni e percezioni della cittadinanza. Ogni sondaggio deve poter essere configurato con un numero variabile di domande a risposta chiusa o multipla, e deve prevedere la possibilità di impostare un periodo di validità (data di apertura e chiusura). Al termine del periodo stabilito, il sistema deve automaticamente chiudere la raccolta delle risposte e rendere disponibili i risultati agli operatori.
+
+	\item \textbf{Moderazione dei contenuti generati dagli utenti}: Il sistema deve consentire agli operatori di monitorare e moderare le proposte e i contenuti pubblicati dai cittadini sulla piattaforma. In particolare, gli operatori devono poter eliminare o segnalare contenuti che violano le linee guida della community o che contengono linguaggio offensivo, materiale inappropriato o non conforme alle politiche del Comune. \todo{ però come evitiamo situazioni di potere?tipo elimino qualcosa che propongono pk a me moderatore non mi piace?}
+\end{enumerate}
+
+\subsection{Requisiti funzionali solo per cittadini}
+\begin{enumerate}[label=\textbf{RFC\arabic*}]
+	\item \textbf{Gestione delle iniziative dei cittadini}: I cittadini possono proporre nuove iniziative nella bacheca pubblica e votare quelle esistenti per aumentarne la visibilità. Ogni iniziativa deve riportare il titolo, una descrizione sintetica e il numero di voti ricevuti. \todo{(nominativo di chi vota  se vuoi poi ti  spiego in che senso)}
+
+	\item \textbf{Votazioni}: Il sistema deve garantire che ogni cittadino possa esprimere un solo voto per ciascun tema di votazione e un solo invio di risposte per ogni sondaggio. Le preferenze espresse devono essere registrate in forma anonima e non modificabile, assicurando al contempo la tracciabilità del voto a fini di controllo senza violare la privacy del cittadino. 
+
+	\item \textbf{Visualizzazione votazioni e sondaggi}: Il sistema deve garantire ai cittadini di poter visualizzare sia votazioni che sondaggi attive nella propria dashboard.
+\end{enumerate}
+
+\section{Requisiti non funzionali}  
+I requisiti non funzionali descrivono le caratteristiche qualitative del sistema \textit{IoSonoTrento}, ovvero gli aspetti che determinano la qualità complessiva del servizio e l’esperienza d’uso, indipendentemente dalle funzionalità implementate. Essi contribuiscono a definire la solidità, l’affidabilità, la sicurezza e l’usabilità dell’applicazione, garantendo un servizio pubblico digitale efficiente e accessibile a tutti i cittadini.
+
+\subsection{Compatibilità}
+\begin{enumerate}[label=\textbf{RNF\arabic*}]
+	\item \textbf{Interfaccia intuitiva}: l’applicazione deve essere facilmente comprensibile e navigabile anche da utenti con competenze digitali di base.  
+	\textit{Motivazione}: un’interfaccia intuitiva è fondamentale per favorire l’adozione del servizio da parte di un’utenza eterogenea, inclusi cittadini meno esperti in ambito tecnologico. Riduce la curva di apprendimento, migliora l’efficienza nell’interazione e aumenta la soddisfazione complessiva dell’utente.
+
+	\item \textbf{Accessibilità}: il design dovrà rispettare le linee guida WCAG 2.1 livello AA, garantendo l’accesso anche a persone con disabilità visive o motorie.  
+	\textit{Motivazione}: il rispetto delle norme sull’accessibilità è essenziale per assicurare pari opportunità di utilizzo del servizio, in linea con i principi di inclusività e con la normativa vigente (Legge Stanca n. 4/2004). Garantire un’esperienza accessibile significa rendere il sistema realmente pubblico e universale.
+
+	\item \textbf{Consistenza visiva}: layout e componenti grafici devono risultare coerenti in tutte le sezioni dell’app, utilizzando colori istituzionali e un contrasto adeguato.  
+	\textit{Motivazione}: la coerenza visiva rafforza l’identità del progetto, migliora la leggibilità dei contenuti e riduce la possibilità di confusione durante la navigazione, offrendo un’esperienza d’uso più fluida e professionale.
+
+	\item \textbf{Multilingua}: l’applicazione dovrà prevedere la possibilità di estendere l’interfaccia ad altre lingue per includere tutto lo spettro dei cittadini di Trento.  
+	\textit{Motivazione}: la presenza di un’interfaccia multilingua favorisce l’inclusione dei cittadini stranieri o non italofoni, promuovendo l’integrazione e la partecipazione civica attiva di tutte le comunità presenti sul territorio.
+\end{enumerate}
+
+\subsection{Sicurezza e privacy}
+\begin{enumerate}[label=\textbf{RNF\arabic*}, resume]
+	\item \textbf{Protezione dei dati personali}: tutti i dati utente devono essere trattati nel rispetto del GDPR (Reg. UE 2016/679).  
+	\textit{Motivazione}: la conformità al GDPR è obbligatoria per qualsiasi sistema che gestisca informazioni personali. Garantisce la tutela dei diritti degli utenti e rafforza la fiducia nel servizio pubblico digitale.
+
+	\item \textbf{Anonimato dei voti}: le preferenze espresse dagli utenti devono essere anonimizzate e non riconducibili direttamente all’identità del cittadino.  
+	\textit{Motivazione}: l’anonimato assicura l’imparzialità del processo decisionale e la libertà di espressione, elementi fondamentali in un contesto partecipativo come quello proposto da IoSonoTrento.
+
+	\item \textbf{Autenticazione sicura}: l’accesso avviene tramite Google OAuth 2.0; in futuro sarà integrabile SPID o CIE per garantire una verifica ufficiale dell’identità.  
+	\textit{Motivazione}: un sistema di autenticazione sicuro riduce il rischio di accessi non autorizzati e consente di validare l’identità degli utenti, preservando la sicurezza del sistema e la legittimità delle interazioni.
+
+	\item \textbf{Gestione sicura delle sessioni}: le sessioni devono scadere automaticamente dopo un periodo di inattività prestabilito, prevenendo accessi non autorizzati.  
+	\textit{Motivazione}: la gestione corretta delle sessioni riduce i rischi legati all’uso improprio dei dispositivi condivisi o smarriti, garantendo un livello aggiuntivo di protezione.
+
+	\item \textbf{Crittografia dei dati}: tutte le comunicazioni client-server devono avvenire tramite protocollo HTTPS con TLS 1.3.  
+	\textit{Motivazione}: la crittografia protegge la riservatezza e l’integrità dei dati trasmessi, impedendo intercettazioni e manomissioni da parte di terzi, requisito indispensabile per un’applicazione che gestisce informazioni sensibili.
+\end{enumerate}
+
+\subsection{Prestazioni}
+\begin{enumerate}[label=\textbf{RNF\arabic*}, resume]
+	\item \textbf{Tempi di risposta}: le operazioni principali (login, caricamento dashboard, votazione, consultazione risultati) devono completarsi entro 3 secondi in condizioni normali di rete, per garantire un’esperienza di uso fluida e piacevole.  
+	\textit{Motivazione}: tempi di risposta rapidi sono essenziali per mantenere l’attenzione e la soddisfazione dell’utente, evitando frustrazione o abbandono del servizio. In un contesto civico come IoSonoTrento, la reattività aumenta la percezione di affidabilità e professionalità della piattaforma.
+
+	\item \textbf{Scalabilità}: il sistema deve poter gestire un aumento del numero di utenti registrati e di votazioni attive senza compromettere le prestazioni.  
+	\textit{Motivazione}: la scalabilità assicura che l’applicazione resti efficiente anche in caso di campagne di partecipazione massiva o durante eventi locali con un forte coinvolgimento cittadino. Permette inoltre una crescita sostenibile del sistema nel tempo.
+
+	\item \textbf{Disponibilità}: l’applicazione deve essere disponibile almeno per il 99\% del tempo operativo mensile.  
+	\textit{Motivazione}: un’elevata disponibilità è indispensabile per un servizio pubblico digitale, poiché garantisce che i cittadini possano accedere al sistema in qualunque momento. Ridurre i tempi di inattività aumenta l’affidabilità percepita e la fiducia degli utenti.
+
+	\item \textbf{Backup e recupero dati}: deve essere implementato un sistema di backup giornaliero del database con possibilità di restore in caso di perdita di dati.  
+	\textit{Motivazione}: la sicurezza dei dati è un aspetto critico per qualsiasi applicazione pubblica. I backup giornalieri garantiscono la continuità operativa e la possibilità di ripristino rapido in caso di guasti o attacchi informatici.
+
+	\item \textbf{Gestione degli errori}: in caso di errore o malfunzionamento, il sistema deve informare l’utente con messaggi chiari e non tecnici, evitando la perdita di dati.  
+	\textit{Motivazione}: una gestione efficace degli errori contribuisce a migliorare l’esperienza utente e riduce la frustrazione. Inoltre, messaggi informativi non tecnici favoriscono la comprensione del problema e riducono la necessità di assistenza.
+
+	\item \textbf{Monitoraggio}: dovranno essere previsti strumenti di logging e monitoraggio del sistema per identificare anomalie e tentativi di accesso non autorizzati.  
+	\textit{Motivazione}: il monitoraggio costante del sistema è essenziale per prevenire incidenti di sicurezza, diagnosticare problemi prestazionali e migliorare la manutenzione proattiva. Garantisce un controllo continuo sullo stato di salute dell’infrastruttura.
+\end{enumerate}
+
+\subsection{Manutenibilità ed Estendibilità}
+\begin{enumerate}[label=\textbf{RNF\arabic*}, resume]
+	\item \textbf{Architettura modulare}: il sistema sarà sviluppato seguendo principi di separazione dei componenti (front-end, back-end, database) per facilitare aggiornamenti futuri.  
+	\textit{Motivazione}: un’architettura modulare semplifica l’individuazione dei problemi e consente di aggiornare o sostituire parti del sistema senza compromettere l’intero servizio. Favorisce inoltre la collaborazione tra team di sviluppo diversi.
+
+	\item \textbf{Documentazione}: il codice dovrà essere accompagnato da una documentazione tecnica che ne descriva l’architettura e le API principali.  
+	\textit{Motivazione}: la documentazione garantisce la continuità del progetto nel tempo, consentendo a nuovi sviluppatori di comprendere rapidamente la struttura del sistema. È inoltre fondamentale per facilitare manutenzione, audit e aggiornamenti futuri.
+
+	\item \textbf{Testabilità}: ogni componente deve essere testabile singolarmente (unit testing) e in integrazione (integration testing).  
+	\textit{Motivazione}: la testabilità riduce la probabilità di errori in fase di rilascio e migliora la qualità complessiva del software. Un approccio basato sui test consente di identificare rapidamente regressioni o malfunzionamenti durante l’evoluzione del sistema.
+\end{enumerate}
+
+\subsection{Compatibilità}
+\begin{enumerate}[label=\textbf{RNF\arabic*}, resume]
+	\item \textbf{Dispositivi}: la piattaforma dovrà essere pienamente fruibile sia da browser desktop che da dispositivi mobili (responsive design).  
+	\textit{Motivazione}: garantire la compatibilità con dispositivi mobili è fondamentale per un servizio rivolto a cittadini che accedono in mobilità. Il responsive design migliora l’usabilità e amplia la platea di utenti potenziali.
+
+	\item \textbf{Browser supportati}: compatibilità garantita con le versioni recenti di Chrome, Firefox, Safari ed Edge.  
+	\textit{Motivazione}: il supporto ai principali browser assicura che tutti gli utenti possano accedere al servizio senza problemi tecnici legati alla compatibilità, riducendo il rischio di esclusione tecnologica.
+
+	\item \textbf{Integrazione futura}: il sistema dovrà poter essere integrato con servizi esterni dell’amministrazione (es. open data del Comune, SPID).  
+	\textit{Motivazione}: la possibilità di integrare il sistema con altri servizi pubblici o di terze parti consente di ampliare le funzionalità future e garantisce interoperabilità con l’ecosistema digitale della pubblica amministrazione.
+\end{enumerate}
+
+\bibliographystyle{alpha}
+\bibliography{sample}
+
+\end{document}
