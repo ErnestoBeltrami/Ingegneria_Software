@@ -30,3 +30,4 @@
 \contentsline {subsection}{\numberline {4.11}RF11: Votazione Iniziative}{9}{subsection.4.11}%
 \contentsline {subsection}{\numberline {4.12}RF12: Votazioni e Sondaggi (Invio Univoco)}{10}{subsection.4.12}%
 \contentsline {subsection}{\numberline {4.13}RF13: Visualizzazione Attività Attive}{10}{subsection.4.13}%
+\contentsline {section}{\numberline {5}User Stories}{10}{section.5}%
