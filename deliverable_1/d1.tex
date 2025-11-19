@@ -188,6 +188,265 @@ I requisiti non funzionali descrivono le caratteristiche qualitative del sistema
 	\textit{Motivazione}: la possibilità di integrare il sistema con altri servizi pubblici o di terze parti consente di ampliare le funzionalità future e garantisce interoperabilità con l’ecosistema digitale della pubblica amministrazione.
 \end{enumerate}
 
+\section{Use Case}
+
+\subsection{RF1: Gestione Accessi}
+
+\textbf{Riassunto}: Descrive come i Cittadini e gli Operatori Comunali accedono alla piattaforma tramite due modalità distinte di autenticazione: SPID/CIE ID per cittadini e credenziali interne per operatori.
+
+\subsubsection*{Flusso A: Accesso Cittadino (SPID/CIE ID)}
+\begin{enumerate}
+    \item Il Cittadino visualizza la schermata di login e seleziona \textit{``Accedi con SPID/CIE ID''}.
+    \item Il sistema avvia il protocollo SAML reindirizzando l’utente all’Identity Provider (IdP).
+    \item L’IdP restituisce una risposta SAML firmata digitalmente.
+    \item Il sistema verifica firma, validità e consistenza dell’asserzione.
+    \item Il sistema estrae ID univoco e attributi dell’utente.
+    \item Il sistema consulta il database usando l’ID univoco.
+    \item Se l’ID è presente, l’accesso è autorizzato; altrimenti viene attivata l’Estensione 1.
+\end{enumerate}
+
+\textbf{Estensione 1 — Registrazione ID Univoco}\\
+\textit{Condizione}: primo accesso del cittadino.\\
+\textit{Azione}: l’ID univoco viene memorizzato nel database e l’utente accede alla dashboard.
+
+\textbf{Eccezioni}
+\begin{itemize}
+    \item Autenticazione SPID/CIE fallita → messaggio di errore e accesso negato.
+\end{itemize}
+
+\subsubsection*{Flusso B: Accesso Operatore}
+\begin{enumerate}
+    \item L’Operatore inserisce nome utente e password nel form di login.
+    \item Preme \textit{``Accedi''}.
+    \item Il sistema verifica le credenziali nel database.
+    \item Se valide, l'Operatore accede alla dashboard amministrativa.
+\end{enumerate}
+
+\textbf{Eccezioni}
+\begin{itemize}
+    \item Credenziali errate → messaggio di errore e nuovo tentativo.
+\end{itemize}
+
+% ------------------------------------------------------
+
+\subsection{RF2: Accesso alla Dashboard}
+
+\textbf{Riassunto}: Descrive come gli utenti autenticati accedono alla propria dashboard con funzionalità differenti a seconda del ruolo.
+
+\subsubsection*{Flusso A: Dashboard Cittadino}
+\begin{enumerate}
+    \item Il cittadino autenticato viene reindirizzato alla dashboard.
+    \item Il sistema verifica il ruolo.
+    \item Il sistema mostra votazioni attive, risultati conclusi, sondaggi disponibili e iniziative cittadine.
+\end{enumerate}
+
+\subsubsection*{Flusso B: Dashboard Operatore}
+\begin{enumerate}
+    \item L’Operatore autenticato viene reindirizzato alla dashboard.
+    \item Il sistema verifica il ruolo.
+    \item Il sistema mostra tutte le funzionalità del cittadino.
+    \item Il sistema aggiunge funzionalità amministrative: pubblicazione votazioni/sondaggi, gestione contenuti, monitoraggio risultati.
+\end{enumerate}
+
+% ------------------------------------------------------
+
+\subsection{RF3: Riepilogo}
+
+\textbf{Riassunto}: Permette la visualizzazione dei risultati delle votazioni concluse con diversi livelli di dettaglio.
+
+\subsubsection*{Flusso A: Riepilogo Sintetico}
+\begin{enumerate}
+    \item L’utente richiede i risultati di una votazione conclusa.
+    \item Il sistema recupera i dati dal database.
+    \item Il sistema calcola percentuali e conteggi assoluti.
+    \item Il sistema presenta un riepilogo sintetico e anonimizzato.
+\end{enumerate}
+
+\subsubsection*{Flusso B: Analisi Demografica (Operatore)}
+\begin{enumerate}
+    \item Include tutti i passi del caso base.
+    \item L’Operatore applica eventuali filtri demografici.
+    \item Il sistema elabora e presenta risultati aggregati per categoria.
+\end{enumerate}
+
+\textbf{Estensione: Applicazione filtri}\\
+L’utente può applicare filtri demografici o tematici per analizzare i dati aggregati.
+
+% ------------------------------------------------------
+
+\subsection{RF4: Ricerca}
+
+\textbf{Riassunto}: Permette la ricerca di iniziative e contenuti tramite parole chiave, con filtri e ordinamenti opzionali.
+
+\begin{enumerate}
+    \item L’utente inserisce parole chiave nella barra di ricerca.
+    \item Avvia la ricerca.
+    \item Il sistema interroga il database.
+    \item Il sistema mostra i risultati in ordine predefinito.
+\end{enumerate}
+
+\textbf{Estensioni}
+\begin{itemize}
+    \item \textbf{Filtri}: per argomento, data, tipologia.
+    \item \textbf{Ordinamento}: per data crescente/decrescente o popolarità.
+\end{itemize}
+
+\textbf{Eccezione}: Nessun risultato trovato.
+
+% ------------------------------------------------------
+
+\subsection{RF5: Creazione Votazioni}
+
+\textbf{Riassunto}: L’Operatore crea una nuova votazione inserendo tutti i campi obbligatori.
+
+\begin{enumerate}
+    \item L’Operatore seleziona \textit{Crea nuova votazione}.
+    \item Il sistema richiede:
+    \begin{itemize}
+        \item Titolo
+        \item Breve descrizione
+        \item Opzioni di risposta
+        \item Tipologia (singola/multipla)
+        \item Data apertura e chiusura
+    \end{itemize}
+    \item Il sistema valida i dati.
+    \item Salva la votazione in stato \textit{bozza}.
+\end{enumerate}
+
+\textbf{Eccezione}: Campi mancanti o illogici.
+
+% ------------------------------------------------------
+
+\subsection{RF6: Gestione Votazioni}
+
+\textbf{Riassunto}: L’Operatore può modificare, pubblicare, eliminare e archiviare votazioni.
+
+\begin{enumerate}
+    \item L’Operatore accede a \textit{Gestione Votazioni}.
+    \item Il sistema mostra tutte le votazioni con stato.
+    \item L’Operatore seleziona una votazione.
+    \item Il sistema richiede conferma per l’azione scelta.
+\end{enumerate}
+
+\textbf{Estensioni}
+\begin{itemize}
+    \item Modifica (solo se in bozza)
+    \item Eliminazione (solo bozza)
+    \item Pubblicazione → stato ``attiva''
+    \item Archiviazione → stato ``archiviata''
+\end{itemize}
+
+\textbf{Transizione automatica}: alla scadenza → ``conclusa''.
+
+% ------------------------------------------------------
+
+\subsection{RF7: Creazione Sondaggi}
+
+\textbf{Riassunto}: L’Operatore crea un sondaggio anonimo in stato iniziale ``bozza''.
+
+\begin{enumerate}
+    \item L’Operatore seleziona \textit{Crea nuovo sondaggio}.
+    \item Inserisce:
+    \begin{itemize}
+        \item Titolo e descrizione
+        \item Domande chiuse/multiple
+        \item Data e ora di apertura/chiusura
+    \end{itemize}
+    \item Il sistema valida e salva in bozza.
+\end{enumerate}
+
+\textbf{Eccezioni}: Campi mancanti o inconsistenza date.
+
+% ------------------------------------------------------
+
+\subsection{RF8: Gestione Sondaggi}
+
+\begin{enumerate}
+    \item L’Operatore accede alla sezione dedicata.
+    \item Il sistema mostra sondaggi e stato.
+    \item L’Operatore seleziona l’azione.
+\end{enumerate}
+
+\textbf{Estensioni}
+\begin{itemize}
+    \item Pubblicazione (da bozza)
+    \item Chiusura manuale (da attivo)
+    \item Analisi risultati (concluso/archiviato)
+    \item Archiviazione (da concluso)
+\end{itemize}
+
+\textbf{Transizione automatica}: alla scadenza → ``concluso''.
+
+% ------------------------------------------------------
+
+\subsection{RF9: Moderazione Contenuti}
+
+\textbf{Riassunto}: L’Operatore può rivedere, approvare o eliminare contenuti generati dai cittadini.
+
+\begin{enumerate}
+    \item L’Operatore accede alla sezione Moderazione.
+    \item Il sistema mostra i contenuti in revisione.
+    \item L’Operatore visualizza il contenuto e valuta.
+\end{enumerate}
+
+\textbf{Estensione}: Eliminazione contenuto su conferma.
+
+% ------------------------------------------------------
+
+\subsection{RF10: Gestione Iniziative dei Cittadini}
+
+\begin{enumerate}
+    \item Il cittadino seleziona \textit{Proponi iniziativa}.
+    \item Inserisce titolo e descrizione.
+    \item Il sistema associa automaticamente nome utente.
+    \item Il cittadino conferma e il sistema pubblica l’iniziativa.
+\end{enumerate}
+
+\textbf{Eccezione}: Campi obbligatori mancanti.
+
+% ------------------------------------------------------
+
+\subsection{RF11: Votazione Iniziative}
+
+\begin{enumerate}
+    \item Il cittadino visualizza la bacheca iniziative.
+    \item Seleziona \textit{Vota}.
+    \item Il sistema verifica che non abbia già votato.
+    \item Se valido, incrementa il contatore e blocca ulteriori voti.
+\end{enumerate}
+
+\textbf{Eccezione}: Voto duplicato.
+
+% ------------------------------------------------------
+
+\subsection{RF12: Votazioni e Sondaggi (Invio Univoco)}
+
+\begin{enumerate}
+    \item Il cittadino invia il proprio voto/risposta.
+    \item Il sistema verifica se esiste già un invio precedente.
+    \item Se valido:
+    \begin{itemize}
+        \item Anonimizza il voto
+        \item Registra hash di tracciabilità
+        \item Impedisce ulteriori invii
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Eccezione}: Invio duplicato.
+
+% ------------------------------------------------------
+
+\subsection{RF13: Visualizzazione Attività Attive}
+
+\begin{enumerate}
+    \item Il cittadino accede alla dashboard.
+    \item Il sistema recupera votazioni e sondaggi.
+    \item Filtra per stato ``attivo''.
+    \item Mostra l’elenco diviso per tipologia.
+\end{enumerate}
+
+\textbf{Eccezione}: Nessuna attività attiva.
+
 \bibliographystyle{alpha}
 \bibliography{sample}
 
