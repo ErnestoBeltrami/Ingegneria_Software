@@ -29,4 +29,4 @@
 \contentsline {subsection}{\numberline {4.10}RF10: Gestione Iniziative dei Cittadini}{9}{subsection.4.10}%
 \contentsline {subsection}{\numberline {4.11}RF11: Votazione Iniziative}{9}{subsection.4.11}%
 \contentsline {subsection}{\numberline {4.12}RF12: Votazioni e Sondaggi (Invio Univoco)}{10}{subsection.4.12}%
-\contentsline {subsection}{\numberline {4.13}RF13: Visualizzazione Attività Attive}{10}{subsection.4.13}%
+\contentsline {subsection}{\numberline {4.13}RF13: Visualizzazione della dashboard per cittadini con stato attivo}{10}{subsection.4.13}%

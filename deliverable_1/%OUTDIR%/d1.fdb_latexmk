@@ -1,16 +1,16 @@
 # Fdb version 4
-["bibtex d1"] 1763560079.7263 "d1.aux" "d1.bbl" "d1" 1763560080.75448 0
+["bibtex d1"] 0 "d1.aux" "d1.bbl" "d1" 0 -1
   "/usr/share/texmf-dist/bibtex/bib/gloss/sample.bib" 1755987285 2721 b88105703bd616b4f9867992219afb8a ""
   "/usr/share/texmf-dist/bibtex/bst/base/alpha.bst" 1755987285 23907 a5f93555796fb564b924339521f10a7c ""
-  "d1.aux" 1763559939.42475 5455 664782cdded0de0f5870d6d33d2d51bb ""
+  "d1.aux" 0 -1 0 ""
   (generated)
   "d1.bbl"
   "d1.blg"
   (rewritten before read)
-["pdflatex"] 1763560079.8137 "/home/ricc/Projects/Ingegneria_Software/deliverable_1/d1.tex" "%OUTDIR%/d1.pdf" "d1" 1763560080.75457 2
-  "%OUTDIR%/d1.aux" 1763560080.56458 5455 664782cdded0de0f5870d6d33d2d51bb "pdflatex"
-  "%OUTDIR%/d1.out" 1763560080.56558 5861 c3eb2e4d9451fd612ab59fe19963ef3d "pdflatex"
-  "/home/ricc/Projects/Ingegneria_Software/deliverable_1/d1.tex" 1763560078.76402 30953 e6df742eecffe7ef61037f77a5769f81 ""
+["pdflatex"] 1763982841.21585 "/home/ricc/Projects/Ingegneria_Software/deliverable_1/d1.tex" "%OUTDIR%/d1.pdf" "d1" 1763982842.22779 2
+  "%OUTDIR%/d1.aux" 1763982842.01039 5485 ac71e541bb75fe6bf02fa39b43368570 "pdflatex"
+  "%OUTDIR%/d1.out" 1763982842.01179 6028 741da4e7bf5070ea97d2d4620829fc12 "pdflatex"
+  "/home/ricc/Projects/Ingegneria_Software/deliverable_1/d1.tex" 1763982841.44379 31330 4215fe3c20cf4c9dc8b5809da94ae850 ""
   "/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1755987285 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/share/texmf-dist/fonts/map/fontname/texfonts.map" 1755987285 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1755987285 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
@@ -170,10 +170,10 @@
   "/usr/share/texmf-dist/web2c/texmf.cnf" 1755987285 42087 b0f9697c952c8f5a8eede4134282cb0d ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1762805725 5311557 9da84c45f5b388655502706482323571 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1762805680 2008255 e06f0ce00ded6fffa714280e4894ca59 ""
-  "d1.bbl" 1763560079.81055 49 0eba253fc001332e731e8aba3f23127b "bibtex d1"
-  "d1.out" 1763559939.42652 5861 c3eb2e4d9451fd612ab59fe19963ef3d ""
-  "d1.tex" 1763560078.76402 30953 e6df742eecffe7ef61037f77a5769f81 ""
-  "d1.toc" 1763559939.42652 2825 d9102a934f425ddccd1de87ccd1d22ee ""
+  "d1.bbl" 1763982840.05079 49 0eba253fc001332e731e8aba3f23127b "bibtex d1"
+  "d1.out" 1763560887.71984 9562 1e7164e08341c431f518b80be390ff08 ""
+  "d1.tex" 1763982841.44379 31330 4215fe3c20cf4c9dc8b5809da94ae850 ""
+  "d1.toc" 1763560887.72078 4071 5a77de26519cf421becab665a0a5fd3c ""
   (generated)
   "%OUTDIR%/d1.aux"
   "%OUTDIR%/d1.log"
