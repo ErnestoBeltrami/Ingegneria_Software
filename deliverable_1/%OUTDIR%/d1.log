@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.11.10)  24 NOV 2025 12:14
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.11.10)  24 NOV 2025 12:18
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -777,17 +777,28 @@ Overfull \hbox (6.81587pt too wide) in paragraph at lines 279--280
 [8]
 
 [9]
-Overfull \hbox (3.31564pt too wide) in paragraph at lines 438--438
-[]\OT1/cmr/bx/n/12 RF13: Visualizzazione della dashboard per cittadini con stato attivo 
+Overfull \hbox (8.55577pt too wide) in paragraph at lines 480--483
+[]\OT1/cmr/bx/n/10 Come \OT1/cmr/m/n/10 cittadino, \OT1/cmr/bx/n/10 voglio \OT1/cmr/m/n/10 cercare iniziative tramite parole chiave, \OT1/cmr/bx/n/10 in modo da \OT1/cmr/m/n/10 trovare rapidamente
  []
 
-(./d1.bbl
+
+
+[10]
+Overfull \hbox (7.70216pt too wide) in paragraph at lines 506--509
+[]\OT1/cmr/bx/n/10 Come \OT1/cmr/m/n/10 utente della piattaforma, \OT1/cmr/bx/n/10 voglio \OT1/cmr/m/n/10 applicare filtri sulla ricerca (argomento, data, popolarit^^Ra),
+ []
+
+
+
+[11]
+
+[12] (./d1.bbl
 
 LaTeX Warning: Empty `thebibliography' environment on input line 3.
 
 )
 
-[10] (%OUTDIR%/d1.aux)
+[13] (%OUTDIR%/d1.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -803,51 +814,21 @@ Package rerunfilecheck Warning: File `d1.out' has changed.
 
 Package rerunfilecheck Info: Checksums for `d1.out':
 (rerunfilecheck)             Before: 1E7164E08341C431F518B80BE390FF08;9562
-(rerunfilecheck)             After:  741DA4E7BF5070EA97D2D4620829FC12;6028.
+(rerunfilecheck)             After:  0DE9FF2AA99A07D4676FAAD57EC50EDF;9514.
  ) 
 Here is how much of TeX's memory you used:
- 22481 strings out of 475171
- 414260 string characters out of 5767094
+ 22527 strings out of 475171
+ 414633 string characters out of 5767094
  835082 words of memory out of 5000000
- 44953 multiletter control sequences out of 15000+600000
+ 44954 multiletter control sequences out of 15000+600000
  565508 words of font info for 59 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  99i,9n,101p,1018b,1114s stack positions out of 10000i,1000n,20000p,200000b,200000s
-
-pdfTeX warning (dest): name{subsection.5.9} has been referenced but does not exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{subsection.5.8} has been referenced but does not exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{subsection.5.7} has been referenced but does not exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{subsection.5.6} has been referenced but does not exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{subsection.5.5} has been referenced but does not exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{subsection.5.4} has been referenced but does not exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{subsection.5.3} has been referenced but does not exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{subsection.5.2} has been referenced but does not exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{subsection.5.1} has been referenced but does not exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{section.5} has been referenced but does not exist, replaced by a fixed one
-
 </usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
-Output written on %OUTDIR%/d1.pdf (10 pages, 151418 bytes).
+Output written on %OUTDIR%/d1.pdf (13 pages, 157913 bytes).
 PDF statistics:
- 449 PDF objects out of 1000 (max. 8388607)
- 416 compressed objects within 5 object streams
- 163 named destinations out of 1000 (max. 500000)
+ 512 PDF objects out of 1000 (max. 8388607)
+ 476 compressed objects within 5 object streams
+ 208 named destinations out of 1000 (max. 500000)
  341 words of extra memory for PDF output out of 10000 (max. 10000000)
 

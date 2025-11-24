@@ -435,7 +435,7 @@ L’utente può applicare filtri demografici o tematici per analizzare i dati ag
 \textbf{Eccezione}: Invio duplicato.
 
 % ------------------------------------------------------
-\subsection{RF13: Visualizzazione della dashboard per cittadini con stato attivo}
+\subsection{RF13: Accesso alla dashboard per cittadini attivi}
 \begin{enumerate}
     \item Il cittadino accede alla sua dashboard (RF2) o alla sezione dedicata alle attivita' in corso.
     \item Il sistema recupera votazioni e sondaggi.
@@ -444,6 +444,255 @@ L’utente può applicare filtri demografici o tematici per analizzare i dati ag
 \end{enumerate}
 
 \textbf{Eccezione}: Nessun elemento attivo: se il sistema non trova ne votazioni ne sondaggi \textbf{attivi}, mostra un messaggio informativo (es: "Al momento non ci sono attivita in corso").
+
+% --------------------------------------------------------
+
+\section{User Stories}
+
+\subsection{User Story 1: Gestione Accessi (UC RF1)}
+\textbf{Titolo}: Scelta metodo di login (Google o credenziali locali)
+
+\textbf{Come} cittadino o operatore,  
+\textbf{voglio} poter scegliere se accedere tramite credenziali locali o autenticazione Google,  
+\textbf{in modo da} selezionare il metodo che preferisco.
+
+\textbf{Criteri di accettazione}:
+\begin{itemize}
+    \item Entrambi gli utenti possono scegliere tra credenziali locali e Google.
+    \item In caso di successo, il sistema reindirizza alla dashboard corretta in base al ruolo.
+    \item In caso di errore, viene mostrato un messaggio informativo adeguato.
+\end{itemize}
+
+\textbf{Tasks}:
+\begin{enumerate}
+    \item Integrare entrambe le opzioni di login nella UI.
+    \item Implementare la logica di selezione del metodo di autenticazione.
+    \item Gestire il routing verso la dashboard corretta.
+    \item Implementare messaggi di errore specifici per ogni metodo.
+    \item Testare entrambe le modalità.
+\end{enumerate}
+
+% -------------------------------------------------------------
+
+\subsubsectionmark{User Story 2 – Associata allo Use Case RF4: Ricerca}
+\textbf{Titolo}: Ricerca iniziative tramite parole chiave
+
+\textbf{Come} cittadino,  
+\textbf{voglio} cercare iniziative tramite parole chiave,  
+\textbf{in modo da} trovare rapidamente contenuti di mio interesse.
+
+\textbf{Criteri di accettazione}:
+\begin{itemize}
+    \item L’utente può inserire una o più parole chiave.
+    \item Il sistema mostra i risultati ordinati per pertinenza.
+    \item Ogni risultato mostra titolo, autore, categoria e data.
+    \item Se non ci sono risultati, viene mostrato un messaggio dedicato.
+\end{itemize}
+
+\textbf{Tasks}:
+\begin{enumerate}
+    \item Implementare la barra di ricerca nella dashboard.
+    \item Sviluppare la logica di ricerca nel backend.
+    \item Visualizzare i risultati con i metadati richiesti.
+    \item Gestire la mancanza di risultati.
+    \item Testare la ricerca su keyword differenti.
+\end{enumerate}
+
+% -------------------------------------------------------------
+
+\subsection{User Story 3 – Associata allo Use Case RF4: Ricerca}
+\textbf{Titolo}: Applicazione filtri alla ricerca
+
+\textbf{Come} utente della piattaforma,  
+\textbf{voglio} applicare filtri sulla ricerca (argomento, data, popolarità),  
+\textbf{in modo da} affinare i risultati.
+
+\textbf{Criteri di accettazione}:
+\begin{itemize}
+    \item L’utente può selezionare uno o più filtri.
+    \item I risultati riflettono i filtri scelti.
+    \item I filtri possono essere rimossi singolarmente.
+\end{itemize}
+
+\textbf{Tasks}:
+\begin{enumerate}
+    \item Aggiungere un pannello filtri.
+    \item Implementare la logica di filtraggio nel backend.
+    \item Aggiornare dinamicamente la vista dei risultati.
+    \item Testare varie combinazioni di filtri.
+\end{enumerate}
+
+% -------------------------------------------------------------
+
+\subsection{User Story 4 – Associata allo Use Case RF5: Creazione Votazioni}
+\textbf{Titolo}: Creare una nuova votazione
+
+\textbf{Come} operatore comunale,  
+\textbf{voglio} creare una nuova votazione compilando un form guidato,  
+\textbf{in modo da} pubblicare contenuti strutturati e coerenti.
+
+\textbf{Criteri di accettazione}:
+\begin{itemize}
+    \item Il form richiede titolo, descrizione, opzioni e durata.
+    \item Le date devono essere validate.
+    \item Al salvataggio, lo stato iniziale è ``bozza’’.
+\end{itemize}
+
+\textbf{Tasks}:
+\begin{enumerate}
+    \item Creare un form per i campi richiesti.
+    \item Implementare la validazione lato client e server.
+    \item Salvare la votazione nel database.
+    \item Testare vari scenari (campi mancanti, date non valide…).
+\end{enumerate}
+
+% -------------------------------------------------------------
+
+\subsection{User Story 5 – Associata allo Use Case RF6: Gestione Votazioni}
+\textbf{Titolo}: Pubblicare una votazione
+
+\textbf{Come} operatore,  
+\textbf{voglio} pubblicare una votazione in bozza,  
+\textbf{in modo da} renderla visibile ai cittadini.
+
+\textbf{Criteri di accettazione}:
+\begin{itemize}
+    \item La votazione può essere pubblicata solo se è in stato ``bozza’’.
+    \item Il sistema chiede una conferma esplicita.
+    \item Lo stato cambia in ``attiva’’.
+\end{itemize}
+
+\textbf{Tasks}:
+\begin{enumerate}
+    \item Implementare il pulsante ``Pubblica’’.
+    \item Gestire la transizione dello stato.
+    \item Aggiornare la dashboard di utenti e operatori.
+    \item Testare la procedura.
+\end{enumerate}
+
+% -------------------------------------------------------------
+
+\subsection{User Story 6 – Associata allo Use Case RF10: Gestione Iniziative}
+\textbf{Titolo}: Proporre una nuova iniziativa
+
+\textbf{Come} cittadino,  
+\textbf{voglio} poter proporre una nuova iniziativa,  
+\textbf{in modo da} condividere idee con la comunità.
+
+\textbf{Criteri di accettazione}:
+\begin{itemize}
+    \item Il form richiede titolo e descrizione.
+    \item Il sistema associa automaticamente il nome utente.
+    \item L’iniziativa appare subito in bacheca.
+\end{itemize}
+
+\textbf{Tasks}:
+\begin{enumerate}
+    \item Creare il form per la proposta.
+    \item Validare i campi.
+    \item Salvare nel database e aggiornare la bacheca.
+    \item Testare i vari scenari.
+\end{enumerate}
+
+% -------------------------------------------------------------
+
+\subsection{User Story 7 – Associata allo Use Case RF11: Votazione Iniziative}
+\textbf{Titolo}: Votare un’iniziativa
+
+\textbf{Come} cittadino,  
+\textbf{voglio} poter votare un’iniziativa una sola volta,  
+\textbf{in modo da} contribuire alla sua visibilità.
+
+\textbf{Criteri di accettazione}:
+\begin{itemize}
+    \item L’utente può votare una singola iniziativa una sola volta.
+    \item Il contatore viene incrementato.
+    \item Il pulsante di voto viene disabilitato.
+\end{itemize}
+
+\textbf{Tasks}:
+\begin{enumerate}
+    \item Implementare il pulsante di voto.
+    \item Implementare il controllo di voto duplicato.
+    \item Aggiornare il contatore in tempo reale.
+    \item Testare casi validi e duplicati.
+\end{enumerate}
+
+% -------------------------------------------------------------
+
+\subsection{User Story 8 – Associata allo Use Case RF12: Votazioni}
+\textbf{Titolo}: Inviare un voto anonimo
+
+\textbf{Come} cittadino,  
+\textbf{voglio} inviare il mio voto in forma anonima,  
+\textbf{in modo da} partecipare senza rivelare la mia identità.
+
+\textbf{Criteri di accettazione}:
+\begin{itemize}
+    \item Il sistema separa l’identità dal voto.
+    \item Viene generato un hash di tracciabilità.
+    \item L’utente non può votare una seconda volta.
+\end{itemize}
+
+\textbf{Tasks}:
+\begin{enumerate}
+    \item Implementare la logica di anonimizzazione.
+    \item Registrare hash e voto in modo immutabile.
+    \item Bloccare ulteriori invii.
+    \item Testare la sicurezza del processo.
+\end{enumerate}
+
+% -------------------------------------------------------------
+
+\subsection{User Story 9 – Associata allo Use Case RF9: Moderazione Contenuti}
+\textbf{Titolo}: Moderare contenuti segnalati
+
+\textbf{Come} operatore comunale,  
+\textbf{voglio} visualizzare e moderare contenuti segnalati,  
+\textbf{in modo da} mantenere la piattaforma sicura e rispettosa.
+
+\textbf{Criteri di accettazione}:
+\begin{itemize}
+    \item La dashboard mostra tutti i contenuti in revisione.
+    \item L’operatore può approvare o eliminare contenuti.
+    \item Le azioni richiedono conferma esplicita.
+\end{itemize}
+
+\textbf{Tasks}:
+\begin{enumerate}
+    \item Mostrare elenco contenuti segnalati.
+    \item Implementare approvazione ed eliminazione.
+    \item Gestire conferme e messaggi.
+    \item Testare la moderazione.
+\end{enumerate}
+
+% -------------------------------------------------------------
+
+\subsection{User Story 10 – Associata allo Use Case RF13: Dashboard attività attive}
+\textbf{Titolo}: Visualizzare votazioni e sondaggi attivi
+
+\textbf{Come} cittadino,  
+\textbf{voglio} visualizzare tutte le votazioni e i sondaggi attivi,  
+\textbf{in modo da} sapere a quali attività posso partecipare.
+
+\textbf{Criteri di accettazione}:
+\begin{itemize}
+    \item Il sistema mostra solo elementi con stato ``attivo’’.
+    \item I risultati sono divisi per tipologia (votazioni, sondaggi).
+    \item Ogni elemento mostra titolo e periodo di validità.
+\end{itemize}
+
+\textbf{Tasks}:
+\begin{enumerate}
+    \item Recuperare elementi attivi dal database.
+    \item Filtrarli per stato.
+    \item Visualizzarli ordinati per data di apertura.
+    \item Testare vari scenari inclusi casi vuoti.
+\end{enumerate}
+
+
+\textbf{Eccezione}: Nessuna attività attiva.
+
 
 \bibliographystyle{alpha}
 \bibliography{sample}
