@@ -1,13 +1,14 @@
 # Fdb version 4
-["bibtex d1"] 1763983455.19103 "d1.aux" "d1.bbl" "d1" 1763983456.09532 0
+["bibtex d1"] 1763999919.23564 "d1.aux" "d1.bbl" "d1" 1763999991.69709 0
   "/usr/share/texmf-dist/bibtex/bib/gloss/sample.bib" 1755987285 2721 b88105703bd616b4f9867992219afb8a ""
   "/usr/share/texmf-dist/bibtex/bst/base/alpha.bst" 1755987285 23907 a5f93555796fb564b924339521f10a7c ""
-  "d1.aux" 1763983455.89984 7063 842033192a853ac4b666814a72ec263c "pdflatex"
+  "d1.aux" 1763999991.4877 7061 29fd6ea75556282409e68c0dab64b386 "pdflatex"
   (generated)
   "d1.bbl"
   "d1.blg"
   (rewritten before read)
-["pdflatex"] 1763983455.25854 "d1.tex" "d1.pdf" "d1" 1763983456.09561 2
+["pdflatex"] 1763999990.38956 "/home/ricc/Projects/Ingegneria_Software/deliverable_1/d1.tex" "d1.pdf" "d1" 1763999991.69732 2
+  "/home/ricc/Projects/Ingegneria_Software/deliverable_1/d1.tex" 1763999990.13667 40663 e29c875f056d00c78a7220740f421864 ""
   "/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1755987285 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/share/texmf-dist/fonts/map/fontname/texfonts.map" 1755987285 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1755987285 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
@@ -165,13 +166,13 @@
   "/usr/share/texmf-dist/tex/latex/xcolor/xcolor.sty" 1755987285 55384 b454dec21c2d9f45ec0b793f0995b992 ""
   "/usr/share/texmf-dist/tex/latex/xkeyval/xkeyval.sty" 1755987285 4937 4ce600ce9bd4ec84d0250eb6892fcf4f ""
   "/usr/share/texmf-dist/web2c/texmf.cnf" 1755987285 42087 b0f9697c952c8f5a8eede4134282cb0d ""
-  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1762805725 5311557 9da84c45f5b388655502706482323571 ""
-  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1762805680 2008255 e06f0ce00ded6fffa714280e4894ca59 ""
-  "d1.aux" 1763983455.89984 7063 842033192a853ac4b666814a72ec263c "pdflatex"
-  "d1.bbl" 1763983455.25484 49 0eba253fc001332e731e8aba3f23127b "bibtex d1"
-  "d1.out" 1763983455.90084 8602 139fc708662d32f9a6b703cfdac3fd77 "pdflatex"
-  "d1.tex" 1763983453.95185 39811 39489eb76d28bc14abb1763ea520b530 ""
-  "d1.toc" 1763983455.90084 3982 465a544de1b63b9a09e59d3ba0501a47 "pdflatex"
+  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1763999579 5344687 b8cc3e41c7a56fde16a369954ea9cfec ""
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1763999548 2109603 f4b50fc10316e7ffb3c187960e78d48f ""
+  "d1.aux" 1763999991.4877 7061 29fd6ea75556282409e68c0dab64b386 "pdflatex"
+  "d1.bbl" 1763999919.29966 49 0eba253fc001332e731e8aba3f23127b "bibtex d1"
+  "d1.out" 1763999991.4887 8832 3f2573687f29175fb6fac62f3f070e17 "pdflatex"
+  "d1.tex" 1763999990.13667 40663 e29c875f056d00c78a7220740f421864 ""
+  "d1.toc" 1763999991.4887 3980 6abe16352d6a71aea43f331bcdb1f464 "pdflatex"
   (generated)
   "d1.aux"
   "d1.log"

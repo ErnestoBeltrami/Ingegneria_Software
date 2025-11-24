@@ -112,8 +112,9 @@ I requisiti non funzionali descrivono le caratteristiche qualitative del sistema
 
 \subsection{Compatibilità}
 \begin{enumerate}[label=\textbf{RNF\arabic*}]
-	\item \textbf{Interfaccia intuitiva}: l’applicazione deve essere facilmente comprensibile e navigabile anche da utenti con competenze digitali di base.  
-	\textit{Motivazione}: un’interfaccia intuitiva è fondamentale per favorire l’adozione del servizio da parte di un’utenza eterogenea, inclusi cittadini meno esperti in ambito tecnologico. Riduce la curva di apprendimento, migliora l’efficienza nell’interazione e aumenta la soddisfazione complessiva dell’utente.
+  \item \textbf{Interfaccia intuitiva}: l’applicazione deve essere facilmente comprensibile e navigabile anche da utenti con competenze digitali di base.  
+  \textit{Criterio di misurazione}: durante test di usabilità con utenti rappresentativi, almeno l’80\% dei partecipanti deve riuscire a individuare e utilizzare le funzionalità principali entro \textbf{3 minuti} dal primo accesso, senza consultare documentazione o richiedere assistenza.  
+  \textit{Motivazione}: garantire un’interfaccia intuitiva favorisce l’adozione del servizio da parte di un’utenza eterogenea, riduce la curva di apprendimento, migliora l’efficienza operativa e aumenta la soddisfazione complessiva dell’utente.
 
 	\item \textbf{Accessibilità}: il design dovrà rispettare le linee guida WCAG 2.1 livello AA, garantendo l’accesso anche a persone con disabilità visive o motorie.  
 	\textit{Motivazione}: il rispetto delle norme sull’accessibilità è essenziale per assicurare pari opportunità di utilizzo del servizio, in linea con i principi di inclusività e con la normativa vigente (Legge Stanca n. 4/2004). Garantire un’esperienza accessibile significa rendere il sistema realmente pubblico e universale.
@@ -121,7 +122,7 @@ I requisiti non funzionali descrivono le caratteristiche qualitative del sistema
 	\item \textbf{Consistenza visiva}: layout e componenti grafici devono risultare coerenti in tutte le sezioni dell’app, utilizzando colori istituzionali e un contrasto adeguato.  
 	\textit{Motivazione}: la coerenza visiva rafforza l’identità del progetto, migliora la leggibilità dei contenuti e riduce la possibilità di confusione durante la navigazione, offrendo un’esperienza d’uso più fluida e professionale.
 
-	\item \textbf{Multilingua}: l’applicazione dovrà prevedere la possibilità di estendere l’interfaccia ad altre lingue per includere tutto lo spettro dei cittadini di Trento.  
+	\item \textbf{Multilingua}: Il linguaggio principale dell'applicazione sarà l'italiano ma l’applicazione dovrà prevedere la possibilità di estendere l’interfaccia ad altre lingue per includere tutto lo spettro dei cittadini di Trento.  
 	\textit{Motivazione}: la presenza di un’interfaccia multilingua favorisce l’inclusione dei cittadini stranieri o non italofoni, promuovendo l’integrazione e la partecipazione civica attiva di tutte le comunità presenti sul territorio.
 \end{enumerate}
 
@@ -136,7 +137,7 @@ I requisiti non funzionali descrivono le caratteristiche qualitative del sistema
 	\item \textbf{Autenticazione sicura}: l’accesso avviene tramite Google OAuth 2.0; in futuro sarà integrabile SPID o CIE per garantire una verifica ufficiale dell’identità.  
 	\textit{Motivazione}: un sistema di autenticazione sicuro riduce il rischio di accessi non autorizzati e consente di validare l’identità degli utenti, preservando la sicurezza del sistema e la legittimità delle interazioni.
 
-	\item \textbf{Gestione sicura delle sessioni}: le sessioni devono scadere automaticamente dopo un periodo di inattività prestabilito, prevenendo accessi non autorizzati.  
+	\item \textbf{Gestione sicura delle sessioni}: le sessioni devono scadere automaticamente dopo un periodo di inattività prestabilito, prevenendo accessi non autorizzati. Abbiamo deciso di impostare questo limite a 15 minuti di attivita per arrivare a un compromesso tra durata della sessione e sicurezza dei dati. 
 	\textit{Motivazione}: la gestione corretta delle sessioni riduce i rischi legati all’uso improprio dei dispositivi condivisi o smarriti, garantendo un livello aggiuntivo di protezione.
 
 	\item \textbf{Crittografia dei dati}: tutte le comunicazioni client-server devono avvenire tramite protocollo HTTPS con TLS 1.3.  
@@ -148,7 +149,7 @@ I requisiti non funzionali descrivono le caratteristiche qualitative del sistema
 	\item \textbf{Tempi di risposta}: le operazioni principali (login, caricamento dashboard, votazione, consultazione risultati) devono completarsi entro 3 secondi in condizioni normali di rete, per garantire un’esperienza di uso fluida e piacevole.  
 	\textit{Motivazione}: tempi di risposta rapidi sono essenziali per mantenere l’attenzione e la soddisfazione dell’utente, evitando frustrazione o abbandono del servizio. In un contesto civico come IoSonoTrento, la reattività aumenta la percezione di affidabilità e professionalità della piattaforma.
 
-	\item \textbf{Scalabilità}: il sistema deve poter gestire un aumento del numero di utenti registrati e di votazioni attive senza compromettere le prestazioni.  
+	\item \textbf{Scalabilità}: il sistema deve poter gestire un aumento del numero di utenti registrati e di votazioni attive senza compromettere le prestazioni. Ci si aspetta di dover gestire al massimo un numero di utenti uguale alla popolazione della citta' di Trento (120.000 persone al giorno 24 Novembre 2025)  
 	\textit{Motivazione}: la scalabilità assicura che l’applicazione resti efficiente anche in caso di campagne di partecipazione massiva o durante eventi locali con un forte coinvolgimento cittadino. Permette inoltre una crescita sostenibile del sistema nel tempo.
 
 	\item \textbf{Disponibilità}: l’applicazione deve essere disponibile almeno per il 99\% del tempo operativo mensile.  
@@ -181,7 +182,13 @@ I requisiti non funzionali descrivono le caratteristiche qualitative del sistema
 	\item \textbf{Dispositivi}: la piattaforma dovrà essere pienamente fruibile sia da browser desktop che da dispositivi mobili (responsive design).  
 	\textit{Motivazione}: garantire la compatibilità con dispositivi mobili è fondamentale per un servizio rivolto a cittadini che accedono in mobilità. Il responsive design migliora l’usabilità e amplia la platea di utenti potenziali.
 
-	\item \textbf{Browser supportati}: compatibilità garantita con le versioni recenti di Chrome, Firefox, Safari ed Edge.  
+	\item \textbf{Browser supportati}: compatibilità garantita con le versioni recenti di Chrome, Firefox, Safari ed Edge. L'obiettivo e' quello di supportare "l'ultima versione stabile meno 1" come standard. Al giorno 24 Novembre 2025 queste versioni sono:
+   \begin{enumerate}
+      \item Chrome: 140+
+      \item Firefox: 144+
+      \item Safari: 26
+      \item Edge: 140+
+   \end{enumerate}
 	\textit{Motivazione}: il supporto ai principali browser assicura che tutti gli utenti possano accedere al servizio senza problemi tecnici legati alla compatibilità, riducendo il rischio di esclusione tecnologica.
 
 	\item \textbf{Integrazione futura}: il sistema dovrà poter essere integrato con servizi esterni dell’amministrazione (es. open data del Comune, SPID).  
@@ -205,8 +212,8 @@ I requisiti non funzionali descrivono le caratteristiche qualitative del sistema
     \item Se l’ID è presente, l’accesso è autorizzato; altrimenti viene attivata l’Estensione 1.
 \end{enumerate}
 
-\textbf{Estensione 1 — Registrazione ID Univoco}\\
-\textit{Condizione}: primo accesso del cittadino.\\
+\textbf{Estensione 1 — Registrazione ID Univoco} \\
+\textit{Condizione}: primo accesso del cittadino. \\
 \textit{Azione}: l’ID univoco viene memorizzato nel database e l’utente accede alla dashboard.
 
 \textbf{Eccezioni}
@@ -474,7 +481,7 @@ L’utente può applicare filtri demografici o tematici per analizzare i dati ag
 
 % -------------------------------------------------------------
 
-\subsubsection{User Story 2: Ricerca (UC RF4)}
+\subsection{User Story 2: Ricerca (UC RF4)}
 \textbf{Titolo}: Ricerca iniziative tramite parole chiave
 
 \textbf{Come} cittadino,  
@@ -503,7 +510,7 @@ L’utente può applicare filtri demografici o tematici per analizzare i dati ag
 \subsection{User Story 3: Ricerca (UC RF4)}
 \textbf{Titolo}: Applicazione filtri alla ricerca
 
-\textbf{Come} utente della piattaforma,  
+\textbf{Come} utente della piattaforma,
 \textbf{voglio} applicare filtri sulla ricerca (argomento, data, popolarità),  
 \textbf{in modo da} affinare i risultati.
 
