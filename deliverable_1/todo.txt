@@ -1,0 +1,30 @@
+Todo
+
+Da revisionare insieme
+
+- Chi inserisce gli utenti nel database? da definire in questa sezione oppure aggiungere un nuovo requisito funzionale
+-  Decidere se i cittadini vengono salvati anche in locale o solo con spid cie
+- Definire bene la differenza tra votazione e sondaggio: fare esempi per renderlo piu chiaro
+
+Riccardo Sandru
+
+- Specifare massimo di utenti da gestire(RNF11)
+- Ridefinire rnf1 rendendolo più esplicito, aggiungendo un numero quantificabile (es. utente quanto ci impiega a capire come funziona la piattaforma)
+- Specificare che l'app è in italiano e solo dopo prevvederà altre lingue (RNF2)
+- Specifcare quanto dura di default una attività/sessione (RNF8)
+- Rivalutare RNF14 (forse troppo generico)
+- Specificare le versioni dei browser ( RNF20/19).
+
+Ernesto Beltrami
+
+- Definire il concetto di web app/sito
+- Seperare le use case e non mettere tutto insieme. 
+- Aggiustare e mettere i nomi corretti (es. utente cittadino)
+
+Tawfiq Songne
+
+-
+-
+-
+-
+
