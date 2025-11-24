@@ -1,0 +1,24 @@
+{
+  "name": "deliverable_2",
+  "version": "1.0.0",
+  "description": "IoSonoTrento",
+  "homepage": "https://github.com/ErnestoBeltrami/Ingegneria_Software#readme",
+  "bugs": {
+    "url": "https://github.com/ErnestoBeltrami/Ingegneria_Software/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ErnestoBeltrami/Ingegneria_Software.git"
+  },
+  "license": "ISC",
+  "author": "Ricc",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "mongodb": "^7.0.0"
+  }
+}

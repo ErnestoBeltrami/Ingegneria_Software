@@ -1,5 +1,9 @@
 # System
 .vscode
 
+# Environment
+/backend/.env
+
 # All
 .*
+

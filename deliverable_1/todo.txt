@@ -19,8 +19,10 @@ Ernesto Beltrami
 - Aggiustare e mettere i nomi corretti (es. utente cittadino)
 
 Tawfiq Songne
--
--
+- Finire front-end
+    - moderazione contenuti
+    - 
+- Inserire nel D1 dopo la convalida degli altri
 -
 -
 
