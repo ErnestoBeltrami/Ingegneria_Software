@@ -1,14 +1,13 @@
 # Fdb version 4
-["bibtex d1"] 1763560855.21196 "d1.aux" "d1.bbl" "d1" 1763560887.92694 0
+["bibtex d1"] 1763983455.19103 "d1.aux" "d1.bbl" "d1" 1763983456.09532 0
   "/usr/share/texmf-dist/bibtex/bib/gloss/sample.bib" 1755987285 2721 b88105703bd616b4f9867992219afb8a ""
   "/usr/share/texmf-dist/bibtex/bst/base/alpha.bst" 1755987285 23907 a5f93555796fb564b924339521f10a7c ""
-  "d1.aux" 1763560887.71884 7111 4560bc8aaa0c98fc3199f48947518fe2 "pdflatex"
+  "d1.aux" 1763983455.89984 7063 842033192a853ac4b666814a72ec263c "pdflatex"
   (generated)
   "d1.bbl"
   "d1.blg"
   (rewritten before read)
-["pdflatex"] 1763560886.70475 "/home/ricc/Projects/Ingegneria_Software/deliverable_1/d1.tex" "d1.pdf" "d1" 1763560887.92729 2
-  "/home/ricc/Projects/Ingegneria_Software/deliverable_1/d1.tex" 1763560886.58829 39637 0abb17e11547a8d6ba91fcab84d834c0 ""
+["pdflatex"] 1763983455.25854 "d1.tex" "d1.pdf" "d1" 1763983456.09561 2
   "/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1755987285 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/share/texmf-dist/fonts/map/fontname/texfonts.map" 1755987285 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1755987285 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
@@ -168,11 +167,11 @@
   "/usr/share/texmf-dist/web2c/texmf.cnf" 1755987285 42087 b0f9697c952c8f5a8eede4134282cb0d ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1762805725 5311557 9da84c45f5b388655502706482323571 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1762805680 2008255 e06f0ce00ded6fffa714280e4894ca59 ""
-  "d1.aux" 1763560887.71884 7111 4560bc8aaa0c98fc3199f48947518fe2 "pdflatex"
-  "d1.bbl" 1763560855.28088 49 0eba253fc001332e731e8aba3f23127b "bibtex d1"
-  "d1.out" 1763560887.71984 9562 1e7164e08341c431f518b80be390ff08 "pdflatex"
-  "d1.tex" 1763560886.58829 39637 0abb17e11547a8d6ba91fcab84d834c0 ""
-  "d1.toc" 1763560887.72078 4071 5a77de26519cf421becab665a0a5fd3c "pdflatex"
+  "d1.aux" 1763983455.89984 7063 842033192a853ac4b666814a72ec263c "pdflatex"
+  "d1.bbl" 1763983455.25484 49 0eba253fc001332e731e8aba3f23127b "bibtex d1"
+  "d1.out" 1763983455.90084 8602 139fc708662d32f9a6b703cfdac3fd77 "pdflatex"
+  "d1.tex" 1763983453.95185 39811 39489eb76d28bc14abb1763ea520b530 ""
+  "d1.toc" 1763983455.90084 3982 465a544de1b63b9a09e59d3ba0501a47 "pdflatex"
   (generated)
   "d1.aux"
   "d1.log"
