@@ -16,7 +16,6 @@ import userRouter from './routes/user.route.js';
 // Routes declaration
 app.use("/api/v1/users", userRouter);
 // app.use("/api/v1/posts", postRouter);
-// example route: http://localhost:3000/api/v1/users/register
 
 
 export default app;
