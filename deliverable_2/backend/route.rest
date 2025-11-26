@@ -43,7 +43,7 @@ x-user-id: 69271f4f9e5aa630a457bfc8
 
 ###
 
-GET http://localhost:3000/users/check-username/fen
+GET http://localhost:3000/users/check-username/feng
 Content-Type: application/json
 
 ###

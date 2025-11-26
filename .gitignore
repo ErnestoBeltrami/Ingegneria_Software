@@ -1,5 +1,6 @@
 # System
 .vscode
+/backend/route.rest
 
 # Environment
 /backend/.env
