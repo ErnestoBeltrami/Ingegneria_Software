@@ -1,0 +1,52 @@
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+    "email": "feng@test.com",
+    "password": "whatthefeng"
+}
+
+###
+
+GET http://localhost:3000/users/getAll
+Content-Type: application/json 
+
+### 
+
+GET http://localhost:3000/users/getById/69271f4f9e5aa630a457bfc8
+Content-Type: application/json 
+
+###
+
+GET http://localhost:3000/users/getByEmail/feng@test.com
+Content-Type: application/json 
+
+####
+
+GET http://localhost:3000/users/getByUsername/feng
+Content-Type: application/json 
+
+### 
+GET http://localhost:3000/users/getFiltered?loggedIn=true
+Content-Type: application/json 
+
+###
+
+GET http://localhost:3000/users/search?query=fe
+Content-Type: application/json
+
+###
+
+GET http://localhost:3000/users/me
+Content-Type: application/json
+x-user-id: 69271f4f9e5aa630a457bfc8
+
+###
+
+GET http://localhost:3000/users/check-username/fen
+Content-Type: application/json
+
+###
+
+GET http://localhost:3000/users/check-email/feng@test.com
+Content-Type: application/json

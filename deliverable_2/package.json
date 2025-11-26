@@ -13,11 +13,13 @@
   "license": "ISC",
   "author": "Ricc",
   "type": "module",
-  "main": "index.js",
+  "main": "backend/src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node backend/src/index.js",
+    "dev": "nodemon backend/src/index.js"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "express": "^5.1.0",
     "mongodb": "^7.0.0"
   }

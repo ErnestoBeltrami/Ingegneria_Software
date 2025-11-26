@@ -1,6 +1,5 @@
 import express from "express";
-
-const app = express();
+const app = express()
 
 app.get("/health", (_req, res) => {
   res.status(200).json({ status: "ok" });
@@ -14,8 +13,7 @@ import userRouter from './routes/user.route.js';
 
 
 // Routes declaration
-app.use("/api/v1/users", userRouter);
-// app.use("/api/v1/posts", postRouter);
+app.use("/users", userRouter);
 
 
 export default app;
