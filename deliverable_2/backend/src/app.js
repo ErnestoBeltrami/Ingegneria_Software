@@ -1,28 +1,22 @@
+import express from "express";
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://ricc:<db_password>@iosonotrento.mubm1rz.mongodb.net/?appName=IoSonoTrento";
+const app = express();
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
+app.get("/health", (_req, res) => {
+  res.status(200).json({ status: "ok" });
 });
 
-async function run() {
-  try {
-    // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
-  }
-}
-run().catch(console.dir)
+// give to the app the ability to parse json request 
+app.use(express.json());
+// Routes import
+import userRouter from './routes/user.route.js';
+// import postRouter from './routes/post.route.js';
 
-import express from "express"
+
+// Routes declaration
+app.use("/api/v1/users", userRouter);
+// app.use("/api/v1/posts", postRouter);
+// example route: http://localhost:3000/api/v1/users/register
+
+
+export default app;
