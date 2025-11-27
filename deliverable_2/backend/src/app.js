@@ -1,19 +1,34 @@
+import "./config/env.js";
 import express from "express";
-const app = express()
+import session from "express-session";
+import passport from "./config/passport.js";
+import userRouter from "./routes/user.route.js";
+import authRouter from "./routes/auth.route.js";
+
+const app = express();
 
 app.get("/health", (_req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
-// give to the app the ability to parse json request 
+// give to the app the ability to parse json request
 app.use(express.json());
-// Routes import
-import userRouter from './routes/user.route.js';
-// import postRouter from './routes/post.route.js';
 
+const SESSION_SECRET = process.env.SESSION_SECRET || "dev-session-secret";
+
+app.use(
+  session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Routes declaration
+app.use("/auth", authRouter);
 app.use("/users", userRouter);
-
 
 export default app;

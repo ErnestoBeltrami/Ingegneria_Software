@@ -1,11 +1,6 @@
-import dotenv from "dotenv";
+import "./config/env.js";
 import connectDB from "./config/database.js";
 import app from "./app.js";
-import express from "express"
-
-dotenv.config({
-    path: new URL("../../.env", import.meta.url).pathname
-  });
 
 const startServer = async () => {
     try {
