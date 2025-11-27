@@ -50,3 +50,14 @@ Content-Type: application/json
 
 GET http://localhost:3000/users/check-email/feng@test.com
 Content-Type: application/json
+
+###
+
+GET http://localhost:3000/auth/status
+Content-Type: application/json
+Cookie: connect.sid=s%3APp4t4n0yfQXU67TNikmXO4ByPpvfxDy3.ArJwGYGMwvrcvJ1sDGYBLMQ88jk9bI7wmsw8E8upOZE
+###
+
+POST http://localhost:3000/auth/logout
+Content-Type: application/json
+Cookie: connect.sid=s%3APp4t4n0yfQXU67TNikmXO4ByPpvfxDy3.ArJwGYGMwvrcvJ1sDGYBLMQ88jk9bI7wmsw8E8upOZE
