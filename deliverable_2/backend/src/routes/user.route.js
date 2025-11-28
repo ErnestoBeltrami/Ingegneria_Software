@@ -28,9 +28,9 @@ router.route('/me').get(getCurrentUser);
 router.route('/check-username/:username').get(checkUsernameAvailability);
 router.route('/check-email/:email').get(checkEmailAvailability);
 
-// POST methods
-router.route('/register').post(registerUser);
-router.route('/login').post(loginUser);
-router.route('/logout').post(logoutUser);
+// // POST methods
+// router.route('/register').post(registerUser);
+// router.route('/login').post(loginUser);
+// router.route('/logout').post(logoutUser);
 
 export default router;
