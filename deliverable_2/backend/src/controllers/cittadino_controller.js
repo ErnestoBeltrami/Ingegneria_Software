@@ -1,73 +1,73 @@
-import cittadino, {Cittadino} from '../models/cittadino'
-import jwt from 'jsonwebtoken';
+import "./env.js";
+import crypto from "crypto";
+import passport from "passport";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import { Cittadino } from "../models/users.js";
 
-export const loginCittadino = async (req,res) => {
-    try{    const {email,password} = req.body;
+const sanitize = (value = "") => value.toLowerCase().replace(/[^a-z0-9]/g, "");
 
-        const cittadino = await Cittadino.findOne({email}).select('+password');
+const ensureLength = (value) => {
+  if (value.length >= 4 && value.length <= 40) return value;
+  const padded = value.padEnd(4, "0");
+  return padded.slice(0, 40);
+};
 
-        if(cittadino && (await cittadino.matchPassword(password))){
-            res.json({
-                _id : cittadino._id,
-                email : cittadino.email,
-                token : generateToken(cittadino._id)
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (error) {
+    done(error, null);
+  }
+});
+
+if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+  console.warn("Google OAuth credentials are missing. Google login is disabled.");
+} else {
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL:
+          process.env.GOOGLE_CALLBACK_URL || "/auth/google/callback",
+      },
+      async (_accessToken, _refreshToken, profile, done) => {
+        try {
+          const email = profile.emails?.[0]?.value?.toLowerCase();
+
+          let user =
+            (await Cittadino.findOne({ ID_univoco_esterno: profile.id })) ||
+            (email ? await Cittadino.findOne({ email }) : null);
+
+          if (!user) {
+            user = await Cittadino.create({
+              nome : profile.name,  
+              email: email || `${profile.id}@google.local`,
+              ID_univoco_esterno: profile.id,
+              loggedIn : true,
+              profiloCompleto : false
             });
-        
+          } else {
+            user.googleId = profile.id;
+            user.authProvider = "google";
+            user.loggedIn = true;
+            await user.save();
+          }
+
+          done(null, user);
+        } catch (error) {
+          done(error, null);
         }
-        else{
-            res.status(401).json({message : 'Email o password non validi'});
-        }
-    }
-    catch(error){
-        res.status(500).json({ 
-            message: "Internal server error",
-            error: error.message 
-        });
-    }
+      }
+    )
+  );
+}
 
-};
+export default passport;
 
-export const registerCittadino = async (req,res) => {
-    try
-    {    const {nome,cognome,age,genere,categoria,email,password} = req.body;
-
-        if (!nome || !cognome || !email || !password || !age || !genere || !categoria ){
-                return res.status(400).json({
-                    message: "Inserire tutti i campi"
-                });
-            }
-
-        const already_existing = await Cittadino.findOne(email);
-        if(already_existing){
-            return res.status(400).json({
-                message : 'Utente già creato'
-            })
-        }
-
-        const cittadino = Cittadino.create({
-            nome,
-            cognome, 
-            age, 
-            genere, 
-            categoria,
-            email : email.toLowerCase(), 
-            password
-        });
-
-        res.status(201).json({
-            message : 'Utente registrato!',
-            user : {
-                id : cittadino._id,
-                email : cittadino.email,
-                nome : cittadino.nome,
-                cognome : cittadino.cognome
-            }
-        });
-    }
-    catch(error){
-        res.status(500).json({ 
-            message: "Internal server error",
-            error: error.message 
-        });
-    }
-};
