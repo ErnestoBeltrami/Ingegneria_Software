@@ -1,32 +1,47 @@
-// Nel file: ./model/NomeModello.js
-const mongoose = require('mongoose'); // Carica Mongoose (necessario)
+// Nel file: ./model/OperatoreComune.js
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs'); // ⚠️ Importa bcrypt
 
 const OperatoreComune = new mongoose.Schema({
-    password_hash: {
+    password: { // Rinominato per convenzione
         type: String,
-        required : [true,'password obbligatoria'],
-        unique : false,
-        trim : true,
-        select : false
+        required: [true, 'Password obbligatoria'],
+        unique: false,
+        trim: true,
+        select: false 
     },
-    username : {
-        type : String,
-        required : [true,'username obbligatorio'],
-        unique : true,
-        trim : true
+    username: {
+        type: String,
+        required: [true, 'Username obbligatorio'],
+        unique: true,
+        trim: true
     },
-    nome : {
-        type : String,
-        required : true,
-        trim : true
+    nome: {
+        type: String,
+        required: true,
+        trim: true
     },
-    cognome : {
-        type : String,
-        required : true,
-        trim : true
+    cognome: {
+        type: String,
+        required: true,
+        trim: true
     }
-
-
 });
 
-module.exports = mongoose.model('operatore', OperatoreComune); // Esporta il modello
+OperatoreComune.pre('save', async function(next) {
+    if (!this.isModified('password')) { 
+        return next();
+    }
+    const salt = await bcrypt.genSalt(10);
+
+    this.password = await bcrypt.hash(this.password, salt);
+    
+    next();
+});
+
+OperatoreComune.methods.matchPassword = async function(enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password);
+};
+
+
+module.exports = mongoose.model('OperatoreComune', OperatoreComune); 
