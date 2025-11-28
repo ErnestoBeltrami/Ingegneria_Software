@@ -31,4 +31,4 @@ const Iniziativa = new mongoose.Schema({
     timestamps : true
 });
 
-module.exports = mongoose.model('voto_iniziativa', VotoIniziativa);
+module.exports = mongoose.model('Iniziativa', Iniziativa);
