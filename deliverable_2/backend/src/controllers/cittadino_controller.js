@@ -1,73 +1,48 @@
-import "./env.js";
-import crypto from "crypto";
-import passport from "passport";
-import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import { Cittadino } from "../models/users.js";
+// Nel file: ./controllers/cittadinoController.js (Esempio)
+import { Cittadino } from '../models/cittadino';
 
-const sanitize = (value = "") => value.toLowerCase().replace(/[^a-z0-9]/g, "");
-
-const ensureLength = (value) => {
-  if (value.length >= 4 && value.length <= 40) return value;
-  const padded = value.padEnd(4, "0");
-  return padded.slice(0, 40);
-};
-
-
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await User.findById(id);
-    done(null, user);
-  } catch (error) {
-    done(error, null);
-  }
-});
-
-if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-  console.warn("Google OAuth credentials are missing. Google login is disabled.");
-} else {
-  passport.use(
-    new GoogleStrategy(
-      {
-        clientID: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL:
-          process.env.GOOGLE_CALLBACK_URL || "/auth/google/callback",
-      },
-      async (_accessToken, _refreshToken, profile, done) => {
-        try {
-          const email = profile.emails?.[0]?.value?.toLowerCase();
-
-          let user =
-            (await Cittadino.findOne({ ID_univoco_esterno: profile.id })) ||
-            (email ? await Cittadino.findOne({ email }) : null);
-
-          if (!user) {
-            user = await Cittadino.create({
-              nome : profile.name,  
-              email: email || `${profile.id}@google.local`,
-              ID_univoco_esterno: profile.id,
-              loggedIn : true,
-              profiloCompleto : false
+export const getCittadinoData = async (req, res) => {
+    try {
+        const userFromMiddleware = req.user; 
+        
+        if (!userFromMiddleware) {
+            return res.status(404).json({
+                message: "Utente non identificato dal sistema (Internal Error)"
             });
-          } else {
-            user.googleId = profile.id;
-            user.authProvider = "google";
-            user.loggedIn = true;
-            await user.save();
-          }
+        } 
+        const cittadino = await Cittadino.findById(userFromMiddleware.id).select('-password'); 
 
-          done(null, user);
-        } catch (error) {
-          done(error, null);
+        if (cittadino) {
+            
+            const datiPubblici = {
+                id: cittadino._id,
+                ruolo: "cittadino",
+                nome: cittadino.nome,
+                cognome: cittadino.cognome,
+                email: cittadino.email,
+                eta: cittadino.eta,
+                genere: cittadino.genere,
+                categoria: cittadino.categoria,
+                profiloCompleto: cittadino.profiloCompleto
+            };
+
+            return res.status(200).json({
+                message: "Dati cittadino recuperati con successo",
+                data: datiPubblici
+            });
         }
-      }
-    )
-  );
-}
+        else {
+            return res.status(404).json({
+                message: "Risorsa utente non trovata nel database"
+            });
+        }
 
-export default passport;
-
+    }
+    catch (error) {
+        console.error("Errore nel recupero dati cittadino:", error);
+        return res.status(500).json({
+            message: "Errore interno del server durante il recupero dei dati.",
+            error: error.message
+        });
+    }
+};

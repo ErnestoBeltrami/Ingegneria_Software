@@ -1,7 +1,6 @@
 import {OperatoreComune} from '../models/operatore';
 
 const generateToken = (id) => {
-    // Usa il tuo JWT_SECRET definito in .env
     return jwt.sign({ id, ruolo: 'operatore' }, process.env.JWT_SECRET, { expiresIn: '1d' });
 };
 
@@ -24,7 +23,7 @@ export const getByCredentials = async  (req,res) => {
             });
         }
         else{
-            return res.status(404).json({
+            return res.status(401).json({
                 message: "Credenziali non valide",
             });
         }
@@ -36,3 +35,39 @@ export const getByCredentials = async  (req,res) => {
         });
     }
 } 
+
+export const getOperatoreData = async (req,res) => {
+    const userFromMiddleware = req.user;
+    if(!userFromMiddleware){
+        return res.status(404).json({
+            message : "Utente non identificato nel sistema."
+        });
+    }
+
+    try{const operatore = await OperatoreComune.findById(userFromMiddleware._id);
+        if(operatore){
+            const datiPubblici = {
+                id : operatore._id,
+                username : operatore.username,
+                nome : operatore.nome,
+                cognome : operatore.cognome
+            }
+            return res.status(200).json({
+                message : "Operatore trovato con successo",
+                data : datiPubblici
+            });
+        }
+        else{
+            return res.status(404).json({
+                message: "Operatore non trovato nel database"
+            });
+        }
+    }
+    catch(error){
+        console.error("Errore nel recupero dati operatore:", error);
+        return res.status(500).json({
+            message: "Errore interno del server durante il recupero dei dati.",
+            error: error.message
+        });
+    }
+}
