@@ -15,8 +15,8 @@ const cittadinoSchema = new mongoose.Schema({
         min : 18
     },
     ID_univoco_esterno: { 
-        type: String, // Usiamo Stringa, più comune per ID di sistemi esterni
-        unique: true, // Cruciale per l'univocità (RF12)
+        type: String, 
+        unique: true, 
         trim: true,
         sparse : true
     },
@@ -44,7 +44,7 @@ const cittadinoSchema = new mongoose.Schema({
     }*/
     loggedIn : {
         type : Boolean,
-        default : true
+        default : false
    },
    profiloCompleto : {
     type : Boolean,

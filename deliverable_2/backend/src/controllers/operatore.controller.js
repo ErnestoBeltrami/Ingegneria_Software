@@ -1,5 +1,4 @@
-import jwt from 'jsonwebtoken';
-import { Operatore } from '../models/operatore.js';
+import {Operatore} from '../models/operatore.js';
 
 const generateToken = (id) => {
     return jwt.sign({ id, ruolo: 'operatore' }, process.env.JWT_SECRET, { expiresIn: '1d' });

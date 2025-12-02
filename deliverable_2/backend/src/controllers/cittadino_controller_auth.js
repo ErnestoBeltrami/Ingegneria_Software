@@ -19,7 +19,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
   try {
-    const user = await User.findById(id);
+    const user = await Cittadino.findById(id);
     done(null, user);
   } catch (error) {
     done(error, null);
@@ -54,8 +54,7 @@ if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
               profiloCompleto : false
             });
           } else {
-            user.googleId = profile.id;
-            user.authProvider = "google";
+            user.ID_univoco_esterno = profile.id;
             user.loggedIn = true;
             await user.save();
           }
