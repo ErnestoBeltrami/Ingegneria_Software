@@ -48,7 +48,7 @@ router.post('/complete-profile', async (req, res) => {
     }
 
     try {
-        const cittadino = await Cittadino.findOne({ID_univoco_esterno : cittadinoId});
+        const cittadino = await Cittadino.findById(cittadinoId);
 
         if (!cittadino) {
             return res.status(404).json({ error: 'Cittadino non trovato.' });

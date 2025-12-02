@@ -10,13 +10,16 @@ POST http://localhost:3000/auth/complete-profile
 Content-Type: application/json
 
 {
-    "cittadinoId" : "692eff456fc2bff21b0373e1",
+    "cittadinoId" : "692f4df30c4b5d2083a1c3f1",
     "nome" : "erni",
     "cognome" : "b",
     "eta":20,
     "genere":"Uomo",
     "categoria" : "Studente"
 }
+###
+GET http://localhost:3000/auth/cittadino/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmY0ZGYzMGM0YjVkMjA4M2ExYzNmMSIsInJ1b2xvIjoiY2l0dGFkaW5vIiwiaWF0IjoxNzY0NzA3OTk2LCJleHAiOjE3NjUzMTI3OTZ9.j7_kynA7KJqkDWGHWqFeINRs9s1A-RShQiVfNllIiNk
 ###
 POST http://localhost:3000/operatore/login
 Content-Type: application/json
