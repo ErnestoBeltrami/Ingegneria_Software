@@ -1,8 +1,8 @@
-import "./env.js";
+import "../config/env.js";
 import crypto from "crypto";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import { Cittadino } from "../models/users.js";
+import { Cittadino } from "../models/cittadino.js";
 
 const sanitize = (value = "") => value.toLowerCase().replace(/[^a-z0-9]/g, "");
 

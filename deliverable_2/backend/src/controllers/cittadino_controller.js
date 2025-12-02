@@ -1,5 +1,5 @@
-// Nel file: ./controllers/cittadinoController.js (Esempio)
-import { Cittadino } from '../models/cittadino';
+// Nel file: ./controllers/cittadinoController.js
+import { Cittadino } from '../models/cittadino.js';
 
 export const loginCittadino = async (req,res) => {
     try{    const {email,password} = req.body;

@@ -1,7 +1,10 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-const CategoriaIniziativa = new mongoose.Schema({
-    nome : {type : String, trim : true, required : [true, 'Nome categoria obbligatorio'] }
+const categoriaIniziativaSchema = new mongoose.Schema({
+    nome : {type : String,
+            trim : true,
+            required : [true, 'Nome categoria obbligatorio'] 
+        }
 });
 
-module.exports = mongoose.model('categoria_iniziativa', CategoriaIniziativa);
+export const CategoriaIniziativa = mongoose.model('categoria_iniziativa', categoriaIniziativaSchema);

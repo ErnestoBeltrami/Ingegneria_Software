@@ -2,10 +2,11 @@
 
 import { Router } from "express";
 import passport from "../config/passport.js";
-import jwt from 'jsonwebtoken'; // ⚠️ NECESSARIO per firmare il JWT
-import { Cittadino } from '../models/Cittadino.js'; // ⚠️ NECESSARIO per interagire con il DB
+import jwt from "jsonwebtoken";
+import { Cittadino } from "../models/cittadino.js";
 import { getCittadinoData } from "../controllers/cittadino_controller.js";
-import {protect} from '../middleware/auth_middleware.js';
+import { protect } from "../middleware/auth_middleware.js";
+
 const router = Router();
 router.get(
   "/google",

@@ -1,7 +1,7 @@
 // Nel file: ./model/Sondaggio.js
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-const Sondaggio = new mongoose.Schema({ // Rinominato a SondaggioSchema per convenzione
+const sondaggioSchema = new mongoose.Schema({
 
     stato: {
         type: String,
@@ -50,4 +50,4 @@ const Sondaggio = new mongoose.Schema({ // Rinominato a SondaggioSchema per conv
     timestamps: true // Utile per audit (data creazione)
 });
 
-module.exports = mongoose.model('sondaggio', Sondaggio);
+export const Sondaggio = mongoose.model('sondaggio', sondaggioSchema);

@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-const DettaglioRispostaSchema = new mongoose.Schema({
+const dettaglioRispostaSchema = new mongoose.Schema({
     
     ID_domanda: {
         type: mongoose.Schema.Types.ObjectId,
@@ -18,7 +18,7 @@ const DettaglioRispostaSchema = new mongoose.Schema({
 }, { _id: false }); 
 
 
-const RispostaSondaggio = new mongoose.Schema({
+const rispostaSondaggioSchema = new mongoose.Schema({
 
     ID_cittadino: {
         type: mongoose.Schema.Types.ObjectId,
@@ -34,7 +34,7 @@ const RispostaSondaggio = new mongoose.Schema({
 
     
     dettagliRisposte: {
-        type: [DettaglioRispostaSchema],
+        type: [dettaglioRispostaSchema],
         required: true,
         validate: {
             validator: function(v) { return v && v.length > 0; },
@@ -45,6 +45,6 @@ const RispostaSondaggio = new mongoose.Schema({
 }, {
     timestamps: true 
 });
-RispostaSondaggio.index({ ID_cittadino: 1, ID_sondaggio: 1 }, { unique: true });
+rispostaSondaggioSchema.index({ ID_cittadino: 1, ID_sondaggio: 1 }, { unique: true });
 
-module.exports = mongoose.model('risposta_sondaggio', RispostaSondaggio);
+export const RispostaSondaggio = mongoose.model('risposta_sondaggio', rispostaSondaggioSchema);

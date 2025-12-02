@@ -1,7 +1,7 @@
-// Nel file: ./model/Sondaggio.js
-const mongoose = require('mongoose');
+// Nel file: ./model/RispostaVotazione.js
+import mongoose from 'mongoose';
 
-const RispostaVotazione = new mongoose.Schema({ // Rinominato a SondaggioSchema per convenzione
+const rispostaVotazioneSchema = new mongoose.Schema({
 
     ID_opzione : { 
         type: mongoose.Schema.Types.ObjectId,
@@ -23,6 +23,6 @@ const RispostaVotazione = new mongoose.Schema({ // Rinominato a SondaggioSchema 
 }, {
     timestamps: true // Utile per audit (data creazione)
 });
-RispostaVotazione.index({ ID_cittadino: 1, ID_votazione: 1 }, { unique: true });
+rispostaVotazioneSchema.index({ ID_cittadino: 1, ID_votazione: 1 }, { unique: true });
 
-module.exports = mongoose.model('risposta_votazione', RispostaVotazione);
+export const RispostaVotazione = mongoose.model('risposta_votazione', rispostaVotazioneSchema);

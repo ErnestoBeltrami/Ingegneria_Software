@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-const VotoIniziativa = new mongoose.Schema({
+const votoIniziativaSchema = new mongoose.Schema({
     ID_iniziativa : {
         type : mongoose.Schema.Types.ObjectId,
         ref : 'Iniziativa',
@@ -18,6 +18,6 @@ const VotoIniziativa = new mongoose.Schema({
     timestamps : true
 });
 
-VotoIniziativa.index({ ID_cittadino: 1, ID_iniziativa: 1 }, { unique: true });
+votoIniziativaSchema.index({ ID_cittadino: 1, ID_iniziativa: 1 }, { unique: true });
 
-module.exports = mongoose.model('iniziativa', Iniziativa);
+export const VotoIniziativa = mongoose.model('VotoIniziativa', votoIniziativaSchema);

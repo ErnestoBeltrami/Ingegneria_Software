@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-const Votazione = new mongoose.Schema({ 
+const votazioneSchema = new mongoose.Schema({ 
 
     stato: {
         type: String,
@@ -62,4 +62,4 @@ const Votazione = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('votazione', Votazione);
+export const Votazione = mongoose.model('votazione', votazioneSchema);

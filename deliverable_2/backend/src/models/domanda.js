@@ -1,8 +1,8 @@
 // Nel file: ./model/Domanda.js
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 // Sotto-schema per le Opzioni (sono semplici stringhe in questo caso)
-const OpzioneSchema = new mongoose.Schema({
+const opzioneSchema = new mongoose.Schema({
     testo: {
         type: String,
         required: true,
@@ -10,7 +10,7 @@ const OpzioneSchema = new mongoose.Schema({
     }
 }, { _id: false }); // Non è necessario un ID per ogni singola opzione di testo
 
-const Domanda = new mongoose.Schema({ 
+const domandaSchema = new mongoose.Schema({ 
     
     // Riferimenti (opzionali per permettere l'associazione a Sondaggio o Votazione)
     id_sondaggio: {
@@ -27,7 +27,7 @@ const Domanda = new mongoose.Schema({
     
     // Contenuto critico: le opzioni di risposta
     opzioni: {
-        type: [OpzioneSchema],
+        type: [opzioneSchema],
         required: [true, 'La domanda deve avere opzioni di risposta.'],
         validate: {
             validator: function(v) { return v && v.length >= 2; },
@@ -46,4 +46,4 @@ const Domanda = new mongoose.Schema({
     timestamps: true 
 });
 
-module.exports = mongoose.model('domanda', Domanda);
+export const Domanda = mongoose.model('domanda', domandaSchema);
