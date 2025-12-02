@@ -1,7 +1,7 @@
 // Nel file: ./model/NomeModello.js
-const mongoose = require('mongoose'); // Carica Mongoose (necessario)
+import mongoose from 'mongoose'; // Carica Mongoose (necessario)
 
-const Cittadino = new mongoose.Schema({
+const cittadinoSchema = new mongoose.Schema({
     nome : {
         type : String,
         trim : true,
@@ -68,4 +68,4 @@ Cittadino.methods.matchPassword = async function(enteredPassword) {
 */
 
 
-module.exports = mongoose.model('cittadino', Cittadino); // Esporta il modello
+export const Cittadino = mongoose.model('Cittadino', cittadinoSchema);

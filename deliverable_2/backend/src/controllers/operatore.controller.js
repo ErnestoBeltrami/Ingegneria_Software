@@ -1,4 +1,5 @@
-import {Operatore} from '../models/operatore';
+import jwt from 'jsonwebtoken';
+import { Operatore } from '../models/operatore.js';
 
 const generateToken = (id) => {
     return jwt.sign({ id, ruolo: 'operatore' }, process.env.JWT_SECRET, { expiresIn: '1d' });
@@ -28,7 +29,7 @@ export const getByCredentials = async  (req,res) => {
             });
         }
     }
-    catch(errore){
+    catch(error){
         res.status(500).json({
             message: "Internal server error",
             error: error.message
@@ -44,26 +45,28 @@ export const getOperatoreData = async (req,res) => {
         });
     }
 
-    try{const operatore = await Operatore.findById(userFromMiddleware._id);
+    try
+    {
+        const operatore = await Operatore.findById(userFromMiddleware._id);
         if(operatore){
             const datiPubblici = {
                 id : operatore._id,
                 username : operatore.username,
                 nome : operatore.nome,
                 cognome : operatore.cognome
-            }
+            };
             return res.status(200).json({
                 message : "Operatore trovato con successo",
                 data : datiPubblici
             });
-        }
-        else{
+        } else {
             return res.status(404).json({
                 message: "Operatore non trovato nel database"
             });
         }
     }
-    catch(error){
+    catch(error)
+    {
         console.error("Errore nel recupero dati operatore:", error);
         return res.status(500).json({
             message: "Errore interno del server durante il recupero dei dati.",
