@@ -1,7 +1,7 @@
 // Nel file: ./middleware/authMiddleware.js
 import jwt from 'jsonwebtoken';
-import { Cittadino } from '../models/Cittadino.js';
-import { Operatore } from '../models/Operatore.js'; // Assumi che questo sia il tuo modello Operatore
+import { Cittadino } from '../models/cittadino.js';
+import { Operatore } from '../models/operatore.js'; // Assumi che questo sia il tuo modello Operatore
 export const protect = async (req, res, next) => {
     let token;
 
