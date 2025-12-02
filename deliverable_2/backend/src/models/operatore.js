@@ -1,8 +1,7 @@
-// Nel file: ./model/OperatoreComune.js
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs'); // ⚠️ Importa bcrypt
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 
-const Operatore = new mongoose.Schema({
+const operatoreSchema = new mongoose.Schema({
     password: { // Rinominato per convenzione
         type: String,
         required: [true, 'Password obbligatoria'],
@@ -28,7 +27,7 @@ const Operatore = new mongoose.Schema({
     }
 });
 
-Operatore.pre('save', async function(next) {
+operatoreSchema.pre('save', async function(next) {
     if (!this.isModified('password')) { 
         return next();
     }
@@ -39,9 +38,8 @@ Operatore.pre('save', async function(next) {
     next();
 });
 
-Operatore.methods.matchPassword = async function(enteredPassword) {
+operatoreSchema.methods.matchPassword = async function(enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
 
-
-module.exports = mongoose.model('Operatore', Operatore); 
+export const Operatore = mongoose.model('Operatore', operatoreSchema);
