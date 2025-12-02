@@ -5,6 +5,14 @@ Content-Type: application/json
     "email": "feng@test.com",
     "password": "whatthefeng"
 }
+###
+POST http://localhost:3000/api/operatore/login
+Content-Type: application/json
+
+{
+    "username" : "aa",
+    "pass" : "bb"
+}
 
 ###
 POST http://localhost:3000/api/cittadino/register 
