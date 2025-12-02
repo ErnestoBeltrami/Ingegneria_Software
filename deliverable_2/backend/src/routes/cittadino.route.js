@@ -3,7 +3,7 @@
 import { Router } from "express";
 import passport from "../config/passport.js";
 import jwt from 'jsonwebtoken'; // ⚠️ NECESSARIO per firmare il JWT
-import { Cittadino } from '../models/Cittadino.js'; // ⚠️ NECESSARIO per interagire con il DB
+import {Cittadino} from '../models/cittadino.js'; // ⚠️ NECESSARIO per interagire con il DB
 import { getCittadinoData } from "../controllers/cittadino_controller.js";
 import {protect} from '../middleware/auth_middleware.js';
 const router = Router();
@@ -48,7 +48,7 @@ router.post('/complete-profile', async (req, res) => {
     }
 
     try {
-        const cittadino = await Cittadino.findById(cittadinoId);
+        const cittadino = await Cittadino.findOne({ID_univoco_esterno : cittadinoId});
 
         if (!cittadino) {
             return res.status(404).json({ error: 'Cittadino non trovato.' });

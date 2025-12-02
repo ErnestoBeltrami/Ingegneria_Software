@@ -2,7 +2,7 @@ import "./env.js";
 import crypto from "crypto";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import { Cittadino } from "../models/users.js";
+import { Cittadino } from "../models/cittadino.js";
 
 const sanitize = (value = "") => value.toLowerCase().replace(/[^a-z0-9]/g, "");
 
@@ -54,8 +54,7 @@ if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
               profiloCompleto : false
             });
           } else {
-            user.googleId = profile.id;
-            user.authProvider = "google";
+            user.ID_univoco_esterno = profile.id;
             user.loggedIn = true;
             await user.save();
           }

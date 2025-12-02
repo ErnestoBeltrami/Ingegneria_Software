@@ -5,7 +5,7 @@ import passport from "./config/passport.js";
 import userRouter from "./routes/user.route.js";
 import authRouter from "./routes/auth.route.js";
 import operatoreRouter from "./routes/operatore.route.js";
-
+import cittadinoAuth from "./routes/cittadino.route.js";
 const app = express();
 
 app.get("/health", (_req, res) => {
@@ -29,8 +29,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Routes declaration
-app.use("/auth", authRouter);
+//app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/operatore",operatoreRouter);
-
+app.use("/auth",cittadinoAuth);
 export default app;

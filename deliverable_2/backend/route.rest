@@ -6,6 +6,18 @@ Content-Type: application/json
     "password": "whatthefeng"
 }
 ###
+POST http://localhost:3000/auth/complete-profile
+Content-Type: application/json
+
+{
+    "cittadinoId" : "692eff456fc2bff21b0373e1",
+    "nome" : "erni",
+    "cognome" : "b",
+    "eta":20,
+    "genere":"Uomo",
+    "categoria" : "Studente"
+}
+###
 POST http://localhost:3000/operatore/login
 Content-Type: application/json
 
