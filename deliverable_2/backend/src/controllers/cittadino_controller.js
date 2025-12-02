@@ -29,7 +29,8 @@ export const loginCittadino = async (req,res) => {
 
 export const registerCittadino = async (req,res) => {
     try
-    {    const {nome,cognome,age,genere,categoria,email,password} = req.body;
+    {    
+        const { nome,cognome,age,genere,categoria,email,password } = req.body;
 
         if (!nome || !cognome || !email || !password || !age || !genere || !categoria ){
                 return res.status(400).json({

@@ -20,6 +20,8 @@ Content-Type: application/json
     "password" : "12345"
 }
 
+###
+
 GET http://localhost:3000/users/getAll
 Content-Type: application/json 
 
