@@ -2,7 +2,6 @@ import "./config/env.js";
 import express from "express";
 import session from "express-session";
 import passport from "./config/passport.js";
-import userRouter from "./routes/user.route.js";
 import authRouter from "./routes/auth.route.js";
 import operatoreRouter from "./routes/operatore.route.js";
 
@@ -30,7 +29,6 @@ app.use(passport.session());
 
 // Routes declaration
 app.use("/auth", authRouter);
-app.use("/users", userRouter);
 app.use("/operatore",operatoreRouter);
 
 export default app;

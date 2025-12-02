@@ -2,7 +2,6 @@ import "./env.js";
 import crypto from "crypto";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import { User } from "../models/users.js";
 
 const sanitize = (value = "") => value.toLowerCase().replace(/[^a-z0-9]/g, "");
 
