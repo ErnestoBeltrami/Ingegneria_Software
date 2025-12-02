@@ -1,5 +1,4 @@
 // Nel file: ./routes/authRoutes.js
-
 import { Router } from "express";
 import passport from "../config/passport.js";
 import jwt from "jsonwebtoken";

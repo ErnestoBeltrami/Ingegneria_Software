@@ -2,7 +2,6 @@ import "./config/env.js";
 import express from "express";
 import session from "express-session";
 import passport from "./config/passport.js";
-import authRouter from "./routes/auth.route.js";
 import operatoreRouter from "./routes/operatore.route.js";
 import cittadinoAuth from "./routes/cittadino.route.js";
 const app = express();
@@ -28,7 +27,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Routes declaration
-app.use("/auth", authRouter);
 app.use("/operatore",operatoreRouter);
 app.use("/auth",cittadinoAuth);
 export default app;
