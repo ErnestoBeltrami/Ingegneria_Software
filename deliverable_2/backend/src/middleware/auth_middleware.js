@@ -2,7 +2,6 @@
 import jwt from 'jsonwebtoken';
 import { Cittadino } from '../models/Cittadino.js';
 import { Operatore } from '../models/Operatore.js'; // Assumi che questo sia il tuo modello Operatore
-
 export const protect = async (req, res, next) => {
     let token;
 
@@ -20,7 +19,7 @@ export const protect = async (req, res, next) => {
             } else {
                 return res.status(401).json({ message: 'Token non valido, ruolo sconosciuto' });
             }
-
+            
             req.user = await UserModel.findById(decoded.id).select('-password'); 
 
             if (!req.user) {

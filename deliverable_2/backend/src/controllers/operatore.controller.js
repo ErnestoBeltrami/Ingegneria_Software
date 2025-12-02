@@ -1,4 +1,4 @@
-import {OperatoreComune} from '../models/operatore';
+import {Operatore} from '../models/operatore';
 
 const generateToken = (id) => {
     return jwt.sign({ id, ruolo: 'operatore' }, process.env.JWT_SECRET, { expiresIn: '1d' });
@@ -7,7 +7,7 @@ const generateToken = (id) => {
 export const getByCredentials = async  (req,res) => {
     try{
         const {username, password_inserita} = req.body;
-        const operatore = await OperatoreComune.findOne({username}).select('+password');
+        const operatore = await Operatore.findOne({username}).select('+password');
         
         if(operatore && (await operatore.matchPassword(password_inserita))){
             
@@ -44,7 +44,7 @@ export const getOperatoreData = async (req,res) => {
         });
     }
 
-    try{const operatore = await OperatoreComune.findById(userFromMiddleware._id);
+    try{const operatore = await Operatore.findById(userFromMiddleware._id);
         if(operatore){
             const datiPubblici = {
                 id : operatore._id,

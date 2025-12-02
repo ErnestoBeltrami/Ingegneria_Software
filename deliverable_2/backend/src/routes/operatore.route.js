@@ -11,9 +11,9 @@ import {
 const router = Router();
 
 //POST METHODS
-router.post('/operatore/login',getByCredentials);
+router.post('/login',getByCredentials);
 
 //GET METHODS
-router.get('/operatore/profile',protect,getOperatoreData);
+router.get('/profile',protect,getOperatoreData);
 
 export default router;

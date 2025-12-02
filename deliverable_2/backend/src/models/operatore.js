@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs'); // ⚠️ Importa bcrypt
 
-const OperatoreComune = new mongoose.Schema({
+const Operatore = new mongoose.Schema({
     password: { // Rinominato per convenzione
         type: String,
         required: [true, 'Password obbligatoria'],
@@ -28,7 +28,7 @@ const OperatoreComune = new mongoose.Schema({
     }
 });
 
-OperatoreComune.pre('save', async function(next) {
+Operatore.pre('save', async function(next) {
     if (!this.isModified('password')) { 
         return next();
     }
@@ -39,9 +39,9 @@ OperatoreComune.pre('save', async function(next) {
     next();
 });
 
-OperatoreComune.methods.matchPassword = async function(enteredPassword) {
+Operatore.methods.matchPassword = async function(enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
 
 
-module.exports = mongoose.model('OperatoreComune', OperatoreComune); 
+module.exports = mongoose.model('Operatore', Operatore); 
