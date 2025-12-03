@@ -1,10 +1,3 @@
-POST http://localhost:3000/users/login
-Content-Type: application/json
-
-{
-    "email": "feng@test.com",
-    "password": "whatthefeng"
-}
 ###
 POST http://localhost:3000/auth/complete-profile
 Content-Type: application/json
@@ -20,13 +13,25 @@ Content-Type: application/json
 ###
 GET http://localhost:3000/auth/cittadino/profile
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmY0ZGYzMGM0YjVkMjA4M2ExYzNmMSIsInJ1b2xvIjoiY2l0dGFkaW5vIiwiaWF0IjoxNzY0NzA3OTk2LCJleHAiOjE3NjUzMTI3OTZ9.j7_kynA7KJqkDWGHWqFeINRs9s1A-RShQiVfNllIiNk
+
+### Registrazione operatore
+POST http://localhost:3000/operatore/register
+Content-Type: application/json
+
+{
+  "username": "aa",
+  "password": "bb",
+  "nome": "Mario",
+  "cognome": "Rossi"
+}
+
 ###
 POST http://localhost:3000/operatore/login
 Content-Type: application/json
 
 {
     "username" : "aa",
-    "pass" : "bb"
+    "password_inserita" : "bb"
 }
 
 ###
@@ -44,52 +49,6 @@ Content-Type: application/json
 }
 
 ###
-
-GET http://localhost:3000/users/getAll
-Content-Type: application/json 
-
-### 
-
-GET http://localhost:3000/users/getById/69271f4f9e5aa630a457bfc8
-Content-Type: application/json 
-
-###
-
-GET http://localhost:3000/users/getByEmail/feng@test.com
-Content-Type: application/json 
-
-####
-
-GET http://localhost:3000/users/getByUsername/feng
-Content-Type: application/json 
-
-### 
-GET http://localhost:3000/users/getFiltered?loggedIn=true
-Content-Type: application/json 
-
-###
-
-GET http://localhost:3000/users/search?query=fe
-Content-Type: application/json
-
-###
-
-GET http://localhost:3000/users/me
-Content-Type: application/json
-x-user-id: 69271f4f9e5aa630a457bfc8
-
-###
-
-GET http://localhost:3000/users/check-username/feng
-Content-Type: application/json
-
-###
-
-GET http://localhost:3000/users/check-email/feng@test.com
-Content-Type: application/json
-
-###
-
 GET http://localhost:3000/auth/status
 Content-Type: application/json
 Cookie: connect.sid=s%3APp4t4n0yfQXU67TNikmXO4ByPpvfxDy3.ArJwGYGMwvrcvJ1sDGYBLMQ88jk9bI7wmsw8E8upOZE
@@ -98,3 +57,24 @@ Cookie: connect.sid=s%3APp4t4n0yfQXU67TNikmXO4ByPpvfxDy3.ArJwGYGMwvrcvJ1sDGYBLMQ
 POST http://localhost:3000/auth/logout
 Content-Type: application/json
 Cookie: connect.sid=s%3APp4t4n0yfQXU67TNikmXO4ByPpvfxDy3.ArJwGYGMwvrcvJ1sDGYBLMQ88jk9bI7wmsw8E8upOZE
+
+### Creazione votazione (operatore autenticato)
+POST http://localhost:3000/votazioni
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzAzZDU0ZjI5MDYzZGEwZGFiNDBmMyIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0NzY5NTM1LCJleHAiOjE3NjQ4NTU5MzV9.mKzI0mXZbs57qG2LvChvUllPeSzDy9LH_OKuPGo3qXg
+
+{
+  "titoloVotazione": "Votazione di test",
+  "descrizione": "Descrizione breve di test",
+  "data_inizio": "2025-12-10T09:00:00.000Z",
+  "data_fine": "2025-12-20T18:00:00.000Z",
+  "data_discussione": "2025-12-08T18:00:00.000Z",
+  "domanda": {
+    "titolo": "Sei favorevole alla proposta X?",
+    "tipo": "risposta_singola",
+    "opzioni": [
+      { "testo": "Sì" },
+      { "testo": "No" }
+    ]
+  }
+}
