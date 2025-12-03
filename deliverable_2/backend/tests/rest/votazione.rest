@@ -1,0 +1,58 @@
+### Creazione votazione (operatore autenticato)
+POST http://localhost:3000/votazioni
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzAzZDU0ZjI5MDYzZGEwZGFiNDBmMyIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0NzY5NTM1LCJleHAiOjE3NjQ4NTU5MzV9.mKzI0mXZbs57qG2LvChvUllPeSzDy9LH_OKuPGo3qXg
+
+{
+  "titoloVotazione": "Votazione di test",
+  "descrizione": "Descrizione breve di test",
+  "data_inizio": "2025-12-10T09:00:00.000Z",
+  "data_fine": "2025-12-20T18:00:00.000Z",
+  "data_discussione": "2025-12-08T18:00:00.000Z",
+  "domanda": {
+    "titolo": "Sei favorevole alla proposta X?",
+    "tipo": "risposta_singola",
+    "opzioni": [
+      { "testo": "Sì" },
+      { "testo": "No" }
+    ]
+  }
+}
+
+###
+### Lista votazioni dell'operatore
+GET http://localhost:3000/votazioni
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzAzZDU0ZjI5MDYzZGEwZGFiNDBmMyIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0NzY5NTM1LCJleHAiOjE3NjQ4NTU5MzV9.mKzI0mXZbs57qG2LvChvUllPeSzDy9LH_OKuPGo3qXg
+
+###
+### Dettaglio votazione
+GET http://localhost:3000/votazioni/69303f3e1ea4abc6e26b36b8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzAzZDU0ZjI5MDYzZGEwZGFiNDBmMyIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0NzY5NTM1LCJleHAiOjE3NjQ4NTU5MzV9.mKzI0mXZbs57qG2LvChvUllPeSzDy9LH_OKuPGo3qXg
+
+###
+### Modifica votazione (solo stato "bozza")
+PATCH http://localhost:3000/votazioni/69303f3e1ea4abc6e26b36b8
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzAzZDU0ZjI5MDYzZGEwZGFiNDBmMyIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0NzY5NTM1LCJleHAiOjE3NjQ4NTU5MzV9.mKzI0mXZbs57qG2LvChvUllPeSzDy9LH_OKuPGo3qXg
+
+{
+  "titolo": "Votazione modificata",
+  "descrizione": "Descrizione aggiornata"
+}
+
+###
+### Eliminazione votazione (solo stato "bozza")
+DELETE http://localhost:3000/votazioni/69303f3e1ea4abc6e26b36b8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzAzZDU0ZjI5MDYzZGEwZGFiNDBmMyIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0NzY5NTM1LCJleHAiOjE3NjQ4NTU5MzV9.mKzI0mXZbs57qG2LvChvUllPeSzDy9LH_OKuPGo3qXg
+
+###
+### Pubblica votazione (bozza -> attivo)
+PATCH http://localhost:3000/votazioni/69303f3e1ea4abc6e26b36b8/publish
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzAzZDU0ZjI5MDYzZGEwZGFiNDBmMyIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0NzY5NTM1LCJleHAiOjE3NjQ4NTU5MzV9.mKzI0mXZbs57qG2LvChvUllPeSzDy9LH_OKuPGo3qXg
+
+###
+### Archivia votazione (concluso -> archiviato)
+PATCH http://localhost:3000/votazioni/69303f3e1ea4abc6e26b36b8/archive
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzAzZDU0ZjI5MDYzZGEwZGFiNDBmMyIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0NzY5NTM1LCJleHAiOjE3NjQ4NTU5MzV9.mKzI0mXZbs57qG2LvChvUllPeSzDy9LH_OKuPGo3qXg
+
+

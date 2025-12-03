@@ -1,0 +1,22 @@
+### Registrazione operatore
+POST http://localhost:3000/operatore/register
+Content-Type: application/json
+
+{
+  "username": "aa",
+  "password": "bb",
+  "nome": "Mario",
+  "cognome": "Rossi"
+}
+
+###
+### Login operatore
+POST http://localhost:3000/operatore/login
+Content-Type: application/json
+
+{
+  "username": "aa",
+  "password_inserita": "bb"
+}
+
+
