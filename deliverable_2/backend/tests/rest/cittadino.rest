@@ -1,0 +1,13 @@
+### Registrazione cittadino
+POST http://localhost:3000/cittadino/register 
+Content-Type: application/json                    
+
+{
+    "nome" : "aaaa",
+    "cognome" : "bbbb",
+    "age" : 100,
+    "genere" : "Uomo",
+    "categoria" : "Lavoratore",
+    "email" : "abc@gmail.com",
+    "password" : "12345"
+}
