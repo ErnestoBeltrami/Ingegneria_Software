@@ -27,15 +27,14 @@ const operatoreSchema = new mongoose.Schema({
     }
 });
 
-operatoreSchema.pre('save', async function(next) {
+// Hash della password prima del salvataggio
+operatoreSchema.pre('save', async function() {
     if (!this.isModified('password')) { 
-        return next();
+        return;
     }
-    const salt = await bcrypt.genSalt(10);
 
+    const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
-    
-    next();
 });
 
 operatoreSchema.methods.matchPassword = async function(enteredPassword) {

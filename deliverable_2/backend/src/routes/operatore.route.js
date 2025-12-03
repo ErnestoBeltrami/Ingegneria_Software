@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { 
     getByCredentials,
-    getOperatoreData
-
- } from '../controllers/operatore.controller.js'; // ⚠️ NECESSARIO per interagire con il DB
+    getOperatoreData,
+    createOperatore
+} from '../controllers/operatore.controller.js'; // ⚠️ NECESSARIO per interagire con il DB
 import { 
     protect    
 } from '../middleware/auth_middleware.js'
@@ -11,7 +11,8 @@ import {
 const router = Router();
 
 //POST METHODS
-router.post('/login',getByCredentials);
+router.post('/login', getByCredentials);
+router.post('/register', createOperatore);
 
 //GET METHODS
 router.get('/profile',protect,getOperatoreData);

@@ -1,6 +1,9 @@
 import {Operatore} from '../models/operatore.js';
+import jwt from 'jsonwebtoken';
+import '../config/env.js';
 
 const generateToken = (id) => {
+    console.log('JWT_SECRET in generateToken:', process.env.JWT_SECRET);
     return jwt.sign({ id, ruolo: 'operatore' }, process.env.JWT_SECRET, { expiresIn: '1d' });
 };
 
@@ -69,6 +72,51 @@ export const getOperatoreData = async (req,res) => {
         console.error("Errore nel recupero dati operatore:", error);
         return res.status(500).json({
             message: "Errore interno del server durante il recupero dei dati.",
+            error: error.message
+        });
+    }
+} 
+
+// Registrazione / creazione di un nuovo operatore
+export const createOperatore = async (req, res) => {
+    try {
+        const { username, password, nome, cognome } = req.body;
+
+        if (!username || !password || !nome || !cognome) {
+            return res.status(400).json({
+                message: "username, password, nome e cognome sono obbligatori."
+            });
+        }
+
+        const esistente = await Operatore.findOne({ username });
+        if (esistente) {
+            return res.status(409).json({
+                message: "Username già in uso."
+            });
+        }
+
+        const nuovoOperatore = await Operatore.create({
+            username,
+            password,
+            nome,
+            cognome
+        });
+
+        const datiPubblici = {
+            id: nuovoOperatore._id,
+            username: nuovoOperatore.username,
+            nome: nuovoOperatore.nome,
+            cognome: nuovoOperatore.cognome
+        };
+
+        return res.status(201).json({
+            message: "Operatore creato con successo.",
+            operatore: datiPubblici
+        });
+    } catch (error) {
+        console.error("Errore nella creazione operatore:", error);
+        return res.status(500).json({
+            message: "Errore interno del server durante la creazione dell'operatore.",
             error: error.message
         });
     }
