@@ -80,6 +80,15 @@ export const getOperatoreData = async (req,res) => {
 // Registrazione / creazione di un nuovo operatore
 export const createOperatore = async (req, res) => {
     try {
+        const userFromMiddleware = req.user;
+
+        // Controllo: solo root può creare nuovi operatori
+        if (!userFromMiddleware || !userFromMiddleware.isRoot) {
+            return res.status(403).json({
+                message: "Solo l'utente root può creare nuovi operatori."
+            });
+        }
+
         const { username, password, nome, cognome } = req.body;
 
         if (!username || !password || !nome || !cognome) {
@@ -99,7 +108,8 @@ export const createOperatore = async (req, res) => {
             username,
             password,
             nome,
-            cognome
+            cognome,
+            isRoot: false // nessuno può creare un altro root
         });
 
         const datiPubblici = {
@@ -121,3 +131,44 @@ export const createOperatore = async (req, res) => {
         });
     }
 }
+
+export const promoteOperatoreToRoot = async (req, res) => {
+    try {
+        const userFromMiddleware = req.user;
+        const { operatoreId } = req.params;
+
+        // Solo root può promuovere
+        if (!userFromMiddleware?.isRoot) {
+            return res.status(403).json({ message: "Solo l'utente root può promuovere operatori." });
+        }
+
+        const operatore = await Operatore.findById(operatoreId);
+
+        if (!operatore) {
+            return res.status(404).json({ message: "Operatore non trovato." });
+        }
+
+        if (operatore.isRoot) {
+            return res.status(400).json({ message: "Questo operatore è già root." });
+        }
+
+        operatore.isRoot = true;
+        await operatore.save();
+
+        return res.status(200).json({
+            message: "Operatore promosso a root con successo.",
+            operatore: {
+                id: operatore._id,
+                username: operatore.username,
+                isRoot: operatore.isRoot
+            }
+        });
+
+    } catch (error) {
+        console.error("Errore nella promozione dell'operatore:", error);
+        return res.status(500).json({
+            message: "Errore interno del server.",
+            error: error.message
+        });
+    }
+};

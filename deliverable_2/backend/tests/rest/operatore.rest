@@ -1,22 +1,25 @@
 ### Registrazione operatore
 POST http://localhost:3000/operatore/register
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzE5OGExOGNmMDkwODI3OWQzMDNjOSIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0ODU4MDIxLCJleHAiOjE3NjQ5NDQ0MjF9.1ul92lhxadyGHNg7CotiGmNWWorzWantuRObbeEf7Fk
 Content-Type: application/json
 
 {
-  "username": "aa",
+  "username": "test",
   "password": "bb",
   "nome": "Mario",
   "cognome": "Rossi"
 }
 
-###
 ### Login operatore
 POST http://localhost:3000/operatore/login
 Content-Type: application/json
 
 {
-  "username": "aa",
-  "password_inserita": "bb"
+  "username": "root",
+  "password_inserita": "rootPassword123"
 }
 
-
+### Promozione operatore a root
+PATCH http://localhost:3000/operatore/69319b88461bcd4a521b893e/promote
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzE5OGExOGNmMDkwODI3OWQzMDNjOSIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0ODU4MDIxLCJleHAiOjE3NjQ5NDQ0MjF9.1ul92lhxadyGHNg7CotiGmNWWorzWantuRObbeEf7Fk
+Content-Type: application/json
