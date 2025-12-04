@@ -24,6 +24,10 @@ const operatoreSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true
+    },
+    isRoot: {
+        type: Boolean,
+        default: false
     }
 });
 

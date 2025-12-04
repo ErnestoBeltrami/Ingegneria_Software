@@ -1,6 +1,7 @@
 import "./config/env.js";
 import connectDB from "./config/database.js";
 import app from "./app.js";
+import { createRootOperatore } from "./utils/seedRoot.js"
 
 const startServer = async () => {
     try {
@@ -10,6 +11,8 @@ const startServer = async () => {
             console.error("Express app error", error);
             throw error;
         });
+
+        await createRootOperatore();
 
         const port = process.env.PORT || 8000;
         app.listen(port, () => {
