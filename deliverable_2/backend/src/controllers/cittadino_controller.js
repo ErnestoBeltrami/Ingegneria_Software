@@ -1,6 +1,7 @@
 // Nel file: ./controllers/cittadinoController.js
 import { Cittadino } from '../models/cittadino.js';
 import {RispostaVotazione} from '../models/risposta_votazione.js';
+import mongoose from 'mongoose';
 
 export const getCittadinoData = async (req, res) => {
     try {

@@ -1,6 +1,7 @@
 import { Votazione } from '../models/votazione.js';
 import { Domanda } from '../models/domanda.js';
-
+import { RispostaVotazione } from '../models/risposta_votazione.js';
+import mongoose from 'mongoose';
 // POST: Creazione di una nuova votazione da parte di un operatore autenticato
 export const createVotazione = async (req, res) => {
     try {
@@ -284,6 +285,83 @@ export const archiveVotazione = async (req, res) => {
     }
 };
 
-export const getRiepilogoSintetico = async (req,res) =>{
-    
-}
+export const getRiepilogoSintetico = async (req, res) => {
+    const votazioneId = req.params.id;
+
+    try {
+        const objectIdVotazione = new mongoose.Types.ObjectId(votazioneId);
+
+        const votazione = await Votazione.findById(objectIdVotazione).populate('ID_domanda');
+
+        if (!votazione || !votazione.ID_domanda) {
+            return res.status(404).json({ message: 'Votazione non trovata o domanda collegata mancante.' });
+        }
+        
+        const domanda = votazione.ID_domanda;
+
+        // 2. Pipeline di Aggregazione: Conversione esplicita e Conteggio
+        const risultatiVoto = await RispostaVotazione.aggregate([
+            { $match: { ID_votazione: objectIdVotazione } }, 
+            
+            // FILTRO DI ROBUSTEZZA: Esclude ID nulli
+            { $match: { ID_opzione: { $ne: null, $exists: true } } }, 
+            
+            // 🚨 CONVERSIONE AGGREGATION: Proietta l'ID Opzione come Stringa
+            {
+                $project: {
+                    ID_opzione_str: { $toString: "$ID_opzione" },
+                    _id: 0, // Rimuove l'ID originale del documento RispostaVotazione
+                }
+            },
+            
+            // Raggruppa i documenti (voti) per l'ID dell'opzione convertito
+            {
+                $group: {
+                    _id: "$ID_opzione_str", // Ora il raggruppamento avviene sulla STRINGA
+                    conteggio: { $sum: 1 } 
+                }
+            }
+        ]);
+        
+        const totaleVoti = risultatiVoto.reduce((sum, result) => sum + result.conteggio, 0);
+
+        // 4. Mappa, Unisce e Calcola le Percentuali
+        const riepilogoFinale = domanda.opzioni.map(opzione => {
+            
+            // Ottiene l'ID dell'opzione come stringa per il confronto
+            const opzioneIdCorrente = opzione._id.toString(); 
+
+            // Cerca il risultato nell'array aggregato (il cui _id è ora garantito essere una stringa)
+            const risultato = risultatiVoto.find(r => r._id === opzioneIdCorrente); 
+            
+            const conteggio = risultato ? risultato.conteggio : 0;
+            
+            const percentuale = totaleVoti > 0 ? (conteggio / totaleVoti) * 100 : 0;
+
+            return {
+                opzioneId: opzione._id,
+                testoOpzione: opzione.testo,
+                voti: conteggio,
+                percentuale: parseFloat(percentuale.toFixed(2))
+            };
+        });
+
+        return res.status(200).json({
+            message: 'Riepilogo sintetico recuperato.',
+            votazione: votazione.titolo,
+            domanda: domanda.titolo,
+            totaleVoti: totaleVoti,
+            risultati: riepilogoFinale
+        });
+
+    } catch (error) {
+        if (error.name === 'BSONTypeError' || error.name === 'CastError') {
+             return res.status(400).json({ message: 'ID Votazione non valido.', error: error.message });
+        }
+        console.error('Errore nel riepilogo della votazione:', error);
+        return res.status(500).json({
+            message: 'Errore interno del server durante il riepilogo della votazione.',
+            error: error.message
+        });
+    }
+};

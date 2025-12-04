@@ -6,7 +6,8 @@ import {
   updateVotazione,
   deleteVotazione,
   publishVotazione,
-  archiveVotazione
+  archiveVotazione,
+  getRiepilogoSintetico
 } from "../controllers/votazione.controller.js";
 
 import { 
@@ -21,6 +22,9 @@ router.get("/", protect, restrictTo(['operatore']), getVotazioni);
 
 // GET /votazioni/:id - Dettaglio singola votazione
 router.get("/:id", protect,restrictTo(['operatore']), getVotazioneById);
+
+// GET /votazioni/:id - Riepilogo Sintetico votazione
+router.get("/:id/riepilogo",protect,getRiepilogoSintetico);
 
 // POST /votazioni - Creazione di una nuova votazione (solo operatore autenticato)
 router.post("/", protect,restrictTo(['operatore']), createVotazione);
