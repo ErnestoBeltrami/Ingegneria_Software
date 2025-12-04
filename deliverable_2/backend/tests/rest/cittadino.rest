@@ -11,12 +11,13 @@ Content-Type: application/json
     "email" : "abc@gmail.com",
     "password" : "12345"
 }
+
 ###
 POST http://localhost:3000/auth/cittadino/vote/votazione
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmY0ZGYzMGM0YjVkMjA4M2ExYzNmMSIsInJ1b2xvIjoiY2l0dGFkaW5vIiwiaWF0IjoxNzY0ODE2MzQ0LCJleHAiOjE3NjU0MjExNDR9.uiXp4kyrq0bDL8bh5kCP5lQ5UBqzJXe6rAj7EQ5ZR_Q
 Content-Type: application/json
 
 {
-    "votazioneId" : "69303f3e1ea4abc6e26b36b8",
-    "opzioneId" : "693110703e231b5bc1d29f9d"
+    "votazioneId" : "693161843533632454961b87",
+    "opzioneId" : "693161843533632454961b87"
 }

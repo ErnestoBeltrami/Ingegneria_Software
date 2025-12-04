@@ -8,5 +8,5 @@
     5.Ritorno informazioni Operatore ok
     6.API gestione votazioni ok
     %%% TESTATE 
-    7. Votare votazione
-    8. Riepilogo votazione 
+    7. Votare votazione ok
+    8. Riepilogo votazione ok 

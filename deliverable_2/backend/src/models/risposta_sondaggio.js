@@ -47,4 +47,4 @@ const rispostaSondaggioSchema = new mongoose.Schema({
 });
 rispostaSondaggioSchema.index({ ID_cittadino: 1, ID_sondaggio: 1 }, { unique: true });
 
-export const RispostaSondaggio = mongoose.model('risposta_sondaggio', rispostaSondaggioSchema);
+export const RispostaSondaggio = mongoose.model('RispostaSondaggio', rispostaSondaggioSchema);

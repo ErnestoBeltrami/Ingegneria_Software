@@ -1,0 +1,10 @@
+POST http://localhost:3000/iniziative
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmY0ZGYzMGM0YjVkMjA4M2ExYzNmMSIsInJ1b2xvIjoiY2l0dGFkaW5vIiwiaWF0IjoxNzY0ODE2MzQ0LCJleHAiOjE3NjU0MjExNDR9.uiXp4kyrq0bDL8bh5kCP5lQ5UBqzJXe6rAj7EQ5ZR_Q
+Content-Type: application/json
+
+{
+    "ID_categoria": "693171a7171807c1b1324289",
+    "titolo": "Iniziativa di test",
+    "ID_cittadino": "692f0ca7107f1499be494aee",
+    "descrizione": "Please funziona pls"
+}

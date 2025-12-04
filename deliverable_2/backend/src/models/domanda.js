@@ -10,7 +10,7 @@ const opzioneSchema = new mongoose.Schema({
     }
 }, {
         _id: true,
-        minimize: false
+        minimize: false // Mongoose non salva id dei subdocumenti se non impedisci la minimizzazione, yessirski
     }); // Non è necessario un ID per ogni singola opzione di testo
 
 const domandaSchema = new mongoose.Schema({ 
@@ -40,7 +40,7 @@ const domandaSchema = new mongoose.Schema({
     
     tipo: { // Definisce se è possibile una sola scelta o più scelte
         type: String,
-        enum: ['risposta_multipla', 'risposta_singola'], // Usiamo snake_case per consistenza
+        enum: ['risposta_multipla', 'risposta_singola'], // Usiamo snake_case per consistenza R: ok
         default: 'risposta_singola',
         required: [true, 'Tipo domanda obbligatorio.'],
         trim: true

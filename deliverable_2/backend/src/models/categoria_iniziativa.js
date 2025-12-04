@@ -7,4 +7,4 @@ const categoriaIniziativaSchema = new mongoose.Schema({
         }
 });
 
-export const CategoriaIniziativa = mongoose.model('categoria_iniziativa', categoriaIniziativaSchema);
+export const CategoriaIniziativa = mongoose.model('CategoriaIniziativa', categoriaIniziativaSchema);
