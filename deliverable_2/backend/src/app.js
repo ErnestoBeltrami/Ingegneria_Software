@@ -5,6 +5,8 @@ import passport from "./config/passport.js";
 import operatoreRouter from "./routes/operatore.route.js";
 import cittadinoAuth from "./routes/cittadino.route.js";
 import votazioneRouter from "./routes/votazione.route.js";
+import iniziativaRouter from "./routes/iniziativa.route.js";
+import categoriaRouter from "./routes/categoria.route.js";
 const app = express();
 
 app.get("/health", (_req, res) => {
@@ -31,4 +33,7 @@ app.use(passport.session());
 app.use("/operatore", operatoreRouter);
 app.use("/auth", cittadinoAuth);
 app.use("/votazioni", votazioneRouter);
+app.use("/iniziative", iniziativaRouter);
+app.use("/categorie", categoriaRouter);
+
 export default app;
