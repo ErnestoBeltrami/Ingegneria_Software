@@ -1,76 +1,6 @@
 // Nel file: ./controllers/cittadinoController.js
 import { Cittadino } from '../models/cittadino.js';
-
-export const loginCittadino = async (req,res) => {
-    try{    const {email,password} = req.body;
-
-        const cittadino = await Cittadino.findOne({email}).select('+password');
-
-        if(cittadino && (await cittadino.matchPassword(password))){
-            res.json({
-                _id : cittadino._id,
-                email : cittadino.email,
-                token : generateToken(cittadino._id)
-            });
-        
-        }
-        else{
-            res.status(401).json({message : 'Email o password non validi'});
-        }
-    }
-    catch(error){
-        res.status(500).json({ 
-            message: "Internal server error",
-            error: error.message 
-        });
-    }
-
-};
-
-export const registerCittadino = async (req,res) => {
-    try
-    {    const {nome,cognome,age,genere,categoria,email,password} = req.body;
-
-        if (!nome || !cognome || !email || !password || !age || !genere || !categoria ){
-                return res.status(400).json({
-                    message: "Inserire tutti i campi"
-                });
-            }
-
-        const already_existing = await Cittadino.findOne(email);
-        if(already_existing){
-            return res.status(400).json({
-                message : 'Utente già creato'
-            })
-        }
-
-        const cittadino = Cittadino.create({
-            nome,
-            cognome, 
-            age, 
-            genere, 
-            categoria,
-            email : email.toLowerCase(), 
-            password
-        });
-
-        res.status(201).json({
-            message : 'Utente registrato!',
-            user : {
-                id : cittadino._id,
-                email : cittadino.email,
-                nome : cittadino.nome,
-                cognome : cittadino.cognome
-            }
-        });
-    }
-    catch(error){
-        res.status(500).json({ 
-            message: "Internal server error",
-            error: error.message 
-        });
-    }
-};
+import {RispostaVotazione} from '../models/risposta_votazione.js';
 
 export const getCittadinoData = async (req, res) => {
     try {
@@ -116,3 +46,56 @@ export const getCittadinoData = async (req, res) => {
         });
     }
 };
+
+export const answerVote = async (req,res) => {
+    try
+    {
+        const userFromMiddleware = req.user; 
+        
+        if (!userFromMiddleware) {
+            return res.status(404).json({
+                message: "Utente non identificato dal sistema (Internal Error)"
+            });
+        } 
+
+        const opzione_scelta = req.body.opzioneId;
+        const votazione = req.body.votazioneId;
+
+        if(!opzione_scelta){
+            return res.status(400).json({
+                message: "Scegliere almeno un opzione."
+            });
+        }
+
+        const duplicato = await RispostaVotazione.findOne({
+            ID_cittadino : userFromMiddleware._id,
+            ID_votazione : votazione
+        });
+
+        if(duplicato){
+            return res.status(403).json({
+                message : "L'utente ha gia votato questa Votazione."
+            });
+        }
+
+        RispostaVotazione.create({
+            ID_opzione : opzione_scelta,
+            ID_cittadino : userFromMiddleware._id,
+            ID_votazione : votazione
+        });
+
+        return res.status(200).json({
+            message : "Votazione avvenuta con successo."
+        });
+
+    }
+    catch(error)
+    {
+        console.error('Errore nella votazione', error);
+        return res.status(500).json({
+            message: 'Errore interno del server durante la votazione.',
+            error: error.message
+        });
+    }
+}
+

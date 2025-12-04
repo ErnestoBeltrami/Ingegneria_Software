@@ -1,10 +1,12 @@
 ### Elenco API 
 
-    %%% DA TESTARE
+    %%% TESTATE
     1.Registrazione nuovo cittadino: ok
     2.Login cittadino ok
     3.Accesso operatore comunale ok
     4.Ritorno informazioni Cittadino ok
     5.Ritorno informazioni Operatore ok
-    %%% DA TESTARE 
-    
+    6.API gestione votazioni ok
+    %%% TESTATE 
+    7. Votare votazione
+    8. Riepilogo votazione 

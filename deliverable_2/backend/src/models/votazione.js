@@ -62,4 +62,4 @@ const votazioneSchema = new mongoose.Schema({
     }
 });
 
-export const Votazione = mongoose.model('votazione', votazioneSchema);
+export const Votazione = mongoose.model('Votazione', votazioneSchema);

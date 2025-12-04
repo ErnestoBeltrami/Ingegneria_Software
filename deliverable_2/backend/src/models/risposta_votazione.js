@@ -25,4 +25,4 @@ const rispostaVotazioneSchema = new mongoose.Schema({
 });
 rispostaVotazioneSchema.index({ ID_cittadino: 1, ID_votazione: 1 }, { unique: true });
 
-export const RispostaVotazione = mongoose.model('risposta_votazione', rispostaVotazioneSchema);
+export const RispostaVotazione = mongoose.model('RispostaVotazione', rispostaVotazioneSchema);

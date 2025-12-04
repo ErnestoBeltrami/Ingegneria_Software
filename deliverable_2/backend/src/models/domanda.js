@@ -8,7 +8,7 @@ const opzioneSchema = new mongoose.Schema({
         required: true,
         trim: true
     }
-}, { _id: false }); // Non è necessario un ID per ogni singola opzione di testo
+}, { _id: true }); // Non è necessario un ID per ogni singola opzione di testo
 
 const domandaSchema = new mongoose.Schema({ 
     
@@ -46,4 +46,4 @@ const domandaSchema = new mongoose.Schema({
     timestamps: true 
 });
 
-export const Domanda = mongoose.model('domanda', domandaSchema);
+export const Domanda = mongoose.model('Domanda', domandaSchema);

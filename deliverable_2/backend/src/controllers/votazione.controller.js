@@ -101,7 +101,7 @@ export const getVotazioneById = async (req, res) => {
         const votazione = await Votazione.findOne({
             _id: id,
             creatoDa: userFromMiddleware._id
-        });
+        }).populate('ID_domanda');
 
         if (!votazione) {
             return res.status(404).json({
@@ -284,3 +284,6 @@ export const archiveVotazione = async (req, res) => {
     }
 };
 
+export const getRiepilogoSintetico = async (req,res) =>{
+    
+}

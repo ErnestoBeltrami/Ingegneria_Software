@@ -2,6 +2,19 @@
 import jwt from 'jsonwebtoken';
 import { Cittadino } from '../models/cittadino.js';
 import { Operatore } from '../models/operatore.js'; // Assumi che questo sia il tuo modello Operatore
+
+export const restrictTo = (allowed_roles) => { //Controlla se l'utente è effettivamente un operatore.
+    return(req,res,next) => {
+        const ruolo = req.ruolo;
+        if(!req.user || !allowed_roles.includes(ruolo)){
+            return res.status(403).json({
+                message : 'Accesso negato. Ruolo non sufficiente'
+            });
+        }
+        next();
+    };
+}
+
 export const protect = async (req, res, next) => {
     let token;
 
@@ -14,8 +27,10 @@ export const protect = async (req, res, next) => {
             let UserModel;
             if (decoded.ruolo === 'operatore') {
                 UserModel = Operatore;
+                req.ruolo = 'operatore';
             } else if (decoded.ruolo === 'cittadino') {
                 UserModel = Cittadino;
+                req.ruolo = 'cittadino';
             } else {
                 return res.status(401).json({ message: 'Token non valido, ruolo sconosciuto' });
             }
