@@ -78,7 +78,9 @@ export const getVotazioni = async (req, res) => {
             });
         }
 
-        const votazioni = await Votazione.find({ creatoDa: userFromMiddleware._id }).sort({ data_inizio: -1 });
+        const votazioni = await Votazione.find({ creatoDa: userFromMiddleware._id })
+            .populate('ID_domanda')    
+            .sort({ data_inizio: -1 });
 
         return res.status(200).json({
             message: 'Votazioni recuperate con successo.',
