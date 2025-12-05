@@ -17,10 +17,42 @@ const consultazioneSchema = new mongoose.Schema({
         trim: true
     },
 
+    // Per votazioni: singola domanda
     ID_domanda: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Domanda',
-        required: [true, 'ID_domanda è obbligatorio per tutte le consultazioni.']
+        required: function() {
+            return this.tipo === 'votazione';
+        },
+        validate: {
+            validator: function(v) {
+                if (this.tipo === 'votazione') {
+                    return v != null;
+                }
+                // Per sondaggi, ID_domanda non deve essere presente
+                return v == null;
+            },
+            message: 'ID_domanda è obbligatorio per votazioni e non permesso per sondaggi.'
+        }
+    },
+
+    // Per sondaggi: array di domande
+    ID_domande: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'Domanda',
+        required: function() {
+            return this.tipo === 'sondaggio';
+        },
+        validate: {
+            validator: function(v) {
+                if (this.tipo === 'sondaggio') {
+                    return v != null && Array.isArray(v) && v.length > 0;
+                }
+                // Per votazioni, ID_domande non deve essere presente
+                return v == null || (Array.isArray(v) && v.length === 0);
+            },
+            message: 'ID_domande è obbligatorio per sondaggi (almeno una domanda) e non permesso per votazioni.'
+        }
     },
 
     titolo: {

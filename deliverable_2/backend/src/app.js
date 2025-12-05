@@ -7,6 +7,7 @@ import cittadinoAuth from "./routes/cittadino.route.js";
 import votazioneRouter from "./routes/votazione.route.js";
 import iniziativaRouter from "./routes/iniziativa.route.js";
 import categoriaRouter from "./routes/categoria.route.js";
+import sondaggioRouter from "./routes/sondaggio.route.js";
 const app = express();
 
 app.get("/health", (_req, res) => {
@@ -35,5 +36,6 @@ app.use("/auth", cittadinoAuth);
 app.use("/votazioni", votazioneRouter);
 app.use("/iniziative", iniziativaRouter);
 app.use("/categorie", categoriaRouter);
+app.use("/sondaggio",sondaggioRouter);
 
 export default app;
