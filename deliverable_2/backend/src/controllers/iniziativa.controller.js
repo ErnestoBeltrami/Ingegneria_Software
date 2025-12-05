@@ -1,5 +1,7 @@
 import { Iniziativa } from '../models/iniziativa.js';
 import { CategoriaIniziativa } from '../models/categoria_iniziativa.js';
+import { VotoIniziativa } from '../models/voto_iniziativa.js';
+import { Cittadino } from '../models/cittadino.js';
 import mongoose from 'mongoose';
 
 export const createIniziativa = async (req, res) => {
@@ -62,3 +64,93 @@ export const createIniziativa = async (req, res) => {
         });
     }
 };
+
+//ritorna l'elenco completo di iniziative
+export const getIniziative = async (req,res) => {
+    try{    
+        const user = req.user;
+
+        if(!user){
+            return res.status(401).json({
+                message : "Errore nell'autenticazione"
+            });
+        }
+
+        
+        const iniziative = await Iniziativa.aggregate([
+        {
+            $lookup: {
+                from: "votoiniziativas",
+                localField: "_id",
+                foreignField: "ID_iniziativa",
+                as: "voti"
+            }
+        },
+        {
+            $addFields: {
+                numero_voti: { $size: "$voti" }
+            }
+        },
+        {
+            $lookup: {
+                from: "cittadinos",
+                localField: "ID_cittadino",
+                foreignField: "_id",
+                as: "cittadino_dettagli"
+            }
+        },
+        { $unwind: "$cittadino_dettagli" },
+        {
+            $lookup: {
+                from: "categoriainiziativas",
+                localField: "ID_categoria",
+                foreignField: "_id",
+                as: "categoria_dettagli"
+            }
+        },
+        { $unwind: "$categoria_dettagli" },
+        {
+            $project: {
+                _id: 1,
+                ID_categoria: 1,
+                categoria: "$categoria_dettagli.nome",
+                titolo: 1,
+                nome_cittadino: "$cittadino_dettagli.nome",
+                cognome_cittadino: "$cittadino_dettagli.cognome",
+                numero_voti: "$numero_voti",
+                createdAt: 1 
+            }
+        },
+        {
+            $sort: {
+                createdAt: -1,
+                numero_voti: -1
+            }
+        }
+        ]);
+
+        if (iniziative.length === 0) { // Controlla se l'array è vuoto
+            return res.status(200).json({ // Usa il punto, non la virgola
+                message: "Nessuna iniziativa disponibile.",
+                iniziative: [] // Buona pratica restituire l'array vuoto
+            });
+        }
+        else{
+            return res.status(200).json({
+                message : "Iniziative trovate:",
+                iniziative
+            });
+        }
+
+    }
+    catch(error){
+        console.error("Errore nel recupero delle iniziative:", error);
+        return res.status(500).json({
+            message: "Errore interno del server durante il recupero delle iniziative.",
+            error: error.message
+        });
+    }
+    
+
+
+}

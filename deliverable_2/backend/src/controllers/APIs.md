@@ -10,3 +10,5 @@
     %%% TESTATE 
     7. Votare votazione ok
     8. Riepilogo votazione ok 
+    9. Creazione iniziativa ok
+    10. Visualizzazione iniziative
