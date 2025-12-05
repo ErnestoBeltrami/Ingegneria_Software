@@ -11,18 +11,15 @@ Content-Type: application/json
     "categoria" : "Studente"
 }
 
-###
 ### Profilo cittadino autenticato
 GET http://localhost:3000/auth/cittadino/profile
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmY0ZGYzMGM0YjVkMjA4M2ExYzNmMSIsInJ1b2xvIjoiY2l0dGFkaW5vIiwiaWF0IjoxNzY0NzA3OTk2LCJleHAiOjE3NjUzMTI3OTZ9.j7_kynA7KJqkDWGHWqFeINRs9s1A-RShQiVfNllIiNk
 
-###
 ### Stato autenticazione
 GET http://localhost:3000/auth/status
 Content-Type: application/json
 Cookie: connect.sid=s%3APp4t4n0yfQXU67TNikmXO4ByPpvfxDy3.ArJwGYGMwvrcvJ1sDGYBLMQ88jk9bI7wmsw8E8upOZE
 
-###
 ### Logout
 POST http://localhost:3000/auth/logout
 Content-Type: application/json

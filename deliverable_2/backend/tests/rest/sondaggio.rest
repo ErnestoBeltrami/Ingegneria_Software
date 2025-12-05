@@ -1,18 +1,23 @@
 POST http://localhost:3000/sondaggio
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzE5OGExOGNmMDkwODI3OWQzMDNjOSIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0ODU4MDIxLCJleHAiOjE3NjQ5NDQ0MjF9.1ul92lhxadyGHNg7CotiGmNWWorzWantuRObbeEf7Fk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzE5OGExOGNmMDkwODI3OWQzMDNjOSIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0OTUzMTc5LCJleHAiOjE3NjUwMzk1Nzl9.v9J7WLPozFZcfRE8F8ywOhfC0JOEpo8PSIWxS6IiLH4
 Content-Type: application/json
 
 {
-
+    "titolo": "Test Richiesta Vuota",
+    "descrizione": "Questa richiesta dovrebbe fallire per mancanza di campi obbligatori",
+    "data_discussione": "2025-12-05T14:00:00Z",
+    "data_inizio": "2025-12-06T10:00:00Z",
+    "data_fine": "2025-12-30T23:59:59Z"
 }
 ###
 POST http://localhost:3000/sondaggio
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzE5OGExOGNmMDkwODI3OWQzMDNjOSIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0ODU4MDIxLCJleHAiOjE3NjQ5NDQ0MjF9.1ul92lhxadyGHNg7CotiGmNWWorzWantuRObbeEf7Fk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzE5OGExOGNmMDkwODI3OWQzMDNjOSIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0OTUzMTc5LCJleHAiOjE3NjUwMzk1Nzl9.v9J7WLPozFZcfRE8F8ywOhfC0JOEpo8PSIWxS6IiLH4
 Content-Type: application/json
 
 {
     "titolo": "Sondaggio su Nuove Aree Verdi",
     "descrizione": "Valutazione della cittadinanza riguardo la proposta di riqualificazione urbana per la creazione di nuovi spazi verdi.",
+    "data_discussione": "2025-12-05T14:00:00Z",
     "data_inizio": "2025-12-06T10:00:00Z",
     "data_fine": "2025-12-30T23:59:59Z",
     "domande": [
@@ -39,12 +44,12 @@ Content-Type: application/json
 }
 ###
 POST http://localhost:3000/sondaggio
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzE5OGExOGNmMDkwODI3OWQzMDNjOSIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0ODU4MDIxLCJleHAiOjE3NjQ5NDQ0MjF9.1ul92lhxadyGHNg7CotiGmNWWorzWantuRObbeEf7Fk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzE5OGExOGNmMDkwODI3OWQzMDNjOSIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0OTUzMTc5LCJleHAiOjE3NjUwMzk1Nzl9.v9J7WLPozFZcfRE8F8ywOhfC0JOEpo8PSIWxS6IiLH4
 Content-Type: application/json
 
 {
     "titolo": "Test Errore Dati Base",
-    // "descrizione" MANCANTE
+    "data_discussione": "2025-12-05T14:00:00Z",
     "data_inizio": "2025-12-06T10:00:00Z",
     "data_fine": "2025-12-30T23:59:59Z",
     "domande": [
@@ -60,12 +65,13 @@ Content-Type: application/json
 }
 ###
 POST http://localhost:3000/sondaggio
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzE5OGExOGNmMDkwODI3OWQzMDNjOSIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0ODU4MDIxLCJleHAiOjE3NjQ5NDQ0MjF9.1ul92lhxadyGHNg7CotiGmNWWorzWantuRObbeEf7Fk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzE5OGExOGNmMDkwODI3OWQzMDNjOSIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0OTUzMTc5LCJleHAiOjE3NjUwMzk1Nzl9.v9J7WLPozFZcfRE8F8ywOhfC0JOEpo8PSIWxS6IiLH4
 Content-Type: application/json
 
 {
     "titolo": "Test Errore Validazione Mongoose",
     "descrizione": "Verifica il fallimento della validazione delle opzioni.",
+    "data_discussione": "2025-12-05T14:00:00Z",
     "data_inizio": "2025-12-06T10:00:00Z",
     "data_fine": "2025-12-30T23:59:59Z",
     "domande": [
@@ -81,9 +87,8 @@ Content-Type: application/json
             "titolo": "Domanda con poche opzioni (Fallimento)",
             "tipo": "risposta_singola",
             "opzioni": [
-                {"testo": "Una sola opzione"} // Fallirà il validator length >= 2
+                {"testo": "Una sola opzione"}
             ]
         }
     ]
 }
-###
