@@ -70,8 +70,7 @@ const consultazioneSchema = new mongoose.Schema({
         }
     }
 }, {
-    timestamps: true, // Aggiungiamo timestamps per audit
-    discriminatorKey: 'tipo' // Usa 'tipo' come campo discriminator per i sub-modelli
+    timestamps: true
 });
 
 // Indice composto per migliorare le query

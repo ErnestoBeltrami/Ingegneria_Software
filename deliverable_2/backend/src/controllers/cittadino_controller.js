@@ -1,6 +1,6 @@
 // Nel file: ./controllers/cittadinoController.js
 import { Cittadino } from '../models/cittadino.js';
-import {RispostaVotazione} from '../models/risposta_votazione.js';
+import { RispostaConsultazione } from '../models/risposta_consultazione.js';
 import mongoose from 'mongoose';
 import { VotoIniziativa } from '../models/voto_iniziativa.js';
 import { Iniziativa } from '../models/iniziativa.js';
@@ -70,9 +70,10 @@ export const answerVote = async (req,res) => {
             });
         }
 
-        const duplicato = await RispostaVotazione.findOne({
-            ID_cittadino : userFromMiddleware._id,
-            ID_votazione : votazione
+        const duplicato = await RispostaConsultazione.findOne({
+            ID_cittadino: userFromMiddleware._id,
+            ID_consultazione: votazione,
+            tipo_consultazione: 'votazione'
         });
 
         if(duplicato){
@@ -81,10 +82,11 @@ export const answerVote = async (req,res) => {
             });
         }
 
-        await RispostaVotazione.create({
-            ID_opzione : opzione_scelta,
-            ID_cittadino : userFromMiddleware._id,
-            ID_votazione : votazione
+        await RispostaConsultazione.create({
+            tipo_consultazione: 'votazione',
+            ID_consultazione: votazione,
+            ID_cittadino: userFromMiddleware._id,
+            ID_opzione: opzione_scelta
         });
 
         return res.status(200).json({

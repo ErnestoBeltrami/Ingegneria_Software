@@ -75,8 +75,7 @@ const rispostaConsultazioneSchema = new mongoose.Schema({
     }
 
 }, {
-    timestamps: true,
-    discriminatorKey: 'tipo_consultazione'
+    timestamps: true
 });
 
 // Indice univoco: un cittadino può rispondere una sola volta a una consultazione

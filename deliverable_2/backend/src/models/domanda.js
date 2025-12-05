@@ -15,11 +15,11 @@ const opzioneSchema = new mongoose.Schema({
 
 const domandaSchema = new mongoose.Schema({ 
     
-    // Riferimenti (opzionali per permettere l'associazione a Sondaggio o Votazione)
-    id_sondaggio: {
+    // Riferimenti (opzionali per permettere l'associazione a Consultazione)
+    id_consultazione: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Sondaggio',
-        required: false // Non obbligatorio, perché potrebbe essere associato a Votazione
+        ref: 'Consultazione',
+        required: false
     },
 
     titolo: {

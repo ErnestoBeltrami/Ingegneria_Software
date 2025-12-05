@@ -1,6 +1,6 @@
-import { Votazione } from '../models/votazione.js';
+import { Consultazione } from '../models/consultazione.js';
 import { Domanda } from '../models/domanda.js';
-import { RispostaVotazione } from '../models/risposta_votazione.js';
+import { RispostaConsultazione } from '../models/risposta_consultazione.js';
 import mongoose from 'mongoose';
 // POST: Creazione di una nuova votazione da parte di un operatore autenticato
 export const createVotazione = async (req, res) => {
@@ -44,7 +44,8 @@ export const createVotazione = async (req, res) => {
         });
 
         // 2) Creazione della votazione collegata alla domanda e all'operatore
-        const nuovaVotazione = await Votazione.create({
+        const nuovaVotazione = await Consultazione.create({
+            tipo: 'votazione',
             titolo: titoloVotazione,
             descrizione,
             data_inizio,
@@ -78,7 +79,10 @@ export const getVotazioni = async (req, res) => {
             });
         }
 
-        const votazioni = await Votazione.find({ creatoDa: userFromMiddleware._id })
+        const votazioni = await Consultazione.find({ 
+            creatoDa: userFromMiddleware._id,
+            tipo: 'votazione'
+        })
             .populate('ID_domanda')    
             .sort({ data_inizio: -1 });
 
@@ -101,9 +105,10 @@ export const getVotazioneById = async (req, res) => {
         const userFromMiddleware = req.user;
         const { id } = req.params;
 
-        const votazione = await Votazione.findOne({
+        const votazione = await Consultazione.findOne({
             _id: id,
-            creatoDa: userFromMiddleware._id
+            creatoDa: userFromMiddleware._id,
+            tipo: 'votazione'
         }).populate('ID_domanda');
 
         if (!votazione) {
@@ -132,9 +137,10 @@ export const updateVotazione = async (req, res) => {
         const { id } = req.params;
         const updateData = req.body;
 
-        const votazione = await Votazione.findOne({
+        const votazione = await Consultazione.findOne({
             _id: id,
-            creatoDa: userFromMiddleware._id
+            creatoDa: userFromMiddleware._id,
+            tipo: 'votazione'
         });
 
         if (!votazione) {
@@ -178,9 +184,10 @@ export const deleteVotazione = async (req, res) => {
         const userFromMiddleware = req.user;
         const { id } = req.params;
 
-        const votazione = await Votazione.findOne({
+        const votazione = await Consultazione.findOne({
             _id: id,
-            creatoDa: userFromMiddleware._id
+            creatoDa: userFromMiddleware._id,
+            tipo: 'votazione'
         });
 
         if (!votazione) {
@@ -215,9 +222,10 @@ export const publishVotazione = async (req, res) => {
         const userFromMiddleware = req.user;
         const { id } = req.params;
 
-        const votazione = await Votazione.findOne({
+        const votazione = await Consultazione.findOne({
             _id: id,
-            creatoDa: userFromMiddleware._id
+            creatoDa: userFromMiddleware._id,
+            tipo: 'votazione'
         });
 
         if (!votazione) {
@@ -254,9 +262,10 @@ export const archiveVotazione = async (req, res) => {
         const userFromMiddleware = req.user;
         const { id } = req.params;
 
-        const votazione = await Votazione.findOne({
+        const votazione = await Consultazione.findOne({
             _id: id,
-            creatoDa: userFromMiddleware._id
+            creatoDa: userFromMiddleware._id,
+            tipo: 'votazione'
         });
 
         if (!votazione) {
@@ -293,7 +302,10 @@ export const getRiepilogoSintetico = async (req, res) => {
     try {
         const objectIdVotazione = new mongoose.Types.ObjectId(votazioneId);
 
-        const votazione = await Votazione.findById(objectIdVotazione).populate('ID_domanda');
+        const votazione = await Consultazione.findOne({
+            _id: objectIdVotazione,
+            tipo: 'votazione'
+        }).populate('ID_domanda');
 
         if (!votazione || !votazione.ID_domanda) {
             return res.status(404).json({ message: 'Votazione non trovata o domanda collegata mancante.' });
@@ -302,8 +314,8 @@ export const getRiepilogoSintetico = async (req, res) => {
         const domanda = votazione.ID_domanda;
 
         // 2. Pipeline di Aggregazione: Conversione esplicita e Conteggio
-        const risultatiVoto = await RispostaVotazione.aggregate([
-            { $match: { ID_votazione: objectIdVotazione } }, 
+        const risultatiVoto = await RispostaConsultazione.aggregate([
+            { $match: { ID_consultazione: objectIdVotazione, tipo_consultazione: 'votazione' } }, 
             
             // FILTRO DI ROBUSTEZZA: Esclude ID nulli
             { $match: { ID_opzione: { $ne: null, $exists: true } } }, 
