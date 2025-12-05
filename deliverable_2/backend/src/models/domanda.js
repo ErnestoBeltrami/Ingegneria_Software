@@ -15,13 +15,6 @@ const opzioneSchema = new mongoose.Schema({
 
 const domandaSchema = new mongoose.Schema({ 
     
-    // Riferimenti (opzionali per permettere l'associazione a Consultazione)
-    id_consultazione: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Consultazione',
-        required: false
-    },
-
     titolo: {
         type: String,
         trim: true,
