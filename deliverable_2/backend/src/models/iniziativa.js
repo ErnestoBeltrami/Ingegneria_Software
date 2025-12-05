@@ -28,5 +28,5 @@ const iniziativaSchema = new mongoose.Schema({
 {
     timestamps : true
 });
-
+iniziativaSchema.index({titolo : 'text',descrizione : 'text'});
 export const Iniziativa = mongoose.model('Iniziativa', iniziativaSchema);

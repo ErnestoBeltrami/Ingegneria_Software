@@ -1,7 +1,8 @@
 import { Router } from "express";
 import {
     createIniziativa,
-    getIniziative
+    getIniziative,
+    ricercaIniziativa
 } from "../controllers/iniziativa.controller.js";
 
 import { 
@@ -16,5 +17,7 @@ router.post("/", protect, restrictTo(['cittadino']), createIniziativa);
 
 //GET: Ritorna tutte le iniziative filtrate per data e numero di voti
 router.get("/",protect,getIniziative);
+
+router.post("/ricerca", protect,ricercaIniziativa);
 
 export default router;
