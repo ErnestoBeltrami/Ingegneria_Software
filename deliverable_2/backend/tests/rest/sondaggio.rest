@@ -1,0 +1,89 @@
+POST http://localhost:3000/sondaggio
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzE5OGExOGNmMDkwODI3OWQzMDNjOSIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0ODU4MDIxLCJleHAiOjE3NjQ5NDQ0MjF9.1ul92lhxadyGHNg7CotiGmNWWorzWantuRObbeEf7Fk
+Content-Type: application/json
+
+{
+
+}
+###
+POST http://localhost:3000/sondaggio
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzE5OGExOGNmMDkwODI3OWQzMDNjOSIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0ODU4MDIxLCJleHAiOjE3NjQ5NDQ0MjF9.1ul92lhxadyGHNg7CotiGmNWWorzWantuRObbeEf7Fk
+Content-Type: application/json
+
+{
+    "titolo": "Sondaggio su Nuove Aree Verdi",
+    "descrizione": "Valutazione della cittadinanza riguardo la proposta di riqualificazione urbana per la creazione di nuovi spazi verdi.",
+    "data_inizio": "2025-12-06T10:00:00Z",
+    "data_fine": "2025-12-30T23:59:59Z",
+    "domande": [
+        {
+            "titolo": "Sei favorevole alla creazione di una nuova area verde nel centro storico?",
+            "tipo": "risposta_singola",
+            "opzioni": [
+                {"testo": "Sì, assolutamente"},
+                {"testo": "No, preferisco mantenere i parcheggi"},
+                {"testo": "Sono indifferente"}
+            ]
+        },
+        {
+            "titolo": "Quali attività vorresti fossero prioritarie nella nuova area verde? (Selezione multipla)",
+            "tipo": "risposta_multipla",
+            "opzioni": [
+                {"testo": "Area giochi per bambini"},
+                {"testo": "Spazi per cani"},
+                {"testo": "Panche e tavoli per picnic"},
+                {"testo": "Pista ciclabile"}
+            ]
+        }
+    ]
+}
+###
+POST http://localhost:3000/sondaggio
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzE5OGExOGNmMDkwODI3OWQzMDNjOSIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0ODU4MDIxLCJleHAiOjE3NjQ5NDQ0MjF9.1ul92lhxadyGHNg7CotiGmNWWorzWantuRObbeEf7Fk
+Content-Type: application/json
+
+{
+    "titolo": "Test Errore Dati Base",
+    // "descrizione" MANCANTE
+    "data_inizio": "2025-12-06T10:00:00Z",
+    "data_fine": "2025-12-30T23:59:59Z",
+    "domande": [
+        {
+            "titolo": "Domanda Valida",
+            "tipo": "risposta_singola",
+            "opzioni": [
+                {"testo": "A"},
+                {"testo": "B"}
+            ]
+        }
+    ]
+}
+###
+POST http://localhost:3000/sondaggio
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzE5OGExOGNmMDkwODI3OWQzMDNjOSIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0ODU4MDIxLCJleHAiOjE3NjQ5NDQ0MjF9.1ul92lhxadyGHNg7CotiGmNWWorzWantuRObbeEf7Fk
+Content-Type: application/json
+
+{
+    "titolo": "Test Errore Validazione Mongoose",
+    "descrizione": "Verifica il fallimento della validazione delle opzioni.",
+    "data_inizio": "2025-12-06T10:00:00Z",
+    "data_fine": "2025-12-30T23:59:59Z",
+    "domande": [
+        {
+            "titolo": "Domanda valida",
+            "tipo": "risposta_singola",
+            "opzioni": [
+                {"testo": "Opzione A"},
+                {"testo": "Opzione B"}
+            ]
+        },
+        {
+            "titolo": "Domanda con poche opzioni (Fallimento)",
+            "tipo": "risposta_singola",
+            "opzioni": [
+                {"testo": "Una sola opzione"} // Fallirà il validator length >= 2
+            ]
+        }
+    ]
+}
+###
