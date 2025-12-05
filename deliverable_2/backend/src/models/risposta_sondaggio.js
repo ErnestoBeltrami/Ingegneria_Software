@@ -1,50 +1,70 @@
+// Wrapper per retrocompatibilità: RispostaSondaggio usa RispostaConsultazione
 import mongoose from 'mongoose';
+import { RispostaConsultazione } from './risposta_consultazione.js';
 
-const dettaglioRispostaSchema = new mongoose.Schema({
-    
-    ID_domanda: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'Domanda'
-    },
-    opzioniScelte: {
-        type: [mongoose.Schema.Types.ObjectId],
-        required: [true, 'Devi selezionare almeno una opzione.'],
-        validate: {
-            validator: function(v) { return v && v.length > 0; },
-            message: 'Almeno una opzione deve essere selezionata.'
-        }
+// Crea discriminator per sondaggi
+// NOTA: I controlli sono necessari per gestire i riavvii di nodemon (vedi votazione.js)
+const rispostaSondaggioSchema = new mongoose.Schema({}, { discriminatorKey: 'tipo_consultazione' });
+
+let RispostaSondaggioModel;
+try {
+    RispostaSondaggioModel = RispostaConsultazione.discriminator('sondaggio', rispostaSondaggioSchema);
+} catch (error) {
+    if (error.name === 'OverwriteModelError') {
+        RispostaSondaggioModel = mongoose.models.RispostaSondaggio || RispostaConsultazione.discriminators?.['sondaggio'];
+    } else {
+        throw error;
     }
-}, { _id: false }); 
+}
 
-
-const rispostaSondaggioSchema = new mongoose.Schema({
-
-    ID_cittadino: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Cittadino',
-        required: [true, "L'ID del cittadino inviante è obbligatorio."]
-    },
-
-    ID_sondaggio: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Sondaggio',
-        required: [true, "L'ID del sondaggio è obbligatorio."]
-    },
-
-    
-    dettagliRisposte: {
-        type: [dettaglioRispostaSchema],
-        required: true,
-        validate: {
-            validator: function(v) { return v && v.length > 0; },
-            message: 'Il sondaggio deve contenere almeno una risposta.'
-        }
+// Wrapper per mappare i metodi
+class RispostaSondaggioWrapper {
+    static async create(data) {
+        const mappedData = {
+            ...data,
+            tipo_consultazione: 'sondaggio',
+            ID_consultazione: data.ID_sondaggio || data.ID_consultazione
+        };
+        delete mappedData.ID_sondaggio;
+        return await RispostaSondaggioModel.create(mappedData);
     }
 
-}, {
-    timestamps: true 
+    static async findOne(query) {
+        const mappedQuery = { ...query, tipo_consultazione: 'sondaggio' };
+        if (mappedQuery.ID_sondaggio) {
+            mappedQuery.ID_consultazione = mappedQuery.ID_sondaggio;
+            delete mappedQuery.ID_sondaggio;
+        }
+        return await RispostaSondaggioModel.findOne(mappedQuery);
+    }
+
+    static async find(query) {
+        const mappedQuery = { ...query, tipo_consultazione: 'sondaggio' };
+        if (mappedQuery.ID_sondaggio) {
+            mappedQuery.ID_consultazione = mappedQuery.ID_sondaggio;
+            delete mappedQuery.ID_sondaggio;
+        }
+        return await RispostaSondaggioModel.find(mappedQuery);
+    }
+
+    // Delega tutti gli altri metodi al modello
+    static get model() {
+        return RispostaSondaggioModel;
+    }
+}
+
+// Aggiungi metodi Mongoose comuni
+['findById', 'findOneAndUpdate', 'findOneAndDelete', 'deleteOne', 'deleteMany', 'updateOne', 'updateMany', 'countDocuments'].forEach(method => {
+    RispostaSondaggioWrapper[method] = function(...args) {
+        // Mappa ID_sondaggio a ID_consultazione nei query
+        if (args[0] && args[0].ID_sondaggio) {
+            args[0] = { ...args[0], ID_consultazione: args[0].ID_sondaggio, tipo_consultazione: 'sondaggio' };
+            delete args[0].ID_sondaggio;
+        } else if (args[0]) {
+            args[0] = { ...args[0], tipo_consultazione: 'sondaggio' };
+        }
+        return RispostaSondaggioModel[method](...args);
+    };
 });
-rispostaSondaggioSchema.index({ ID_cittadino: 1, ID_sondaggio: 1 }, { unique: true });
 
-export const RispostaSondaggio = mongoose.model('RispostaSondaggio', rispostaSondaggioSchema);
+export const RispostaSondaggio = RispostaSondaggioWrapper;

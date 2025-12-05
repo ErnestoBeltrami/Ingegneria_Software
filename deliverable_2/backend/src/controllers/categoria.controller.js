@@ -6,6 +6,11 @@ export const createCategoria = async (req, res) => {
 
         if (!nome) {
             return res.status(400).json({ message: "Nome categoria obbligatorio" });
+        } else {
+            const esistente = await CategoriaIniziativa.findOne({ nome });
+            if (esistente) {
+                return res.status(409).json({ message: "Categoria già esistente" });
+            }
         }
 
         const nuovaCategoria = await CategoriaIniziativa.create({ nome });

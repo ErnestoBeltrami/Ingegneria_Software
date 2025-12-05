@@ -81,7 +81,7 @@ export const answerVote = async (req,res) => {
             });
         }
 
-        RispostaVotazione.create({
+        await RispostaVotazione.create({
             ID_opzione : opzione_scelta,
             ID_cittadino : userFromMiddleware._id,
             ID_votazione : votazione

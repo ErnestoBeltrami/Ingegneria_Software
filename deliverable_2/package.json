@@ -16,7 +16,14 @@
   "main": "backend/src/index.js",
   "scripts": {
     "start": "node backend/src/index.js",
-    "dev": "nodemon backend/src/index.js"
+    "dev": "nodemon backend/src/index.js",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
+    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "test:api": "node backend/tests/scripts/test-api.js",
+    "test:api:votazione": "node backend/tests/scripts/test-api.js backend/tests/rest/votazione.rest",
+    "test:api:operatore": "node backend/tests/scripts/test-api.js backend/tests/rest/operatore.rest",
+    "test:api:cittadino": "node backend/tests/scripts/test-api.js backend/tests/rest/cittadino.rest"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -30,5 +37,22 @@
     "nodemon": "^3.1.11",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {},
+    "moduleNameMapper": {
+      "^(\\.{1,2}/.*)\\.js$": "$1"
+    },
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/backend/tests/setup.js"
+    ]
   }
 }

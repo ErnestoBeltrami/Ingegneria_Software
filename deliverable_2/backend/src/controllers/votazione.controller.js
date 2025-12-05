@@ -145,7 +145,7 @@ export const updateVotazione = async (req, res) => {
 
         if (votazione.stato !== 'bozza') {
             return res.status(400).json({
-                message: 'Solo le votazioni in stato "bozza" possono essere modificate.'
+                message: 'Solo le votazioni in stato "bozza" possono essere modificate.',
             });
         }
 
