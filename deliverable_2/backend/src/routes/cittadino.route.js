@@ -3,7 +3,7 @@ import { Router } from "express";
 import passport from "../config/passport.js";
 import jwt from "jsonwebtoken";
 import { Cittadino } from "../models/cittadino.js";
-import { answerVote, getCittadinoData } from "../controllers/cittadino_controller.js";
+import { answerVote, getCittadinoData, votaIniziativa } from "../controllers/cittadino_controller.js";
 import { protect, restrictTo } from "../middleware/auth_middleware.js";
 
 const router = Router();
@@ -80,4 +80,7 @@ router.post('/complete-profile', async (req, res) => {
 router.get('/cittadino/profile',protect,getCittadinoData);
 
 router.post('/cittadino/vote/votazione',protect,restrictTo(['cittadino']),answerVote);
+
+router.post('/cittadino/vote/iniziativa',protect, restrictTo(['cittadino']), votaIniziativa);
+
 export default router;

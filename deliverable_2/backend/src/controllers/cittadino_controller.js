@@ -2,6 +2,8 @@
 import { Cittadino } from '../models/cittadino.js';
 import {RispostaVotazione} from '../models/risposta_votazione.js';
 import mongoose from 'mongoose';
+import { VotoIniziativa } from '../models/voto_iniziativa.js';
+import { Iniziativa } from '../models/iniziativa.js';
 
 export const getCittadinoData = async (req, res) => {
     try {
@@ -55,7 +57,7 @@ export const answerVote = async (req,res) => {
         
         if (!userFromMiddleware) {
             return res.status(404).json({
-                message: "Utente non identificato dal sistema (Internal Error)"
+                message: "Cittadino non identificato dal sistema (Internal Error)"
             });
         } 
 
@@ -98,5 +100,53 @@ export const answerVote = async (req,res) => {
             error: error.message
         });
     }
-}
+};
 
+export const votaIniziativa = async (req,res) => {
+   
+   try{    
+        const user = req.user;
+        const iniziativa = req.body.iniziativaID;
+
+        if(!iniziativa || !(await Iniziativa.findById(iniziativa))){
+            return res.status(404).json({
+                    message: "Iniziativa non trovata"
+            });
+        }
+        
+
+        if (!user) {
+                return res.status(404).json({
+                    message: "Cittadino non identificato dal sistema (Internal Error)"
+                });
+        }
+
+        const duplicato_check = await VotoIniziativa.findOne({
+            ID_iniziativa : iniziativa,
+            ID_cittadino : user._id
+        });
+
+        if(duplicato_check){    
+            return res.status(403).json({
+                message : "Hai gia votato per questa iniziativa"
+            });
+        }
+
+        await VotoIniziativa.create({
+            ID_iniziativa: iniziativa,
+            ID_cittadino : user._id,
+        });
+
+        return res.status(200).json({
+            message : "Votazione avvenuta con successo."
+        });
+
+    }
+    catch(error){
+        console.error('Errore nella votazione', error);
+        return res.status(500).json({
+            message: 'Errore interno del server durante la votazione.',
+            error: error.message
+        });
+    }
+};
