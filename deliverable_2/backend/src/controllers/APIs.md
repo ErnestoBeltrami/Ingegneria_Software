@@ -12,4 +12,7 @@
     8. Riepilogo votazione ok 
     9. Creazione iniziativa ok
     10. Visualizzazione iniziative ok 
-    11. Votazione iniziative 
+    11. Votazione iniziative ok
+    12. creazione sondaggi ok
+    13 ricerca iniziativa da testare
+    

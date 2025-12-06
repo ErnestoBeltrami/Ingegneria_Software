@@ -3,7 +3,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmY0ZGYzM
 Content-Type: application/json
 
 {
-    "ID_categoria": "693171a7171807c1b1324289",
+    "ID_categoria": "6933545492a7cd3ca0db64fb",
     "titolo": "Iniziativa di test",
     "ID_cittadino": "692f0ca7107f1499be494aee",
     "descrizione": "Please funziona pls"
@@ -12,3 +12,68 @@ Content-Type: application/json
 GET http://localhost:3000/iniziative
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmY0ZGYzMGM0YjVkMjA4M2ExYzNmMSIsInJ1b2xvIjoiY2l0dGFkaW5vIiwiaWF0IjoxNzY0ODE2MzQ0LCJleHAiOjE3NjU0MjExNDR9.uiXp4kyrq0bDL8bh5kCP5lQ5UBqzJXe6rAj7EQ5ZR_Q
 ###
+
+POST http://localhost:3000/iniziative
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmY0ZGYzMGM0YjVkMjA4M2ExYzNmMSIsInJ1b2xvIjoiY2l0dGFkaW5vIiwiaWF0IjoxNzY0ODE2MzQ0LCJleHAiOjE3NjU0MjExNDR9.uiXp4kyrq0bDL8bh5kCP5lQ5UBqzJXe6rAj7EQ5ZR_Q
+Content-Type: application/json
+
+{
+    "ID_categoria": "6933545492a7cd3ca0db64fb", 
+    "titolo": "Riqualificazione della Piazza Centrale e creazione di un piccolo giardino",
+    "ID_cittadino": "692f0ca7107f1499be494aee",
+    "descrizione": "Proposta per rinnovare l'area principale della città con nuove panchine e più verde pubblico. L'obiettivo è abbellire il centro e aumentare l'attrattività."
+}
+###
+POST http://localhost:3000/iniziative
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmY0ZGYzMGM0YjVkMjA4M2ExYzNmMSIsInJ1b2xvIjoiY2l0dGFkaW5vIiwiaWF0IjoxNzY0ODE2MzQ0LCJleHAiOjE3NjU0MjExNDR9.uiXp4kyrq0bDL8bh5kCP5lQ5UBqzJXe6rAj7EQ5ZR_Q
+Content-Type: application/json
+
+{
+    "ID_categoria": "6933545492a7cd3ca0db64fb",
+    "titolo": "Creazione di nuovi spazi per l'arte e la cultura giovanile",
+    "ID_cittadino": "692f0ca7107f1499be494aee",
+    "descrizione": "Un progetto per adibire l'ex magazzino comunale a centro culturale e spazio espositivo per i giovani artisti locali. Si richiedono fondi aggiuntivi."
+}
+###
+POST http://localhost:3000/iniziative/ricerca
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmY0ZGYzMGM0YjVkMjA4M2ExYzNmMSIsInJ1b2xvIjoiY2l0dGFkaW5vIiwiaWF0IjoxNzY0ODE2MzQ0LCJleHAiOjE3NjU0MjExNDR9.uiXp4kyrq0bDL8bh5kCP5lQ5UBqzJXe6rAj7EQ5ZR_Q
+Content-Type: application/json
+
+{
+    "parola_chiave": "giardino",
+    "filtri": {}
+}
+###
+POST http://localhost:3000/iniziative
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmY0ZGYzMGM0YjVkMjA4M2ExYzNmMSIsInJ1b2xvIjoiY2l0dGFkaW5vIiwiaWF0IjoxNzY0ODE2MzQ0LCJleHAiOjE3NjU0MjExNDR9.uiXp4kyrq0bDL8bh5kCP5lQ5UBqzJXe6rAj7EQ5ZR_Q
+Content-Type: application/json
+
+{
+    "ID_categoria": "6933545492a7cd3ca0db64fb",
+    "titolo": "Miglioramento della sicurezza stradale e illuminazione parchi",
+    "ID_cittadino": "692f0ca7107f1499be494aee",
+    "descrizione": "Installazione di nuove telecamere e lampioni a basso consumo nei parchi cittadini e nei principali incroci stradali. L'incremento della sicurezza è una priorità."
+}
+###
+POST http://localhost:3000/iniziative/ricerca
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmY0ZGYzMGM0YjVkMjA4M2ExYzNmMSIsInJ1b2xvIjoiY2l0dGFkaW5vIiwiaWF0IjoxNzY0ODE2MzQ0LCJleHAiOjE3NjU0MjExNDR9.uiXp4kyrq0bDL8bh5kCP5lQ5UBqzJXe6rAj7EQ5ZR_Q
+Content-Type: application/json
+
+{
+    "parola_chiave" : "",
+    "filtri": {
+        "categorie_id": ["6933545492a7cd3ca0db64fb"] 
+    }
+}
+###
+POST http://localhost:3000/iniziative/ricerca
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmY0ZGYzMGM0YjVkMjA4M2ExYzNmMSIsInJ1b2xvIjoiY2l0dGFkaW5vIiwiaWF0IjoxNzY0ODE2MzQ0LCJleHAiOjE3NjU0MjExNDR9.uiXp4kyrq0bDL8bh5kCP5lQ5UBqzJXe6rAj7EQ5ZR_Q
+Content-Type: application/json
+
+{
+    "parola_chiave": "",
+    "filtri": {
+        "ordina_per": "data",
+        "ordine": -1
+    }
+}

@@ -19,24 +19,17 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzAzZDU0Z
   }
 }
 
-###
 ### Lista votazioni dell'operatore
 GET http://localhost:3000/votazioni
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzAzZDU0ZjI5MDYzZGEwZGFiNDBmMyIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0NzY5NTM1LCJleHAiOjE3NjQ4NTU5MzV9.mKzI0mXZbs57qG2LvChvUllPeSzDy9LH_OKuPGo3qXg
 
-###
 ### Dettaglio votazione
 GET http://localhost:3000/votazioni/693161843533632454961b87
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzAzZDU0ZjI5MDYzZGEwZGFiNDBmMyIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0NzY5NTM1LCJleHAiOjE3NjQ4NTU5MzV9.mKzI0mXZbs57qG2LvChvUllPeSzDy9LH_OKuPGo3qXg
 
-###
-
 ### Riepilogo Votazione
 GET http://localhost:3000/votazioni/693161843533632454961b87/riepilogo
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmY0ZGYzMGM0YjVkMjA4M2ExYzNmMSIsInJ1b2xvIjoiY2l0dGFkaW5vIiwiaWF0IjoxNzY0ODE2MzQ0LCJleHAiOjE3NjU0MjExNDR9.uiXp4kyrq0bDL8bh5kCP5lQ5UBqzJXe6rAj7EQ5ZR_Q
-
-###
-
 
 ### Modifica votazione (solo stato "bozza")
 PATCH http://localhost:3000/votazioni/693161843533632454961b87
@@ -48,17 +41,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzAzZDU0Z
   "descrizione": "Descrizione aggiornata"
 }
 
-###
 ### Eliminazione votazione (solo stato "bozza")
 DELETE http://localhost:3000/votazioni/69303f3e1ea4abc6e26b36b8
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzAzZDU0ZjI5MDYzZGEwZGFiNDBmMyIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0NzY5NTM1LCJleHAiOjE3NjQ4NTU5MzV9.mKzI0mXZbs57qG2LvChvUllPeSzDy9LH_OKuPGo3qXg
 
-###
 ### Pubblica votazione (bozza -> attivo)
 PATCH http://localhost:3000/votazioni/69303f3e1ea4abc6e26b36b8/publish
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzAzZDU0ZjI5MDYzZGEwZGFiNDBmMyIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0NzY5NTM1LCJleHAiOjE3NjQ4NTU5MzV9.mKzI0mXZbs57qG2LvChvUllPeSzDy9LH_OKuPGo3qXg
 
-###
 ### Archivia votazione (concluso -> archiviato)
 PATCH http://localhost:3000/votazioni/69303f3e1ea4abc6e26b36b8/archive
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzAzZDU0ZjI5MDYzZGEwZGFiNDBmMyIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0NzY5NTM1LCJleHAiOjE3NjQ4NTU5MzV9.mKzI0mXZbs57qG2LvChvUllPeSzDy9LH_OKuPGo3qXg
