@@ -223,6 +223,48 @@
  *           type: string
  *           description: Descrizione dettagliata dell'iniziativa
  *           example: "Proposta per organizzare giornate di pulizia nei parchi pubblici della città"
+ *     UpdateIniziativaInput:
+ *       type: object
+ *       properties:
+ *         titolo:
+ *           type: string
+ *           description: Titolo dell'iniziativa
+ *           example: "Pulizia parchi pubblici"
+ *         descrizione:
+ *           type: string
+ *           description: Descrizione dettagliata dell'iniziativa
+ *           example: "Proposta per organizzare giornate di pulizia nei parchi pubblici della città"
+ *         ID_categoria:
+ *           type: string
+ *           description: ID della categoria
+ *           example: "507f1f77bcf86cd799439012"
+ *     RicercaIniziativaInput:
+ *       type: object
+ *       properties:
+ *         parola_chiave:
+ *           type: string
+ *           description: Parola chiave per la ricerca nel titolo e descrizione
+ *           example: "giardino"
+ *         filtri:
+ *           type: object
+ *           properties:
+ *             categorie_id:
+ *               type: array
+ *               items:
+ *                 type: string
+ *               description: Array di ID delle categorie da filtrare
+ *               example: ["507f1f77bcf86cd799439012"]
+ *             ordina_per:
+ *               type: string
+ *               enum: ["data", "voti"]
+ *               description: Campo per l'ordinamento (data o voti)
+ *               example: "data"
+ *             ordine:
+ *               type: number
+ *               enum: [1, -1]
+ *               description: Ordine di ordinamento (1 = crescente, -1 = decrescente)
+ *               default: -1
+ *               example: -1
  *     Operatore:
  *       type: object
  *       required:
