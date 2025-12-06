@@ -127,7 +127,7 @@
 
 /**
  * @swagger
- * /auth/cittadino/profile:
+ * /cittadino/profile:
  *   get:
  *     summary: Ottieni i dati del profilo del cittadino
  *     description: Restituisce i dati pubblici del cittadino autenticato
@@ -171,7 +171,7 @@
 
 /**
  * @swagger
- * /auth/cittadino/vote/votazione:
+ * /cittadino/vote/votazione:
  *   post:
  *     summary: Rispondi a una votazione
  *     description: Permette a un cittadino autenticato di votare per una votazione
@@ -232,7 +232,7 @@
 
 /**
  * @swagger
- * /auth/cittadino/vote/iniziativa:
+ * /cittadino/vote/iniziativa:
  *   post:
  *     summary: Vota un'iniziativa
  *     description: Permette a un cittadino autenticato di votare per un'iniziativa

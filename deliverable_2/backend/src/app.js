@@ -5,7 +5,8 @@ import passport from "./config/passport.js";
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger.js";
 import operatoreRouter from "./routes/operatore.route.js";
-import cittadinoAuth from "./routes/cittadino.route.js";
+import cittadinoAuthRouter from "./routes/auth.route.js";
+import cittadinoRouter from "./routes/cittadino.route.js";
 import votazioneRouter from "./routes/votazione.route.js";
 import iniziativaRouter from "./routes/iniziativa.route.js";
 import categoriaRouter from "./routes/categoria.route.js";
@@ -38,10 +39,11 @@ app.use(passport.session());
 
 // Routes declaration
 app.use("/operatore", operatoreRouter);
-app.use("/auth", cittadinoAuth);
+app.use("/auth", cittadinoAuthRouter);
+app.use("/cittadino", cittadinoRouter);
 app.use("/votazioni", votazioneRouter);
 app.use("/iniziative", iniziativaRouter);
 app.use("/categorie", categoriaRouter);
-app.use("/sondaggio",sondaggioRouter);
+app.use("/sondaggio", sondaggioRouter);
 
 export default app;
