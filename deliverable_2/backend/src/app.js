@@ -2,6 +2,8 @@ import "./config/env.js";
 import express from "express";
 import session from "express-session";
 import passport from "./config/passport.js";
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./config/swagger.js";
 import operatoreRouter from "./routes/operatore.route.js";
 import cittadinoAuth from "./routes/cittadino.route.js";
 import votazioneRouter from "./routes/votazione.route.js";
@@ -27,6 +29,10 @@ app.use(
   })
 );
 
+// Swagger docs for automatic API Documentation
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// PASSPORT for Google Auth
 app.use(passport.initialize());
 app.use(passport.session());
 
