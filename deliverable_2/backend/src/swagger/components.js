@@ -520,6 +520,134 @@
  *           format: float
  *           description: Percentuale di voti (con 2 decimali)
  *           example: 65.5
+ *     Sondaggio:
+ *       type: object
+ *       required:
+ *         - tipo
+ *         - titolo
+ *         - descrizione
+ *         - data_inizio
+ *         - data_fine
+ *         - data_discussione
+ *         - ID_domande
+ *         - creatoDa
+ *       properties:
+ *         _id:
+ *           type: string
+ *           description: ID univoco del sondaggio
+ *           example: "507f1f77bcf86cd799439011"
+ *         tipo:
+ *           type: string
+ *           enum: ["sondaggio"]
+ *           example: "sondaggio"
+ *         stato:
+ *           type: string
+ *           enum: ["attivo", "bozza", "concluso", "archiviato"]
+ *           default: "bozza"
+ *           example: "bozza"
+ *         titolo:
+ *           type: string
+ *           description: Titolo del sondaggio
+ *           example: "Sondaggio sulla qualità dei servizi"
+ *         descrizione:
+ *           type: string
+ *           description: Descrizione dettagliata del sondaggio
+ *           example: "Sondaggio per valutare la soddisfazione dei cittadini"
+ *         ID_domande:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: Array di ID delle domande associate
+ *           example: ["507f1f77bcf86cd799439011", "507f1f77bcf86cd799439012"]
+ *         creatoDa:
+ *           type: string
+ *           description: ID dell'operatore creatore
+ *           example: "507f1f77bcf86cd799439013"
+ *         data_inizio:
+ *           type: string
+ *           format: date-time
+ *           description: Data di inizio del sondaggio
+ *           example: "2025-12-10T00:00:00.000Z"
+ *         data_fine:
+ *           type: string
+ *           format: date-time
+ *           description: Data di fine del sondaggio
+ *           example: "2025-12-20T00:00:00.000Z"
+ *         data_discussione:
+ *           type: string
+ *           format: date-time
+ *           description: Data di discussione (deve essere prima di data_inizio)
+ *           example: "2025-12-05T00:00:00.000Z"
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *     CreateSondaggioInput:
+ *       type: object
+ *       required:
+ *         - titolo
+ *         - descrizione
+ *         - data_inizio
+ *         - data_fine
+ *         - data_discussione
+ *         - domande
+ *       properties:
+ *         titolo:
+ *           type: string
+ *           description: Titolo del sondaggio
+ *           example: "Sondaggio sulla qualità dei servizi"
+ *         descrizione:
+ *           type: string
+ *           description: Descrizione dettagliata del sondaggio
+ *           example: "Sondaggio per valutare la soddisfazione dei cittadini"
+ *         data_inizio:
+ *           type: string
+ *           format: date-time
+ *           description: Data di inizio del sondaggio
+ *           example: "2025-12-10T00:00:00.000Z"
+ *         data_fine:
+ *           type: string
+ *           format: date-time
+ *           description: Data di fine del sondaggio
+ *           example: "2025-12-20T00:00:00.000Z"
+ *         data_discussione:
+ *           type: string
+ *           format: date-time
+ *           description: Data di discussione (deve essere prima di data_inizio)
+ *           example: "2025-12-05T00:00:00.000Z"
+ *         domande:
+ *           type: array
+ *           minItems: 1
+ *           items:
+ *             type: object
+ *             required:
+ *               - titolo
+ *               - tipo
+ *               - opzioni
+ *             properties:
+ *               titolo:
+ *                 type: string
+ *                 description: Testo della domanda
+ *                 example: "Come valuti la qualità del servizio?"
+ *               tipo:
+ *                 type: string
+ *                 enum: ["risposta_multipla", "risposta_singola"]
+ *                 description: Tipo di risposta consentita
+ *                 example: "risposta_singola"
+ *               opzioni:
+ *                 type: array
+ *                 minItems: 2
+ *                 items:
+ *                   type: object
+ *                   required:
+ *                     - testo
+ *                   properties:
+ *                     testo:
+ *                       type: string
+ *                       description: Testo dell'opzione
+ *                       example: "Eccellente"
  *   securitySchemes:
  *     sessionAuth:
  *       type: apiKey

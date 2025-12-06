@@ -36,29 +36,12 @@
     "mongosh": "^2.5.9",
     "nodemon": "^3.1.11",
     "passport": "^0.7.0",
-<<<<<<< HEAD
     "passport-google-oauth20": "^2.0.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
-=======
-    "passport-google-oauth20": "^2.0.0"
   },
   "devDependencies": {
     "jest": "^29.7.0",
     "supertest": "^6.3.4"
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "transform": {},
-    "moduleNameMapper": {
-      "^(\\.{1,2}/.*)\\.js$": "$1"
-    },
-    "testMatch": [
-      "**/tests/**/*.test.js"
-    ],
-    "setupFilesAfterEnv": [
-      "<rootDir>/backend/tests/setup.js"
-    ]
->>>>>>> 0da79a8eb955d6d681a1d8d0902f1c2b24dc7fad
   }
 }
