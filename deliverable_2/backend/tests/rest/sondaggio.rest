@@ -1,5 +1,5 @@
 POST http://localhost:3000/sondaggio
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzE5OGExOGNmMDkwODI3OWQzMDNjOSIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0OTUzMTc5LCJleHAiOjE3NjUwMzk1Nzl9.v9J7WLPozFZcfRE8F8ywOhfC0JOEpo8PSIWxS6IiLH4
+Authorization: Bearer {{TOKEN_CITTADINO}}
 Content-Type: application/json
 
 {
@@ -11,7 +11,7 @@ Content-Type: application/json
 }
 ###
 POST http://localhost:3000/sondaggio
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzE5OGExOGNmMDkwODI3OWQzMDNjOSIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0OTUzMTc5LCJleHAiOjE3NjUwMzk1Nzl9.v9J7WLPozFZcfRE8F8ywOhfC0JOEpo8PSIWxS6IiLH4
+Authorization: Bearer {{TOKEN_CITTADINO}}
 Content-Type: application/json
 
 {
@@ -44,7 +44,7 @@ Content-Type: application/json
 }
 ###
 POST http://localhost:3000/sondaggio
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzE5OGExOGNmMDkwODI3OWQzMDNjOSIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0OTUzMTc5LCJleHAiOjE3NjUwMzk1Nzl9.v9J7WLPozFZcfRE8F8ywOhfC0JOEpo8PSIWxS6IiLH4
+Authorization: Bearer {{TOKEN_CITTADINO}}
 Content-Type: application/json
 
 {
@@ -65,7 +65,7 @@ Content-Type: application/json
 }
 ###
 POST http://localhost:3000/sondaggio
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzE5OGExOGNmMDkwODI3OWQzMDNjOSIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY0OTUzMTc5LCJleHAiOjE3NjUwMzk1Nzl9.v9J7WLPozFZcfRE8F8ywOhfC0JOEpo8PSIWxS6IiLH4
+Authorization: Bearer {{TOKEN_CITTADINO}}
 Content-Type: application/json
 
 {
