@@ -44,6 +44,6 @@ app.use("/cittadino", cittadinoRouter);
 app.use("/votazioni", votazioneRouter);
 app.use("/iniziative", iniziativaRouter);
 app.use("/categorie", categoriaRouter);
-app.use("/sondaggio", sondaggioRouter);
+app.use("/sondaggi", sondaggioRouter);
 
 export default app;
