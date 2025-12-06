@@ -1,9 +1,9 @@
 import { Iniziativa } from '../models/iniziativa.js';
 import { CategoriaIniziativa } from '../models/categoria_iniziativa.js';
-import { VotoIniziativa } from '../models/voto_iniziativa.js';
 import { Cittadino } from '../models/cittadino.js';
 import mongoose from 'mongoose';
 
+// POST: Crea iniziativa
 export const createIniziativa = async (req, res) => {
     try {
         const userFromMiddleware = req.user;
@@ -65,7 +65,7 @@ export const createIniziativa = async (req, res) => {
     }
 };
 
-//ritorna l'elenco completo di iniziative
+// GET: ritorna l'elenco completo di iniziative
 export const getIniziative = async (req,res) => {
     try{    
         const user = req.user;
@@ -154,6 +154,136 @@ export const getIniziative = async (req,res) => {
 
 
 };
+
+// GET: Ricerca iniziativa per Id
+export const getIniziativaById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const iniziativa = await Iniziativa.findById(id);
+        if (!iniziativa) {
+            return res.status(404).json({
+                message: "Iniziativa non trovata.",
+                iniziativa: null
+            });
+        }
+        else{
+            return res.status(200).json({
+                message: "Iniziativa trovata con successo.",
+                iniziativa
+            });
+        }
+    }
+    catch(error){
+        console.error("Errore nel recupero dell'iniziativa con l'ID specificato:", error);
+        return res.status(500).json({
+            message: "Errore interno del server durante il recupero dell'iniziativa con l'ID specificato.",
+            error: error.message
+        });
+    }
+};
+
+// PATCH: Aggiorna iniziativa
+export const updateIniziativa = async (req, res) => {
+    try {
+        const user = req.user;
+        const { id } = req.params;
+        const { titolo, descrizione, ID_categoria } = req.body;
+        const iniziativa = await Iniziativa.findById(id);
+        const cittadino = await Cittadino.findById(user._id);
+
+        if (!cittadino) {
+            return res.status(401).json({
+                message: "Errore nell'autenticazione"
+            });
+        }
+        if (!iniziativa) {
+            return res.status(404).json({
+                message: "Iniziativa non trovata.",
+            });
+        }
+        if (iniziativa.ID_cittadino !== cittadino._id) {
+            return res.status(403).json({
+                message: "Accesso negato: non sei il creatore dell'iniziativa.",
+            });
+        }
+        if (!titolo && !descrizione && !ID_categoria) {
+            return res.status(400).json({
+                message: "Almeno un campo deve essere aggiornato.",
+            });
+        }
+        
+        if (titolo) {
+            const esistente = await Iniziativa.findOne({ titolo: titolo });
+            if (esistente) {
+                return res.status(400).json({
+                    message: "Titolo già esistente.",
+                });
+            }
+            iniziativa.titolo = titolo;
+        }
+        if (descrizione) {
+            iniziativa.descrizione = descrizione;
+        }
+        if (ID_categoria) {
+            const categoriaEsistente = await CategoriaIniziativa.findById(ID_categoria);
+            if (!categoriaEsistente) {
+                return res.status(404).json({
+                    message: "Categoria iniziativa non trovata."
+                });
+            }
+            iniziativa.ID_categoria = ID_categoria;
+        }
+        await iniziativa.save();
+        return res.status(200).json({
+            message: "Iniziativa aggiornata con successo.",
+            iniziativa
+        });
+    }
+    catch(error){
+        console.error("Errore nell'aggiornamento dell'iniziativa con l'ID specificato:", error);
+        return res.status(500).json({
+            message: "Errore interno del server durante l'aggiornamento dell'iniziativa con l'ID specificato.",
+            error: error.message
+        });
+    }
+};
+
+// DELETE: Elimina iniziativa
+export const deleteIniziativa = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = req.user;
+        const cittadino = await Cittadino.findById(user._id);
+        const iniziativa = await Iniziativa.findById(id);
+
+        if (!cittadino) {
+            return res.status(401).json({
+                message: "Errore nell'autenticazione"
+            });
+        }
+        if (!iniziativa) {
+            return res.status(404).json({
+                message: "Iniziativa non trovata.",
+            });
+        }
+        if (iniziativa.ID_cittadino !== cittadino._id) {
+            return res.status(403).json({
+                message: "Accesso negato: non sei il creatore dell'iniziativa.",
+            });
+        }
+        await iniziativa.deleteOne();
+        return res.status(200).json({
+            message: "Iniziativa eliminata con successo.",
+        });
+    }
+    catch(error){
+        return res.status(500).json({
+            message: "Errore interno del server durante l'eliminazione dell'iniziativa con l'ID specificato.",
+            error: error.message
+        });
+    }
+};
+
 
 export const ricercaIniziativa = async (req, res) => {
     try {
