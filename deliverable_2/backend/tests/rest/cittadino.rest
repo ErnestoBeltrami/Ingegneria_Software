@@ -15,3 +15,19 @@ Content-Type: application/json
 {
     "iniziativaID" : "693171e4a48b3dfc03fb4079"
 }
+###
+POST http://localhost:3000/auth/complete-profile
+Content-Type: application/json
+
+{
+    "cittadinoId" : "693456968455981f11a0aa54",
+    "nome" : "sigma",
+    "cognome" : "male",
+    "eta" : "67",
+    "genere" : "Uomo",
+    "categoria" : "Studente"
+}
+
+###
+GET http://localhost:3000/auth/cittadino/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzQ1Njk2ODQ1NTk4MWYxMWEwYWE1NCIsInJ1b2xvIjoiY2l0dGFkaW5vIiwiaWF0IjoxNzY1MDM4MTA2LCJleHAiOjE3NjU2NDI5MDZ9.cLus7haUJIL5XMGr-dzEMFtPHP5jzwefNJncPPpAD9k

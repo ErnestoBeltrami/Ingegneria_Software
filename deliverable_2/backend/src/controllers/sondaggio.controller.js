@@ -106,3 +106,230 @@ export const creaSondaggio = async (req, res) => {
         });
     }
 };
+
+export const getSondaggi = async (req, res) => {
+    try {
+        const userFromMiddleware = req.user;
+
+        if (!userFromMiddleware) {
+            return res.status(401).json({
+                message: 'Operatore non autenticato.'
+            });
+        }
+
+        const sondaggi = await Consultazione.find({ 
+            creatoDa: userFromMiddleware._id,
+            tipo: 'sondaggio'
+        })
+            .populate('ID_domande')    
+            .sort({ data_inizio: -1 });
+
+        return res.status(200).json({
+            message: 'Sondaggi recuperate con successo.',
+            sondaggi
+        });
+        
+    } catch (error) {
+        console.error('Errore nel recupero dei sondaggi:', error);
+        return res.status(500).json({
+            message: 'Errore interno del server durante il recupero dei sondaggi.',
+            error: error.message
+        });
+    }
+};
+
+// GET: Dettaglio singola sondaggio
+export const getSondaggioById = async (req, res) => {
+    try {
+        const userFromMiddleware = req.user;
+        const { id } = req.params;
+        
+        const sondaggio = await Consultazione.findOne({
+            _id: id,
+            creatoDa: userFromMiddleware._id,
+            tipo: 'sondaggio'
+        }).populate('ID_domande');
+
+        if (!sondaggio) {
+            return res.status(404).json({
+                message: 'Sondaggio non trovato.'
+            });
+        }
+
+        return res.status(200).json({
+            message: 'Sondaggio trovato con successo.',
+            sondaggio
+        });
+    } catch (error) {
+        console.error('Errore nel recupero del sondaggio:', error);
+        return res.status(500).json({
+            message: 'Errore interno del server durante il recupero del sondaggio.',
+            error: error.message
+        });
+    }
+};
+
+export const updateSondaggio = async (req, res) => {
+    try {
+        const userFromMiddleware = req.user;
+        const { id } = req.params;
+        const updateData = req.body;
+
+        const sondaggio = await Consultazione.findOne({
+            _id: id,
+            creatoDa: userFromMiddleware._id,
+            tipo: 'sondaggio'
+        });
+
+        if (!sondaggio) {
+            return res.status(404).json({
+                message: 'Sondaggio non trovato.'
+            });
+        }
+
+        if (sondaggio.stato !== 'bozza') {
+            return res.status(400).json({
+                message: 'Solo i sondaggi in stato "bozza" possono essere modificate.',
+            });
+        }
+
+        // Aggiorna solo i campi ammessi
+        const campiAmmessi = ['titolo', 'descrizione', 'data_inizio', 'data_fine', 'data_discussione'];
+        campiAmmessi.forEach((campo) => {
+            if (updateData[campo] !== undefined) {
+                sondaggio[campo] = updateData[campo];
+            }
+        });
+
+        await sondaggio.save();
+
+        return res.status(200).json({
+            message: 'Sondaggio aggiornato con successo.',
+            sondaggio
+        });
+    } catch (error) {
+        console.error('Errore nell\'aggiornamento della sondaggio:', error);
+        return res.status(500).json({
+            message: 'Errore interno del server durante l\'aggiornamento del sondaggio.',
+            error: error.message
+        });
+    }
+};
+
+// DELETE: Eliminazione sondaggio (solo in stato "bozza")
+export const deleteSondaggio = async (req, res) => {
+    try {
+        const userFromMiddleware = req.user;
+        const { id } = req.params;
+
+        const sondaggio = await Consultazione.findOne({
+            _id: id,
+            creatoDa: userFromMiddleware._id,
+            tipo: 'sondaggio'
+        });
+
+        if (!sondaggio) {
+            return res.status(404).json({
+                message: 'Sondaggio non trovato.'
+            });
+        }
+
+        if (sondaggio.stato !== 'bozza') {
+            return res.status(400).json({
+                message: 'Solo i sondaggi in stato "bozza" possono essere eliminati.'
+            });
+        }
+
+        await sondaggio.deleteOne();
+
+        return res.status(200).json({
+            message: 'Sondaggio eliminato con successo.'
+        });
+    } catch (error) {
+        console.error('Errore nell\'eliminazione del sondaggio:', error);
+        return res.status(500).json({
+            message: 'Errore interno del server durante l\'eliminazione del sondaggio.',
+            error: error.message
+        });
+    }
+};
+
+// PATCH: Pubblicare sondaggio (bozza -> attivo)
+export const publishSondaggio = async (req, res) => {
+    try {
+        const userFromMiddleware = req.user;
+        const { id } = req.params;
+
+        const sondaggio = await Consultazione.findOne({
+            _id: id,
+            creatoDa: userFromMiddleware._id,
+            tipo: 'sondaggio'
+        });
+
+        if (!sondaggio) {
+            return res.status(404).json({
+                message: 'Sondaggio non trovato.'
+            });
+        }
+
+        if (sondaggio.stato !== 'bozza') {
+            return res.status(400).json({
+                message: 'Solo i sondaggi in stato "bozza" possono essere pubblicate.'
+            });
+        }
+
+        sondaggio.stato = 'attivo';
+        await sondaggio.save();
+
+        return res.status(200).json({
+            message: 'Sondaggio pubblicato con successo.',
+            sondaggio
+        });
+    } catch (error) {
+        console.error('Errore nella pubblicazione del sondaggio:', error);
+        return res.status(500).json({
+            message: 'Errore interno del server durante la pubblicazione del sondaggio.',
+            error: error.message
+        });
+    }
+};
+
+// PATCH: Archiviare sondaggio (concluso -> archiviato)
+export const archiveSondaggio = async (req, res) => {
+    try {
+        const userFromMiddleware = req.user;
+        const { id } = req.params;
+
+        const sondaggio = await Consultazione.findOne({
+            _id: id,
+            creatoDa: userFromMiddleware._id,
+            tipo: 'sondaggio'
+        });
+
+        if (!sondaggio) {
+            return res.status(404).json({
+                message: 'Sondaggio non trovato.'
+            });
+        }
+
+        if (sondaggio.stato !== 'concluso') {
+            return res.status(400).json({
+                message: 'Solo i sondaggi in stato "concluso" possono essere archiviate.'
+            });
+        }
+
+        sondaggio.stato = 'archiviato';
+        await sondaggio.save();
+
+        return res.status(200).json({
+            message: 'Sondaggio archiviato con successo.',
+            sondaggio
+        });
+    } catch (error) {
+        console.error('Errore nell\'archiviazione del sondaggio:', error);
+        return res.status(500).json({
+            message: 'Errore interno del server durante l\'archiviazione del sondaggio.',
+            error: error.message
+        });
+    }
+};
