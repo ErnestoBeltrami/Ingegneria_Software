@@ -2,7 +2,8 @@ import { Domanda } from "../models/domanda.js";
 import { Consultazione } from "../models/consultazione.js";
 import mongoose from 'mongoose';
 
-export const creaSondaggio = async (req, res) => {
+// POST: Creazione sondaggio
+export const createSondaggio = async (req, res) => {
     
     const user = req.user;
     const data = req.body;

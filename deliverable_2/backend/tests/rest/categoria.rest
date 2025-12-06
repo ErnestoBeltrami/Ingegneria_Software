@@ -1,5 +1,5 @@
 POST http://localhost:3000/categorie
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmY0ZGYzMGM0YjVkMjA4M2ExYzNmMSIsInJ1b2xvIjoiY2l0dGFkaW5vIiwiaWF0IjoxNzY0ODE2MzQ0LCJleHAiOjE3NjU0MjExNDR9.uiXp4kyrq0bDL8bh5kCP5lQ5UBqzJXe6rAj7EQ5ZR_Q
+Authorization: Bearer {{TOKEN_CITTADINO}}
 Content-Type: application/json
 
 {
