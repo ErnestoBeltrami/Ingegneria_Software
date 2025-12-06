@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /sondaggio:
+* /sondaggi:
  *   post:
  *     summary: Crea un nuovo sondaggio
  *     description: Permette a un operatore autenticato di creare un nuovo sondaggio con multiple domande. Crea automaticamente tutte le domande associate e il sondaggio. Se la creazione fallisce, elimina automaticamente le risorse create (cleanup).
@@ -96,3 +96,46 @@
  *               error: "Database connection error"
  */
 
+/**
+ * @swagger
+ * /sondaggi:
+ *   get:
+ *     summary: Ricerca sondaggi
+ *     description: Restituisce la lista di tutti i sondaggi creati dall'operatore autenticato, ordinati per data di creazione (più recenti prima)
+ *     tags:
+ *       - Sondaggi
+ *     security:
+ *       - sessionAuth: []
+ *     responses:
+ *       200:
+ *         description: Sondaggi recuperati con successo
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Sondaggi trovati con successo:"
+ *                 sondaggi:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Sondaggio'
+ *       401:
+ *         description: Operatore non autenticato
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Operatore non autenticato."
+ *       500:
+ *         description: Errore interno del server
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Errore interno del server durante la ricerca dei sondaggi."
+ *               error: "Database connection error"
+ */

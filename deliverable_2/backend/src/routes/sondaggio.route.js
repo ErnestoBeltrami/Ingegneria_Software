@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {creaSondaggio} from "../controllers/sondaggio.controller.js";
+import {createSondaggio, getSondaggi} from "../controllers/sondaggio.controller.js";
 import {
     protect,
     restrictTo
@@ -7,7 +7,10 @@ import {
 
 const router = Router();
 
-// POST: Crea nuova categoria per iniziativa
-router.post("/",protect,restrictTo(['operatore']),creaSondaggio); 
+// POST: Crea nuovo sondaggio
+router.post("/",protect,restrictTo(['operatore']),createSondaggio); 
+
+// GET: Ricerca sondaggi (per ora tutti, filtrabili per operatore)
+router.get("/",protect,restrictTo(['operatore']),getSondaggi);
 
 export default router;

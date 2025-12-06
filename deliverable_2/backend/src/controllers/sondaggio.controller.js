@@ -2,7 +2,8 @@ import { Domanda } from "../models/domanda.js";
 import { Consultazione } from "../models/consultazione.js";
 import mongoose from 'mongoose';
 
-export const creaSondaggio = async (req, res) => {
+// POST: Creazione sondaggio
+export const createSondaggio = async (req, res) => {
     
     const user = req.user;
     const data = req.body;
@@ -106,3 +107,38 @@ export const creaSondaggio = async (req, res) => {
         });
     }
 };  
+
+// GET: Ricerca sondaggi (per ora tutti, filtrabili per operatore)
+export const getSondaggi = async (req, res) => {
+    try {
+        const user = req.user;
+        if (!user) {
+            return res.status(401).json({
+                message: "Operatore non autenticato."
+            });
+        }
+
+        const sondaggi = await Consultazione.find({ creatoDa: user._id, tipo: 'sondaggio' })
+            .populate('ID_domande')
+            .sort({ data_inizio: -1 });
+
+        if (!sondaggi || sondaggi.length === 0) {
+            return res.status(200).json({
+                message: "Nessun sondaggio trovato con i criteri specificati.",
+                sondaggi: []
+            });
+        }
+        else{
+            return res.status(200).json({
+                message: "Sondaggi trovati con successo:",
+                sondaggi
+            });
+        }
+    } catch (error) {
+        console.error("Errore nella ricerca dei sondaggi:", error);
+        return res.status(500).json({
+            message: "Errore interno del server durante la ricerca dei sondaggi.",
+            error: error.message
+        });
+    }
+};

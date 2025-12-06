@@ -3,7 +3,7 @@
  * /categorie:
  *   post:
  *     summary: Crea una nuova categoria per iniziativa
- *     description: Permette a un cittadino autenticato di creare una nuova categoria per le iniziative
+ *     description: Permette a un operatore autenticato di creare una nuova categoria per le iniziative
  *     tags:
  *       - Categorie
  *     security:
