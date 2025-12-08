@@ -602,3 +602,93 @@
  *               message: "Errore interno del server."
  *               error: "Database aggregation error"
  */
+
+/**
+ * @swagger
+ * /sondaggi/cittadino:
+ *   get:
+ *     summary: Recupera sondaggi disponibili per i cittadini
+ *     description: Restituisce la lista di tutti i sondaggi in stato "attivo" o "concluso", visibili ai cittadini autenticati. I sondaggi sono ordinati per data di inizio (più recenti prima). A differenza delle votazioni, i sondaggi contengono multiple domande (ID_domande array) invece di una singola domanda.
+ *     tags:
+ *       - Sondaggi
+ *     security:
+ *       - sessionAuth: []
+ *     responses:
+ *       200:
+ *         description: Sondaggi recuperati con successo o nessun sondaggio disponibile
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Messaggio di conferma
+ *                 votazioni:
+ *                   type: array
+ *                   items:
+ *                     allOf:
+ *                       - $ref: '#/components/schemas/Consultazione'
+ *                       - type: object
+ *                         properties:
+ *                           tipo:
+ *                             type: string
+ *                             enum: [sondaggio]
+ *                             example: "sondaggio"
+ *                           ID_domande:
+ *                             type: array
+ *                             items:
+ *                               type: string
+ *                             description: Array di ID delle domande associate al sondaggio (minimo 1)
+ *                             example: ["507f1f77bcf86cd799439015", "507f1f77bcf86cd799439016"]
+ *                   description: Array di sondaggi disponibili (presente solo se ci sono sondaggi). Nota - la proprietà è chiamata "votazioni" per compatibilità con il controller.
+ *             examples:
+ *               withSondaggi:
+ *                 value:
+ *                   message: "Sondaggi recuperati con successo."
+ *                   votazioni:
+ *                     - _id: "507f1f77bcf86cd799439011"
+ *                       tipo: "sondaggio"
+ *                       stato: "attivo"
+ *                       titolo: "Sondaggio sulla qualità dei servizi"
+ *                       descrizione: "Sondaggio per valutare la soddisfazione dei cittadini sui servizi pubblici"
+ *                       data_inizio: "2025-12-10T00:00:00.000Z"
+ *                       data_fine: "2025-12-20T00:00:00.000Z"
+ *                       data_discussione: "2025-12-05T00:00:00.000Z"
+ *                       creatoDa: "507f1f77bcf86cd799439012"
+ *                       ID_domande: ["507f1f77bcf86cd799439015", "507f1f77bcf86cd799439016", "507f1f77bcf86cd799439017"]
+ *                       createdAt: "2025-12-01T10:30:00.000Z"
+ *                       updatedAt: "2025-12-01T10:30:00.000Z"
+ *                     - _id: "507f1f77bcf86cd799439013"
+ *                       tipo: "sondaggio"
+ *                       stato: "concluso"
+ *                       titolo: "Sondaggio sulla mobilità urbana"
+ *                       descrizione: "Raccolta opinioni sulla mobilità e trasporti pubblici"
+ *                       data_inizio: "2025-11-01T00:00:00.000Z"
+ *                       data_fine: "2025-11-15T00:00:00.000Z"
+ *                       data_discussione: "2025-10-25T00:00:00.000Z"
+ *                       creatoDa: "507f1f77bcf86cd799439012"
+ *                       ID_domande: ["507f1f77bcf86cd799439018", "507f1f77bcf86cd799439019"]
+ *                       createdAt: "2025-10-20T14:20:00.000Z"
+ *                       updatedAt: "2025-11-15T23:59:00.000Z"
+ *               noSondaggi:
+ *                 value:
+ *                   message: "Nessun sondaggio disponibile al momento"
+ *       401:
+ *         description: Cittadino non autenticato
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Cittadino non autenticato."
+ *       500:
+ *         description: Errore interno del server
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Errore interno del server durante il recupero dei sondaggi."
+ *               error: "Database connection error"
+ */

@@ -140,6 +140,40 @@ export const getSondaggi = async (req, res) => {
     }
 };
 
+export const getSondaggiAvaiable = async (req, res) => {
+    try {
+        const userFromMiddleware = req.user;
+
+        if (!userFromMiddleware) {
+            return res.status(401).json({
+                message: 'Cittadino non autenticato.'
+            });
+        }
+
+        const votazioni = await Consultazione.find({ 
+            stato : ["attivo","concluso"],
+            tipo: 'sondaggio'
+        }).sort({ data_inizio: -1 });
+
+        if(!votazioni){
+            return res.status(200).json({
+                message : 'Nessun sondaggio disponibile al momento'
+            });
+        }
+
+        return res.status(200).json({
+            message: 'Sondaggi recuperati con successo.',
+            votazioni
+        });
+    } catch (error) {
+        console.error('Errore nel recupero dei sondaggi:', error);
+        return res.status(500).json({
+            message: 'Errore interno del server durante il recupero dei sondaggi.',
+            error: error.message
+        });
+    }
+};
+
 // GET: Dettaglio singola sondaggio
 export const getSondaggioById = async (req, res) => {
     try {

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {archiveSondaggio, creaSondaggio, deleteSondaggio, getRiepilogoSintetico, getSondaggi, getSondaggioById, publishSondaggio, updateSondaggio} from "../controllers/sondaggio.controller.js";
+import {archiveSondaggio, creaSondaggio, deleteSondaggio, getRiepilogoSintetico, getSondaggi, getSondaggioById, publishSondaggio, updateSondaggio,getSondaggiAvaiable} from "../controllers/sondaggio.controller.js";
 import {
     protect,
     restrictTo
@@ -11,6 +11,8 @@ const router = Router();
 router.post("/",protect,restrictTo(['operatore']),creaSondaggio); 
 
 router.get("/",protect,getSondaggi);
+
+router.get("/cittadino",protect,restrictTo(['cittadino']),getSondaggiAvaiable);
 
 router.get("/:id",protect,getSondaggioById);
 

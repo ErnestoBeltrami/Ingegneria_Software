@@ -460,3 +460,75 @@
  *               $ref: '#/components/schemas/Error'
  */
 
+/**
+ * @swagger
+ * /votazioni/cittadino:
+ *   get:
+ *     summary: Recupera votazioni disponibili per i cittadini
+ *     description: Restituisce la lista di tutte le votazioni in stato "attivo" o "concluso", visibili ai cittadini autenticati. Le votazioni sono ordinate per data di inizio (più recenti prima).
+ *     tags:
+ *       - Votazioni
+ *     security:
+ *       - sessionAuth: []
+ *     responses:
+ *       200:
+ *         description: Votazioni recuperate con successo o nessuna votazione disponibile
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Messaggio di conferma
+ *                 votazioni:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Votazione'
+ *                   description: Array di votazioni disponibili (presente solo se ci sono votazioni)
+ *             examples:
+ *               withVotazioni:
+ *                 value:
+ *                   message: "Votazioni recuperate con successo."
+ *                   votazioni:
+ *                     - _id: "507f1f77bcf86cd799439011"
+ *                       tipo: "votazione"
+ *                       stato: "attivo"
+ *                       titolo: "Votazione sul nuovo piano urbanistico"
+ *                       descrizione: "Votazione per approvare il piano urbanistico 2025"
+ *                       data_inizio: "2025-12-10T00:00:00.000Z"
+ *                       data_fine: "2025-12-20T00:00:00.000Z"
+ *                       data_discussione: "2025-12-05T00:00:00.000Z"
+ *                       creatoDa: "507f1f77bcf86cd799439012"
+ *                       ID_domande: []
+ *                     - _id: "507f1f77bcf86cd799439013"
+ *                       tipo: "votazione"
+ *                       stato: "concluso"
+ *                       titolo: "Votazione sulla mobilità sostenibile"
+ *                       descrizione: "Votazione per le nuove piste ciclabili"
+ *                       data_inizio: "2025-11-01T00:00:00.000Z"
+ *                       data_fine: "2025-11-15T00:00:00.000Z"
+ *                       data_discussione: "2025-10-25T00:00:00.000Z"
+ *                       creatoDa: "507f1f77bcf86cd799439012"
+ *                       ID_domande: []
+ *               noVotazioni:
+ *                 value:
+ *                   message: "Nessuna votazione disponibile al momento"
+ *       401:
+ *         description: Cittadino non autenticato
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Cittadino non autenticato."
+ *       500:
+ *         description: Errore interno del server
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Errore interno del server durante il recupero delle votazioni."
+ *               error: "Database connection error"
+ */

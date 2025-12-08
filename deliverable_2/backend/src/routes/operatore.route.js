@@ -6,19 +6,20 @@ import {
     promoteOperatoreToRoot
 } from '../controllers/operatore.controller.js'; // ⚠️ NECESSARIO per interagire con il DB
 import { 
-    protect    
+    protect,    
+    restrictTo
 } from '../middleware/auth_middleware.js'
 
 const router = Router();
 
 //POST METHODS
 router.post('/login', getByCredentials);
-router.post('/register', protect, createOperatore);
+router.post('/register', protect,restrictTo(['operatore']), createOperatore);
 
 //GET METHODS
-router.get('/profile',protect,getOperatoreData);
+router.get('/profile',protect,restrictTo(['operatore']),getOperatoreData);
 
 // PATCH METHODS
-router.patch('/:operatoreId/promote', protect, promoteOperatoreToRoot);
+router.patch('/:operatoreId/promote', protect,restrictTo(['operatore']), promoteOperatoreToRoot);
 
 export default router;

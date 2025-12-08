@@ -99,6 +99,42 @@ export const getVotazioni = async (req, res) => {
     }
 };
 
+//GET: Ritorna le votazioni attive e concluse visibili ai cittadini
+ export const getVotazioniAvaiable = async (req, res) => {
+    try {
+        const userFromMiddleware = req.user;
+
+        if (!userFromMiddleware) {
+            return res.status(401).json({
+                message: 'Cittadino non autenticato.'
+            });
+        }
+
+        const votazioni = await Consultazione.find({ 
+            stato : ["attivo","concluso"],
+            tipo: 'votazione'
+        }).sort({ data_inizio: -1 });
+
+        if(!votazioni){
+            return res.status(200).json({
+                message : 'Nessuna votazione disponibile al momento'
+            });
+        }
+
+        return res.status(200).json({
+            message: 'Votazioni recuperate con successo.',
+            votazioni
+        });
+    } catch (error) {
+        console.error('Errore nel recupero delle votazioni:', error);
+        return res.status(500).json({
+            message: 'Errore interno del server durante il recupero delle votazioni.',
+            error: error.message
+        });
+    }
+};
+
+
 // GET: Dettaglio singola votazione
 export const getVotazioneById = async (req, res) => {
     try {
