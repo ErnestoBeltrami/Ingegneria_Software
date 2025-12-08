@@ -466,3 +466,139 @@
  *             example:
  *               message: "Errore interno del server durante l'archiviazione del sondaggio."
  */
+
+/**
+ * @swagger
+ * /sondaggi/{id}/riepilogo:
+ *   get:
+ *     summary: Recupera il riepilogo sintetico dei risultati di un sondaggio
+ *     description: Restituisce un riepilogo completo dei risultati di un sondaggio con il conteggio dei voti per ogni opzione di ogni domanda, incluse le percentuali calcolate sul totale dei partecipanti unici. Utilizza aggregazione per calcolare i risultati in modo efficiente.
+ *     tags:
+ *       - Sondaggi
+ *     security:
+ *       - sessionAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del sondaggio di cui recuperare il riepilogo
+ *         example: "507f1f77bcf86cd799439011"
+ *     responses:
+ *       200:
+ *         description: Riepilogo sintetico recuperato con successo
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Riepilogo sintetico recuperato con successo."
+ *                 sondaggio:
+ *                   type: string
+ *                   description: Titolo del sondaggio
+ *                   example: "Sondaggio sulla qualità dei servizi"
+ *                 totaleVotiUnici:
+ *                   type: integer
+ *                   description: Numero totale di cittadini che hanno partecipato al sondaggio
+ *                   example: 150
+ *                 riepilogoPerDomanda:
+ *                   type: array
+ *                   description: Array contenente i risultati per ogni domanda del sondaggio
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       domandaId:
+ *                         type: string
+ *                         description: ID della domanda
+ *                         example: "507f1f77bcf86cd799439012"
+ *                       titoloDomanda:
+ *                         type: string
+ *                         description: Testo della domanda
+ *                         example: "Come valuti la qualità del servizio?"
+ *                       risultati:
+ *                         type: array
+ *                         description: Array contenente i risultati per ogni opzione della domanda
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             opzioneId:
+ *                               type: string
+ *                               description: ID dell'opzione
+ *                               example: "507f1f77bcf86cd799439013"
+ *                             testoOpzione:
+ *                               type: string
+ *                               description: Testo dell'opzione
+ *                               example: "Eccellente"
+ *                             voti:
+ *                               type: integer
+ *                               description: Numero di voti ricevuti dall'opzione
+ *                               example: 45
+ *                             percentuale:
+ *                               type: number
+ *                               format: float
+ *                               description: Percentuale di voti rispetto al totale dei partecipanti
+ *                               example: 30.00
+ *             example:
+ *               message: "Riepilogo sintetico recuperato con successo."
+ *               sondaggio: "Sondaggio sulla qualità dei servizi"
+ *               totaleVotiUnici: 150
+ *               riepilogoPerDomanda:
+ *                 - domandaId: "507f1f77bcf86cd799439012"
+ *                   titoloDomanda: "Come valuti la qualità del servizio?"
+ *                   risultati:
+ *                     - opzioneId: "507f1f77bcf86cd799439013"
+ *                       testoOpzione: "Eccellente"
+ *                       voti: 45
+ *                       percentuale: 30.00
+ *                     - opzioneId: "507f1f77bcf86cd799439014"
+ *                       testoOpzione: "Buono"
+ *                       voti: 60
+ *                       percentuale: 40.00
+ *                     - opzioneId: "507f1f77bcf86cd799439015"
+ *                       testoOpzione: "Sufficiente"
+ *                       voti: 30
+ *                       percentuale: 20.00
+ *                     - opzioneId: "507f1f77bcf86cd799439016"
+ *                       testoOpzione: "Scarso"
+ *                       voti: 15
+ *                       percentuale: 10.00
+ *                 - domandaId: "507f1f77bcf86cd799439017"
+ *                   titoloDomanda: "Quali servizi utilizzi più spesso?"
+ *                   risultati:
+ *                     - opzioneId: "507f1f77bcf86cd799439018"
+ *                       testoOpzione: "Servizi sanitari"
+ *                       voti: 80
+ *                       percentuale: 53.33
+ *                     - opzioneId: "507f1f77bcf86cd799439019"
+ *                       testoOpzione: "Servizi educativi"
+ *                       voti: 95
+ *                       percentuale: 63.33
+ *       400:
+ *         description: ID sondaggio non valido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "ID Sondaggio non valido."
+ *       404:
+ *         description: Sondaggio non trovato o domande mancanti
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Sondaggio non trovato o domande mancanti."
+ *       500:
+ *         description: Errore interno del server
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Errore interno del server."
+ *               error: "Database aggregation error"
+ */

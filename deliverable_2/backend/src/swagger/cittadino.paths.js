@@ -286,3 +286,129 @@
  *               $ref: '#/components/schemas/Error'
  */
 
+/**
+ * @swagger
+ * /cittadino/vote/sondaggio:
+ *   post:
+ *     summary: Rispondi a un sondaggio
+ *     description: Permette a un cittadino autenticato di rispondere a tutte le domande di un sondaggio attivo. L'utente può rispondere una sola volta per sondaggio. Le risposte devono includere tutte le domande del sondaggio e rispettare i vincoli (risposta singola o multipla).
+ *     tags:
+ *       - Cittadino
+ *     security:
+ *       - sessionAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - sondaggioId
+ *               - dettagliRisposte
+ *             properties:
+ *               sondaggioId:
+ *                 type: string
+ *                 description: ID del sondaggio a cui rispondere
+ *                 example: "507f1f77bcf86cd799439011"
+ *               dettagliRisposte:
+ *                 type: array
+ *                 description: Array contenente le risposte per ogni domanda del sondaggio
+ *                 items:
+ *                   type: object
+ *                   required:
+ *                     - ID_domanda
+ *                     - opzioniScelte
+ *                   properties:
+ *                     ID_domanda:
+ *                       type: string
+ *                       description: ID della domanda
+ *                       example: "507f1f77bcf86cd799439012"
+ *                     opzioniScelte:
+ *                       type: array
+ *                       description: Array di ID delle opzioni scelte (1 elemento per risposta singola, 1+ per risposta multipla)
+ *                       items:
+ *                         type: string
+ *                       example: ["507f1f77bcf86cd799439013"]
+ *           examples:
+ *             rispostaSingola:
+ *               summary: Esempio con risposte singole
+ *               value:
+ *                 sondaggioId: "507f1f77bcf86cd799439011"
+ *                 dettagliRisposte:
+ *                   - ID_domanda: "507f1f77bcf86cd799439012"
+ *                     opzioniScelte: ["507f1f77bcf86cd799439013"]
+ *                   - ID_domanda: "507f1f77bcf86cd799439014"
+ *                     opzioniScelte: ["507f1f77bcf86cd799439015"]
+ *             rispostaMultipla:
+ *               summary: Esempio con risposta multipla
+ *               value:
+ *                 sondaggioId: "507f1f77bcf86cd799439011"
+ *                 dettagliRisposte:
+ *                   - ID_domanda: "507f1f77bcf86cd799439012"
+ *                     opzioniScelte: ["507f1f77bcf86cd799439013"]
+ *                   - ID_domanda: "507f1f77bcf86cd799439016"
+ *                     opzioniScelte: ["507f1f77bcf86cd799439017", "507f1f77bcf86cd799439018", "507f1f77bcf86cd799439019"]
+ *     responses:
+ *       200:
+ *         description: Risposta al sondaggio avvenuta con successo
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Risposta sondaggio avvenuta con successo"
+ *       400:
+ *         description: Dati mancanti o non validi
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             examples:
+ *               missingData:
+ *                 value:
+ *                   message: "Dati di risposta mancanti o non validi."
+ *               wrongNumberOfAnswers:
+ *                 value:
+ *                   message: "Il numero di risposte fornite non corrisponde al numero di domande nel sondaggio."
+ *               questionNotInSurvey:
+ *                 value:
+ *                   message: "Domanda con ID 507f1f77bcf86cd799439012 non presente nel sondaggio."
+ *               wrongSingleAnswer:
+ *                 value:
+ *                   message: "La domanda 507f1f77bcf86cd799439012 richiede esattamente una risposta."
+ *               invalidOptions:
+ *                 value:
+ *                   message: "Le risposte per la domanda 507f1f77bcf86cd799439012 contengono opzioni non valide: 507f1f77bcf86cd799439099"
+ *       401:
+ *         description: Cittadino non autenticato
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Cittadino non identificato o non autenticato."
+ *       403:
+ *         description: Sondaggio già votato o non disponibile
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             examples:
+ *               alreadyVoted:
+ *                 value:
+ *                   message: "L'utente ha già votato questo sondaggio."
+ *               surveyNotActive:
+ *                 value:
+ *                   message: "Il sondaggio selezionato non è valido o non è attivo."
+ *       500:
+ *         description: Errore interno del server
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Errore interno del server durante la votazione."
+ *               error: "Database connection error"
+ */
