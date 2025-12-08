@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {archiveSondaggio, creaSondaggio, deleteSondaggio, getSondaggi, getSondaggioById, publishSondaggio, updateSondaggio} from "../controllers/sondaggio.controller.js";
+import {archiveSondaggio, creaSondaggio, deleteSondaggio, getRiepilogoSintetico, getSondaggi, getSondaggioById, publishSondaggio, updateSondaggio} from "../controllers/sondaggio.controller.js";
 import {
     protect,
     restrictTo
@@ -21,5 +21,7 @@ router.delete("/:id", protect,restrictTo(['operatore']), deleteSondaggio);
 router.patch("/:id/publish", protect,restrictTo(['operatore']), publishSondaggio);
 
 router.patch("/:id/archive", protect,restrictTo(['operatore']), archiveSondaggio);
+
+router.get("/:id/riepilogo",protect,getRiepilogoSintetico);
 
 export default router;

@@ -1,11 +1,11 @@
 ###
 POST http://localhost:3000/cittadino/vote/votazione
-Authorization: Bearer {{TOKEN_CITTADINO}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzVhZWIwZDM1NjlkNzUxYmQ4OGM4NiIsInJ1b2xvIjoiY2l0dGFkaW5vIiwiaWF0IjoxNzY1MTI1ODQ3LCJleHAiOjE3NjU3MzA2NDd9.uRSIylA3TC4ELo5umoF4wbZFQniSTMefy_U6FbilXDU
 Content-Type: application/json
 
 {
-    "votazioneId" : "693161843533632454961b87",
-    "opzioneId" : "693161843533632454961b87"
+    "votazioneId" : "693417b92516b0653e1ecfae",
+    "opzioneId" : "693417b92516b0653e1ecfab"
 }
 ###
 POST http://localhost:3000/cittadino/vote/iniziativa
@@ -20,7 +20,7 @@ POST http://localhost:3000/auth/complete-profile
 Content-Type: application/json
 
 {
-    "cittadinoId" : "693456968455981f11a0aa54",
+    "cittadinoId" : "6935aeb0d3569d751bd88c86",
     "nome" : "sigma",
     "cognome" : "male",
     "eta" : "67",
@@ -29,5 +29,16 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:3000/auth/cittadino/profile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzQ1Njk2ODQ1NTk4MWYxMWEwYWE1NCIsInJ1b2xvIjoiY2l0dGFkaW5vIiwiaWF0IjoxNzY1MDM4MTA2LCJleHAiOjE3NjU2NDI5MDZ9.cLus7haUJIL5XMGr-dzEMFtPHP5jzwefNJncPPpAD9k
+POST http://localhost:3000/cittadino/vote/sondaggio
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzVhZWIwZDM1NjlkNzUxYmQ4OGM4NiIsInJ1b2xvIjoiY2l0dGFkaW5vIiwiaWF0IjoxNzY1MTI1ODQ3LCJleHAiOjE3NjU3MzA2NDd9.uRSIylA3TC4ELo5umoF4wbZFQniSTMefy_U6FbilXDU
+Content-Type: application/json
+
+{
+    "sondaggioId" : "6934636904701732457bbd43",
+    "dettagliRisposte": [
+        {
+            "ID_domanda": "6934636904701732457bbd3f",
+            "opzioniScelte": ["6934636904701732457bbd40"]
+        }
+    ]
+}
