@@ -266,3 +266,32 @@ export const votaIniziativa = async (req,res) => {
         });
     }
 };
+
+export const rimuoviVotoIniziativa = async (req, res) => {
+    try {
+        const user = req.user;
+        const { iniziativaId } = req.params;
+
+        const voto = await VotoIniziativa.findOneAndDelete({
+            ID_iniziativa: iniziativaId,
+            ID_cittadino: user._id
+        });
+
+        if (!voto) {
+            return res.status(404).json({
+                message: "Voto non trovato: non hai votato per questa iniziativa."
+            });
+        }
+
+        return res.status(200).json({
+            message: "Voto rimosso con successo."
+        });
+
+    } catch (error) {
+        console.error('Errore nella rimozione del voto:', error);
+        return res.status(500).json({
+            message: 'Errore interno del server durante la rimozione del voto.',
+            error: error.message
+        });
+    }
+};

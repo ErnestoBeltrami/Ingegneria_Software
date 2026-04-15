@@ -320,6 +320,52 @@
 
 /**
  * @swagger
+ * /cittadino/vote/iniziativa/{iniziativaId}:
+ *   delete:
+ *     summary: Rimuovi voto da un'iniziativa
+ *     description: Permette a un cittadino autenticato di ritirare il proprio voto da un'iniziativa precedentemente votata.
+ *     tags:
+ *       - Cittadino
+ *     security:
+ *       - sessionAuth: []
+ *     parameters:
+ *       - name: iniziativaId
+ *         in: path
+ *         required: true
+ *         description: ID dell'iniziativa da cui rimuovere il voto
+ *         example: "507f1f77bcf86cd799439011"
+ *     responses:
+ *       200:
+ *         description: Voto rimosso con successo
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Voto rimosso con successo."
+ *       404:
+ *         description: Voto non trovato
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Voto non trovato: non hai votato per questa iniziativa."
+ *       500:
+ *         description: Errore interno del server
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Errore interno del server durante la rimozione del voto."
+ *               error: "Database error"
+ */
+
+/**
+ * @swagger
  * /cittadino/vote/sondaggio:
  *   post:
  *     summary: Rispondi a un sondaggio
