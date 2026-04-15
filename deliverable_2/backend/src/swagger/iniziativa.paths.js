@@ -333,12 +333,6 @@
  *               success:
  *                 value:
  *                   message: "Iniziativa aggiornata con successo."
- *                 iniziativa:  
- *                   $ref: '#/components/schemas/Iniziativa'
- *             examples:
- *               success:
- *                 value:
- *                   message: "Iniziativa aggiornata con successo."
  *                   iniziativa:
  *                     _id: "507f1f77bcf86cd799439011"
  *                     ID_categoria: "507f1f77bcf86cd799439012"
