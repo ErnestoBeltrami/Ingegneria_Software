@@ -161,6 +161,14 @@
  *                   example: "Sondaggio trovato con successo."
  *                 sondaggio:
  *                   $ref: '#/components/schemas/Sondaggio'
+ *       400:
+ *         description: ID non valido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "ID non valido."
  *       404:
  *         description: Sondaggio non trovato
  *         content:
@@ -241,13 +249,18 @@
  *                 sondaggio:
  *                   $ref: '#/components/schemas/Sondaggio'
  *       400:
- *         description: Sondaggio non in stato bozza
+ *         description: ID non valido o sondaggio non in stato bozza
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
- *             example:
- *               message: "Solo i sondaggi in stato \"bozza\" possono essere modificate."
+ *             examples:
+ *               invalidId:
+ *                 value:
+ *                   message: "ID non valido."
+ *               notBozza:
+ *                 value:
+ *                   message: "Solo i sondaggi in stato \"bozza\" possono essere modificate."
  *       401:
  *         description: Operatore non autenticato
  *         content:
@@ -304,13 +317,18 @@
  *                   type: string
  *                   example: "Sondaggio eliminato con successo."
  *       400:
- *         description: Sondaggio non in stato bozza
+ *         description: ID non valido o sondaggio non in stato bozza
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
- *             example:
- *               message: "Solo i sondaggi in stato \"bozza\" possono essere eliminati."
+ *             examples:
+ *               invalidId:
+ *                 value:
+ *                   message: "ID non valido."
+ *               notBozza:
+ *                 value:
+ *                   message: "Solo i sondaggi in stato \"bozza\" possono essere eliminati."
  *       401:
  *         description: Operatore non autenticato
  *         content:
@@ -369,13 +387,18 @@
  *                 sondaggio:
  *                   $ref: '#/components/schemas/Sondaggio'
  *       400:
- *         description: Sondaggio non in stato bozza
+ *         description: ID non valido o sondaggio non in stato bozza
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
- *             example:
- *               message: "Solo i sondaggi in stato \"bozza\" possono essere pubblicate."
+ *             examples:
+ *               invalidId:
+ *                 value:
+ *                   message: "ID non valido."
+ *               notBozza:
+ *                 value:
+ *                   message: "Solo i sondaggi in stato \"bozza\" possono essere pubblicate."
  *       401:
  *         description: Operatore non autenticato
  *         content:
@@ -434,13 +457,18 @@
  *                 sondaggio:
  *                   $ref: '#/components/schemas/Sondaggio'
  *       400:
- *         description: Sondaggio non in stato concluso
+ *         description: ID non valido o sondaggio non in stato concluso
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
- *             example:
- *               message: "Solo i sondaggi in stato \"concluso\" possono essere archiviate."
+ *             examples:
+ *               invalidId:
+ *                 value:
+ *                   message: "ID non valido."
+ *               notConcluso:
+ *                 value:
+ *                   message: "Solo i sondaggi in stato \"concluso\" possono essere archiviate."
  *       401:
  *         description: Operatore non autenticato
  *         content:
@@ -577,13 +605,13 @@
  *                       voti: 95
  *                       percentuale: 63.33
  *       400:
- *         description: ID sondaggio non valido
+ *         description: ID non valido
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
- *               message: "ID Sondaggio non valido."
+ *               message: "ID non valido."
  *       404:
  *         description: Sondaggio non trovato o domande mancanti
  *         content:

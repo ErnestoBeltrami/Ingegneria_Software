@@ -260,10 +260,18 @@
  *                     descrizione: "Proposta per organizzare giornate di pulizia nei parchi pubblici della città"
  *                     createdAt: "2025-12-05T16:00:00.000Z"
  *                     updatedAt: "2025-12-05T16:00:00.000Z"
+ *       400:
+ *         description: ID non valido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "ID non valido."
  *       401:
  *         description: Non autenticato
  *         content:
- *           application/json: 
+ *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
@@ -342,13 +350,18 @@
  *                     createdAt: "2025-12-05T16:00:00.000Z"
  *                     updatedAt: "2025-12-05T16:00:00.000Z"
  *       400:
- *         description: Dati mancanti o non validi
+ *         description: ID non valido o dati mancanti
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
- *             example:
- *               message: "Almeno un campo deve essere aggiornato."
+ *             examples:
+ *               invalidId:
+ *                 value:
+ *                   message: "ID non valido."
+ *               missingFields:
+ *                 value:
+ *                   message: "Almeno un campo deve essere aggiornato."
  *       401:
  *         description: Non autenticato
  *         content:
@@ -411,6 +424,14 @@
  *                 message:
  *                   type: string
  *                   example: "Iniziativa eliminata con successo."
+ *       400:
+ *         description: ID non valido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "ID non valido."
  *       401:
  *         description: Non autenticato
  *         content:
