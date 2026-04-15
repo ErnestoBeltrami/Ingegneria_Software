@@ -31,12 +31,12 @@ export const getByCredentials = async  (req,res) => {
         }
     }
     catch(error){
-        res.status(500).json({
-            message: "Internal server error",
+        return res.status(500).json({
+            message: "Errore interno del server durante il login.",
             error: error.message
         });
     }
-} 
+}
 
 export const getOperatoreData = async (req,res) => {
     const userFromMiddleware = req.user;
