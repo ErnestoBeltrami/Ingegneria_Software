@@ -9,7 +9,8 @@ import {
 
 import {
     protect,
-    restrictTo
+    restrictTo,
+    validateObjectId
 } from "../middleware/auth_middleware.js";
 
 const router = Router();
@@ -21,12 +22,12 @@ router.post("/", protect, restrictTo(['operatore']), createCategoria);
 router.get("/", protect, restrictTo(['cittadino', 'operatore']), getCategorie);
 
 // GET: Ritorna dettagli categoria
-router.get("/:id", protect, restrictTo(['cittadino', 'operatore']), getCategoriaById);
+router.get("/:id", protect, validateObjectId, restrictTo(['cittadino', 'operatore']), getCategoriaById);
 
 // PATCH: Aggiorna categoria
-router.patch("/:id", protect, restrictTo(['operatore']), updateCategoria);
+router.patch("/:id", protect, validateObjectId, restrictTo(['operatore']), updateCategoria);
 
 // DELETE: Elimina categoria
-router.delete("/:id", protect, restrictTo(['operatore']), deleteCategoria);
+router.delete("/:id", protect, validateObjectId, restrictTo(['operatore']), deleteCategoria);
 
 export default router;

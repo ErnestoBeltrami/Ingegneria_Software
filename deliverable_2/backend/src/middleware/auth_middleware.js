@@ -1,7 +1,14 @@
-// Nel file: ./middleware/authMiddleware.js
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 import { Cittadino } from '../models/cittadino.js';
-import { Operatore } from '../models/operatore.js'; // Assumi che questo sia il tuo modello Operatore
+import { Operatore } from '../models/operatore.js';
+
+export const validateObjectId = (req, res, next) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({ message: 'ID non valido.' });
+    }
+    next();
+};
 
 export const restrictTo = (allowed_roles) => { //Controlla se l'utente è effettivamente un operatore.
     return(req,res,next) => {

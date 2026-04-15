@@ -11,9 +11,10 @@ import {
   getVotazioniAvaiable
 } from "../controllers/votazione.controller.js";
 
-import { 
+import {
   protect,
-  restrictTo
+  restrictTo,
+  validateObjectId
 } from "../middleware/auth_middleware.js";
 
 const router = Router();
@@ -25,25 +26,25 @@ router.get("/", protect, restrictTo(['operatore']), getVotazioni);
 router.get("/cittadino",protect,restrictTo(['cittadino']),getVotazioniAvaiable);
 
 // GET /votazioni/:id - Dettaglio singola votazione
-router.get("/:id", protect,restrictTo(['operatore']), getVotazioneById);
+router.get("/:id", protect, validateObjectId, restrictTo(['operatore']), getVotazioneById);
 
 // GET /votazioni/:id - Riepilogo Sintetico votazione
-router.get("/:id/riepilogo",protect,getRiepilogoSintetico);
+router.get("/:id/riepilogo", protect, validateObjectId, getRiepilogoSintetico);
 
 // POST /votazioni - Creazione di una nuova votazione (solo operatore autenticato)
-router.post("/", protect,restrictTo(['operatore']), createVotazione);
+router.post("/", protect, restrictTo(['operatore']), createVotazione);
 
 // PATCH /votazioni/:id - Modifica votazione (solo stato "bozza")
-router.patch("/:id", protect,restrictTo(['operatore']), updateVotazione);
+router.patch("/:id", protect, validateObjectId, restrictTo(['operatore']), updateVotazione);
 
 // DELETE /votazioni/:id - Eliminazione votazione (solo stato "bozza")
-router.delete("/:id", protect,restrictTo(['operatore']), deleteVotazione);
+router.delete("/:id", protect, validateObjectId, restrictTo(['operatore']), deleteVotazione);
 
 // PATCH /votazioni/:id/publish - Pubblicazione votazione (bozza -> attivo)
-router.patch("/:id/publish", protect,restrictTo(['operatore']), publishVotazione);
+router.patch("/:id/publish", protect, validateObjectId, restrictTo(['operatore']), publishVotazione);
 
 // PATCH /votazioni/:id/archive - Archiviazione votazione (concluso -> archiviato)
-router.patch("/:id/archive", protect,restrictTo(['operatore']), archiveVotazione);
+router.patch("/:id/archive", protect, validateObjectId, restrictTo(['operatore']), archiveVotazione);
 
 export default router;
 

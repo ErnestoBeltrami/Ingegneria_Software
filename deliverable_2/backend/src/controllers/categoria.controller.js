@@ -132,13 +132,6 @@ export const updateCategoria = async (req, res) => {
 export const deleteCategoria = async (req, res) => {
     try {
         const { id } = req.params;
-     
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({
-                message: "ID categoria non valido.",
-                categoria: null
-            });
-        }
 
         const categoria = await CategoriaIniziativa.findById(id);
         if (!categoria) {
