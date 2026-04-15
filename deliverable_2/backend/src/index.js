@@ -1,7 +1,8 @@
 import "./config/env.js";
 import connectDB from "./config/database.js";
 import app from "./app.js";
-import { createRootOperatore } from "./utils/seedRoot.js"
+import { createRootOperatore } from "./utils/seedRoot.js";
+import { avviaScheduler } from "./utils/scheduleConsultazioni.js";
 
 const startServer = async () => {
     try {
@@ -13,6 +14,7 @@ const startServer = async () => {
         });
 
         await createRootOperatore();
+        avviaScheduler();
 
         const port = process.env.PORT || 8000;
         app.listen(port, () => {
