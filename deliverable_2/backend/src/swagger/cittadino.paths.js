@@ -127,6 +127,38 @@
 
 /**
  * @swagger
+ * /cittadino/logout:
+ *   post:
+ *     summary: Logout cittadino
+ *     description: Effettua il logout del cittadino autenticato impostando il flag loggedIn a false. Il token JWT rimane tecnicamente valido fino alla sua scadenza naturale — il client deve eliminarlo.
+ *     tags:
+ *       - Cittadino
+ *     security:
+ *       - sessionAuth: []
+ *     responses:
+ *       200:
+ *         description: Logout effettuato con successo
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Logout effettuato con successo."
+ *       500:
+ *         description: Errore interno del server
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Errore interno del server durante il logout."
+ *               error: "Database error"
+ */
+
+/**
+ * @swagger
  * /cittadino/profile:
  *   get:
  *     summary: Ottieni i dati del profilo del cittadino

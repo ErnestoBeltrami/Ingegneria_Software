@@ -204,6 +204,97 @@
 
 /**
  * @swagger
+ * /operatore/me/password:
+ *   patch:
+ *     summary: Cambia la password dell'operatore
+ *     description: Permette a un operatore autenticato di cambiare la propria password. La nuova password deve essere di almeno 8 caratteri e contenere almeno una maiuscola, una minuscola, un numero e un carattere speciale.
+ *     tags:
+ *       - Operatore
+ *     security:
+ *       - sessionAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - vecchia_password
+ *               - nuova_password
+ *             properties:
+ *               vecchia_password:
+ *                 type: string
+ *                 description: Password attuale dell'operatore
+ *                 example: "Vecchia@123"
+ *               nuova_password:
+ *                 type: string
+ *                 description: "Nuova password (min 8 caratteri, almeno 1 maiuscola, 1 minuscola, 1 numero, 1 carattere speciale)"
+ *                 example: "Nuova@456"
+ *     responses:
+ *       200:
+ *         description: Password aggiornata con successo
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Password aggiornata con successo."
+ *       400:
+ *         description: Dati mancanti o password non valida
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             examples:
+ *               missingFields:
+ *                 value:
+ *                   message: "Vecchia password e nuova password sono obbligatorie."
+ *               tooShort:
+ *                 value:
+ *                   message: "La nuova password deve essere di almeno 8 caratteri."
+ *               noUppercase:
+ *                 value:
+ *                   message: "La nuova password deve contenere almeno una lettera maiuscola."
+ *               noLowercase:
+ *                 value:
+ *                   message: "La nuova password deve contenere almeno una lettera minuscola."
+ *               noNumber:
+ *                 value:
+ *                   message: "La nuova password deve contenere almeno un numero."
+ *               noSpecial:
+ *                 value:
+ *                   message: "La nuova password deve contenere almeno un carattere speciale."
+ *       401:
+ *         description: Vecchia password non corretta
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Vecchia password non corretta."
+ *       404:
+ *         description: Operatore non trovato
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Operatore non trovato."
+ *       500:
+ *         description: Errore interno del server
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Errore interno del server durante il cambio password."
+ *               error: "Database error"
+ */
+
+/**
+ * @swagger
  * /operatore/{operatoreId}/promote:
  *   patch:
  *     summary: Promuovi un operatore a root
