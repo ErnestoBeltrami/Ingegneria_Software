@@ -26,7 +26,7 @@ router.get(
             });
         }
 
-        const payload = { id: cittadino.id, ruolo: 'cittadino' };
+        const payload = { id: cittadino._id, ruolo: 'cittadino' };
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
 
         res.json({

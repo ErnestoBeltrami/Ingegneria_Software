@@ -201,7 +201,7 @@ export const updateIniziativa = async (req, res) => {
                 message: "Iniziativa non trovata.",
             });
         }
-        if (iniziativa.ID_cittadino !== cittadino._id) {
+        if (!iniziativa.ID_cittadino.equals(cittadino._id)) {
             return res.status(403).json({
                 message: "Accesso negato: non sei il creatore dell'iniziativa.",
             });
@@ -266,7 +266,7 @@ export const deleteIniziativa = async (req, res) => {
                 message: "Iniziativa non trovata.",
             });
         }
-        if (iniziativa.ID_cittadino !== cittadino._id) {
+        if (!iniziativa.ID_cittadino.equals(cittadino._id)) {
             return res.status(403).json({
                 message: "Accesso negato: non sei il creatore dell'iniziativa.",
             });

@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 import '../config/env.js';
 
 const generateToken = (id) => {
-    console.log('JWT_SECRET in generateToken:', process.env.JWT_SECRET);
     return jwt.sign({ id, ruolo: 'operatore' }, process.env.JWT_SECRET, { expiresIn: '1d' });
 };
 

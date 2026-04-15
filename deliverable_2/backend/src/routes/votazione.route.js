@@ -21,10 +21,8 @@ const router = Router();
 // GET /votazioni - Lista votazioni dell'operatore
 router.get("/", protect, restrictTo(['operatore']), getVotazioni);
 
-// GET /votazioni/cittadino 
+// GET /votazioni/cittadino
 router.get("/cittadino",protect,restrictTo(['cittadino']),getVotazioniAvaiable);
-
-//DA FINIRE SWAGGER
 
 // GET /votazioni/:id - Dettaglio singola votazione
 router.get("/:id", protect,restrictTo(['operatore']), getVotazioneById);

@@ -1,5 +1,4 @@
-// Nel file: ./model/NomeModello.js
-import mongoose from 'mongoose'; // Carica Mongoose (necessario)
+import mongoose from 'mongoose';
 
 const cittadinoSchema = new mongoose.Schema({
     nome : {
@@ -10,7 +9,7 @@ const cittadinoSchema = new mongoose.Schema({
         type : String,
         trim : true,
     },
-    age : {
+    eta : {
         type : Number,
         min : 18
     },

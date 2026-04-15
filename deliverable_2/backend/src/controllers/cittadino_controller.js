@@ -1,4 +1,3 @@
-// Nel file: ./controllers/cittadinoController.js
 import { Cittadino } from '../models/cittadino.js';
 import { RispostaConsultazione } from '../models/risposta_consultazione.js';
 import mongoose from 'mongoose';
@@ -15,7 +14,7 @@ export const getCittadinoData = async (req, res) => {
                 message: "Utente non identificato dal sistema (Internal Error)"
             });
         } 
-        const cittadino = await Cittadino.findById(userFromMiddleware.id).select('-password'); 
+        const cittadino = await Cittadino.findById(userFromMiddleware._id).select('-password');
         if (cittadino) {
             
             const datiPubblici = {

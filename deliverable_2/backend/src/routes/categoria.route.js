@@ -18,10 +18,10 @@ const router = Router();
 router.post("/", protect, restrictTo(['operatore']), createCategoria);
 
 // GET: Ritorna lista di tutte le categorie
-router.get("/", protect, restrictTo(['cittadino, operatore']), getCategorie);
+router.get("/", protect, restrictTo(['cittadino', 'operatore']), getCategorie);
 
 // GET: Ritorna dettagli categoria
-router.get("/:id", protect, restrictTo(['cittadino, operatore']), getCategoriaById);
+router.get("/:id", protect, restrictTo(['cittadino', 'operatore']), getCategoriaById);
 
 // PATCH: Aggiorna categoria
 router.patch("/:id", protect, restrictTo(['operatore']), updateCategoria);
