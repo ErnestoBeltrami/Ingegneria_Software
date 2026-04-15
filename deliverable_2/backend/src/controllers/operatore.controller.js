@@ -131,6 +131,48 @@ export const createOperatore = async (req, res) => {
     }
 }
 
+export const changePassword = async (req, res) => {
+    try {
+        const userFromMiddleware = req.user;
+        const { vecchia_password, nuova_password } = req.body;
+
+        if (!vecchia_password || !nuova_password) {
+            return res.status(400).json({
+                message: 'Vecchia password e nuova password sono obbligatorie.'
+            });
+        }
+
+        if (nuova_password.length < 8) {
+            return res.status(400).json({
+                message: 'La nuova password deve essere di almeno 8 caratteri.'
+            });
+        }
+
+        const operatore = await Operatore.findById(userFromMiddleware._id).select('+password');
+
+        if (!operatore) {
+            return res.status(404).json({ message: 'Operatore non trovato.' });
+        }
+
+        const passwordCorretta = await operatore.matchPassword(vecchia_password);
+        if (!passwordCorretta) {
+            return res.status(401).json({ message: 'Vecchia password non corretta.' });
+        }
+
+        operatore.password = nuova_password;
+        await operatore.save();
+
+        return res.status(200).json({ message: 'Password aggiornata con successo.' });
+
+    } catch (error) {
+        console.error('Errore nel cambio password:', error);
+        return res.status(500).json({
+            message: 'Errore interno del server durante il cambio password.',
+            error: error.message
+        });
+    }
+};
+
 export const promoteOperatoreToRoot = async (req, res) => {
     try {
         const userFromMiddleware = req.user;
