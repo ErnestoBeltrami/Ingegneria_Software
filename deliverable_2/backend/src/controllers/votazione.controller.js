@@ -68,7 +68,7 @@ export const createVotazione = async (req, res) => {
     }
 };
 
-// GET: Lista votazioni (per ora tutte, filtrabili per operatore)
+// GET: Lista votazioni filtrabili per stato con paginazione
 export const getVotazioni = async (req, res) => {
     try {
         const userFromMiddleware = req.user;
@@ -79,16 +79,40 @@ export const getVotazioni = async (req, res) => {
             });
         }
 
-        const votazioni = await Consultazione.find({ 
-            creatoDa: userFromMiddleware._id,
-            tipo: 'votazione'
-        })
-            .populate('ID_domanda')    
-            .sort({ data_inizio: -1 });
+        const statiValidi = ['bozza', 'attivo', 'concluso', 'archiviato'];
+        const { stato, page = 1, limit = 10 } = req.query;
+
+        if (stato && !statiValidi.includes(stato)) {
+            return res.status(400).json({
+                message: `Stato non valido. Valori ammessi: ${statiValidi.join(', ')}.`
+            });
+        }
+
+        const pageNum = Math.max(1, parseInt(page));
+        const limitNum = Math.min(100, Math.max(1, parseInt(limit)));
+        const skip = (pageNum - 1) * limitNum;
+
+        const filtro = { creatoDa: userFromMiddleware._id, tipo: 'votazione' };
+        if (stato) filtro.stato = stato;
+
+        const [votazioni, totale] = await Promise.all([
+            Consultazione.find(filtro)
+                .populate('ID_domanda')
+                .sort({ data_inizio: -1 })
+                .skip(skip)
+                .limit(limitNum),
+            Consultazione.countDocuments(filtro)
+        ]);
 
         return res.status(200).json({
             message: 'Votazioni recuperate con successo.',
-            votazioni
+            votazioni,
+            paginazione: {
+                totale,
+                pagina: pageNum,
+                limite: limitNum,
+                pagine: Math.ceil(totale / limitNum)
+            }
         });
     } catch (error) {
         console.error('Errore nel recupero delle votazioni:', error);

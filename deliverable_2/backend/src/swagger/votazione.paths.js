@@ -2,12 +2,31 @@
  * @swagger
  * /votazioni:
  *   get:
- *     summary: Ottieni tutte le votazioni dell'operatore
- *     description: Restituisce la lista di tutte le votazioni create dall'operatore autenticato, ordinate per data di inizio (più recenti prima)
+ *     summary: Lista votazioni dell'operatore
+ *     description: Restituisce la lista paginata delle votazioni create dall'operatore autenticato, ordinate per data di inizio (più recenti prima). Supporta filtro per stato e paginazione.
  *     tags:
  *       - Votazioni
  *     security:
  *       - sessionAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: stato
+ *         schema:
+ *           type: string
+ *           enum: [bozza, attivo, concluso, archiviato]
+ *         description: Filtra le votazioni per stato
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Numero di pagina
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Numero di risultati per pagina (max 100)
  *     responses:
  *       200:
  *         description: Votazioni recuperate con successo
@@ -23,6 +42,29 @@
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/VotazioneWithDomanda'
+ *                 paginazione:
+ *                   type: object
+ *                   properties:
+ *                     totale:
+ *                       type: integer
+ *                       example: 35
+ *                     pagina:
+ *                       type: integer
+ *                       example: 1
+ *                     limite:
+ *                       type: integer
+ *                       example: 10
+ *                     pagine:
+ *                       type: integer
+ *                       example: 4
+ *       400:
+ *         description: Stato non valido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Stato non valido. Valori ammessi: bozza, attivo, concluso, archiviato."
  *       401:
  *         description: Operatore non autenticato
  *         content:

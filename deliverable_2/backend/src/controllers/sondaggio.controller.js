@@ -119,18 +119,42 @@ export const getSondaggi = async (req, res) => {
             });
         }
 
-        const sondaggi = await Consultazione.find({ 
-            creatoDa: userFromMiddleware._id,
-            tipo: 'sondaggio'
-        })
-            .populate('ID_domande')    
-            .sort({ data_inizio: -1 });
+        const statiValidi = ['bozza', 'attivo', 'concluso', 'archiviato'];
+        const { stato, page = 1, limit = 10 } = req.query;
+
+        if (stato && !statiValidi.includes(stato)) {
+            return res.status(400).json({
+                message: `Stato non valido. Valori ammessi: ${statiValidi.join(', ')}.`
+            });
+        }
+
+        const pageNum = Math.max(1, parseInt(page));
+        const limitNum = Math.min(100, Math.max(1, parseInt(limit)));
+        const skip = (pageNum - 1) * limitNum;
+
+        const filtro = { creatoDa: userFromMiddleware._id, tipo: 'sondaggio' };
+        if (stato) filtro.stato = stato;
+
+        const [sondaggi, totale] = await Promise.all([
+            Consultazione.find(filtro)
+                .populate('ID_domande')
+                .sort({ data_inizio: -1 })
+                .skip(skip)
+                .limit(limitNum),
+            Consultazione.countDocuments(filtro)
+        ]);
 
         return res.status(200).json({
-            message: 'Sondaggi recuperate con successo.',
-            sondaggi
+            message: 'Sondaggi recuperati con successo.',
+            sondaggi,
+            paginazione: {
+                totale,
+                pagina: pageNum,
+                limite: limitNum,
+                pagine: Math.ceil(totale / limitNum)
+            }
         });
-        
+
     } catch (error) {
         console.error('Errore nel recupero dei sondaggi:', error);
         return res.status(500).json({

@@ -91,12 +91,31 @@
  * @swagger
  * /sondaggi:
  *   get:
- *     summary: Ricerca sondaggi
- *     description: Restituisce la lista di tutti i sondaggi creati dall'operatore autenticato, ordinati per data di inizio (più recenti prima)
+ *     summary: Lista sondaggi dell'operatore
+ *     description: Restituisce la lista paginata dei sondaggi creati dall'operatore autenticato, ordinati per data di inizio (più recenti prima). Supporta filtro per stato e paginazione.
  *     tags:
  *       - Sondaggi
  *     security:
  *       - sessionAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: stato
+ *         schema:
+ *           type: string
+ *           enum: [bozza, attivo, concluso, archiviato]
+ *         description: Filtra i sondaggi per stato
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Numero di pagina
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Numero di risultati per pagina (max 100)
  *     responses:
  *       200:
  *         description: Sondaggi recuperati con successo
@@ -107,11 +126,34 @@
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "Sondaggi recuperate con successo."
+ *                   example: "Sondaggi recuperati con successo."
  *                 sondaggi:
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/Sondaggio'
+ *                 paginazione:
+ *                   type: object
+ *                   properties:
+ *                     totale:
+ *                       type: integer
+ *                       example: 42
+ *                     pagina:
+ *                       type: integer
+ *                       example: 1
+ *                     limite:
+ *                       type: integer
+ *                       example: 10
+ *                     pagine:
+ *                       type: integer
+ *                       example: 5
+ *       400:
+ *         description: Stato non valido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Stato non valido. Valori ammessi: bozza, attivo, concluso, archiviato."
  *       401:
  *         description: Operatore non autenticato
  *         content:
