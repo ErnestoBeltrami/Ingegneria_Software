@@ -67,7 +67,7 @@ export const createIniziativa = async (req, res) => {
 
 // GET: ritorna l'elenco completo di iniziative
 export const getIniziative = async (req,res) => {
-    try{    
+    try{
         const user = req.user;
 
         if(!user){
@@ -76,8 +76,11 @@ export const getIniziative = async (req,res) => {
             });
         }
 
-        
+        // I cittadini vedono solo le iniziative approvate; gli operatori vedono tutto
+        const matchStato = req.ruolo === 'operatore' ? {} : { stato: 'approvata' };
+
         const iniziative = await Iniziativa.aggregate([
+        { $match: matchStato },
         {
             $lookup: {
                 from: "votoiniziativas",
@@ -115,10 +118,11 @@ export const getIniziative = async (req,res) => {
                 ID_categoria: 1,
                 categoria: "$categoria_dettagli.nome",
                 titolo: 1,
+                stato: 1,
                 nome_cittadino: "$cittadino_dettagli.nome",
                 cognome_cittadino: "$cittadino_dettagli.cognome",
                 numero_voti: "$numero_voti",
-                createdAt: 1 
+                createdAt: 1
             }
         },
         {
@@ -129,18 +133,16 @@ export const getIniziative = async (req,res) => {
         }
         ]);
 
-        if (iniziative.length === 0) { // Controlla se l'array è vuoto
-            return res.status(200).json({ // Usa il punto, non la virgola
-                message: "Nessuna iniziativa disponibile.",
-                iniziative: [] // Buona pratica restituire l'array vuoto
-            });
-        }
-        else{
+        if (iniziative.length === 0) {
             return res.status(200).json({
-                message : "Iniziative trovate:",
-                iniziative
+                message: "Nessuna iniziativa disponibile.",
+                iniziative: []
             });
         }
+        return res.status(200).json({
+            message : "Iniziative trovate:",
+            iniziative
+        });
 
     }
     catch(error){
@@ -150,9 +152,6 @@ export const getIniziative = async (req,res) => {
             error: error.message
         });
     }
-    
-
-
 };
 
 // GET: Ricerca iniziativa per Id
@@ -204,6 +203,11 @@ export const updateIniziativa = async (req, res) => {
         if (!iniziativa.ID_cittadino.equals(cittadino._id)) {
             return res.status(403).json({
                 message: "Accesso negato: non sei il creatore dell'iniziativa.",
+            });
+        }
+        if (iniziativa.stato !== 'in_attesa') {
+            return res.status(400).json({
+                message: "Solo le iniziative in stato \"in_attesa\" possono essere modificate."
             });
         }
         if (!titolo && !descrizione && !ID_categoria) {
@@ -301,7 +305,8 @@ export const ricercaIniziativa = async (req, res) => {
         const ordina_per = filtri?.ordina_per;
         const ordine = filtri?.ordine || -1; // Default: Decrescente (-1)
 
-        let matchStage = {}; 
+        // I cittadini vedono solo le iniziative approvate; gli operatori vedono tutto
+        let matchStage = req.ruolo === 'operatore' ? {} : { stato: 'approvata' };
 
         // 1. CORREZIONE: Mappa l'array di stringhe in array di ObjectId
         const categorieObjectId = categorie.map(id => {
@@ -440,6 +445,51 @@ export const ricercaIniziativa = async (req, res) => {
         console.error("Errore nel recupero delle iniziative:", error);
         return res.status(500).json({
             message: "Errore interno del server durante il recupero delle iniziative.",
+            error: error.message
+        });
+    }
+};
+
+// PATCH: Modera iniziativa (solo operatore)
+export const moderaIniziativa = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { stato, motivazione } = req.body;
+
+        const statiValidi = ['approvata', 'rifiutata'];
+        if (!stato || !statiValidi.includes(stato)) {
+            return res.status(400).json({
+                message: `Stato non valido. Valori ammessi: ${statiValidi.join(', ')}.`
+            });
+        }
+
+        const iniziativa = await Iniziativa.findById(id);
+
+        if (!iniziativa) {
+            return res.status(404).json({
+                message: "Iniziativa non trovata."
+            });
+        }
+
+        if (iniziativa.stato !== 'in_attesa') {
+            return res.status(400).json({
+                message: "Solo le iniziative in stato \"in_attesa\" possono essere moderate."
+            });
+        }
+
+        iniziativa.stato = stato;
+        if (motivazione) iniziativa.motivazione_moderazione = motivazione;
+        await iniziativa.save();
+
+        return res.status(200).json({
+            message: `Iniziativa ${stato} con successo.`,
+            iniziativa
+        });
+
+    } catch (error) {
+        console.error("Errore nella moderazione dell'iniziativa:", error);
+        return res.status(500).json({
+            message: "Errore interno del server durante la moderazione dell'iniziativa.",
             error: error.message
         });
     }
