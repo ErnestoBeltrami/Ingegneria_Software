@@ -147,6 +147,26 @@ export const changePassword = async (req, res) => {
                 message: 'La nuova password deve essere di almeno 8 caratteri.'
             });
         }
+        if (!/[A-Z]/.test(nuova_password)) {
+            return res.status(400).json({
+                message: 'La nuova password deve contenere almeno una lettera maiuscola.'
+            });
+        }
+        if (!/[a-z]/.test(nuova_password)) {
+            return res.status(400).json({
+                message: 'La nuova password deve contenere almeno una lettera minuscola.'
+            });
+        }
+        if (!/[0-9]/.test(nuova_password)) {
+            return res.status(400).json({
+                message: 'La nuova password deve contenere almeno un numero.'
+            });
+        }
+        if (!/[^A-Za-z0-9]/.test(nuova_password)) {
+            return res.status(400).json({
+                message: 'La nuova password deve contenere almeno un carattere speciale.'
+            });
+        }
 
         const operatore = await Operatore.findById(userFromMiddleware._id).select('+password');
 
