@@ -1,0 +1,270 @@
+/* =====================
+   Layout principale
+   ===================== */
+.login-page {
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* =====================
+   Pannello sinistro
+   ===================== */
+.login-left {
+  width: 50%;
+  background: #090a0a;
+  color: white;
+  padding: 64px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.login-left__header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.login-left__title {
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 40px;
+  color: white;
+}
+
+.login-left__subtitle {
+  font-size: 16px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.login-left__hero {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.login-left__hero-heading {
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: white;
+}
+
+.login-left__hero-text {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 26px;
+  color: rgba(255, 255, 255, 0.6);
+  max-width: 348px;
+}
+
+.login-left__features {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.login-left__feature {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.login-left__feature-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.login-left__feature-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  line-height: 20px;
+}
+
+.login-left__feature-desc {
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 16px;
+  margin-top: 2px;
+}
+
+.login-left__footer {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* =====================
+   Pannello destro
+   ===================== */
+.login-right {
+  flex: 1;
+  background: #f9fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+}
+
+/* =====================
+   Card centrale
+   ===================== */
+.login-card {
+  width: 100%;
+  max-width: 384px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.login-card__header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.login-card__title {
+  font-size: 30px;
+  font-weight: 700;
+  color: #101828;
+  line-height: 36px;
+}
+
+.login-card__subtitle {
+  font-size: 16px;
+  font-weight: 400;
+  color: #6a7282;
+  line-height: 24px;
+}
+
+.login-card__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.login-card__security {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #99a1af;
+}
+
+/* =====================
+   Bottoni
+   ===================== */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 56px;
+  width: 100%;
+  border-radius: 16px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.btn:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn--cittadino {
+  background: #007a52;
+  box-shadow: 0px 4px 18px 0px rgba(0, 122, 82, 0.35);
+}
+
+.btn--operatore {
+  background: #1f3a89;
+  box-shadow: 0px 4px 18px 0px rgba(31, 58, 137, 0.35);
+}
+
+.btn--full {
+  justify-content: center;
+}
+
+/* =====================
+   Form operatore
+   ===================== */
+.login-card__form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-field label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #344054;
+}
+
+.form-field input {
+  height: 48px;
+  border: 1.5px solid #d0d5dd;
+  border-radius: 12px;
+  padding: 0 16px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: #101828;
+  background: white;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.form-field input:focus {
+  border-color: #1f3a89;
+}
+
+.form-field input::placeholder {
+  color: #98a2b3;
+}
+
+.form-error {
+  font-size: 14px;
+  font-weight: 500;
+  color: #d92d20;
+}
+
+.btn-back {
+  background: none;
+  border: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: #6a7282;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+  transition: color 0.15s ease;
+}
+
+.btn-back:hover {
+  color: #1f3a89;
+}
