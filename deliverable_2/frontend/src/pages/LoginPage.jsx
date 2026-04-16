@@ -23,7 +23,7 @@ export default function LoginPage() {
       const res = await fetch('/operatore/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password_inserita: password }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Credenziali non valide');
