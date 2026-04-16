@@ -5,7 +5,7 @@ import './LoginPage.css';
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
 
 export default function LoginPage() {
-  const [view, setView] = useState('select'); // 'select' | 'operatore'
+  const [view, setView] = useState('select'); // 'select' | 'operatore' | 'success'
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -29,7 +29,7 @@ export default function LoginPage() {
       if (!res.ok) throw new Error(data.message || 'Credenziali non valide');
       localStorage.setItem('token', data.token);
       localStorage.setItem('role', 'operatore');
-      window.location.href = '/dashboard';
+      setView('success');
     } catch (err) {
       setError(err.message);
     } finally {
@@ -97,7 +97,20 @@ export default function LoginPage() {
 
       {/* Pannello destro — form */}
       <div className="login-right">
-        {view === 'select' ? (
+        {view === 'success' ? (
+          <div className="login-card">
+            <div className="login-card__header">
+              <h2 className="login-card__title">Accesso effettuato</h2>
+              <p className="login-card__subtitle">
+                Bentornato, <strong>{username}</strong>. La dashboard è in costruzione.
+              </p>
+            </div>
+            <div className="login-card__security">
+              <ShieldCheck size={13} />
+              <span>Piattaforma sicura — Comune di Trento</span>
+            </div>
+          </div>
+        ) : view === 'select' ? (
           <div className="login-card">
             <div className="login-card__header">
               <h2 className="login-card__title">Benvenuto</h2>
