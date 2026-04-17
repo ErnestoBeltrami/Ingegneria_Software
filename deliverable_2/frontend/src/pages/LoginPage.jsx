@@ -53,7 +53,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen font-[Montserrat,sans-serif]">
+    <div className="flex min-h-screen">
 
       {/* Pannello sinistro — branding */}
       <div className="flex w-1/2 flex-col justify-between bg-[#090a0a] px-14 py-16 text-white">
@@ -119,11 +119,11 @@ export default function LoginPage() {
 
               <div className="flex flex-col gap-4">
                 <Button variant="cittadino" onClick={handleCittadinoLogin}>
-                  <span>Accedi come cittadino</span>
+                  <span className="flex-1 text-center">Accedi come cittadino</span>
                   <ArrowRight size={18} />
                 </Button>
                 <Button variant="operatore" onClick={() => setView('operatore')}>
-                  <span>Accedi come operatore</span>
+                  <span className="flex-1 text-center">Accedi come operatore</span>
                   <ArrowRight size={18} />
                 </Button>
               </div>
