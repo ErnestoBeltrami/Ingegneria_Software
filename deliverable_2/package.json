@@ -24,7 +24,9 @@
     "test:api": "node backend/tests/scripts/test-api.js",
     "test:api:votazione": "node backend/tests/scripts/test-api.js backend/tests/rest/votazione.rest",
     "test:api:operatore": "node backend/tests/scripts/test-api.js backend/tests/rest/operatore.rest",
-    "test:api:cittadino": "node backend/tests/scripts/test-api.js backend/tests/rest/cittadino.rest"
+    "test:api:cittadino": "node backend/tests/scripts/test-api.js backend/tests/rest/cittadino.rest",
+    "test:login": "node backend/tests/scripts/test-api.js backend/tests/rest/test-login-operatore.rest",
+    "test:dashboard": "node backend/tests/scripts/test-api.js backend/tests/rest/test-dashboard-flow.rest"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

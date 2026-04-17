@@ -1,11 +1,13 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowRight, CheckSquare, Users, MapPin, ShieldCheck } from 'lucide-react';
 import './LoginPage.css';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
 
 export default function LoginPage() {
-  const [view, setView] = useState('select'); // 'select' | 'operatore' | 'success'
+  const navigate = useNavigate();
+  const [view, setView] = useState('select'); // 'select' | 'operatore'
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -29,7 +31,7 @@ export default function LoginPage() {
       if (!res.ok) throw new Error(data.message || 'Credenziali non valide');
       localStorage.setItem('token', data.token);
       localStorage.setItem('role', 'operatore');
-      setView('success');
+      navigate('/dashboard');
     } catch (err) {
       setError(err.message);
     } finally {

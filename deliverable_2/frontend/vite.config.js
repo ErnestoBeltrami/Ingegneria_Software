@@ -8,6 +8,8 @@ export default defineConfig({
     proxy: {
       '/operatore': { target: 'http://localhost:8000', changeOrigin: true },
       '/auth': { target: 'http://localhost:8000', changeOrigin: true },
+      '/votazioni': { target: 'http://localhost:8000', changeOrigin: true },
+      '/sondaggio': { target: 'http://localhost:8000', changeOrigin: true },
     },
   },
 });

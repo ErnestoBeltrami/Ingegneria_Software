@@ -1,0 +1,371 @@
+/* =====================
+   Layout pagina
+   ===================== */
+.dashboard-page {
+  max-width: 845px;
+  margin: 0 auto;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-family: 'Montserrat', sans-serif;
+  background: #f9fafc;
+  min-height: 100vh;
+}
+
+/* =====================
+   Header
+   ===================== */
+.dashboard-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dashboard-header__label {
+  font-size: 14px;
+  font-weight: 400;
+  color: #99a1af;
+  line-height: 20px;
+}
+
+.dashboard-header__title {
+  font-size: 30px;
+  font-weight: 700;
+  color: #101828;
+  line-height: 36px;
+}
+
+.dashboard-header__subtitle {
+  font-size: 14px;
+  font-weight: 400;
+  color: #6a7282;
+  line-height: 20px;
+}
+
+/* =====================
+   Nav cards
+   ===================== */
+.dashboard-nav-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.nav-card {
+  background: white;
+  border: 1px solid #f3f4f6;
+  border-radius: 16px;
+  box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.07);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.15s ease;
+}
+
+.nav-card:hover {
+  box-shadow: 0px 4px 18px 0px rgba(0, 0, 0, 0.1);
+}
+
+.nav-card__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-card__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e2939;
+  line-height: 20px;
+}
+
+.nav-card__desc {
+  font-size: 12px;
+  font-weight: 500;
+  color: #99a1af;
+  line-height: 16px;
+  margin-top: 2px;
+}
+
+.nav-card__link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+}
+
+/* =====================
+   Action buttons
+   ===================== */
+.dashboard-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 17px 20px;
+  border-radius: 16px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  text-align: left;
+  transition: opacity 0.15s ease;
+}
+
+.action-btn:hover {
+  opacity: 0.9;
+}
+
+.action-btn--primary {
+  background: #1f3a89;
+  box-shadow: 0px 4px 14px 0px rgba(31, 58, 137, 0.3);
+  color: white;
+}
+
+.action-btn--secondary {
+  background: white;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+  color: #1e2939;
+}
+
+.action-btn__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.action-btn__icon--green {
+  background: rgba(0, 122, 82, 0.1);
+}
+
+.action-btn__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.action-btn__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  line-height: 20px;
+}
+
+.action-btn__title--dark {
+  color: #1e2939;
+}
+
+.action-btn__subtitle {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 16px;
+}
+
+.action-btn__subtitle--dark {
+  color: #99a1af;
+}
+
+/* =====================
+   Search bar
+   ===================== */
+.dashboard-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 0 17px;
+  height: 46px;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-search__input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #101828;
+  background: transparent;
+}
+
+.dashboard-search__input::placeholder {
+  color: #99a1af;
+}
+
+/* =====================
+   Activity section
+   ===================== */
+.dashboard-activity {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dashboard-activity__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e2939;
+  line-height: 24px;
+}
+
+/* =====================
+   Filter tabs
+   ===================== */
+.dashboard-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 9999px;
+  border: 1px solid #e5e7eb;
+  background: white;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4a5565;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.filter-btn--active {
+  background: #1f3a89;
+  border-color: #1f3a89;
+  color: white;
+}
+
+.filter-btn:hover:not(.filter-btn--active) {
+  border-color: #1f3a89;
+  color: #1f3a89;
+}
+
+/* =====================
+   Activity cards
+   ===================== */
+.activity-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.activity-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.06);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.activity-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.badge {
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.badge--tipo {
+  background: rgba(31, 58, 137, 0.1);
+  color: #1f3a89;
+}
+
+.badge--stato {
+  background: #007a52;
+  color: white;
+}
+
+.activity-card__titolo {
+  font-size: 16px;
+  font-weight: 600;
+  color: #101828;
+  line-height: 22px;
+}
+
+.activity-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.activity-card__termine {
+  font-size: 12px;
+  font-weight: 400;
+  color: #6a7282;
+  line-height: 16px;
+}
+
+.btn-gestisci {
+  height: 32px;
+  padding: 0 14px;
+  background: #1f3a89;
+  border: none;
+  border-radius: 14px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.btn-gestisci:hover {
+  opacity: 0.88;
+}
+
+.activity-status {
+  font-size: 14px;
+  color: #99a1af;
+  padding: 8px 0;
+}
+
+.activity-status--error {
+  color: #d92d20;
+}
+
+.badge--sondaggio {
+  background: rgba(0, 122, 82, 0.1);
+  color: #007a52;
+}
