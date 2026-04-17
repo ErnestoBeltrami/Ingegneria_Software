@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
   Vote, BarChart2, LayoutGrid,
   Plus, Search, Activity, ChevronRight,
@@ -130,7 +130,7 @@ export default function DashboardOperatorePage() {
       {/* Nav cards */}
       <div className="dashboard-nav-cards">
         {NAV_CARDS.map(({ icon: Icon, iconBg, iconColor, label, desc, linkColor, href }) => (
-          <a key={label} href={href} className="nav-card">
+          <Link key={label} to={href} className="nav-card">
             <div className="nav-card__icon" style={{ background: iconBg }}>
               <Icon size={20} color={iconColor} />
             </div>
@@ -141,7 +141,7 @@ export default function DashboardOperatorePage() {
             <span className="nav-card__link" style={{ color: linkColor }}>
               Vai <ChevronRight size={12} />
             </span>
-          </a>
+          </Link>
         ))}
       </div>
 
