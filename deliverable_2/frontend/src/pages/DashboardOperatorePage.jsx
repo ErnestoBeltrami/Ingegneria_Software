@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Vote, BarChart2, LayoutGrid,
   Plus, Search, Activity, ChevronRight,
 } from 'lucide-react';
+import TopBar from '@/components/TopBar';
 import './DashboardOperatorePage.css';
 
 const NAV_CARDS = [
@@ -55,7 +57,12 @@ async function fetchWithAuth(url) {
   return res.json();
 }
 
-export default function DashboardOperatorePage({ nomeOperatore = 'Operatore' }) {
+export default function DashboardOperatorePage() {
+  const navigate = useNavigate();
+  const nome = localStorage.getItem('nome') || '';
+  const cognome = localStorage.getItem('cognome') || '';
+  const nomeOperatore = nome || 'Operatore';
+
   const [filtro, setFiltro] = useState('Tutte le attività');
   const [search, setSearch] = useState('');
   const [activities, setActivities] = useState([]);
@@ -109,6 +116,8 @@ export default function DashboardOperatorePage({ nomeOperatore = 'Operatore' }) 
   );
 
   return (
+    <div className="dashboard-layout">
+      <TopBar nome={nome} cognome={cognome} />
     <div className="dashboard-page">
 
       {/* Header */}
@@ -138,7 +147,7 @@ export default function DashboardOperatorePage({ nomeOperatore = 'Operatore' }) 
 
       {/* Action buttons */}
       <div className="dashboard-actions">
-        <button className="action-btn action-btn--primary">
+        <button className="action-btn action-btn--primary" onClick={() => navigate('/votazioni/crea')}>
           <div className="action-btn__icon">
             <Plus size={18} />
           </div>
@@ -148,7 +157,7 @@ export default function DashboardOperatorePage({ nomeOperatore = 'Operatore' }) 
           </div>
           <ChevronRight size={16} />
         </button>
-        <button className="action-btn action-btn--secondary">
+        <button className="action-btn action-btn--secondary" onClick={() => navigate('/sondaggi/crea')}>
           <div className="action-btn__icon action-btn__icon--green">
             <Plus size={18} />
           </div>
@@ -220,6 +229,7 @@ export default function DashboardOperatorePage({ nomeOperatore = 'Operatore' }) 
           </div>
         )}
       </section>
+    </div>
     </div>
   );
 }

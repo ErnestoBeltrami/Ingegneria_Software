@@ -31,6 +31,8 @@ export default function LoginPage() {
       if (!res.ok) throw new Error(data.message || 'Credenziali non valide');
       localStorage.setItem('token', data.token);
       localStorage.setItem('role', 'operatore');
+      localStorage.setItem('nome', data.operatore?.nome ?? '');
+      localStorage.setItem('cognome', data.operatore?.cognome ?? '');
       navigate('/dashboard');
     } catch (err) {
       setError(err.message);
