@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { 
+import {
   createVotazione,
   getVotazioni,
   getVotazioneById,
@@ -8,6 +8,7 @@ import {
   publishVotazione,
   archiveVotazione,
   getRiepilogoSintetico,
+  getRiepilogoDemografico,
   getVotazioniAvaiable
 } from "../controllers/votazione.controller.js";
 
@@ -28,7 +29,10 @@ router.get("/cittadino",protect,restrictTo(['cittadino']),getVotazioniAvaiable);
 // GET /votazioni/:id - Dettaglio singola votazione
 router.get("/:id", protect, validateObjectId, restrictTo(['operatore']), getVotazioneById);
 
-// GET /votazioni/:id - Riepilogo Sintetico votazione
+// GET /votazioni/:id/riepilogo/demografico - Riepilogo demografico (genere, età, partecipazione)
+router.get("/:id/riepilogo/demografico", protect, validateObjectId, restrictTo(['operatore']), getRiepilogoDemografico);
+
+// GET /votazioni/:id/riepilogo - Riepilogo Sintetico votazione
 router.get("/:id/riepilogo", protect, validateObjectId, getRiepilogoSintetico);
 
 // POST /votazioni - Creazione di una nuova votazione (solo operatore autenticato)

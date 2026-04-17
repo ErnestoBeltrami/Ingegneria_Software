@@ -5,6 +5,7 @@ import CreaSondaggioPage from './pages/CreaSondaggioPage';
 import CreaVotazionePage from './pages/CreaVotazionePage';
 import GestioneSondaggiPage from './pages/GestioneSondaggiPage';
 import GestioneVotazioniPage from './pages/GestioneVotazioniPage';
+import RiepilogoVotazionePage from './pages/RiepilogoVotazionePage';
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/sondaggi/crea" element={<CreaSondaggioPage />} />
         <Route path="/votazioni" element={<GestioneVotazioniPage />} />
         <Route path="/votazioni/crea" element={<CreaVotazionePage />} />
+        <Route path="/votazioni/:id/riepilogo" element={<RiepilogoVotazionePage />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
