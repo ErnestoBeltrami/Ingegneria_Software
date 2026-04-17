@@ -1,11 +1,11 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
-import DashboardOperatorePage from './pages/DashboardOperatorePage';
-import CreaSondaggioPage from './pages/CreaSondaggioPage';
-import CreaVotazionePage from './pages/CreaVotazionePage';
-import GestioneSondaggiPage from './pages/GestioneSondaggiPage';
-import GestioneVotazioniPage from './pages/GestioneVotazioniPage';
-import RiepilogoVotazionePage from './pages/RiepilogoVotazionePage';
+import DashboardOperatorePage from './pages/operatore/DashboardOperatorePage';
+import CreaSondaggioPage from './pages/operatore/CreaSondaggioPage';
+import CreaVotazionePage from './pages/operatore/CreaVotazionePage';
+import GestioneSondaggiPage from './pages/operatore/GestioneSondaggiPage';
+import GestioneVotazioniPage from './pages/operatore/GestioneVotazioniPage';
+import RiepilogoVotazionePage from './pages/operatore/RiepilogoVotazionePage';
 
 export default function App() {
   return (

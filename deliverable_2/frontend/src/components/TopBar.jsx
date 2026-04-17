@@ -1,4 +1,5 @@
 import { Bell } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import './TopBar.css';
 
 export default function TopBar({ nome = '', cognome = '' }) {
@@ -7,7 +8,7 @@ export default function TopBar({ nome = '', cognome = '' }) {
 
   return (
     <header className="topbar">
-      <span className="topbar__logo">IoSonoTrento</span>
+      <Link to="/dashboard" className="topbar__logo">IoSonoTrento</Link>
 
       <div className="topbar__right">
         <button className="topbar__bell" aria-label="Notifiche">

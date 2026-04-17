@@ -16,6 +16,7 @@
   color: white;
   letter-spacing: -0.5px;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .topbar__right {
