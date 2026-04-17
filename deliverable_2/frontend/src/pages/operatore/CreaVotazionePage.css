@@ -1,0 +1,369 @@
+/* Layout pagina — riusa .crea-layout, .crea-page, .crea-header, .crea-card,
+   .crea-field, .crea-sidebar, .crea-toggle, .crea-actions, .crea-btn etc.
+   da CreaSondaggioPage.css tramite import indiretto.
+   Qui definiamo solo le varianti specifiche per la votazione. */
+
+/* =====================
+   Layout pagina
+   ===================== */
+.crea-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.crea-page {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-family: 'Montserrat', sans-serif;
+  flex: 1;
+}
+
+/* =====================
+   Header
+   ===================== */
+.crea-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.crea-header__back {
+  width: 36px;
+  height: 36px;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+
+.crea-header__back:hover {
+  background: #e5e7eb;
+}
+
+.crea-header__title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #101828;
+  line-height: 32px;
+  margin: 0;
+}
+
+.crea-header__subtitle {
+  font-size: 14px;
+  font-weight: 400;
+  color: #99a1af;
+  line-height: 20px;
+  margin: 2px 0 0;
+}
+
+/* =====================
+   Body — 2 colonne (form | sidebar)
+   ===================== */
+.crea-vot-body {
+  display: grid;
+  grid-template-columns: 1fr 298px;
+  gap: 20px;
+  align-items: start;
+}
+
+/* =====================
+   Card generica
+   ===================== */
+.crea-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.06);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* =====================
+   Colonna sinistra — form
+   ===================== */
+.crea-vot-main {
+  gap: 20px;
+}
+
+/* =====================
+   Sidebar (colonna destra)
+   ===================== */
+.crea-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* =====================
+   Campi form
+   ===================== */
+.crea-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.crea-field__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #364153;
+  line-height: 20px;
+}
+
+.crea-field__required {
+  color: #fb2c36;
+}
+
+.crea-field__input {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #101828;
+  outline: none;
+  transition: border-color 0.15s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.crea-field__input::placeholder {
+  color: #99a1af;
+}
+
+.crea-field__input:focus {
+  border-color: #1f3a89;
+}
+
+.crea-field__input--textarea {
+  resize: vertical;
+  min-height: 116px;
+}
+
+.crea-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* =====================
+   Opzioni votazione
+   ===================== */
+.crea-opzioni {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.crea-vot-opzione {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f9fafb;
+  border-radius: 14px;
+  padding: 10px 12px;
+}
+
+.crea-opzione__indicator {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #d1d5dc;
+  flex-shrink: 0;
+}
+
+.crea-opzione__input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  font-size: 14px;
+  color: #4a5565;
+}
+
+.crea-opzione__input:focus {
+  border-color: transparent;
+  outline: none;
+}
+
+.crea-opzione__delete {
+  width: 20px;
+  height: 20px;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #99a1af;
+  flex-shrink: 0;
+  transition: color 0.15s ease;
+  padding: 0;
+}
+
+.crea-opzione__delete:hover:not(:disabled) {
+  color: #d92d20;
+}
+
+.crea-opzione__delete:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.crea-add-opzione {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f3a89;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.15s ease;
+}
+
+.crea-add-opzione:hover {
+  opacity: 0.75;
+}
+
+/* =====================
+   Toggle risposte multiple
+   ===================== */
+.crea-card--toggle {
+  gap: 0;
+}
+
+.crea-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.crea-toggle__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e2939;
+  margin: 0 0 2px;
+}
+
+.crea-toggle__desc {
+  font-size: 12px;
+  font-weight: 400;
+  color: #99a1af;
+  margin: 0;
+}
+
+.toggle-switch {
+  width: 44px;
+  height: 24px;
+  border-radius: 9999px;
+  background: #e5e7eb;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+}
+
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.toggle-switch--on {
+  background: #1f3a89;
+}
+
+.toggle-switch--on::after {
+  transform: translateX(20px);
+}
+
+/* =====================
+   Bottoni azione
+   ===================== */
+.crea-card--actions {
+  gap: 12px;
+}
+
+.crea-error {
+  font-size: 13px;
+  font-weight: 500;
+  color: #d92d20;
+  margin: 0;
+}
+
+.crea-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.crea-btn {
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 14px;
+  border: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.crea-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.crea-btn--annulla {
+  background: none;
+  color: #e7000b;
+  flex: 1;
+  justify-content: center;
+}
+
+.crea-btn--annulla:hover:not(:disabled) {
+  opacity: 0.75;
+}
+
+.crea-btn--salva {
+  background: #1f3a89;
+  color: white;
+  box-shadow: 0px 4px 14px 0px rgba(31, 58, 137, 0.35);
+  flex: 2;
+  justify-content: center;
+}
+
+.crea-btn--salva:hover:not(:disabled) {
+  opacity: 0.88;
+}

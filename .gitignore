@@ -128,3 +128,16 @@ dist
 .yarn/install-state.gz
 .pnp.*
 context/
+
+# LaTeX build artifacts (deliverable_1)
+deliverable_1/*.aux
+deliverable_1/*.log
+deliverable_1/*.out
+deliverable_1/*.toc
+deliverable_1/*.fls
+deliverable_1/*.fdb_latexmk
+deliverable_1/*.synctex.gz
+deliverable_1/*.bbl
+deliverable_1/*.blg
+deliverable_1/%OUTDIR%/
+CLAUDE.md
