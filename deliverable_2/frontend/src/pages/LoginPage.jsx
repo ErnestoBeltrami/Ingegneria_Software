@@ -1,8 +1,16 @@
 import { useState } from 'react';
 import { ArrowRight, CheckSquare, Users, MapPin, ShieldCheck } from 'lucide-react';
-import './LoginPage.css';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+
+const features = [
+  { icon: CheckSquare, name: 'Vota le proposte', desc: 'Esprimi la tua opinione su temi che contano' },
+  { icon: Users, name: 'Proponi iniziative', desc: 'Condividi le tue idee con la comunità' },
+  { icon: MapPin, name: 'Cambia Trento', desc: 'Partecipa attivamente alla vita civica' },
+];
 
 export default function LoginPage() {
   const [view, setView] = useState('select'); // 'select' | 'operatore' | 'success'
@@ -45,150 +53,142 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="login-page">
+    <div className="flex min-h-screen font-[Montserrat,sans-serif]">
+
       {/* Pannello sinistro — branding */}
-      <div className="login-left">
-        <div className="login-left__header">
-          <h1 className="login-left__title">IoSonoTrento</h1>
-          <p className="login-left__subtitle">La tua voce per la tua città</p>
+      <div className="flex w-1/2 flex-col justify-between bg-[#090a0a] px-14 py-16 text-white">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-4xl font-bold leading-10">IoSonoTrento</h1>
+          <p className="text-base text-white/50">La tua voce per la tua città</p>
         </div>
 
-        <div className="login-left__hero">
-          <h2 className="login-left__hero-heading">
+        <div className="flex flex-col gap-4">
+          <h2 className="text-3xl font-bold leading-snug">
             Partecipa alla vita<br />della tua città
           </h2>
-          <p className="login-left__hero-text">
+          <p className="max-w-sm text-base leading-relaxed text-white/60">
             Vota sulle iniziative locali, proponi idee e contribuisci a costruire una Trento migliore.
           </p>
         </div>
 
-        <div className="login-left__features">
-          <div className="login-left__feature">
-            <div className="login-left__feature-icon">
-              <CheckSquare size={18} />
+        <div className="flex flex-col gap-4">
+          {features.map(({ icon: Icon, name, desc }) => (
+            <div key={name} className="flex items-center gap-4">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-[14px] bg-white/10">
+                <Icon size={18} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold">{name}</p>
+                <p className="text-xs text-white/50">{desc}</p>
+              </div>
             </div>
-            <div>
-              <p className="login-left__feature-name">Vota le proposte</p>
-              <p className="login-left__feature-desc">Esprimi la tua opinione su temi che contano</p>
-            </div>
-          </div>
-          <div className="login-left__feature">
-            <div className="login-left__feature-icon">
-              <Users size={18} />
-            </div>
-            <div>
-              <p className="login-left__feature-name">Proponi iniziative</p>
-              <p className="login-left__feature-desc">Condividi le tue idee con la comunità</p>
-            </div>
-          </div>
-          <div className="login-left__feature">
-            <div className="login-left__feature-icon">
-              <MapPin size={18} />
-            </div>
-            <div>
-              <p className="login-left__feature-name">Cambia Trento</p>
-              <p className="login-left__feature-desc">Partecipa attivamente alla vita civica</p>
-            </div>
-          </div>
+          ))}
         </div>
 
-        <p className="login-left__footer">Servizio offerto dal Comune di Trento</p>
+        <p className="text-xs text-white/30">Servizio offerto dal Comune di Trento</p>
       </div>
 
-      {/* Pannello destro — form */}
-      <div className="login-right">
-        {view === 'success' ? (
-          <div className="login-card">
-            <div className="login-card__header">
-              <h2 className="login-card__title">Accesso effettuato</h2>
-              <p className="login-card__subtitle">
-                Bentornato, <strong>{username}</strong>. La dashboard è in costruzione.
-              </p>
-            </div>
-            <div className="login-card__security">
-              <ShieldCheck size={13} />
-              <span>Piattaforma sicura — Comune di Trento</span>
-            </div>
-          </div>
-        ) : view === 'select' ? (
-          <div className="login-card">
-            <div className="login-card__header">
-              <h2 className="login-card__title">Benvenuto</h2>
-              <p className="login-card__subtitle">
-                Scegli il tuo ruolo per accedere alla piattaforma
-              </p>
-            </div>
+      {/* Pannello destro */}
+      <div className="flex flex-1 items-center justify-center bg-[#f9fafc] px-12">
+        <div className="flex w-full max-w-sm flex-col gap-8">
 
-            <div className="login-card__buttons">
-              <button className="btn btn--cittadino" onClick={handleCittadinoLogin}>
-                <span>Accedi come cittadino</span>
-                <ArrowRight size={18} />
-              </button>
-              <button className="btn btn--operatore" onClick={() => setView('operatore')}>
-                <span>Accedi come operatore</span>
-                <ArrowRight size={18} />
-              </button>
-            </div>
-
-            <div className="login-card__security">
-              <ShieldCheck size={13} />
-              <span>Piattaforma sicura — Comune di Trento</span>
-            </div>
-          </div>
-        ) : (
-          <div className="login-card">
-            <div className="login-card__header">
-              <h2 className="login-card__title">Accesso operatore</h2>
-              <p className="login-card__subtitle">
-                Inserisci le tue credenziali per accedere
-              </p>
-            </div>
-
-            <form className="login-card__form" onSubmit={handleOperatoreLogin} noValidate>
-              <div className="form-field">
-                <label htmlFor="username">Username</label>
-                <input
-                  id="username"
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Inserisci username"
-                  required
-                  autoComplete="username"
-                />
+          {view === 'success' && (
+            <>
+              <div className="flex flex-col gap-2">
+                <h2 className="text-3xl font-bold text-[#101828]">Accesso effettuato</h2>
+                <p className="text-base text-[#6a7282]">
+                  Bentornato, <span className="font-semibold text-[#101828]">{username}</span>.
+                  La dashboard è in costruzione.
+                </p>
               </div>
-              <div className="form-field">
-                <label htmlFor="password">Password</label>
-                <input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Inserisci password"
-                  required
-                  autoComplete="current-password"
-                />
+              <div className="flex items-center justify-center gap-2 text-xs text-[#99a1af]">
+                <ShieldCheck size={13} />
+                <span>Piattaforma sicura — Comune di Trento</span>
               </div>
-              {error && <p className="form-error" role="alert">{error}</p>}
-              <button
-                className="btn btn--operatore btn--full"
-                type="submit"
-                disabled={loading}
-              >
-                {loading ? 'Accesso in corso...' : 'Accedi'}
-              </button>
-            </form>
+            </>
+          )}
 
-            <button className="btn-back" onClick={handleBack}>
-              ← Torna alla selezione ruolo
-            </button>
+          {view === 'select' && (
+            <>
+              <div className="flex flex-col gap-2">
+                <h2 className="text-3xl font-bold text-[#101828]">Benvenuto</h2>
+                <p className="text-base text-[#6a7282]">
+                  Scegli il tuo ruolo per accedere alla piattaforma
+                </p>
+              </div>
 
-            <div className="login-card__security">
-              <ShieldCheck size={13} />
-              <span>Piattaforma sicura — Comune di Trento</span>
-            </div>
-          </div>
-        )}
+              <div className="flex flex-col gap-4">
+                <Button variant="cittadino" onClick={handleCittadinoLogin}>
+                  <span>Accedi come cittadino</span>
+                  <ArrowRight size={18} />
+                </Button>
+                <Button variant="operatore" onClick={() => setView('operatore')}>
+                  <span>Accedi come operatore</span>
+                  <ArrowRight size={18} />
+                </Button>
+              </div>
+
+              <div className="flex items-center justify-center gap-2 text-xs text-[#99a1af]">
+                <ShieldCheck size={13} />
+                <span>Piattaforma sicura — Comune di Trento</span>
+              </div>
+            </>
+          )}
+
+          {view === 'operatore' && (
+            <>
+              <div className="flex flex-col gap-2">
+                <h2 className="text-3xl font-bold text-[#101828]">Accesso operatore</h2>
+                <p className="text-base text-[#6a7282]">
+                  Inserisci le tue credenziali per accedere
+                </p>
+              </div>
+
+              <form className="flex flex-col gap-4" onSubmit={handleOperatoreLogin} noValidate>
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="username">Username</Label>
+                  <Input
+                    id="username"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Inserisci username"
+                    required
+                    autoComplete="username"
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Inserisci password"
+                    required
+                    autoComplete="current-password"
+                  />
+                </div>
+                {error && (
+                  <p className="text-sm font-medium text-red-600" role="alert">{error}</p>
+                )}
+                <Button variant="operatore" type="submit" disabled={loading} className="justify-center">
+                  {loading ? 'Accesso in corso...' : 'Accedi'}
+                </Button>
+              </form>
+
+              <Button variant="ghost" onClick={handleBack}>
+                ← Torna alla selezione ruolo
+              </Button>
+
+              <div className="flex items-center justify-center gap-2 text-xs text-[#99a1af]">
+                <ShieldCheck size={13} />
+                <span>Piattaforma sicura — Comune di Trento</span>
+              </div>
+            </>
+          )}
+
+        </div>
       </div>
     </div>
   );
