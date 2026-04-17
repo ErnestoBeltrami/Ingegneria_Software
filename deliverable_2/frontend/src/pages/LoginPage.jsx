@@ -57,45 +57,6 @@ export default function LoginPage() {
           <p className="login-left__subtitle">La tua voce per la tua città</p>
         </div>
 
-        <div className="login-left__hero">
-          <h2 className="login-left__hero-heading">
-            Partecipa alla vita<br />della tua città
-          </h2>
-          <p className="login-left__hero-text">
-            Vota sulle iniziative locali, proponi idee e contribuisci a costruire una Trento migliore.
-          </p>
-        </div>
-
-        <div className="login-left__features">
-          <div className="login-left__feature">
-            <div className="login-left__feature-icon">
-              <CheckSquare size={18} />
-            </div>
-            <div>
-              <p className="login-left__feature-name">Vota le proposte</p>
-              <p className="login-left__feature-desc">Esprimi la tua opinione su temi che contano</p>
-            </div>
-          </div>
-          <div className="login-left__feature">
-            <div className="login-left__feature-icon">
-              <Users size={18} />
-            </div>
-            <div>
-              <p className="login-left__feature-name">Proponi iniziative</p>
-              <p className="login-left__feature-desc">Condividi le tue idee con la comunità</p>
-            </div>
-          </div>
-          <div className="login-left__feature">
-            <div className="login-left__feature-icon">
-              <MapPin size={18} />
-            </div>
-            <div>
-              <p className="login-left__feature-name">Cambia Trento</p>
-              <p className="login-left__feature-desc">Partecipa attivamente alla vita civica</p>
-            </div>
-          </div>
-        </div>
-
         <p className="login-left__footer">Servizio offerto dal Comune di Trento</p>
       </div>
 
