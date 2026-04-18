@@ -1,0 +1,55 @@
+.dashboard-page {
+    padding: 24px;
+    background: #F9FAFC; /* Light gray background often used in mobile apps */
+    min-height: 100vh;
+}
+
+.dashboard-page > p {
+    font-size: 24px;
+    font-weight: 700;
+    color: #101828;
+    margin-top: 0;
+    margin-bottom: 24px;
+}
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 32px;
+}
+
+.filter-btn {
+    padding: 8px 24px;
+    border-radius: 999px;
+    border: 1px solid #E5E7EB;
+    background: #FFFFFF;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+    background: #F3F4F6;
+    border-color: #D1D5DB;
+}
+
+.filter-btn.active {
+    background: #007D54;
+    border-color: #007D54;
+    color: #FFFFFF;
+}
+
+.activities {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+}
+
+@media (min-width: 768px) {
+    .activities {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
