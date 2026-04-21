@@ -8,7 +8,7 @@ import {
   publishVotazione,
   archiveVotazione,
   getRiepilogoSintetico,
-  getVotazioniAvaiable
+  getVotazioniAvailable
 } from "../controllers/votazione.controller.js";
 
 import { 
@@ -22,7 +22,7 @@ const router = Router();
 router.get("/", protect, restrictTo(['operatore']), getVotazioni);
 
 // GET /votazioni/cittadino 
-router.get("/cittadino",protect,restrictTo(['cittadino']),getVotazioniAvaiable);
+router.get("/cittadino",protect,restrictTo(['cittadino']),getVotazioniAvailable);
 
 //DA FINIRE SWAGGER
 

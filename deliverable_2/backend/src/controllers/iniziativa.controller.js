@@ -444,3 +444,14 @@ export const ricercaIniziativa = async (req, res) => {
         });
     }
 };
+
+
+export const getDashboard = async (req,res) => {
+
+    /*
+    DASHBOARD CITTADINO: 
+    votazioni/sondaggi disponibili
+    
+    */
+
+};

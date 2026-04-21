@@ -100,7 +100,7 @@ export const getVotazioni = async (req, res) => {
 };
 
 //GET: Ritorna le votazioni attive e concluse visibili ai cittadini
- export const getVotazioniAvaiable = async (req, res) => {
+ export const getVotazioniAvailable = async (req, res) => {
     try {
         const userFromMiddleware = req.user;
 
@@ -348,7 +348,7 @@ export const getRiepilogoSintetico = async (req, res) => {
         }
         
         const domanda = votazione.ID_domanda;
-
+        
         // 2. Pipeline di Aggregazione: Conversione esplicita e Conteggio
         const risultatiVoto = await RispostaConsultazione.aggregate([
             { $match: { ID_consultazione: objectIdVotazione, tipo_consultazione: 'votazione' } }, 

@@ -462,3 +462,133 @@ export const getRiepilogoSintetico = async (req, res) => {
         });
     }
 };
+
+export const getRiepilogoConFiltri = async (req, res) => {
+    const sondaggioId = req.params.id;
+    const { filters = {} } = req.body;
+
+    try {
+        if (!mongoose.Types.ObjectId.isValid(sondaggioId)) {
+            return res.status(400).json({ message: "ID Sondaggio non valido." });
+        }
+
+        const objectIdSondaggio = new mongoose.Types.ObjectId(sondaggioId);
+
+        const sondaggio = await Consultazione.findOne({
+            _id: objectIdSondaggio,
+            tipo: 'sondaggio'
+        }).populate('ID_domande');
+
+        if (!sondaggio || sondaggio.ID_domande.length === 0) {
+            return res.status(404).json({
+                message: 'Sondaggio non trovato o domande mancanti.'
+            });
+        }
+
+        const matchCittadino = {};
+
+        if (filters.genere) {
+            matchCittadino['cittadino.genere'] = filters.genere;
+        }
+
+        if (filters.categoria) {
+            matchCittadino['cittadino.categoria'] = filters.categoria;
+        }
+
+        if (filters.age) {
+            matchCittadino['cittadino.age'] = {
+                $gte: filters.age[0],
+                $lte: filters.age[1]
+            };
+        }
+
+        const totalVotiResult = await RispostaConsultazione.aggregate([
+            { $match: { ID_consultazione: objectIdSondaggio, tipo_consultazione: 'sondaggio' } },
+
+            {
+                $lookup: {
+                    from: 'cittadinos',
+                    localField: 'ID_cittadino',
+                    foreignField: '_id',
+                    as: 'cittadino'
+                }
+            },
+            { $unwind: '$cittadino' },
+
+            ...(Object.keys(matchCittadino).length > 0 ? [{ $match: matchCittadino }] : []),
+
+            { $count: 'totale' }
+        ]);
+
+        const totaleVotiUnici = totalVotiResult.length > 0 ? totalVotiResult[0].totale : 0;
+
+        const riepilogoRisultati = [];
+
+        for (const domanda of sondaggio.ID_domande) {
+            const domandaId = domanda._id;
+
+            const risultatiAggregati = await RispostaConsultazione.aggregate([
+                { $match: { ID_consultazione: objectIdSondaggio, tipo_consultazione: 'sondaggio' } },
+
+                {
+                    $lookup: {
+                        from: 'cittadinos',
+                        localField: 'ID_cittadino',
+                        foreignField: '_id',
+                        as: 'cittadino'
+                    }
+                },
+                { $unwind: '$cittadino' },
+
+                ...(Object.keys(matchCittadino).length > 0 ? [{ $match: matchCittadino }] : []),
+
+                { $unwind: '$dettagliRisposte' },
+
+                { $match: { 'dettagliRisposte.ID_domanda': domandaId } },
+
+                { $unwind: '$dettagliRisposte.opzioniScelte' },
+
+                {
+                    $group: {
+                        _id: '$dettagliRisposte.opzioniScelte',
+                        voti: { $sum: 1 }
+                    }
+                }
+            ]);
+
+            const risultatiFormattati = risultatiAggregati.map(res => {
+                const opzioneCorrispondente = domanda.opzioni.find(op => op._id.equals(res._id));
+                const testoOpzione = opzioneCorrispondente ? opzioneCorrispondente.testo : 'Opzione Sconosciuta';
+
+                return {
+                    opzioneId: res._id,
+                    testoOpzione,
+                    voti: res.voti,
+                    percentuale: totaleVotiUnici > 0
+                        ? parseFloat(((res.voti / totaleVotiUnici) * 100).toFixed(2))
+                        : 0
+                };
+            });
+
+            riepilogoRisultati.push({
+                domandaId: domandaId,
+                titoloDomanda: domanda.titolo,
+                risultati: risultatiFormattati
+            });
+        }
+
+        return res.status(200).json({
+            message: "Riepilogo filtrato recuperato con successo.",
+            sondaggio: sondaggio.titolo,
+            totaleVotiUnici,
+            riepilogoPerDomanda: riepilogoRisultati
+        });
+
+    } catch (error) {
+        console.error('Errore:', error);
+        return res.status(500).json({
+            message: 'Errore interno del server.',
+            error: error.message
+        });
+    }
+};
