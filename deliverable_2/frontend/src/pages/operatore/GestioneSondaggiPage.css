@@ -1,0 +1,266 @@
+/* =====================
+   Layout
+   ===================== */
+.gs-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.gs-page {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-family: 'Montserrat', sans-serif;
+  flex: 1;
+}
+
+/* =====================
+   Header
+   ===================== */
+.gs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.gs-header__title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #101828;
+  line-height: 32px;
+  margin: 0;
+}
+
+.gs-header__subtitle {
+  font-size: 14px;
+  font-weight: 400;
+  color: #99a1af;
+  line-height: 20px;
+  margin: 2px 0 0;
+}
+
+.gs-btn-new {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 18px;
+  background: #1f3a89;
+  border: none;
+  border-radius: 14px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0px 2px 8px 0px rgba(31, 58, 137, 0.3);
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.gs-btn-new:hover {
+  opacity: 0.88;
+}
+
+/* =====================
+   Counter cards
+   ===================== */
+.gs-counters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.gs-counter {
+  border-radius: 16px;
+  border: 1px solid;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gs-counter--bozza {
+  background: #fffbeb;
+  border-color: #fee685;
+}
+
+.gs-counter--attiva {
+  background: #f0fdf4;
+  border-color: #b9f8cf;
+}
+
+.gs-counter--conclusa {
+  background: #f9fafb;
+  border-color: #e5e7eb;
+}
+
+.gs-counter__num {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+}
+
+.gs-counter--bozza   .gs-counter__num { color: #bb4d00; }
+.gs-counter--attiva  .gs-counter__num { color: #008236; }
+.gs-counter--conclusa .gs-counter__num { color: #364153; }
+
+.gs-counter__label {
+  font-size: 12px;
+  font-weight: 400;
+  color: #6a7282;
+  line-height: 16px;
+}
+
+/* =====================
+   Status / error
+   ===================== */
+.gs-status {
+  font-size: 14px;
+  color: #99a1af;
+  padding: 4px 0;
+}
+
+.gs-error {
+  font-size: 14px;
+  font-weight: 500;
+  color: #d92d20;
+}
+
+/* =====================
+   Cards grid
+   ===================== */
+.gs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+/* =====================
+   Sondaggio card
+   ===================== */
+.gs-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.06);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gs-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gs-badge {
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 28px;
+  color: white;
+  white-space: nowrap;
+  text-transform: capitalize;
+}
+
+.gs-badge--bozza     { background: #d99f0c; }
+.gs-badge--attivo    { background: #007a52; }
+.gs-badge--concluso  { background: #727e7a; }
+.gs-badge--archiviato { background: #9ca3af; }
+
+.gs-card__titolo {
+  font-size: 16px;
+  font-weight: 600;
+  color: #101828;
+  line-height: 22px;
+  margin: 0;
+  flex: 1;
+}
+
+.gs-card__termine {
+  font-size: 12px;
+  font-weight: 400;
+  color: #6a7282;
+  line-height: 16px;
+  margin: 0;
+}
+
+/* =====================
+   Action buttons
+   ===================== */
+.gs-card__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.gs-action {
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+}
+
+.gs-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.gs-action:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.gs-action--elimina {
+  background: #fef2f2;
+  border-color: #ffc9c9;
+  color: #e7000b;
+}
+
+.gs-action--modifica {
+  background: #142822;
+  color: white;
+}
+
+.gs-action--pubblica {
+  background: #007a52;
+  color: white;
+}
+
+.gs-action--riepilogo {
+  width: 100%;
+  height: 40px;
+  justify-content: center;
+  font-size: 14px;
+  border-radius: 14px;
+}
+
+.gs-action--riepilogo-gray {
+  background: #99a1af;
+  color: white;
+}
+
+.gs-action--riepilogo-blue {
+  background: #1f3a89;
+  color: white;
+}

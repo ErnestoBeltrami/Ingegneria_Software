@@ -17,13 +17,16 @@
   "scripts": {
     "start": "node backend/src/index.js",
     "dev": "nodemon backend/src/index.js",
+    "dev:all": "concurrently -n backend,frontend -c cyan,magenta \"nodemon backend/src/index.js\" \"npm run dev --prefix frontend\"",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
     "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
     "test:api": "node backend/tests/scripts/test-api.js",
     "test:api:votazione": "node backend/tests/scripts/test-api.js backend/tests/rest/votazione.rest",
     "test:api:operatore": "node backend/tests/scripts/test-api.js backend/tests/rest/operatore.rest",
-    "test:api:cittadino": "node backend/tests/scripts/test-api.js backend/tests/rest/cittadino.rest"
+    "test:api:cittadino": "node backend/tests/scripts/test-api.js backend/tests/rest/cittadino.rest",
+    "test:login": "node backend/tests/scripts/test-api.js backend/tests/rest/test-login-operatore.rest",
+    "test:dashboard": "node backend/tests/scripts/test-api.js backend/tests/rest/test-dashboard-flow.rest"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -33,7 +36,9 @@
     "express-session": "^1.18.2",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^7.0.0",
+    "mongoose": "^9.4.1",
     "mongosh": "^2.5.9",
+    "node-cron": "^4.2.1",
     "nodemon": "^3.1.11",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
@@ -41,6 +46,7 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
+    "concurrently": "^9.1.2",
     "jest": "^29.7.0",
     "supertest": "^6.3.4"
   }

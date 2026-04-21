@@ -2,12 +2,31 @@
  * @swagger
  * /votazioni:
  *   get:
- *     summary: Ottieni tutte le votazioni dell'operatore
- *     description: Restituisce la lista di tutte le votazioni create dall'operatore autenticato, ordinate per data di inizio (più recenti prima)
+ *     summary: Lista votazioni dell'operatore
+ *     description: Restituisce la lista paginata delle votazioni create dall'operatore autenticato, ordinate per data di inizio (più recenti prima). Supporta filtro per stato e paginazione.
  *     tags:
  *       - Votazioni
  *     security:
  *       - sessionAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: stato
+ *         schema:
+ *           type: string
+ *           enum: [bozza, attivo, concluso, archiviato]
+ *         description: Filtra le votazioni per stato
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Numero di pagina
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Numero di risultati per pagina (max 100)
  *     responses:
  *       200:
  *         description: Votazioni recuperate con successo
@@ -23,6 +42,29 @@
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/VotazioneWithDomanda'
+ *                 paginazione:
+ *                   type: object
+ *                   properties:
+ *                     totale:
+ *                       type: integer
+ *                       example: 35
+ *                     pagina:
+ *                       type: integer
+ *                       example: 1
+ *                     limite:
+ *                       type: integer
+ *                       example: 10
+ *                     pagine:
+ *                       type: integer
+ *                       example: 4
+ *       400:
+ *         description: Stato non valido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Stato non valido. Valori ammessi: bozza, attivo, concluso, archiviato."
  *       401:
  *         description: Operatore non autenticato
  *         content:
@@ -135,6 +177,14 @@
  *                   example: "Votazione trovata con successo."
  *                 votazione:
  *                   $ref: '#/components/schemas/VotazioneWithDomanda'
+ *       400:
+ *         description: ID non valido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "ID non valido."
  *       401:
  *         description: Operatore non autenticato
  *         content:
@@ -194,13 +244,18 @@
  *                 votazione:
  *                   $ref: '#/components/schemas/Votazione'
  *       400:
- *         description: Votazione non in stato bozza
+ *         description: ID non valido o votazione non in stato bozza
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
- *             example:
- *               message: "Solo le votazioni in stato bozza possono essere modificate."
+ *             examples:
+ *               invalidId:
+ *                 value:
+ *                   message: "ID non valido."
+ *               notBozza:
+ *                 value:
+ *                   message: "Solo le votazioni in stato bozza possono essere modificate."
  *       404:
  *         description: Votazione non trovata
  *         content:
@@ -242,13 +297,18 @@
  *                   type: string
  *                   example: "Votazione eliminata con successo."
  *       400:
- *         description: Votazione non in stato bozza
+ *         description: ID non valido o votazione non in stato bozza
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
- *             example:
- *               message: "Solo le votazioni in stato bozza possono essere eliminate."
+ *             examples:
+ *               invalidId:
+ *                 value:
+ *                   message: "ID non valido."
+ *               notBozza:
+ *                 value:
+ *                   message: "Solo le votazioni in stato bozza possono essere eliminate."
  *       404:
  *         description: Votazione non trovata
  *         content:
@@ -297,13 +357,18 @@
  *                 votazione:
  *                   $ref: '#/components/schemas/Votazione'
  *       400:
- *         description: Votazione non in stato bozza
+ *         description: ID non valido o votazione non in stato bozza
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
- *             example:
- *               message: "Solo le votazioni in stato bozza possono essere pubblicate."
+ *             examples:
+ *               invalidId:
+ *                 value:
+ *                   message: "ID non valido."
+ *               notBozza:
+ *                 value:
+ *                   message: "Solo le votazioni in stato bozza possono essere pubblicate."
  *       404:
  *         description: Votazione non trovata
  *         content:
@@ -352,13 +417,18 @@
  *                 votazione:
  *                   $ref: '#/components/schemas/Votazione'
  *       400:
- *         description: Votazione non in stato concluso
+ *         description: ID non valido o votazione non in stato concluso
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
- *             example:
- *               message: "Solo le votazioni in stato concluso possono essere archiviate."
+ *             examples:
+ *               invalidId:
+ *                 value:
+ *                   message: "ID non valido."
+ *               notConcluso:
+ *                 value:
+ *                   message: "Solo le votazioni in stato concluso possono essere archiviate."
  *       404:
  *         description: Votazione non trovata
  *         content:
@@ -437,13 +507,13 @@
  *                       voti: 52
  *                       percentuale: 34.67
  *       400:
- *         description: ID votazione non valido
+ *         description: ID non valido
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
- *               message: "ID Votazione non valido."
+ *               message: "ID non valido."
  *       404:
  *         description: Votazione non trovata o domanda mancante
  *         content:

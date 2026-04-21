@@ -2,7 +2,8 @@ import { Router } from "express";
 import {archiveSondaggio, creaSondaggio, deleteSondaggio, getRiepilogoSintetico, getSondaggi, getSondaggioById, publishSondaggio, updateSondaggio,getSondaggiAvaiable, getRiepilogoConFiltri} from "../controllers/sondaggio.controller.js";
 import {
     protect,
-    restrictTo
+    restrictTo,
+    validateObjectId
 } from "../middleware/auth_middleware.js";
 
 const router = Router();
@@ -14,17 +15,17 @@ router.get("/",protect,getSondaggi);
 
 router.get("/cittadino",protect,restrictTo(['cittadino']),getSondaggiAvaiable);
 
-router.get("/:id",protect,getSondaggioById);
+router.get("/:id", protect, validateObjectId, getSondaggioById);
 
-router.patch("/:id", protect,restrictTo(['operatore']), updateSondaggio);
+router.patch("/:id", protect, validateObjectId, restrictTo(['operatore']), updateSondaggio);
 
-router.delete("/:id", protect,restrictTo(['operatore']), deleteSondaggio);
+router.delete("/:id", protect, validateObjectId, restrictTo(['operatore']), deleteSondaggio);
 
-router.patch("/:id/publish", protect,restrictTo(['operatore']), publishSondaggio);
+router.patch("/:id/publish", protect, validateObjectId, restrictTo(['operatore']), publishSondaggio);
 
-router.patch("/:id/archive", protect,restrictTo(['operatore']), archiveSondaggio);
+router.patch("/:id/archive", protect, validateObjectId, restrictTo(['operatore']), archiveSondaggio);
 
-router.get("/:id/riepilogo",protect,getRiepilogoSintetico);
+router.get("/:id/riepilogo", protect, validateObjectId, getRiepilogoSintetico);
 
 router.post("/:id/riepilogo/aggregato", protect, restrictTo(['operatore']) , getRiepilogoConFiltri);
 

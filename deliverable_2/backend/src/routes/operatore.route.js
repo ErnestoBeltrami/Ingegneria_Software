@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { 
+import {
     getByCredentials,
     getOperatoreData,
     createOperatore,
-    promoteOperatoreToRoot
+    promoteOperatoreToRoot,
+    changePassword
 } from '../controllers/operatore.controller.js'; // ⚠️ NECESSARIO per interagire con il DB
 import { 
     protect,    
@@ -20,6 +21,7 @@ router.post('/register', protect,restrictTo(['operatore']), createOperatore);
 router.get('/profile',protect,restrictTo(['operatore']),getOperatoreData);
 
 // PATCH METHODS
-router.patch('/:operatoreId/promote', protect,restrictTo(['operatore']), promoteOperatoreToRoot);
+router.patch('/me/password', protect, restrictTo(['operatore']), changePassword);
+router.patch('/:operatoreId/promote', protect, restrictTo(['operatore']), promoteOperatoreToRoot);
 
 export default router;

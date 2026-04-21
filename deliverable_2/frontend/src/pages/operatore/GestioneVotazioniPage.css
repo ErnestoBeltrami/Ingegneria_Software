@@ -1,0 +1,246 @@
+.gv-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.gv-page {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-family: 'Montserrat', sans-serif;
+  flex: 1;
+}
+
+/* Header */
+.gv-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.gv-header__title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #101828;
+  line-height: 32px;
+  margin: 0;
+}
+
+.gv-header__subtitle {
+  font-size: 14px;
+  font-weight: 400;
+  color: #99a1af;
+  line-height: 20px;
+  margin: 2px 0 0;
+}
+
+.gv-btn-new {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 18px;
+  background: #1f3a89;
+  border: none;
+  border-radius: 14px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0px 2px 8px 0px rgba(31, 58, 137, 0.3);
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.gv-btn-new:hover {
+  opacity: 0.88;
+}
+
+/* Counter cards */
+.gv-counters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.gv-counter {
+  border-radius: 16px;
+  border: 1px solid;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gv-counter--bozza {
+  background: #fffbeb;
+  border-color: #fee685;
+}
+
+.gv-counter--attiva {
+  background: #f0fdf4;
+  border-color: #b9f8cf;
+}
+
+.gv-counter--conclusa {
+  background: #f9fafb;
+  border-color: #e5e7eb;
+}
+
+.gv-counter__num {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+}
+
+.gv-counter--bozza   .gv-counter__num { color: #bb4d00; }
+.gv-counter--attiva  .gv-counter__num { color: #008236; }
+.gv-counter--conclusa .gv-counter__num { color: #364153; }
+
+.gv-counter__label {
+  font-size: 12px;
+  font-weight: 400;
+  color: #6a7282;
+  line-height: 16px;
+}
+
+/* Status / error */
+.gv-status {
+  font-size: 14px;
+  color: #99a1af;
+  padding: 4px 0;
+}
+
+.gv-error {
+  font-size: 14px;
+  font-weight: 500;
+  color: #d92d20;
+}
+
+/* Cards grid */
+.gv-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+/* Votazione card */
+.gv-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.06);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gv-badge {
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 28px;
+  color: white;
+  white-space: nowrap;
+  text-transform: capitalize;
+  align-self: flex-start;
+}
+
+.gv-badge--bozza      { background: #d99f0c; }
+.gv-badge--attivo     { background: #007a52; }
+.gv-badge--concluso   { background: #727e7a; }
+.gv-badge--archiviato { background: #1e2939; }
+
+.gv-card__titolo {
+  font-size: 16px;
+  font-weight: 600;
+  color: #101828;
+  line-height: 22px;
+  margin: 0;
+  flex: 1;
+}
+
+.gv-card__termine {
+  font-size: 12px;
+  font-weight: 400;
+  color: #6a7282;
+  line-height: 16px;
+  margin: 0;
+}
+
+/* Action buttons */
+.gv-card__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.gv-action {
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+}
+
+.gv-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.gv-action:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.gv-action--elimina {
+  background: #fef2f2;
+  border-color: #ffc9c9;
+  color: #e7000b;
+}
+
+.gv-action--modifica {
+  background: #142822;
+  color: white;
+}
+
+.gv-action--pubblica {
+  background: #007a52;
+  color: white;
+}
+
+.gv-action--riepilogo {
+  width: 100%;
+  height: 40px;
+  justify-content: center;
+  font-size: 14px;
+  border-radius: 14px;
+}
+
+.gv-action--riepilogo-gray {
+  background: #99a1af;
+  color: white;
+}
+
+.gv-action--riepilogo-blue {
+  background: #1f3a89;
+  color: white;
+}

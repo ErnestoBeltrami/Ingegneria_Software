@@ -1,0 +1,60 @@
+### 1. Crea una votazione (stato iniziale: bozza)
+POST http://localhost:8000/votazioni
+Authorization: Bearer {{TOKEN_OPERATORE}}
+Content-Type: application/json
+
+{
+  "titoloVotazione": "Votazione di test dashboard {{TIMESTAMP}}",
+  "descrizione": "Creata automaticamente dal test dashboard-flow",
+  "data_discussione": "2025-12-01T10:00:00.000Z",
+  "data_inizio": "2025-12-05T09:00:00.000Z",
+  "data_fine": "2025-12-31T18:00:00.000Z",
+  "domanda": {
+    "titolo": "Sei favorevole alla proposta di test?",
+    "tipo": "risposta_singola",
+    "opzioni": [
+      { "testo": "Sì" },
+      { "testo": "No" }
+    ]
+  }
+}
+
+### 2. Pubblica la votazione (bozza → attivo)
+PATCH http://localhost:8000/votazioni/{{VOTAZIONE_ID}}/publish
+Authorization: Bearer {{TOKEN_OPERATORE}}
+
+### 3. Verifica che appare nella lista attivi (dashboard)
+GET http://localhost:8000/votazioni?stato=attivo
+Authorization: Bearer {{TOKEN_OPERATORE}}
+
+### 4. Crea un sondaggio (stato iniziale: bozza)
+POST http://localhost:8000/sondaggio
+Authorization: Bearer {{TOKEN_OPERATORE}}
+Content-Type: application/json
+
+{
+  "titolo": "Sondaggio di test dashboard {{TIMESTAMP}}",
+  "descrizione": "Creato automaticamente dal test dashboard-flow",
+  "data_discussione": "2025-12-01T10:00:00.000Z",
+  "data_inizio": "2025-12-05T09:00:00.000Z",
+  "data_fine": "2025-12-31T18:00:00.000Z",
+  "domande": [
+    {
+      "titolo": "Come valuti il servizio?",
+      "tipo": "risposta_singola",
+      "opzioni": [
+        { "testo": "Ottimo" },
+        { "testo": "Buono" },
+        { "testo": "Scarso" }
+      ]
+    }
+  ]
+}
+
+### 5. Pubblica il sondaggio (bozza → attivo)
+PATCH http://localhost:8000/sondaggio/{{SONDAGGIO_ID}}/publish
+Authorization: Bearer {{TOKEN_OPERATORE}}
+
+### 6. Verifica che il sondaggio appare nella lista attivi (dashboard)
+GET http://localhost:8000/sondaggio?stato=attivo
+Authorization: Bearer {{TOKEN_OPERATORE}}

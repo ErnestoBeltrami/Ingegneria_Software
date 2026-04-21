@@ -1,5 +1,5 @@
 import { Operatore } from '../models/operatore.js';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 export const createRootOperatore = async () => {
     const esistente = await Operatore.findOne({ isRoot: true });

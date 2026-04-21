@@ -22,6 +22,17 @@ const iniziativaSchema = new mongoose.Schema({
         type : String,
         trim : true,
         required : [true, 'Descrizione iniziativa obbligatoria']
+    },
+
+    stato : {
+        type : String,
+        enum : ['in_attesa', 'approvata', 'rifiutata'],
+        default : 'in_attesa'
+    },
+
+    motivazione_moderazione : {
+        type : String,
+        trim : true
     }
 
 },

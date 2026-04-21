@@ -104,10 +104,11 @@ Lo script estrae automaticamente gli ID dalle risposte delle chiamate API e li r
 
 - `{{VOTAZIONE_ID}}` - Estratto da `votazione._id` o `votazione.id`
 - `{{INIZIATIVA_ID}}` - Estratto da `iniziativa._id` o `iniziativa.id`
-- `{{SONDAGGIO_ID}}` - Estratto da `sondaggio._id` o `sondaggio.id`
+- `{{SONDAGGIO_ID}}` - Estratto da `sondaggio._id`, `sondaggio.id` o `sondaggioId` (risposta diretta)
 - `{{CATEGORIA_ID}}` - Estratto da `categoria._id` o `categoria.id`
 - `{{OPERATORE_ID}}` - Estratto da `operatore._id` o `operatore.id`
 - `{{CITTADINO_ID}}` - Estratto da `cittadino._id`, `cittadino.id` o `cittadinoId`
+- `{{TIMESTAMP}}` - Generato a runtime: 6 cifre univoche per run, utile per evitare errori di chiave duplicata nei titoli
 
 **Esempio:**
 
@@ -195,6 +196,6 @@ Response Body:
 - Supporta headers personalizzati (incluso Authorization)
 - Supporta body JSON
 - Pausa di 500ms tra le richieste per evitare rate limiting
-- Default URL: `http://localhost:3000` (modificabile nel file .rest o in `.test-config.json`)
+- Default URL: `http://localhost:8000` (modificabile in `.test-config.json` con il campo `baseUrl`)
 - Il file `.test-tokens.json` viene creato automaticamente e contiene i token cachati (non committarlo nel repository)
 

@@ -1,10 +1,27 @@
-// Nel file: ./controllers/cittadinoController.js
 import { Cittadino } from '../models/cittadino.js';
 import { RispostaConsultazione } from '../models/risposta_consultazione.js';
 import mongoose from 'mongoose';
 import { VotoIniziativa } from '../models/voto_iniziativa.js';
 import { Iniziativa } from '../models/iniziativa.js';
 import { Consultazione } from '../models/consultazione.js';
+
+export const logout = async (req, res) => {
+    try {
+        const userFromMiddleware = req.user;
+
+        await Cittadino.findByIdAndUpdate(userFromMiddleware._id, { loggedIn: false });
+
+        return res.status(200).json({
+            message: 'Logout effettuato con successo.'
+        });
+    } catch (error) {
+        console.error('Errore durante il logout:', error);
+        return res.status(500).json({
+            message: 'Errore interno del server durante il logout.',
+            error: error.message
+        });
+    }
+};
 
 export const getCittadinoData = async (req, res) => {
     try {
@@ -15,7 +32,7 @@ export const getCittadinoData = async (req, res) => {
                 message: "Utente non identificato dal sistema (Internal Error)"
             });
         } 
-        const cittadino = await Cittadino.findById(userFromMiddleware.id).select('-password'); 
+        const cittadino = await Cittadino.findById(userFromMiddleware._id).select('-password');
         if (cittadino) {
             
             const datiPubblici = {
@@ -245,6 +262,35 @@ export const votaIniziativa = async (req,res) => {
         console.error('Errore nella votazione', error);
         return res.status(500).json({
             message: 'Errore interno del server durante la votazione.',
+            error: error.message
+        });
+    }
+};
+
+export const rimuoviVotoIniziativa = async (req, res) => {
+    try {
+        const user = req.user;
+        const { iniziativaId } = req.params;
+
+        const voto = await VotoIniziativa.findOneAndDelete({
+            ID_iniziativa: iniziativaId,
+            ID_cittadino: user._id
+        });
+
+        if (!voto) {
+            return res.status(404).json({
+                message: "Voto non trovato: non hai votato per questa iniziativa."
+            });
+        }
+
+        return res.status(200).json({
+            message: "Voto rimosso con successo."
+        });
+
+    } catch (error) {
+        console.error('Errore nella rimozione del voto:', error);
+        return res.status(500).json({
+            message: 'Errore interno del server durante la rimozione del voto.',
             error: error.message
         });
     }

@@ -26,7 +26,7 @@ router.get(
             });
         }
 
-        const payload = { id: cittadino.id, ruolo: 'cittadino' };
+        const payload = { id: cittadino._id, ruolo: 'cittadino' };
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
 
         res.json({
@@ -41,14 +41,14 @@ router.post('/complete-profile', async (req, res) => {
     const { cittadinoId, nome, cognome, eta, genere, categoria } = req.body;
 
     if (!nome || !cognome || !eta || !genere || !categoria) {
-         return res.status(400).json({ error: 'Tutti i campi del profilo sono obbligatori.' });
+         return res.status(400).json({ message: 'Tutti i campi del profilo sono obbligatori.' });
     }
 
     try {
         const cittadino = await Cittadino.findById(cittadinoId);
 
         if (!cittadino) {
-            return res.status(404).json({ error: 'Cittadino non trovato.' });
+            return res.status(404).json({ message: 'Cittadino non trovato.' });
         }
         
         cittadino.nome = nome;
@@ -69,7 +69,7 @@ router.post('/complete-profile', async (req, res) => {
         });
 
     } catch (error) {
-        res.status(400).json({ error: 'Errore di validazione o server.', details: error.message });
+        res.status(400).json({ message: 'Errore di validazione o server.', details: error.message });
     }
 });
 

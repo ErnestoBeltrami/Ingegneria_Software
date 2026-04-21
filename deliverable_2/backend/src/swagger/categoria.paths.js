@@ -191,6 +191,14 @@
  *                     nome: "Ambiente"
  *                     createdAt: "2025-12-05T16:00:00.000Z"
  *                     updatedAt: "2025-12-05T16:00:00.000Z"
+ *       400:
+ *         description: ID non valido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "ID non valido."
  *       401:
  *         description: Non autenticato - sessione non valida
  *         content:
@@ -278,13 +286,18 @@
  *                     createdAt: "2025-12-05T16:00:00.000Z"
  *                     updatedAt: "2025-12-05T16:00:00.000Z"
  *       400:
- *         description: ID e nuovo nome categoria obbligatori.
+ *         description: ID non valido o dati mancanti
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
- *             example:
- *               message: "ID e nuovo nome categoria obbligatori."
+ *             examples:
+ *               invalidId:
+ *                 value:
+ *                   message: "ID non valido."
+ *               missingFields:
+ *                 value:
+ *                   message: "ID e nuovo nome categoria obbligatori."
  *       401:
  *         description: Non autenticato - sessione non valida
  *         content:
@@ -348,13 +361,13 @@
  *                   type: string
  *                   example: "Categoria eliminata con successo."
  *       400:
- *         description: ID categoria non valido.
+ *         description: ID non valido
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
- *               message: "ID categoria non valido."
+ *               message: "ID non valido."
  *       401:
  *         description: Non autenticato - sessione non valida
  *         content:

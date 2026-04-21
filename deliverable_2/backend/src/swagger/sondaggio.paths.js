@@ -91,12 +91,31 @@
  * @swagger
  * /sondaggi:
  *   get:
- *     summary: Ricerca sondaggi
- *     description: Restituisce la lista di tutti i sondaggi creati dall'operatore autenticato, ordinati per data di inizio (più recenti prima)
+ *     summary: Lista sondaggi dell'operatore
+ *     description: Restituisce la lista paginata dei sondaggi creati dall'operatore autenticato, ordinati per data di inizio (più recenti prima). Supporta filtro per stato e paginazione.
  *     tags:
  *       - Sondaggi
  *     security:
  *       - sessionAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: stato
+ *         schema:
+ *           type: string
+ *           enum: [bozza, attivo, concluso, archiviato]
+ *         description: Filtra i sondaggi per stato
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Numero di pagina
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Numero di risultati per pagina (max 100)
  *     responses:
  *       200:
  *         description: Sondaggi recuperati con successo
@@ -107,11 +126,34 @@
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "Sondaggi recuperate con successo."
+ *                   example: "Sondaggi recuperati con successo."
  *                 sondaggi:
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/Sondaggio'
+ *                 paginazione:
+ *                   type: object
+ *                   properties:
+ *                     totale:
+ *                       type: integer
+ *                       example: 42
+ *                     pagina:
+ *                       type: integer
+ *                       example: 1
+ *                     limite:
+ *                       type: integer
+ *                       example: 10
+ *                     pagine:
+ *                       type: integer
+ *                       example: 5
+ *       400:
+ *         description: Stato non valido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Stato non valido. Valori ammessi: bozza, attivo, concluso, archiviato."
  *       401:
  *         description: Operatore non autenticato
  *         content:
@@ -161,6 +203,14 @@
  *                   example: "Sondaggio trovato con successo."
  *                 sondaggio:
  *                   $ref: '#/components/schemas/Sondaggio'
+ *       400:
+ *         description: ID non valido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "ID non valido."
  *       404:
  *         description: Sondaggio non trovato
  *         content:
@@ -241,13 +291,18 @@
  *                 sondaggio:
  *                   $ref: '#/components/schemas/Sondaggio'
  *       400:
- *         description: Sondaggio non in stato bozza
+ *         description: ID non valido o sondaggio non in stato bozza
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
- *             example:
- *               message: "Solo i sondaggi in stato \"bozza\" possono essere modificate."
+ *             examples:
+ *               invalidId:
+ *                 value:
+ *                   message: "ID non valido."
+ *               notBozza:
+ *                 value:
+ *                   message: "Solo i sondaggi in stato \"bozza\" possono essere modificate."
  *       401:
  *         description: Operatore non autenticato
  *         content:
@@ -304,13 +359,18 @@
  *                   type: string
  *                   example: "Sondaggio eliminato con successo."
  *       400:
- *         description: Sondaggio non in stato bozza
+ *         description: ID non valido o sondaggio non in stato bozza
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
- *             example:
- *               message: "Solo i sondaggi in stato \"bozza\" possono essere eliminati."
+ *             examples:
+ *               invalidId:
+ *                 value:
+ *                   message: "ID non valido."
+ *               notBozza:
+ *                 value:
+ *                   message: "Solo i sondaggi in stato \"bozza\" possono essere eliminati."
  *       401:
  *         description: Operatore non autenticato
  *         content:
@@ -369,13 +429,18 @@
  *                 sondaggio:
  *                   $ref: '#/components/schemas/Sondaggio'
  *       400:
- *         description: Sondaggio non in stato bozza
+ *         description: ID non valido o sondaggio non in stato bozza
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
- *             example:
- *               message: "Solo i sondaggi in stato \"bozza\" possono essere pubblicate."
+ *             examples:
+ *               invalidId:
+ *                 value:
+ *                   message: "ID non valido."
+ *               notBozza:
+ *                 value:
+ *                   message: "Solo i sondaggi in stato \"bozza\" possono essere pubblicate."
  *       401:
  *         description: Operatore non autenticato
  *         content:
@@ -434,13 +499,18 @@
  *                 sondaggio:
  *                   $ref: '#/components/schemas/Sondaggio'
  *       400:
- *         description: Sondaggio non in stato concluso
+ *         description: ID non valido o sondaggio non in stato concluso
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
- *             example:
- *               message: "Solo i sondaggi in stato \"concluso\" possono essere archiviate."
+ *             examples:
+ *               invalidId:
+ *                 value:
+ *                   message: "ID non valido."
+ *               notConcluso:
+ *                 value:
+ *                   message: "Solo i sondaggi in stato \"concluso\" possono essere archiviate."
  *       401:
  *         description: Operatore non autenticato
  *         content:
@@ -577,13 +647,13 @@
  *                       voti: 95
  *                       percentuale: 63.33
  *       400:
- *         description: ID sondaggio non valido
+ *         description: ID non valido
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
- *               message: "ID Sondaggio non valido."
+ *               message: "ID non valido."
  *       404:
  *         description: Sondaggio non trovato o domande mancanti
  *         content:

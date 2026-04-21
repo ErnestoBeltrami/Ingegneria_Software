@@ -68,7 +68,7 @@ export const createVotazione = async (req, res) => {
     }
 };
 
-// GET: Lista votazioni (per ora tutte, filtrabili per operatore)
+// GET: Lista votazioni filtrabili per stato con paginazione
 export const getVotazioni = async (req, res) => {
     try {
         const userFromMiddleware = req.user;
@@ -79,16 +79,40 @@ export const getVotazioni = async (req, res) => {
             });
         }
 
-        const votazioni = await Consultazione.find({ 
-            creatoDa: userFromMiddleware._id,
-            tipo: 'votazione'
-        })
-            .populate('ID_domanda')    
-            .sort({ data_inizio: -1 });
+        const statiValidi = ['bozza', 'attivo', 'concluso', 'archiviato'];
+        const { stato, page = 1, limit = 10 } = req.query;
+
+        if (stato && !statiValidi.includes(stato)) {
+            return res.status(400).json({
+                message: `Stato non valido. Valori ammessi: ${statiValidi.join(', ')}.`
+            });
+        }
+
+        const pageNum = Math.max(1, parseInt(page));
+        const limitNum = Math.min(100, Math.max(1, parseInt(limit)));
+        const skip = (pageNum - 1) * limitNum;
+
+        const filtro = { creatoDa: userFromMiddleware._id, tipo: 'votazione' };
+        if (stato) filtro.stato = stato;
+
+        const [votazioni, totale] = await Promise.all([
+            Consultazione.find(filtro)
+                .populate('ID_domanda')
+                .sort({ data_inizio: -1 })
+                .skip(skip)
+                .limit(limitNum),
+            Consultazione.countDocuments(filtro)
+        ]);
 
         return res.status(200).json({
             message: 'Votazioni recuperate con successo.',
-            votazioni
+            votazioni,
+            paginazione: {
+                totale,
+                pagina: pageNum,
+                limite: limitNum,
+                pagine: Math.ceil(totale / limitNum)
+            }
         });
     } catch (error) {
         console.error('Errore nel recupero delle votazioni:', error);
@@ -110,8 +134,8 @@ export const getVotazioni = async (req, res) => {
             });
         }
 
-        const votazioni = await Consultazione.find({ 
-            stato : ["attivo","concluso"],
+        const votazioni = await Consultazione.find({
+            stato: { $in: ["attivo", "concluso"] },
             tipo: 'votazione'
         }).sort({ data_inizio: -1 });
 
@@ -413,5 +437,103 @@ export const getRiepilogoSintetico = async (req, res) => {
             message: 'Errore interno del server durante il riepilogo della votazione.',
             error: error.message
         });
+    }
+};
+
+export const getRiepilogoDemografico = async (req, res) => {
+    const votazioneId = req.params.id;
+
+    try {
+        const objectIdVotazione = new mongoose.Types.ObjectId(votazioneId);
+
+        const votazione = await Consultazione.findOne({
+            _id: objectIdVotazione,
+            tipo: 'votazione'
+        }).populate('ID_domanda');
+
+        if (!votazione || !votazione.ID_domanda) {
+            return res.status(404).json({ message: 'Votazione non trovata o domanda collegata mancante.' });
+        }
+
+        const domanda = votazione.ID_domanda;
+        const opzioniMap = Object.fromEntries(
+            domanda.opzioni.map(o => [o._id.toString(), o.testo])
+        );
+
+        const baseMatch = { $match: { ID_consultazione: objectIdVotazione, tipo_consultazione: 'votazione', ID_opzione: { $ne: null, $exists: true } } };
+        const projectOpzioneStr = { $project: { ID_opzione_str: { $toString: '$ID_opzione' }, ID_cittadino: 1, createdAt: 1 } };
+        const lookupCittadino = {
+            $lookup: { from: 'cittadinos', localField: 'ID_cittadino', foreignField: '_id', as: 'cittadino' }
+        };
+        const unwindCittadino = { $unwind: { path: '$cittadino', preserveNullAndEmptyArrays: false } };
+
+        const [perGenere, perFasciaEta, partecipazioneGiornaliera] = await Promise.all([
+            // A) Per genere
+            RispostaConsultazione.aggregate([
+                baseMatch,
+                projectOpzioneStr,
+                lookupCittadino,
+                unwindCittadino,
+                { $group: { _id: { genere: '$cittadino.genere', opzione: '$ID_opzione_str' }, voti: { $sum: 1 } } },
+                { $project: { _id: 0, genere: '$_id.genere', opzioneId: '$_id.opzione', voti: 1 } }
+            ]),
+
+            // B) Per fascia d'età
+            RispostaConsultazione.aggregate([
+                baseMatch,
+                projectOpzioneStr,
+                lookupCittadino,
+                unwindCittadino,
+                {
+                    $addFields: {
+                        fascia: {
+                            $switch: {
+                                branches: [
+                                    { case: { $lte: ['$cittadino.eta', 25] }, then: '18-25' },
+                                    { case: { $lte: ['$cittadino.eta', 35] }, then: '26-35' },
+                                    { case: { $lte: ['$cittadino.eta', 50] }, then: '36-50' },
+                                    { case: { $lte: ['$cittadino.eta', 65] }, then: '51-65' },
+                                ],
+                                default: '66+'
+                            }
+                        }
+                    }
+                },
+                { $group: { _id: { fascia: '$fascia', opzione: '$ID_opzione_str' }, voti: { $sum: 1 } } },
+                { $project: { _id: 0, fascia: '$_id.fascia', opzioneId: '$_id.opzione', voti: 1 } }
+            ]),
+
+            // C) Partecipazione giornaliera
+            RispostaConsultazione.aggregate([
+                baseMatch,
+                {
+                    $group: {
+                        _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+                        voti: { $sum: 1 }
+                    }
+                },
+                { $sort: { '_id': 1 } },
+                { $project: { _id: 0, data: '$_id', voti: 1 } }
+            ])
+        ]);
+
+        return res.status(200).json({
+            message: 'Riepilogo demografico recuperato.',
+            votazione: votazione.titolo,
+            stato: votazione.stato,
+            data_inizio: votazione.data_inizio,
+            data_fine: votazione.data_fine,
+            opzioniMap,
+            perGenere,
+            perFasciaEta,
+            partecipazioneGiornaliera
+        });
+
+    } catch (error) {
+        if (error.name === 'BSONTypeError' || error.name === 'CastError') {
+            return res.status(400).json({ message: 'ID Votazione non valido.', error: error.message });
+        }
+        console.error('Errore nel riepilogo demografico:', error);
+        return res.status(500).json({ message: 'Errore interno del server.', error: error.message });
     }
 };

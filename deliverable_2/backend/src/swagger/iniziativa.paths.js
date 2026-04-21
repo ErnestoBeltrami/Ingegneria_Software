@@ -260,10 +260,18 @@
  *                     descrizione: "Proposta per organizzare giornate di pulizia nei parchi pubblici della città"
  *                     createdAt: "2025-12-05T16:00:00.000Z"
  *                     updatedAt: "2025-12-05T16:00:00.000Z"
+ *       400:
+ *         description: ID non valido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "ID non valido."
  *       401:
  *         description: Non autenticato
  *         content:
- *           application/json: 
+ *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
@@ -285,6 +293,114 @@
  *             example:
  *               message: "Errore interno del server durante il recupero dell'iniziativa con l'ID specificato."
  *               error: "Database connection error"
+ */
+
+/**
+ * @swagger
+ * /iniziative/{id}/modera:
+ *   patch:
+ *     summary: Modera un'iniziativa
+ *     description: Permette a un operatore autenticato di approvare o rifiutare un'iniziativa in stato "in_attesa". Le iniziative approvate diventano visibili ai cittadini; quelle rifiutate rimangono visibili solo agli operatori. È possibile fornire una motivazione opzionale.
+ *     tags:
+ *       - Iniziative
+ *     security:
+ *       - sessionAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: ID dell'iniziativa da moderare
+ *         example: "507f1f77bcf86cd799439011"
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - stato
+ *             properties:
+ *               stato:
+ *                 type: string
+ *                 enum: [approvata, rifiutata]
+ *                 description: Nuovo stato dell'iniziativa
+ *               motivazione:
+ *                 type: string
+ *                 description: Motivazione opzionale della decisione
+ *                 example: "L'iniziativa rispetta tutte le linee guida comunali."
+ *           examples:
+ *             approva:
+ *               summary: Approva iniziativa
+ *               value:
+ *                 stato: "approvata"
+ *                 motivazione: "L'iniziativa rispetta tutte le linee guida comunali."
+ *             rifiuta:
+ *               summary: Rifiuta iniziativa
+ *               value:
+ *                 stato: "rifiutata"
+ *                 motivazione: "Il contenuto non è pertinente all'ambito comunale."
+ *     responses:
+ *       200:
+ *         description: Iniziativa moderata con successo
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Iniziativa approvata con successo."
+ *                 iniziativa:
+ *                   $ref: '#/components/schemas/Iniziativa'
+ *       400:
+ *         description: ID non valido, stato non valido o iniziativa già moderata
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             examples:
+ *               invalidId:
+ *                 value:
+ *                   message: "ID non valido."
+ *               invalidStato:
+ *                 value:
+ *                   message: "Stato non valido. Valori ammessi: approvata, rifiutata."
+ *               alreadyModerated:
+ *                 value:
+ *                   message: "Solo le iniziative in stato \"in_attesa\" possono essere moderate."
+ *       401:
+ *         description: Non autenticato
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Errore nell'autenticazione"
+ *       403:
+ *         description: Accesso negato — solo operatori possono moderare
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Accesso negato. Ruolo non sufficiente"
+ *       404:
+ *         description: Iniziativa non trovata
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Iniziativa non trovata."
+ *       500:
+ *         description: Errore interno del server
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Errore interno del server durante la moderazione dell'iniziativa."
+ *               error: "Database error"
  */
 
 /**
@@ -333,12 +449,6 @@
  *               success:
  *                 value:
  *                   message: "Iniziativa aggiornata con successo."
- *                 iniziativa:  
- *                   $ref: '#/components/schemas/Iniziativa'
- *             examples:
- *               success:
- *                 value:
- *                   message: "Iniziativa aggiornata con successo."
  *                   iniziativa:
  *                     _id: "507f1f77bcf86cd799439011"
  *                     ID_categoria: "507f1f77bcf86cd799439012"
@@ -348,13 +458,18 @@
  *                     createdAt: "2025-12-05T16:00:00.000Z"
  *                     updatedAt: "2025-12-05T16:00:00.000Z"
  *       400:
- *         description: Dati mancanti o non validi
+ *         description: ID non valido o dati mancanti
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
- *             example:
- *               message: "Almeno un campo deve essere aggiornato."
+ *             examples:
+ *               invalidId:
+ *                 value:
+ *                   message: "ID non valido."
+ *               missingFields:
+ *                 value:
+ *                   message: "Almeno un campo deve essere aggiornato."
  *       401:
  *         description: Non autenticato
  *         content:
@@ -417,6 +532,14 @@
  *                 message:
  *                   type: string
  *                   example: "Iniziativa eliminata con successo."
+ *       400:
+ *         description: ID non valido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "ID non valido."
  *       401:
  *         description: Non autenticato
  *         content:

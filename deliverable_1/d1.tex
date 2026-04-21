@@ -13,17 +13,16 @@
 \usepackage{graphicx}
 \usepackage{marginnote}
 \usepackage{enumitem}
-\usepackage{todonotes}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 
-\title{Deliverable 1 v0.2}
+\title{Deliverable 1 v1.0}
 \author{Riccardo Sandru, Ernesto Beltrami, Taufge Songne}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-	\todo{Add abstract}
+	Il presente documento descrive il progetto \textit{IoSonoTrento}, includendo contesto, requisiti funzionali e non funzionali, use case e user stories per la piattaforma di partecipazione civica.
 \end{abstract}
 
 \setcounter{tocdepth}{2}  % includi section e subsection
@@ -66,7 +65,9 @@ L'app avrà un linguaggio chiaro, semplice e diretto, facilmente comprensibile d
 \begin{itemize}
       \item \textbf{campione di voti non assoluto}: I voti o le risposte dei sondaggi non rappresentano l’opinione di tutta la cittadinanza di Trento. Probabilmente non tutti i cittadini di Trento utilizzeranno la piattaforma. Dunque, i dati rappresenteranno soltanto un gruppo di persone.
       \item \textbf{limiti di accessibilità per quanto riguarda persone con fascia alta d'età}: Nonostante il fatto che la piattaforma sia pensata per essere di facile utilizzo, la partecipazione della fascia d’età più anziana potrebbe essere limitata. Ci aspettiamo quindi una concentrazione di utenti in una fascia di età compresa tra i 18 e 60 anni.
-      \item \textbf{Limitazione dell'accesso degli utenti}: L'applicazione è pensata per consentire l'accesso esclusivamente agli utenti residenti nel comune di Trento. Per implementare un controllo rigoroso dell’identità e della residenza sarebbe necessario integrare SPID come metodo di autenticazione, poiché permette di verificare in modo sicuro le informazioni personali degli utenti. Tuttavia, per motivi di certificazioni da parte di SPID e CieID, l’attuale versione dell’applicazione utilizzerà l’accesso tramite account Google come metodo sostitutivo, senza garanzia di limitazione geografica. Di conseguenza, la verifica della residenza non è pienamente garantita in questa release. prototitpo
+      \item \textbf{resistenza alla coercizione}: A differenza del voto fisico in cabina elettorale, il sistema non può garantire che l'utente non stia votando sotto coercizione o supervisione di terzi nel proprio ambiente domestico. Pertanto, i risultati hanno valore consultivo e non legale/vincolante.
+      \item \textbf{integrazione legacy}: Il sistema opera come entità autonoma e non si sincronizza in tempo reale con il Protocollo Informatico del Comune. L'interscambio dati avviene tramite export manuale (CSV/XML) da parte degli operatori.
+      \item \textbf{verifica dell’identità fisica}: L'autenticazione SPID garantisce l'identità digitale, ma non può impedire la cessione volontaria delle credenziali (es. un familiare che vota per conto di un altro).
 \end{itemize}
 
 \subsection{Cio' che ci aspettiamo}
@@ -76,7 +77,7 @@ L’obiettivo finale quindi sarebbe quello di fornire uno strumento che possa av
 
 \subsection{Requisiti funzionali comuni per operatore e utente}
 \begin{enumerate}[label=\textbf{RF\arabic*}]
-	\item \textbf{Gestione accessi}: La piattaforma deve consentire l’accesso agli utenti. Gli utenti si registrano tramite Google Authentication; al primo accesso, l’ID univoco Google viene memorizzato nel database insieme alle informazioni necessarie per consentire i successivi login. Gli operatori del Comune accedono alla dashboard amministrativa tramite nome utente e password predefiniti nel database.\todo{individuare esattamente delle funzioni}
+	\item \textbf{Gestione accessi}: La piattaforma deve consentire l’accesso agli utenti. Gli utenti si registrano tramite Google Authentication; al primo accesso, l’ID univoco Google viene memorizzato nel database insieme alle informazioni necessarie per consentire i successivi login. Gli operatori del Comune accedono alla dashboard amministrativa tramite nome utente e password predefiniti nel database.
 
 	\item \textbf{Accesso alla Dashboard}: Tutti gli utenti autenticati devono poter accedere alla propria dashboard:
 	\begin{itemize}
@@ -95,17 +96,24 @@ L’obiettivo finale quindi sarebbe quello di fornire uno strumento che possa av
 	\item \textbf{Creazione e gestione delle votazioni}: Il sistema deve consentire agli operatori del Comune di creare, configurare e gestire le votazioni relative agli argomenti discussi in sede comunale. Ogni votazione potrà comprendere uno o più temi, ciascuno corredato da una breve descrizione e da eventuali materiali informativi allegati. Il sistema deve consentire all’operatore di inserire un numero fisso di risposte per ogni tema ed altre opzioni come votazione a risposta singola o multipla.  L’operatore deve avere la possibilità di impostare un limite di tempo per la durata della votazione, definendo una data e un’ora di chiusura oltre le quali non sarà più possibile esprimere voti. Inoltre, l’interfaccia dovrà permettere di modificare o eliminare votazioni già create, garantendo al contempo la tracciabilità delle operazioni effettuate per motivi di trasparenza e controllo.
 	\item \textbf{Creazione e gestione dei sondaggi}: L’applicazione deve permettere agli operatori di creare, pubblicare e gestire mini-sondaggi anonimi rivolti agli utenti registrati. Tali sondaggi possono essere collegati a specifiche votazioni o riguardare tematiche di interesse generale, con l’obiettivo di raccogliere rapidamente opinioni e percezioni della cittadinanza. Ogni sondaggio deve poter essere configurato con un numero variabile di domande a risposta chiusa o multipla, e deve prevedere la possibilità di impostare un periodo di validità (data di apertura e chiusura). Al termine del periodo stabilito, il sistema deve automaticamente chiudere la raccolta delle risposte e rendere disponibili i risultati agli operatori.
 
-	\item \textbf{Moderazione dei contenuti generati dagli utenti}: Il sistema deve consentire agli operatori di monitorare e moderare le proposte e i contenuti pubblicati dai cittadini sulla piattaforma. In particolare, gli operatori devono poter eliminare o segnalare contenuti che violano le linee guida della community o che contengono linguaggio offensivo, materiale inappropriato o non conforme alle politiche del Comune. \todo{ però come evitiamo situazioni di potere?tipo elimino qualcosa che propongono pk a me moderatore non mi piace?}
+	\item \textbf{Moderazione dei contenuti generati dagli utenti}: Il sistema deve consentire agli operatori di monitorare e moderare le proposte e i contenuti pubblicati dai cittadini sulla piattaforma. In particolare, gli operatori devono poter eliminare o segnalare contenuti che violano le linee guida della community o che contengono linguaggio offensivo, materiale inappropriato o non conforme alle politiche del Comune. Le azioni di moderazione devono essere tracciate (operatore, data, motivo) per garantire trasparenza e auditabilità.
 \end{enumerate}
 
 \subsection{Requisiti funzionali solo per cittadini}
 \begin{enumerate}[label=\textbf{RFC\arabic*}]
-	\item \textbf{Gestione delle iniziative dei cittadini}: I cittadini possono proporre nuove iniziative nella bacheca pubblica e votare quelle esistenti per aumentarne la visibilità. Ogni iniziativa deve riportare il titolo, una descrizione sintetica e il numero di voti ricevuti. \todo{(nominativo di chi vota  se vuoi poi ti  spiego in che senso)}
+	\item \textbf{Gestione delle iniziative dei cittadini}: I cittadini possono proporre nuove iniziative nella bacheca pubblica e votare quelle esistenti per aumentarne la visibilità. Ogni iniziativa deve riportare il titolo, una descrizione sintetica e il numero di voti ricevuti.
 
 	\item \textbf{Votazioni}: Il sistema deve garantire che ogni cittadino possa esprimere un solo voto per ciascun tema di votazione e un solo invio di risposte per ogni sondaggio. Le preferenze espresse devono essere registrate in forma anonima e non modificabile, assicurando al contempo la tracciabilità del voto a fini di controllo senza violare la privacy del cittadino. 
 
 	\item \textbf{Visualizzazione votazioni e sondaggi}: Il sistema deve garantire ai cittadini di poter visualizzare sia votazioni che sondaggi attive nella propria dashboard.
 \end{enumerate}
+
+\subsection{Requisiti funzionali per account root}
+\begin{itemize}
+    \item \textbf{RF14 - Creazione account admin}: Il sistema deve prevedere la presenza di un account root preconfigurato e non eliminabile, utilizzato esclusivamente per la creazione e l’abilitazione degli account amministrativi destinati agli operatori del Comune. L’account root ha accesso unicamente alle funzionalità di creazione account amministratore, visualizzazione della lista amministratori e disattivazione degli account amministratore.
+    \item \textbf{RF15 - Visualizzazione lista amministratori}: Il sistema deve consentire all’account root di visualizzare l’elenco completo degli account amministrativi registrati nel sistema. La lista deve includere almeno nome utente, stato account (attivo/disattivato), data di creazione ed eventuale data di disattivazione.
+    \item \textbf{RF16 - Disattivazione account amministratore}: Il sistema deve consentire all’account root di disattivare uno o più account amministrativi esistenti senza eliminarne i dati. Il sistema deve impedire la disattivazione dell’account root stesso e registrare data e ora della disattivazione per finalità di audit.
+\end{itemize}
 
 \section{Requisiti non funzionali}  
 I requisiti non funzionali descrivono le caratteristiche qualitative del sistema \textit{IoSonoTrento}, ovvero gli aspetti che determinano la qualità complessiva del servizio e l’esperienza d’uso, indipendentemente dalle funzionalità implementate. Essi contribuiscono a definire la solidità, l’affidabilità, la sicurezza e l’usabilità dell’applicazione, garantendo un servizio pubblico digitale efficiente e accessibile a tutti i cittadini.
@@ -451,6 +459,47 @@ L’utente può applicare filtri demografici o tematici per analizzare i dati ag
 \end{enumerate}
 
 \textbf{Eccezione}: Nessun elemento attivo: se il sistema non trova ne votazioni ne sondaggi \textbf{attivi}, mostra un messaggio informativo (es: "Al momento non ci sono attivita in corso").
+
+% --------------------------------------------------------
+
+\subsection{RF14: Creazione account amministrativo}
+\begin{enumerate}
+    \item L'Account Root accede alla sezione di creazione account amministratore.
+    \item Il sistema presenta un form per nome utente e password iniziale.
+    \item L'Account Root inserisce i dati e conferma la creazione.
+    \item Il sistema valida i dati, crea l'account in stato \textbf{attivo} e registra la data di creazione.
+\end{enumerate}
+
+\textbf{Eccezioni}
+\begin{itemize}
+    \item Dati incompleti: il sistema nega la creazione.
+    \item Nome utente già esistente: il sistema nega la creazione.
+\end{itemize}
+
+% --------------------------------------------------------
+
+\subsection{RF15: Visualizzazione lista amministratori}
+\begin{enumerate}
+    \item L'Account Root accede alla sezione \textit{Gestione Amministratori}.
+    \item Il sistema recupera l'elenco completo degli account amministrativi.
+    \item Il sistema mostra per ogni account: nome utente, stato, data di creazione ed eventuale data di disattivazione.
+\end{enumerate}
+
+% --------------------------------------------------------
+
+\subsection{RF16: Disattivazione account amministratore}
+\begin{enumerate}
+    \item L'Account Root visualizza la lista degli account amministrativi.
+    \item Seleziona uno o più account \textbf{attivi} da disattivare.
+    \item Il sistema richiede conferma esplicita.
+    \item Se confermata, il sistema imposta lo stato a \textbf{disattivato} e registra data/ora dell'operazione.
+\end{enumerate}
+
+\textbf{Eccezioni}
+\begin{itemize}
+    \item Account già disattivato: il sistema non esegue l'azione e mostra un messaggio.
+    \item Tentativo di disattivazione dell'account root: il sistema blocca l'operazione.
+\end{itemize}
 
 % --------------------------------------------------------
 

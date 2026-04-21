@@ -5,12 +5,14 @@ import {
     ricercaIniziativa,
     getIniziativaById,
     updateIniziativa,
-    deleteIniziativa
+    deleteIniziativa,
+    moderaIniziativa
 } from "../controllers/iniziativa.controller.js";
 
-import { 
+import {
   protect,
-  restrictTo
+  restrictTo,
+  validateObjectId
 } from "../middleware/auth_middleware.js";
 
 const router = Router();
@@ -22,15 +24,18 @@ router.post("/", protect, restrictTo(['cittadino']), createIniziativa);
 router.get("/", protect, getIniziative);
 
 // GET: Ricerca iniziativa per Id
-router.get("/:id", protect, getIniziativaById);
+router.get("/:id", protect, validateObjectId, getIniziativaById);
 
 // GET: Ricerca iniziative
 router.post("/ricerca", protect, ricercaIniziativa);
 
+// PATCH: Modera iniziativa (approva/rifiuta) — solo operatore
+router.patch("/:id/modera", protect, validateObjectId, restrictTo(['operatore']), moderaIniziativa);
+
 // PATCH: Aggiorna iniziativa
-router.patch("/:id", protect, restrictTo(['cittadino']), updateIniziativa);
+router.patch("/:id", protect, validateObjectId, restrictTo(['cittadino']), updateIniziativa);
 
 // DELETE: Elimina iniziativa
-router.delete("/:id", protect, restrictTo(['cittadino']), deleteIniziativa);
+router.delete("/:id", protect, validateObjectId, restrictTo(['cittadino']), deleteIniziativa);
 
 export default router;
