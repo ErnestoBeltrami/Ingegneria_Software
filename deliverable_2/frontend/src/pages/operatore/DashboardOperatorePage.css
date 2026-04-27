@@ -5,6 +5,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background: #080808;
 }
 
 .dashboard-page {
@@ -14,7 +15,7 @@
   padding: 32px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 28px;
   font-family: 'Montserrat', sans-serif;
   flex: 1;
 }
@@ -26,27 +27,33 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .dashboard-header__label {
-  font-size: 14px;
-  font-weight: 400;
-  color: #99a1af;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.65);
   line-height: 20px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
 .dashboard-header__title {
+  font-family: 'Playfair Display', serif;
   font-size: 30px;
   font-weight: 700;
-  color: #101828;
+  color: #ffffff;
   line-height: 36px;
 }
 
 .dashboard-header__subtitle {
   font-size: 14px;
   font-weight: 400;
-  color: #6a7282;
+  color: rgba(255, 255, 255, 0.75);
   line-height: 20px;
+  margin-top: 2px;
 }
 
 /* =====================
@@ -55,25 +62,25 @@
 .dashboard-nav-cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 14px;
 }
 
 .nav-card {
-  background: white;
-  border: 1px solid #f3f4f6;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 16px;
-  box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.07);
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 12px;
   text-decoration: none;
   color: inherit;
-  transition: box-shadow 0.15s ease;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
 .nav-card:hover {
-  box-shadow: 0px 4px 18px 0px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.28);
 }
 
 .nav-card__icon {
@@ -88,14 +95,14 @@
 .nav-card__label {
   font-size: 14px;
   font-weight: 600;
-  color: #1e2939;
+  color: #ffffff;
   line-height: 20px;
 }
 
 .nav-card__desc {
   font-size: 12px;
   font-weight: 500;
-  color: #99a1af;
+  color: rgba(255, 255, 255, 0.7);
   line-height: 16px;
   margin-top: 2px;
 }
@@ -115,7 +122,7 @@
 .dashboard-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 14px;
 }
 
 .action-btn {
@@ -128,24 +135,29 @@
   cursor: pointer;
   font-family: 'Montserrat', sans-serif;
   text-align: left;
-  transition: opacity 0.15s ease;
+  transition: opacity 0.15s ease, background 0.15s ease;
 }
 
 .action-btn:hover {
-  opacity: 0.9;
+  opacity: 0.88;
 }
 
 .action-btn--primary {
   background: #1f3a89;
-  box-shadow: 0px 4px 14px 0px rgba(31, 58, 137, 0.3);
+  border: 1px solid rgba(100, 130, 255, 0.25);
+  box-shadow: 0px 4px 20px 0px rgba(31, 58, 137, 0.45);
   color: white;
 }
 
 .action-btn--secondary {
-  background: white;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
-  color: #1e2939;
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.action-btn--secondary:hover {
+  background: rgba(255, 255, 255, 0.14);
+  opacity: 1;
 }
 
 .action-btn__icon {
@@ -160,7 +172,7 @@
 }
 
 .action-btn__icon--green {
-  background: rgba(0, 122, 82, 0.1);
+  background: rgba(0, 196, 122, 0.18);
 }
 
 .action-btn__text {
@@ -178,18 +190,18 @@
 }
 
 .action-btn__title--dark {
-  color: #1e2939;
+  color: #ffffff;
 }
 
 .action-btn__subtitle {
   font-size: 12px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.7);
   line-height: 16px;
 }
 
 .action-btn__subtitle--dark {
-  color: #99a1af;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 /* =====================
@@ -199,12 +211,17 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 14px;
   padding: 0 17px;
   height: 46px;
-  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.dashboard-search:focus-within {
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.11);
 }
 
 .dashboard-search__input {
@@ -214,12 +231,12 @@
   font-family: 'Montserrat', sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #101828;
+  color: #ffffff;
   background: transparent;
 }
 
 .dashboard-search__input::placeholder {
-  color: #99a1af;
+  color: rgba(255, 255, 255, 0.45);
 }
 
 /* =====================
@@ -235,10 +252,12 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 600;
-  color: #1e2939;
+  color: rgba(255, 255, 255, 0.7);
   line-height: 24px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
 }
 
 /* =====================
@@ -251,15 +270,15 @@
 }
 
 .filter-btn {
-  height: 38px;
-  padding: 0 18px;
+  height: 36px;
+  padding: 0 16px;
   border-radius: 9999px;
-  border: 1px solid #e5e7eb;
-  background: white;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.07);
   font-family: 'Montserrat', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  color: #4a5565;
+  color: rgba(255, 255, 255, 0.72);
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
   white-space: nowrap;
@@ -267,13 +286,15 @@
 
 .filter-btn--active {
   background: #1f3a89;
-  border-color: #1f3a89;
+  border-color: rgba(100, 130, 255, 0.4);
   color: white;
+  box-shadow: 0 2px 10px rgba(31, 58, 137, 0.4);
 }
 
 .filter-btn:hover:not(.filter-btn--active) {
-  border-color: #1f3a89;
-  color: #1f3a89;
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 /* =====================
@@ -282,18 +303,23 @@
 .activity-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 14px;
 }
 
 .activity-card {
-  background: white;
-  border: 1px solid #e5e7eb;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 16px;
-  box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.06);
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.activity-card:hover {
+  background: rgba(255, 255, 255, 0.11);
+  border-color: rgba(255, 255, 255, 0.26);
 }
 
 .activity-card__header {
@@ -303,29 +329,32 @@
 }
 
 .badge {
-  height: 24px;
+  height: 22px;
   padding: 0 10px;
   border-radius: 9999px;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 24px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 22px;
   white-space: nowrap;
+  letter-spacing: 0.3px;
 }
 
 .badge--tipo {
-  background: rgba(31, 58, 137, 0.1);
-  color: #1f3a89;
+  background: rgba(31, 58, 137, 0.35);
+  color: #9fb3ff;
+  border: 1px solid rgba(100, 130, 255, 0.2);
 }
 
 .badge--stato {
-  background: #007a52;
-  color: white;
+  background: rgba(0, 122, 82, 0.35);
+  color: #00d48a;
+  border: 1px solid rgba(0, 196, 122, 0.2);
 }
 
 .activity-card__titolo {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
-  color: #101828;
+  color: #ffffff;
   line-height: 22px;
 }
 
@@ -338,40 +367,43 @@
 
 .activity-card__termine {
   font-size: 12px;
-  font-weight: 400;
-  color: #6a7282;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.62);
   line-height: 16px;
 }
 
 .btn-gestisci {
-  height: 32px;
+  height: 30px;
   padding: 0 14px;
-  background: #1f3a89;
-  border: none;
-  border-radius: 14px;
+  background: rgba(31, 58, 137, 0.6);
+  border: 1px solid rgba(100, 130, 255, 0.3);
+  border-radius: 9999px;
   font-family: 'Montserrat', sans-serif;
   font-size: 12px;
   font-weight: 600;
-  color: white;
+  color: #c0ccff;
   cursor: pointer;
-  transition: opacity 0.15s ease;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
 .btn-gestisci:hover {
-  opacity: 0.88;
+  background: rgba(31, 58, 137, 0.85);
+  border-color: rgba(100, 130, 255, 0.5);
+  color: #ffffff;
 }
 
 .activity-status {
   font-size: 14px;
-  color: #99a1af;
+  color: rgba(255, 255, 255, 0.58);
   padding: 8px 0;
 }
 
 .activity-status--error {
-  color: #d92d20;
+  color: #ff6b6b;
 }
 
 .badge--sondaggio {
-  background: rgba(0, 122, 82, 0.1);
-  color: #007a52;
+  background: rgba(0, 122, 82, 0.35);
+  color: #00d48a;
+  border: 1px solid rgba(0, 196, 122, 0.2);
 }

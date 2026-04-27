@@ -126,7 +126,7 @@ export default function CreaVotazionePage() {
             </div>
 
             <div className="crea-field">
-              <label htmlFor="v-desc" className="crea-field__label">Descrizione</label>
+              <label htmlFor="v-desc" className="crea-field__label">Descrizione <span className="crea-field__required">*</span></label>
               <textarea
                 id="v-desc"
                 className="crea-field__input crea-field__input--textarea"

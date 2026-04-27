@@ -10,29 +10,29 @@ import './DashboardOperatorePage.css';
 const NAV_CARDS = [
   {
     icon: Vote,
-    iconBg: 'rgba(31,58,137,0.1)',
-    iconColor: '#1f3a89',
+    iconBg: 'rgba(31,58,137,0.18)',
+    iconColor: '#829aff',
     label: 'Gestione votazioni',
     desc: 'Crea e monitora le votazioni',
-    linkColor: '#1f3a89',
+    linkColor: '#829aff',
     href: '/votazioni',
   },
   {
     icon: BarChart2,
-    iconBg: 'rgba(0,122,82,0.1)',
-    iconColor: '#007a52',
+    iconBg: 'rgba(0,122,82,0.18)',
+    iconColor: '#00c47a',
     label: 'Gestione sondaggi',
     desc: 'Crea e gestisci i sondaggi',
-    linkColor: '#007a52',
+    linkColor: '#00c47a',
     href: '/sondaggi',
   },
   {
     icon: LayoutGrid,
-    iconBg: '#fffbeb',
-    iconColor: '#92400e',
+    iconBg: 'rgba(146,64,14,0.18)',
+    iconColor: '#f59e0b',
     label: 'Moderazione bacheca',
     desc: 'Gestisci le proposte dei cittadini',
-    linkColor: '#92400e',
+    linkColor: '#f59e0b',
     href: '/moderazione',
   },
 ];
@@ -122,9 +122,7 @@ export default function DashboardOperatorePage() {
 
       {/* Header */}
       <header className="dashboard-header">
-        <p className="dashboard-header__label">Pannello di gestione</p>
         <h1 className="dashboard-header__title">Ciao, {nomeOperatore} 👋</h1>
-        <p className="dashboard-header__subtitle">Gestisci le votazioni e le proposte dei cittadini</p>
       </header>
 
       {/* Nav cards */}
@@ -165,13 +163,13 @@ export default function DashboardOperatorePage() {
             <span className="action-btn__title action-btn__title--dark">Crea un nuovo sondaggio</span>
             <span className="action-btn__subtitle action-btn__subtitle--dark">Raccogli feedback dalla comunità</span>
           </div>
-          <ChevronRight size={16} color="#6a7282" />
+          <ChevronRight size={16} color="rgba(255,255,255,0.5)" />
         </button>
       </div>
 
       {/* Search */}
       <div className="dashboard-search">
-        <Search size={16} color="#99a1af" />
+        <Search size={16} color="rgba(255,255,255,0.35)" />
         <input
           type="text"
           placeholder="Ricerca una proposta o iniziativa…"
@@ -184,7 +182,7 @@ export default function DashboardOperatorePage() {
       {/* Activity section */}
       <section className="dashboard-activity">
         <h2 className="dashboard-activity__title">
-          <Activity size={16} color="#1f3a89" />
+          <Activity size={16} color="#829aff" />
           Attività recenti
         </h2>
 
@@ -222,7 +220,7 @@ export default function DashboardOperatorePage() {
                 <p className="activity-card__titolo">{a.titolo}</p>
                 <div className="activity-card__footer">
                   <span className="activity-card__termine">Termine: {formatDate(a.data_fine)}</span>
-                  <button className="btn-gestisci">Gestisci</button>
+                  <button className="btn-gestisci" onClick={() => navigate(`/${a.tipo === 'votazione' ? 'votazioni' : 'sondaggi'}/${a._id}/riepilogo`)}>Riepilogo</button>
                 </div>
               </div>
             ))}
