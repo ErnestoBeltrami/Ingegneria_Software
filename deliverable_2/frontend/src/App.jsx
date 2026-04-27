@@ -7,6 +7,9 @@ import CreaVotazionePage from './pages/operatore/CreaVotazionePage';
 import GestioneSondaggiPage from './pages/operatore/GestioneSondaggiPage';
 import GestioneVotazioniPage from './pages/operatore/GestioneVotazioniPage';
 import RiepilogoVotazionePage from './pages/operatore/RiepilogoVotazionePage';
+import RiepilogoSondaggioPage from './pages/operatore/RiepilogoSondaggioPage';
+import ModificaVotazionePage from './pages/operatore/ModificaVotazionePage';
+import ModificaSondaggioPage from './pages/operatore/ModificaSondaggioPage';
 
 export default function App() {
   return (
@@ -19,6 +22,9 @@ export default function App() {
         <Route path="/votazioni" element={<GestioneVotazioniPage />} />
         <Route path="/votazioni/crea" element={<CreaVotazionePage />} />
         <Route path="/votazioni/:id/riepilogo" element={<RiepilogoVotazionePage />} />
+        <Route path="/sondaggi/:id/riepilogo" element={<RiepilogoSondaggioPage />} />
+        <Route path="/votazioni/:id/modifica" element={<ModificaVotazionePage />} />
+        <Route path="/sondaggi/:id/modifica" element={<ModificaSondaggioPage />} />
         <Route path="/" element={<LandingPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

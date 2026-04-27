@@ -5,6 +5,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background: #080808;
 }
 
 .crea-page {
@@ -26,30 +27,35 @@
   display: flex;
   align-items: center;
   gap: 14px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .crea-header__back {
   width: 36px;
   height: 36px;
-  background: #f3f4f6;
-  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .crea-header__back:hover {
-  background: #e5e7eb;
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.24);
 }
 
 .crea-header__title {
+  font-family: 'Playfair Display', serif;
   font-size: 24px;
   font-weight: 700;
-  color: #101828;
+  color: #ffffff;
   line-height: 32px;
   margin: 0;
 }
@@ -57,7 +63,7 @@
 .crea-header__subtitle {
   font-size: 14px;
   font-weight: 400;
-  color: #99a1af;
+  color: rgba(255, 255, 255, 0.65);
   line-height: 20px;
   margin: 2px 0 0;
 }
@@ -76,10 +82,9 @@
    Card generica
    ===================== */
 .crea-card {
-  background: white;
-  border: 1px solid #e5e7eb;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 16px;
-  box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.06);
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -87,10 +92,10 @@
 }
 
 .crea-card__section-label {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
-  color: #6a7282;
-  letter-spacing: 0.7px;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.8px;
   text-transform: uppercase;
   margin: 0;
 }
@@ -116,31 +121,32 @@
 .crea-field__label {
   font-size: 14px;
   font-weight: 600;
-  color: #364153;
+  color: rgba(255, 255, 255, 0.82);
   line-height: 20px;
 }
 
 .crea-field__input {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 14px;
   padding: 10px 14px;
   font-family: 'Montserrat', sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #101828;
+  color: #ffffff;
   outline: none;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s ease, background 0.15s ease;
   width: 100%;
   box-sizing: border-box;
 }
 
 .crea-field__input::placeholder {
-  color: #99a1af;
+  color: rgba(255, 255, 255, 0.32);
 }
 
 .crea-field__input:focus {
-  border-color: #1f3a89;
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.10);
 }
 
 .crea-field__input--textarea {
@@ -171,14 +177,14 @@
 .crea-toggle__label {
   font-size: 14px;
   font-weight: 600;
-  color: #1e2939;
+  color: #ffffff;
   margin: 0 0 2px;
 }
 
 .crea-toggle__desc {
   font-size: 12px;
   font-weight: 400;
-  color: #6a7282;
+  color: rgba(255, 255, 255, 0.55);
   margin: 0;
 }
 
@@ -186,7 +192,7 @@
   width: 44px;
   height: 24px;
   border-radius: 9999px;
-  background: #d1d5dc;
+  background: rgba(255, 255, 255, 0.18);
   border: none;
   cursor: pointer;
   position: relative;
@@ -203,12 +209,12 @@
   height: 20px;
   border-radius: 50%;
   background: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   transition: transform 0.2s ease;
 }
 
 .toggle-switch--on {
-  background: #1f3a89;
+  background: #007a52;
 }
 
 .toggle-switch--on::after {
@@ -225,7 +231,7 @@
 .crea-error {
   font-size: 13px;
   font-weight: 500;
-  color: #d92d20;
+  color: #ff6b6b;
   margin: 0;
 }
 
@@ -250,25 +256,27 @@
 }
 
 .crea-btn:disabled {
-  opacity: 0.6;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
 .crea-btn--annulla {
-  background: none;
-  color: #e7000b;
+  background: rgba(231, 0, 11, 0.12);
+  border: 1px solid rgba(231, 0, 11, 0.25);
+  color: #ff6b6b;
   flex: 1;
   justify-content: center;
 }
 
 .crea-btn--annulla:hover:not(:disabled) {
-  opacity: 0.75;
+  opacity: 0.78;
 }
 
 .crea-btn--salva {
-  background: #1f3a89;
+  background: #007a52;
+  border: 1px solid rgba(0, 196, 122, 0.3);
   color: white;
-  box-shadow: 0px 4px 14px 0px rgba(31, 58, 137, 0.35);
+  box-shadow: 0px 4px 16px 0px rgba(0, 122, 82, 0.40);
   flex: 2;
   justify-content: center;
 }
@@ -302,26 +310,27 @@
 .crea-domanda__num {
   font-size: 14px;
   font-weight: 600;
-  color: #1e2939;
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .crea-domanda__remove {
   width: 28px;
   height: 28px;
-  background: #f3f4f6;
-  border: none;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #6a7282;
-  transition: background 0.15s ease, color 0.15s ease;
+  color: rgba(255, 255, 255, 0.45);
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
 .crea-domanda__remove:hover {
-  background: #fee2e2;
-  color: #d92d20;
+  background: rgba(231, 0, 11, 0.14);
+  border-color: rgba(231, 0, 11, 0.28);
+  color: #ff6b6b;
 }
 
 /* =====================
@@ -343,7 +352,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  border: 2px solid #d1d5dc;
+  border: 2px solid rgba(255, 255, 255, 0.25);
   flex-shrink: 0;
 }
 
@@ -353,26 +362,44 @@
 
 .crea-opzione__input {
   flex: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.85);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.crea-opzione__input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.crea-opzione__input:focus {
+  border-color: rgba(255, 255, 255, 0.28);
 }
 
 .crea-opzione__delete {
   width: 24px;
   height: 24px;
-  background: #f3f4f6;
-  border: none;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #6a7282;
+  color: rgba(255, 255, 255, 0.45);
   flex-shrink: 0;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
 .crea-opzione__delete:hover {
-  background: #fee2e2;
-  color: #d92d20;
+  background: rgba(231, 0, 11, 0.14);
+  border-color: rgba(231, 0, 11, 0.28);
+  color: #ff6b6b;
 }
 
 /* =====================
@@ -387,7 +414,7 @@
   font-family: 'Montserrat', sans-serif;
   font-size: 13px;
   font-weight: 600;
-  color: #1f3a89;
+  color: #00c47a;
   cursor: pointer;
   padding: 0;
   transition: opacity 0.15s ease;
@@ -404,23 +431,24 @@
   gap: 8px;
   width: 100%;
   height: 52px;
-  background: white;
-  border: 2px dashed #d1d5dc;
+  background: rgba(255, 255, 255, 0.04);
+  border: 2px dashed rgba(255, 255, 255, 0.18);
   border-radius: 16px;
   font-family: 'Montserrat', sans-serif;
   font-size: 14px;
   font-weight: 600;
-  color: #4a5565;
+  color: rgba(255, 255, 255, 0.5);
   cursor: pointer;
-  transition: border-color 0.15s ease, color 0.15s ease;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
 }
 
 .crea-add-domanda:hover:not(:disabled) {
-  border-color: #1f3a89;
-  color: #1f3a89;
+  background: rgba(0, 122, 82, 0.08);
+  border-color: rgba(0, 196, 122, 0.35);
+  color: #00c47a;
 }
 
 .crea-add-domanda:disabled {
-  opacity: 0.45;
+  opacity: 0.35;
   cursor: not-allowed;
 }

@@ -10,10 +10,22 @@ import TopBar from '@/components/TopBar';
 import './RiepilogoVotazionePage.css';
 
 const COL = {
-  favorevole: '#1f3a89',
-  contrario:  '#e7000b',
-  astenuto:   '#99a1af',
+  favorevole: '#5b8aff',
+  contrario:  '#ff5252',
+  astenuto:   '#8899aa',
 };
+
+const CHART_GRID = 'rgba(255,255,255,0.08)';
+const CHART_TICK = { fontSize: 11, fill: 'rgba(255,255,255,0.5)' };
+const TOOLTIP_STYLE = {
+  background: 'rgba(14,14,14,0.96)',
+  border: '1px solid rgba(255,255,255,0.14)',
+  borderRadius: '12px',
+  color: '#fff',
+  fontSize: 12,
+};
+const TOOLTIP_LABEL_STYLE = { color: 'rgba(255,255,255,0.85)', fontWeight: 600 };
+const TOOLTIP_ITEM_STYLE  = { color: 'rgba(255,255,255,0.7)' };
 
 const FASCE_ORDER = ['18-25', '26-35', '36-50', '51-65', '66+'];
 
@@ -38,16 +50,16 @@ async function apiFetch(url) {
 }
 
 function colorForTesto(testo = '') {
-  const t = testo.toLowerCase();
-  if (t.includes('favor')) return COL.favorevole;
-  if (t.includes('contra')) return COL.contrario;
+  const t = testo.toLowerCase().trim();
+  if (t.includes('favor') || t === 'si' || t === 'sì' || t === 'yes') return COL.favorevole;
+  if (t.includes('contra') || t === 'no') return COL.contrario;
   return COL.astenuto;
 }
 
 function keyForTesto(testo = '') {
-  const t = testo.toLowerCase();
-  if (t.includes('favor')) return 'favorevole';
-  if (t.includes('contra')) return 'contrario';
+  const t = testo.toLowerCase().trim();
+  if (t.includes('favor') || t === 'si' || t === 'sì' || t === 'yes') return 'favorevole';
+  if (t.includes('contra') || t === 'no') return 'contrario';
   return 'astenuto';
 }
 
@@ -61,6 +73,7 @@ export default function RiepilogoVotazionePage() {
   const [demo, setDemo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [filtroAttivo, setFiltroAttivo] = useState(null);
 
   useEffect(() => {
     const load = async () => {
@@ -204,31 +217,42 @@ export default function RiepilogoVotazionePage() {
           </button>
         </div>
         <div className="rv-filter-pills">
-          {['Per età', 'Per genere', 'Partecipazione'].map(f => (
-            <span key={f} className="rv-pill rv-pill--active">{f}</span>
+          {[
+            { key: 'partecipazione', label: 'Partecipazione' },
+            { key: 'eta',            label: 'Per età' },
+            { key: 'genere',         label: 'Per genere' },
+          ].map(f => (
+            <button
+              key={f.key}
+              className={`rv-pill ${filtroAttivo === f.key ? 'rv-pill--active' : ''}`}
+              onClick={() => setFiltroAttivo(prev => prev === f.key ? null : f.key)}
+            >
+              {f.label}
+            </button>
           ))}
         </div>
 
-        {/* Grid 2 col: donut + line */}
-        <div className="rv-charts-grid">
-          <div className="rv-chart-card">
-            <h3 className="rv-chart-card__title">Distribuzione voti</h3>
-            {totaleVoti === 0
-              ? <p className="rv-status">Nessun voto registrato.</p>
-              : (
-                <ResponsiveContainer width="100%" height={220}>
-                  <PieChart>
-                    <Pie data={donutData} cx="50%" cy="50%" innerRadius={55} outerRadius={85} dataKey="value" paddingAngle={2}>
-                      {donutData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
-                    </Pie>
-                    <Tooltip formatter={(v, n) => [`${v} voti`, n]} />
-                    <Legend iconType="circle" iconSize={10} />
-                  </PieChart>
-                </ResponsiveContainer>
-              )
-            }
-          </div>
+        {/* Donut — sempre visibile */}
+        <div className="rv-chart-card">
+          <h3 className="rv-chart-card__title">Distribuzione voti</h3>
+          {totaleVoti === 0
+            ? <p className="rv-status">Nessun voto registrato.</p>
+            : (
+              <ResponsiveContainer width="100%" height={220}>
+                <PieChart>
+                  <Pie data={donutData} cx="50%" cy="50%" innerRadius={55} outerRadius={85} dataKey="value" paddingAngle={2}>
+                    {donutData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
+                  </Pie>
+                  <Tooltip formatter={(v, n) => [`${v} voti`, n]} contentStyle={TOOLTIP_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE} />
+                  <Legend iconType="circle" iconSize={10} formatter={(value) => <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11 }}>{value}</span>} />
+                </PieChart>
+              </ResponsiveContainer>
+            )
+          }
+        </div>
 
+        {/* Partecipazione giornaliera */}
+        {(!filtroAttivo || filtroAttivo === 'partecipazione') && (
           <div className="rv-chart-card">
             <h3 className="rv-chart-card__title">Partecipazione giornaliera</h3>
             {lineData.length === 0
@@ -236,48 +260,50 @@ export default function RiepilogoVotazionePage() {
               : (
                 <ResponsiveContainer width="100%" height={220}>
                   <LineChart data={lineData} margin={{ top: 8, right: 16, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                    <XAxis dataKey="data" tick={{ fontSize: 11 }} />
-                    <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="voti" stroke="#1f3a89" strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} />
+                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} />
+                    <XAxis dataKey="data" tick={CHART_TICK} axisLine={{ stroke: CHART_GRID }} tickLine={false} />
+                    <YAxis tick={CHART_TICK} allowDecimals={false} axisLine={false} tickLine={false} />
+                    <Tooltip contentStyle={TOOLTIP_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE} />
+                    <Line type="monotone" dataKey="voti" stroke="#829aff" strokeWidth={2} dot={{ r: 3, fill: '#829aff' }} activeDot={{ r: 5 }} />
                   </LineChart>
                 </ResponsiveContainer>
               )
             }
           </div>
-        </div>
+        )}
 
-        {/* Full-width: distribuzione per fascia d'età */}
-        <div className="rv-chart-card">
-          <h3 className="rv-chart-card__title">Distribuzione per fascia d'età</h3>
-          {perFasciaEta.length === 0
-            ? <p className="rv-status">Nessun dato demografico disponibile.</p>
-            : (
-              <>
-                <ResponsiveContainer width="100%" height={220}>
-                  <BarChart data={fasciaData} margin={{ top: 8, right: 16, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
-                    <XAxis dataKey="fascia" tick={{ fontSize: 11 }} />
-                    <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
-                    <Tooltip />
-                    <Bar dataKey="favorevole" name="Favorevoli" fill={COL.favorevole} radius={[3,3,0,0]} maxBarSize={28} />
-                    <Bar dataKey="contrario"  name="Contrari"   fill={COL.contrario}  radius={[3,3,0,0]} maxBarSize={28} />
-                    <Bar dataKey="astenuto"   name="Astenuti"   fill={COL.astenuto}   radius={[3,3,0,0]} maxBarSize={28} />
-                  </BarChart>
-                </ResponsiveContainer>
-                <div className="rv-legend">
-                  <span className="rv-legend__item"><span className="rv-legend__dot" style={{ background: COL.favorevole }} />Favorevoli</span>
-                  <span className="rv-legend__item"><span className="rv-legend__dot" style={{ background: COL.contrario }} />Contrari</span>
-                  <span className="rv-legend__item"><span className="rv-legend__dot" style={{ background: COL.astenuto }} />Astenuti</span>
-                </div>
-              </>
-            )
-          }
-        </div>
+        {/* Distribuzione per fascia d'età */}
+        {(!filtroAttivo || filtroAttivo === 'eta') && (
+          <div className="rv-chart-card">
+            <h3 className="rv-chart-card__title">Distribuzione per fascia d'età</h3>
+            {perFasciaEta.length === 0
+              ? <p className="rv-status">Nessun dato demografico disponibile.</p>
+              : (
+                <>
+                  <ResponsiveContainer width="100%" height={220}>
+                    <BarChart data={fasciaData} margin={{ top: 8, right: 16, left: -20, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} vertical={false} />
+                      <XAxis dataKey="fascia" tick={CHART_TICK} axisLine={{ stroke: CHART_GRID }} tickLine={false} />
+                      <YAxis tick={CHART_TICK} allowDecimals={false} axisLine={false} tickLine={false} />
+                      <Tooltip contentStyle={TOOLTIP_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE} />
+                      <Bar dataKey="favorevole" name="Favorevoli" fill={COL.favorevole} radius={[3,3,0,0]} maxBarSize={28} />
+                      <Bar dataKey="contrario"  name="Contrari"   fill={COL.contrario}  radius={[3,3,0,0]} maxBarSize={28} />
+                      <Bar dataKey="astenuto"   name="Astenuti"   fill={COL.astenuto}   radius={[3,3,0,0]} maxBarSize={28} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                  <div className="rv-legend">
+                    <span className="rv-legend__item"><span className="rv-legend__dot" style={{ background: COL.favorevole }} />Favorevoli</span>
+                    <span className="rv-legend__item"><span className="rv-legend__dot" style={{ background: COL.contrario }} />Contrari</span>
+                    <span className="rv-legend__item"><span className="rv-legend__dot" style={{ background: COL.astenuto }} />Astenuti</span>
+                  </div>
+                </>
+              )
+            }
+          </div>
+        )}
 
-        {/* Grid 2 col: genere + placeholder quartiere */}
-        <div className="rv-charts-grid">
+        {/* Confronto per genere */}
+        {(!filtroAttivo || filtroAttivo === 'genere') && (
           <div className="rv-chart-card">
             <h3 className="rv-chart-card__title">Confronto per genere</h3>
             {perGenere.length === 0
@@ -286,10 +312,10 @@ export default function RiepilogoVotazionePage() {
                 <>
                   <ResponsiveContainer width="100%" height={200}>
                     <BarChart data={genereData} layout="vertical" margin={{ top: 8, right: 16, left: 10, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" horizontal={false} />
-                      <XAxis type="number" tick={{ fontSize: 11 }} allowDecimals={false} />
-                      <YAxis type="category" dataKey="genere" tick={{ fontSize: 11 }} width={45} />
-                      <Tooltip />
+                      <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} horizontal={false} />
+                      <XAxis type="number" tick={CHART_TICK} allowDecimals={false} axisLine={{ stroke: CHART_GRID }} tickLine={false} />
+                      <YAxis type="category" dataKey="genere" tick={CHART_TICK} width={45} axisLine={false} tickLine={false} />
+                      <Tooltip contentStyle={TOOLTIP_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE} />
                       <Bar dataKey="favorevole" name="Favorevoli" fill={COL.favorevole} radius={[0,3,3,0]} maxBarSize={20} />
                       <Bar dataKey="contrario"  name="Contrari"   fill={COL.contrario}  radius={[0,3,3,0]} maxBarSize={20} />
                       <Bar dataKey="astenuto"   name="Astenuti"   fill={COL.astenuto}   radius={[0,3,3,0]} maxBarSize={20} />
@@ -304,12 +330,15 @@ export default function RiepilogoVotazionePage() {
               )
             }
           </div>
+        )}
 
+        {/* Placeholder quartiere — solo quando nessun filtro attivo */}
+        {!filtroAttivo && (
           <div className="rv-chart-card rv-chart-card--disabled">
             <h3 className="rv-chart-card__title">Distribuzione per quartiere</h3>
             <p className="rv-status">Dato non disponibile — il profilo cittadino non include il quartiere di residenza.</p>
           </div>
-        </div>
+        )}
 
       </div>
     </div>

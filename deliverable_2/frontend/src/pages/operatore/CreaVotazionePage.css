@@ -1,8 +1,3 @@
-/* Layout pagina — riusa .crea-layout, .crea-page, .crea-header, .crea-card,
-   .crea-field, .crea-sidebar, .crea-toggle, .crea-actions, .crea-btn etc.
-   da CreaSondaggioPage.css tramite import indiretto.
-   Qui definiamo solo le varianti specifiche per la votazione. */
-
 /* =====================
    Layout pagina
    ===================== */
@@ -10,6 +5,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background: #080808;
 }
 
 .crea-page {
@@ -31,30 +27,35 @@
   display: flex;
   align-items: center;
   gap: 14px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .crea-header__back {
   width: 36px;
   height: 36px;
-  background: #f3f4f6;
-  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .crea-header__back:hover {
-  background: #e5e7eb;
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.24);
 }
 
 .crea-header__title {
+  font-family: 'Playfair Display', serif;
   font-size: 24px;
   font-weight: 700;
-  color: #101828;
+  color: #ffffff;
   line-height: 32px;
   margin: 0;
 }
@@ -62,7 +63,7 @@
 .crea-header__subtitle {
   font-size: 14px;
   font-weight: 400;
-  color: #99a1af;
+  color: rgba(255, 255, 255, 0.65);
   line-height: 20px;
   margin: 2px 0 0;
 }
@@ -81,10 +82,9 @@
    Card generica
    ===================== */
 .crea-card {
-  background: white;
-  border: 1px solid #e5e7eb;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 16px;
-  box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.06);
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -119,35 +119,36 @@
 .crea-field__label {
   font-size: 14px;
   font-weight: 600;
-  color: #364153;
+  color: rgba(255, 255, 255, 0.82);
   line-height: 20px;
 }
 
 .crea-field__required {
-  color: #fb2c36;
+  color: #ff6b6b;
 }
 
 .crea-field__input {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 14px;
   padding: 10px 14px;
   font-family: 'Montserrat', sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #101828;
+  color: #ffffff;
   outline: none;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s ease, background 0.15s ease;
   width: 100%;
   box-sizing: border-box;
 }
 
 .crea-field__input::placeholder {
-  color: #99a1af;
+  color: rgba(255, 255, 255, 0.32);
 }
 
 .crea-field__input:focus {
-  border-color: #1f3a89;
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.10);
 }
 
 .crea-field__input--textarea {
@@ -174,16 +175,22 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #f9fafb;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.10);
   border-radius: 14px;
   padding: 10px 12px;
+  transition: border-color 0.15s ease;
+}
+
+.crea-vot-opzione:focus-within {
+  border-color: rgba(255, 255, 255, 0.22);
 }
 
 .crea-opzione__indicator {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  border: 2px solid #d1d5dc;
+  border: 2px solid rgba(255, 255, 255, 0.25);
   flex-shrink: 0;
 }
 
@@ -194,7 +201,12 @@
   border-radius: 0;
   padding: 0;
   font-size: 14px;
-  color: #4a5565;
+  font-family: 'Montserrat', sans-serif;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.crea-opzione__input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
 }
 
 .crea-opzione__input:focus {
@@ -211,18 +223,18 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #99a1af;
+  color: rgba(255, 255, 255, 0.35);
   flex-shrink: 0;
   transition: color 0.15s ease;
   padding: 0;
 }
 
 .crea-opzione__delete:hover:not(:disabled) {
-  color: #d92d20;
+  color: #ff6b6b;
 }
 
 .crea-opzione__delete:disabled {
-  opacity: 0.3;
+  opacity: 0.2;
   cursor: not-allowed;
 }
 
@@ -235,7 +247,7 @@
   font-family: 'Montserrat', sans-serif;
   font-size: 13px;
   font-weight: 600;
-  color: #1f3a89;
+  color: #829aff;
   cursor: pointer;
   padding: 0;
   transition: opacity 0.15s ease;
@@ -262,14 +274,14 @@
 .crea-toggle__label {
   font-size: 14px;
   font-weight: 600;
-  color: #1e2939;
+  color: #ffffff;
   margin: 0 0 2px;
 }
 
 .crea-toggle__desc {
   font-size: 12px;
   font-weight: 400;
-  color: #99a1af;
+  color: rgba(255, 255, 255, 0.55);
   margin: 0;
 }
 
@@ -277,7 +289,7 @@
   width: 44px;
   height: 24px;
   border-radius: 9999px;
-  background: #e5e7eb;
+  background: rgba(255, 255, 255, 0.18);
   border: none;
   cursor: pointer;
   position: relative;
@@ -294,7 +306,7 @@
   height: 16px;
   border-radius: 50%;
   background: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   transition: transform 0.2s ease;
 }
 
@@ -316,7 +328,7 @@
 .crea-error {
   font-size: 13px;
   font-weight: 500;
-  color: #d92d20;
+  color: #ff6b6b;
   margin: 0;
 }
 
@@ -341,25 +353,27 @@
 }
 
 .crea-btn:disabled {
-  opacity: 0.6;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
 .crea-btn--annulla {
-  background: none;
-  color: #e7000b;
+  background: rgba(231, 0, 11, 0.12);
+  border: 1px solid rgba(231, 0, 11, 0.25);
+  color: #ff6b6b;
   flex: 1;
   justify-content: center;
 }
 
 .crea-btn--annulla:hover:not(:disabled) {
-  opacity: 0.75;
+  opacity: 0.78;
 }
 
 .crea-btn--salva {
   background: #1f3a89;
+  border: 1px solid rgba(100, 130, 255, 0.25);
   color: white;
-  box-shadow: 0px 4px 14px 0px rgba(31, 58, 137, 0.35);
+  box-shadow: 0px 4px 16px 0px rgba(31, 58, 137, 0.45);
   flex: 2;
   justify-content: center;
 }

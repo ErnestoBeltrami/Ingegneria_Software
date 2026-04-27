@@ -225,9 +225,26 @@ export const updateVotazione = async (req, res) => {
 
         await votazione.save();
 
+        // Aggiorna la domanda (opzioni e tipo) se fornita
+        if (updateData.domanda) {
+            const domanda = await Domanda.findById(votazione.ID_domanda);
+            if (domanda) {
+                const { tipo, opzioni } = updateData.domanda;
+                if (tipo && ['risposta_singola', 'risposta_multipla'].includes(tipo)) {
+                    domanda.tipo = tipo;
+                }
+                if (Array.isArray(opzioni) && opzioni.length >= 2) {
+                    domanda.opzioni = opzioni.map((o) => ({ testo: typeof o === 'string' ? o : o.testo }));
+                }
+                await domanda.save();
+            }
+        }
+
+        const votazioneAggiornata = await Consultazione.findById(votazione._id).populate('ID_domanda');
+
         return res.status(200).json({
             message: 'Votazione aggiornata con successo.',
-            votazione
+            votazione: votazioneAggiornata
         });
     } catch (error) {
         console.error('Errore nell\'aggiornamento della votazione:', error);

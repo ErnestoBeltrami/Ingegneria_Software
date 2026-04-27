@@ -261,11 +261,32 @@ export const updateSondaggio = async (req, res) => {
             }
         });
 
-        await sondaggio.save();
+        // Aggiorna le domande se fornite — sostituisce integralmente (bozza = nessun voto)
+        if (Array.isArray(updateData.domande) && updateData.domande.length > 0) {
+            const vecchieIds = sondaggio.ID_domande;
+
+            const nuoveDomande = await Promise.all(
+                updateData.domande.map((d) => Domanda.create({
+                    titolo: d.titolo,
+                    tipo: d.tipo || 'risposta_singola',
+                    opzioni: d.opzioni.map((o) => ({ testo: typeof o === 'string' ? o : o.testo })),
+                }))
+            );
+
+            sondaggio.ID_domande = nuoveDomande.map((d) => d._id);
+            await sondaggio.save();
+
+            // Elimina le vecchie domande dopo aver salvato
+            await Domanda.deleteMany({ _id: { $in: vecchieIds } });
+        } else {
+            await sondaggio.save();
+        }
+
+        const sondaggioAggiornato = await Consultazione.findById(sondaggio._id).populate('ID_domande');
 
         return res.status(200).json({
             message: 'Sondaggio aggiornato con successo.',
-            sondaggio
+            sondaggio: sondaggioAggiornato
         });
     } catch (error) {
         console.error('Errore nell\'aggiornamento della sondaggio:', error);

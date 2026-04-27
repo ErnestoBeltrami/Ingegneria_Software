@@ -1,0 +1,17 @@
+.ms-locked-header {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  margin-bottom: 4px;
+}
+
+.ms-readonly {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: default;
+}
