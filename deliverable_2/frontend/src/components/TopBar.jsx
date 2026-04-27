@@ -15,10 +15,10 @@ export default function TopBar({ nome = '', cognome = '' }) {
           <Bell size={20} color="white" />
         </button>
 
-        <div className="topbar__user">
+        <Link to="/operatore/profilo" className="topbar__user">
           <div className="topbar__avatar">{initials}</div>
           <span className="topbar__name">{fullName}</span>
-        </div>
+        </Link>
       </div>
     </header>
   );
