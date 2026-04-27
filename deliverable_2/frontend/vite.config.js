@@ -13,7 +13,13 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      '/operatore': { target: 'http://localhost:8000', changeOrigin: true },
+      '/operatore': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        bypass(req) {
+          if (req.url === '/operatore/profilo') return req.url;
+        },
+      },
       '/auth': { target: 'http://localhost:8000', changeOrigin: true },
       '/votazioni': { target: 'http://localhost:8000', changeOrigin: true },
       '/sondaggio': { target: 'http://localhost:8000', changeOrigin: true },

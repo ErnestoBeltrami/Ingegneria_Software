@@ -85,7 +85,7 @@ export default function ProfiloOperatorePage() {
       const res = await fetch('/operatore/me/password', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ passwordAttuale, nuovaPassword }),
+        body: JSON.stringify({ vecchia_password: passwordAttuale, nuova_password: nuovaPassword }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || `Errore ${res.status}`);
