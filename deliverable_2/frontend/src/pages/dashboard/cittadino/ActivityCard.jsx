@@ -1,10 +1,10 @@
-import { Clock as ClockIcon, Check as CheckIcon } from 'lucide-react';
+import { Clock as ClockIcon, Check as CheckIcon, AlertCircle as ExpiredIcon } from 'lucide-react';
 import './ActivityCard.css';
-const BADGE_STYLES = {
-    Ambiente: { bg: '#EAF5EE', color: '#1A5C38' },
-    Mobilità: { bg: '#EEF0FA', color: '#3949AB' },
-    Salute: { bg: '#FEF3E2', color: '#C56A00' },
-    Cultura: { bg: '#F5EEFB', color: '#7B2FA1' },
+
+// Badge styles based on activity type (votazione vs sondaggio)
+const TYPE_BADGE_STYLES = {
+    Votazione: { bg: '#EEF0FA', color: '#3949AB' },
+    Sondaggio: { bg: '#FEF3E2', color: '#C56A00' },
 }
 
 const BUTTON_LABELS = {
@@ -13,36 +13,53 @@ const BUTTON_LABELS = {
     Proposta: 'Sostieni',
 }
 
+// Human-friendly status labels
+const STATO_LABELS = {
+    attivo: 'Attivo',
+    concluso: 'Concluso',
+    archiviato: 'Archiviato',
+}
+
 export function ActivityCard({ activity, onAction }) {
-    const { id, category, type, title, deadline, voted } = activity
-    const badgeStyle = BADGE_STYLES[category] ?? BADGE_STYLES.Ambiente
+    const { id, type, title, description, deadline, voted, stato } = activity;
+    const badgeStyle = TYPE_BADGE_STYLES[type] ?? TYPE_BADGE_STYLES.Votazione;
+    const isConcluded = stato === 'concluso' || stato === 'archiviato';
+    const isDisabled = voted || isConcluded;
 
     return (
-        <div className={`activity-card ${voted ? 'voted' : ''}`}>
+        <div className={`activity-card ${isDisabled ? 'voted' : ''}`}>
             <div className="card-meta">
                 <span className="badge" style={{ background: badgeStyle.bg, color: badgeStyle.color }}>
-                    {category}
-                </span>
-                <span className="card-type">
-                    <ClockIcon />
                     {type}
+                </span>
+                <span className={`card-stato ${isConcluded ? 'stato-concluded' : 'stato-active'}`}>
+                    {isConcluded ? <ExpiredIcon /> : <ClockIcon />}
+                    {STATO_LABELS[stato] || stato}
                 </span>
             </div>
 
             <p className="card-title">{title}</p>
 
-            {/* card footer qui */}
+            {description && (
+                <p className="card-description">{description}</p>
+            )}
+
+            {/* Card footer */}
             <div className="card-footer">
                 <span className="deadline">
                     <CheckIcon />
                     Termine: {deadline}
                 </span>
                 <button
-                    className={`btn-action ${voted ? 'btn-voted' : ''}`}
-                    disabled={voted}
+                    className={`btn-action ${isDisabled ? 'btn-voted' : ''}`}
+                    disabled={isDisabled}
                     onClick={() => onAction(id)}
                 >
-                    {voted ? 'Votato' : (BUTTON_LABELS[type] ?? 'Partecipa')}
+                    {voted
+                        ? 'Votato'
+                        : isConcluded
+                            ? 'Chiuso'
+                            : (BUTTON_LABELS[type] ?? 'Partecipa')}
                 </button>
             </div>
         </div>
