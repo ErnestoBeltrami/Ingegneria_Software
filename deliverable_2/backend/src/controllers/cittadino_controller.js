@@ -41,7 +41,9 @@ export const getCittadinoData = async (req, res) => {
                 nome: cittadino.nome,
                 cognome: cittadino.cognome,
                 email: cittadino.email,
-                eta: cittadino.eta,
+                dataNascita: cittadino.dataNascita,
+                comuneResidenza: cittadino.comuneResidenza,
+                circoscrizione: cittadino.circoscrizione,
                 genere: cittadino.genere,
                 categoria: cittadino.categoria,
                 profiloCompleto: cittadino.profiloCompleto
