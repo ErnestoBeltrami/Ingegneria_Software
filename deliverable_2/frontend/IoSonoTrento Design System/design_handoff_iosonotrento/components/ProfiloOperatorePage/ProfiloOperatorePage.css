@@ -1,0 +1,253 @@
+/* ProfiloOperatorePage.css
+   Self-contained — does NOT depend on the design-system tokens.
+   Drop alongside ProfiloOperatorePage.jsx and import it.
+   Coerente con la palette + tipografia di IoSonoTrento (dark premium,
+   glass card, Playfair Display per i titoli, Montserrat per il resto). */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;500;600;700&display=swap');
+
+.po-page,
+.po-page * { box-sizing: border-box; }
+
+.po-page {
+  min-height: 100vh;
+  background: #080808;
+  color: #fff;
+  font-family: 'Montserrat', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.po-shell {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── back link ── */
+.po-back {
+  align-self: flex-start;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: none; border: none; cursor: pointer;
+  font-family: inherit; font-size: 13px; font-weight: 500;
+  color: rgba(255,255,255,0.55);
+  padding: 0;
+  transition: color 0.15s ease;
+}
+.po-back:hover { color: rgba(255,255,255,0.95); }
+.po-back svg { width: 14px; height: 14px; }
+
+/* ── header ── */
+.po-header {
+  padding-bottom: 28px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.po-header h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 24px; font-weight: 700;
+  line-height: 32px; letter-spacing: -0.3px;
+  margin: 0;
+}
+.po-header p {
+  font-size: 14px;
+  color: rgba(255,255,255,0.65);
+  line-height: 20px;
+  margin: 4px 0 0;
+}
+
+/* ── grid ── */
+.po-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* ── card primitive ── */
+.po-card {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── sidebar identity ── */
+.po-identity {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 12px; text-align: center;
+}
+.po-avatar {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; font-weight: 700; color: #fff;
+}
+.po-id-text {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.po-name {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 20px; font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+}
+.po-username {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.2;
+  margin: 0;
+}
+.po-divider {
+  width: 100%; height: 1px;
+  background: rgba(255,255,255,0.08);
+}
+.po-status {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: rgba(255,255,255,0.65);
+}
+.po-status__dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #00d48a;
+  box-shadow: 0 0 0 0 rgba(0,212,138,0.6);
+  animation: po-pulse 2s ease-out infinite;
+}
+@keyframes po-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(0,212,138,0.6); }
+  70%  { box-shadow: 0 0 0 8px rgba(0,212,138,0); }
+  100% { box-shadow: 0 0 0 0 rgba(0,212,138,0); }
+}
+
+/* ── role badge ── */
+.po-badge {
+  height: 22px; padding: 0 10px;
+  border-radius: 9999px;
+  font-size: 11px; font-weight: 700;
+  line-height: 22px;
+  display: inline-flex; align-items: center;
+}
+.po-badge--operatore {
+  background: rgba(255,255,255,0.10);
+  color: rgba(255,255,255,0.65);
+  border: 1px solid rgba(255,255,255,0.16);
+}
+.po-badge--root {
+  background: rgba(31,58,137,0.25);
+  color: #829aff;
+  border: 1px solid rgba(100,130,255,0.30);
+}
+
+/* ── main column ── */
+.po-main {
+  display: flex; flex-direction: column; gap: 16px;
+}
+
+/* ── section label ── */
+.po-section-label {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.7px; text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+}
+
+/* ── info rows ── */
+.po-rows { display: flex; flex-direction: column; }
+.po-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.po-row:last-child { border-bottom: none; }
+.po-row__k { font-size: 13px; color: rgba(255,255,255,0.65); }
+.po-row__v { font-size: 14px; color: rgba(255,255,255,0.82); font-weight: 500; }
+
+/* ── form fields ── */
+.po-field { display: flex; flex-direction: column; gap: 6px; }
+.po-field__label {
+  font-size: 14px; font-weight: 600;
+  color: rgba(255,255,255,0.82); line-height: 20px;
+}
+.po-field__required { color: #ff6b6b; }
+
+.po-field__inputwrap { position: relative; }
+.po-field__input {
+  width: 100%;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 14px;
+  padding: 10px 42px 10px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  color: #fff;
+  outline: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.po-field__input::placeholder { color: rgba(255,255,255,0.32); }
+.po-field__input:focus {
+  border-color: rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.10);
+}
+.po-field__toggle {
+  position: absolute; right: 12px; top: 50%;
+  transform: translateY(-50%);
+  background: none; border: none; cursor: pointer;
+  color: rgba(255,255,255,0.5);
+  display: flex; align-items: center; justify-content: center;
+  padding: 4px;
+  transition: color 0.15s ease;
+}
+.po-field__toggle:hover { color: #fff; }
+
+/* ── form messages ── */
+.po-msg {
+  font-size: 13px; font-weight: 500;
+  margin: 0;
+}
+.po-msg--error   { color: #ff6b6b; }
+.po-msg--success { color: #00d48a; }
+
+/* ── actions ── */
+.po-actions {
+  display: flex; gap: 10px; margin-top: 4px;
+}
+.po-btn {
+  height: 44px;
+  border-radius: 14px;
+  border: none;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 18px;
+}
+.po-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.po-btn--secondary {
+  background: rgba(231,0,11,0.12);
+  border: 1px solid rgba(231,0,11,0.25);
+  color: #ff6b6b;
+  flex: 1;
+}
+.po-btn--primary {
+  background: #1f3a89;
+  border: 1px solid rgba(100,130,255,0.25);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(31,58,137,0.45);
+  flex: 2;
+}
+.po-btn--primary:hover:not(:disabled),
+.po-btn--secondary:hover:not(:disabled) { opacity: 0.88; }
+
+/* ── responsive: stack on narrow screens ── */
+@media (max-width: 720px) {
+  .po-layout { grid-template-columns: 1fr; }
+  .po-shell { padding: 20px; }
+}

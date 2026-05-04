@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<title>ProfiloOperatorePage — IoSonoTrento</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="stylesheet" href="ProfiloOperatorePage.css"/>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState } = React;
+
+/* Inline lucide icons (stand-in for `import { ... } from 'lucide-react'`) */
+const Icon = ({ size = 18, children }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{children}</svg>
+);
+const ArrowLeft = (p) => <Icon {...p}><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></Icon>;
+const Eye      = (p) => <Icon {...p}><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></Icon>;
+const EyeOff   = (p) => <Icon {...p}><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></Icon>;
+const Shield   = (p) => <Icon {...p}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></Icon>;
+
+/* ─── ProfiloOperatorePage (mirror of the real module in this folder) ─── */
+
+function RoleBadge({ ruolo }) {
+  const isRoot = ruolo === 'root';
+  return (
+    <span className={`po-badge po-badge--${isRoot ? 'root' : 'operatore'}`}>
+      {isRoot ? 'Root' : 'Operatore'}
+    </span>
+  );
+}
+
+function PasswordField({ id, label, value, onChange, show, onToggle, autoComplete }) {
+  return (
+    <div className="po-field">
+      <label className="po-field__label" htmlFor={id}>
+        {label} <span className="po-field__required">*</span>
+      </label>
+      <div className="po-field__inputwrap">
+        <input
+          id={id}
+          className="po-field__input"
+          type={show ? 'text' : 'password'}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="••••••••"
+          autoComplete={autoComplete}
+        />
+        <button
+          type="button"
+          className="po-field__toggle"
+          onClick={onToggle}
+          aria-label={show ? 'Nascondi password' : 'Mostra password'}
+        >
+          {show ? <EyeOff size={16} /> : <Eye size={16} />}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ProfiloOperatorePage({ user, onBack, onSubmit }) {
+  const { nome, cognome, username, ruolo } = user;
+  const initials = `${(nome || '').charAt(0)}${(cognome || '').charAt(0)}`.toUpperCase() || '?';
+
+  const [passwordAttuale, setPasswordAttuale] = useState('');
+  const [nuovaPassword, setNuovaPassword] = useState('');
+  const [confermaPassword, setConfermaPassword] = useState('');
+  const [showPwd, setShowPwd] = useState({ attuale: false, nuova: false, conferma: false });
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const reset = () => { setPasswordAttuale(''); setNuovaPassword(''); setConfermaPassword(''); };
+  const handleAnnulla = () => { reset(); setError(''); setSuccess(''); };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(''); setSuccess('');
+    if (!passwordAttuale || !nuovaPassword || !confermaPassword) { setError('Compila tutti i campi'); return; }
+    if (nuovaPassword !== confermaPassword) { setError('Le password non coincidono'); return; }
+    if (nuovaPassword.length < 8) { setError('La nuova password deve essere di almeno 8 caratteri'); return; }
+    try {
+      setSaving(true);
+      if (onSubmit) await onSubmit({ passwordAttuale, nuovaPassword });
+      else await new Promise((r) => setTimeout(r, 600));
+      setSuccess('Password aggiornata con successo');
+      reset();
+    } catch (err) {
+      setError(err?.message || 'Errore durante l’aggiornamento');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="po-page">
+      <div className="po-shell">
+        {onBack && (
+          <button type="button" className="po-back" onClick={onBack}>
+            <ArrowLeft size={14}/> Profilo operatore
+          </button>
+        )}
+
+        <header className="po-header">
+          <h1>Il tuo profilo</h1>
+          <p>Gestisci le informazioni del tuo account</p>
+        </header>
+
+        <div className="po-layout">
+          <aside className="po-card">
+            <div className="po-identity">
+              <div className="po-avatar">{initials}</div>
+              <div className="po-id-text">
+                <p className="po-name">{nome} {cognome}</p>
+                <p className="po-username">@{username}</p>
+              </div>
+              <RoleBadge ruolo={ruolo} />
+            </div>
+            <div className="po-divider"/>
+            <div className="po-status">
+              <span className="po-status__dot"/>
+              <span>Account attivo</span>
+            </div>
+          </aside>
+
+          <div className="po-main">
+            <section className="po-card">
+              <span className="po-section-label">Informazioni</span>
+              <div className="po-rows">
+                <div className="po-row"><span className="po-row__k">Nome</span><span className="po-row__v">{nome}</span></div>
+                <div className="po-row"><span className="po-row__k">Cognome</span><span className="po-row__v">{cognome}</span></div>
+                <div className="po-row"><span className="po-row__k">Username</span><span className="po-row__v">@{username}</span></div>
+              </div>
+            </section>
+
+            <form className="po-card" onSubmit={handleSubmit} noValidate>
+              <span className="po-section-label">Sicurezza</span>
+
+              <PasswordField id="pwd-att"  label="Password attuale"        value={passwordAttuale}    onChange={setPasswordAttuale}    show={showPwd.attuale}  onToggle={() => setShowPwd(s => ({...s, attuale: !s.attuale}))}    autoComplete="current-password"/>
+              <PasswordField id="pwd-new"  label="Nuova password"          value={nuovaPassword}      onChange={setNuovaPassword}      show={showPwd.nuova}    onToggle={() => setShowPwd(s => ({...s, nuova: !s.nuova}))}        autoComplete="new-password"/>
+              <PasswordField id="pwd-conf" label="Conferma nuova password" value={confermaPassword}   onChange={setConfermaPassword}   show={showPwd.conferma} onToggle={() => setShowPwd(s => ({...s, conferma: !s.conferma}))} autoComplete="new-password"/>
+
+              {error   && <p className="po-msg po-msg--error">{error}</p>}
+              {success && <p className="po-msg po-msg--success">{success}</p>}
+
+              <div className="po-actions">
+                <button type="button" className="po-btn po-btn--secondary" onClick={handleAnnulla}>Annulla</button>
+                <button type="submit"  className="po-btn po-btn--primary" disabled={saving}>
+                  <Shield size={15}/> {saving ? 'Aggiornamento…' : 'Aggiorna password'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Demo host ─── */
+const DEMO_USER = { nome: 'Marco', cognome: 'Rossi', username: 'm.rossi', ruolo: 'root' };
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <ProfiloOperatorePage
+    user={DEMO_USER}
+    onBack={() => alert('back: torna a /operatore')}
+  />
+);
+</script>
+</body>
+</html>
