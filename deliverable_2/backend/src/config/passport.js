@@ -49,8 +49,10 @@ if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
             user = await Cittadino.create({
               email: email || `${profile.id}@google.local`,
               ID_univoco_esterno: profile.id,
-              loggedIn : true,
-              profiloCompleto : false
+              nome: profile.name?.givenName || '',
+              cognome: profile.name?.familyName || '',
+              loggedIn: true,
+              profiloCompleto: false,
             });
           } else {
             user.ID_univoco_esterno = profile.id;
@@ -58,6 +60,7 @@ if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
             await user.save();
           }
 
+          user._googlePicture = profile.photos?.[0]?.value ?? '';
           done(null, user);
         } catch (error) {
           done(error, null);

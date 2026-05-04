@@ -503,13 +503,25 @@ export const getRiepilogoDemografico = async (req, res) => {
                 unwindCittadino,
                 {
                     $addFields: {
+                        _eta: {
+                            $floor: {
+                                $divide: [
+                                    { $dateDiff: { startDate: '$cittadino.dataNascita', endDate: '$$NOW', unit: 'day' } },
+                                    365.25
+                                ]
+                            }
+                        }
+                    }
+                },
+                {
+                    $addFields: {
                         fascia: {
                             $switch: {
                                 branches: [
-                                    { case: { $lte: ['$cittadino.eta', 25] }, then: '18-25' },
-                                    { case: { $lte: ['$cittadino.eta', 35] }, then: '26-35' },
-                                    { case: { $lte: ['$cittadino.eta', 50] }, then: '36-50' },
-                                    { case: { $lte: ['$cittadino.eta', 65] }, then: '51-65' },
+                                    { case: { $lte: ['$_eta', 25] }, then: '18-25' },
+                                    { case: { $lte: ['$_eta', 35] }, then: '26-35' },
+                                    { case: { $lte: ['$_eta', 50] }, then: '36-50' },
+                                    { case: { $lte: ['$_eta', 65] }, then: '51-65' },
                                 ],
                                 default: '66+'
                             }

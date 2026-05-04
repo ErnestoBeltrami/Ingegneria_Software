@@ -56,11 +56,19 @@
  *           format: email
  *           description: Email del cittadino
  *           example: "mario.rossi@example.com"
- *         eta:
- *           type: number
- *           minimum: 18
- *           description: Età del cittadino
- *           example: 30
+ *         dataNascita:
+ *           type: string
+ *           format: date
+ *           description: Data di nascita del cittadino
+ *           example: "1995-06-15"
+ *         comuneResidenza:
+ *           type: string
+ *           description: Comune di residenza
+ *           example: "Trento"
+ *         circoscrizione:
+ *           type: string
+ *           description: Circoscrizione (solo per Trento)
+ *           example: "Centro storico - Piedicastello"
  *         genere:
  *           type: string
  *           enum: ["Uomo", "Donna"]
@@ -77,34 +85,23 @@
  *       type: object
  *       required:
  *         - cittadinoId
- *         - nome
- *         - cognome
- *         - eta
- *         - genere
- *         - categoria
+ *         - dataNascita
+ *         - comuneResidenza
  *       properties:
  *         cittadinoId:
  *           type: string
  *           description: ID del cittadino
  *           example: "507f1f77bcf86cd799439011"
- *         nome:
+ *         dataNascita:
  *           type: string
- *           example: "Mario"
- *         cognome:
+ *           format: date
+ *           example: "1995-06-15"
+ *         comuneResidenza:
  *           type: string
- *           example: "Rossi"
- *         eta:
- *           type: number
- *           minimum: 18
- *           example: 30
- *         genere:
+ *           example: "Trento"
+ *         circoscrizione:
  *           type: string
- *           enum: ["Uomo", "Donna"]
- *           example: "Uomo"
- *         categoria:
- *           type: string
- *           enum: ["Lavoratore", "Disoccupato", "Pensionato", "Studente", "Altro"]
- *           example: "Lavoratore"
+ *           example: "Centro storico - Piedicastello"
  *     VoteVotazioneInput:
  *       type: object
  *       required:

@@ -9,9 +9,16 @@ const cittadinoSchema = new mongoose.Schema({
         type : String,
         trim : true,
     },
-    eta : {
-        type : Number,
-        min : 18
+    dataNascita : {
+        type : Date,
+    },
+    comuneResidenza : {
+        type : String,
+        trim : true,
+    },
+    circoscrizione : {
+        type : String,
+        trim : true,
     },
     ID_univoco_esterno: { 
         type: String, 

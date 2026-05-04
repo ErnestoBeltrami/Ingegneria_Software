@@ -20,7 +20,13 @@ export default defineConfig({
           if (req.url === '/operatore/profilo') return req.url;
         },
       },
-      '/auth': { target: 'http://localhost:8000', changeOrigin: true },
+      '/auth': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        bypass(req) {
+          if (req.url.startsWith('/auth/callback')) return req.url;
+        },
+      },
       '/votazioni': { target: 'http://localhost:8000', changeOrigin: true },
       '/sondaggio': { target: 'http://localhost:8000', changeOrigin: true },
     },
