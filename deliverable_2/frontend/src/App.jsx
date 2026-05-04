@@ -13,6 +13,7 @@ import ModificaSondaggioPage from './pages/operatore/ModificaSondaggioPage';
 import ProfiloOperatorePage from './pages/operatore/ProfiloOperatorePage';
 import CompletaProfiloPage from './pages/CompletaProfiloPage';
 import AuthCallbackPage from './pages/AuthCallbackPage';
+import ProfiloCompletatoPage from './pages/ProfiloCompletatoPage';
 
 function CompletaProfiloRoute() {
   const [params] = useSearchParams();
@@ -34,7 +35,7 @@ function CompletaProfiloRoute() {
     const data = await res.json();
     if (!res.ok) throw new Error(data.message);
     localStorage.setItem('token', data.token);
-    navigate('/', { replace: true });
+    navigate('/profilo-completato', { replace: true });
   };
 
   return <CompletaProfiloPage googleUser={googleUser} onSubmit={handleSubmit} />;
@@ -56,6 +57,7 @@ export default function App() {
         <Route path="/sondaggi/:id/modifica" element={<ModificaSondaggioPage />} />
         <Route path="/operatore/profilo" element={<ProfiloOperatorePage />} />
         <Route path="/completa-profilo" element={<CompletaProfiloRoute />} />
+        <Route path="/profilo-completato" element={<ProfiloCompletatoPage />} />
         <Route path="/auth/callback" element={<AuthCallbackPage />} />
         <Route path="/" element={<LandingPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
