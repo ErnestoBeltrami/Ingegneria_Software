@@ -4,73 +4,79 @@ import jwt from "jsonwebtoken";
 import { Cittadino } from "../models/cittadino.js";
 
 const router = Router();
+
 router.get(
   "/google",
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
-
 router.get(
-    '/google/callback',
-    passport.authenticate('google', { failureRedirect: '/login-error', session: false }),
-    (req, res) => {
-        const cittadino = req.user;
-        
-        if (!cittadino.profiloCompleto) { // Basta controllare il flag di stato
-            
-            return res.status(202).json({ 
-                message: 'Profilo incompleto. Completamento necessario.',
-                status: 'INCOMPLETE_PROFILE', 
-                cittadinoId: cittadino._id, 
-                email: cittadino.email
-            });
-        }
+  '/google/callback',
+  passport.authenticate('google', {
+    failureRedirect: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/login?error=auth_failed`,
+    session: false,
+  }),
+  (req, res) => {
+    const cittadino = req.user;
+    const FRONTEND = process.env.FRONTEND_URL || 'http://localhost:5173';
 
-        const payload = { id: cittadino._id, ruolo: 'cittadino' };
-        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
-
-        res.json({
-            message: 'Login riuscito!',
-            token: token,
-            status: 'COMPLETE'
-        });
+    if (!cittadino.profiloCompleto) {
+      const params = new URLSearchParams({
+        cittadinoId: cittadino._id.toString(),
+        nome: cittadino.nome || '',
+        email: cittadino.email || '',
+        picture: cittadino._googlePicture || '',
+      });
+      return res.redirect(`${FRONTEND}/completa-profilo?${params}`);
     }
+
+    const payload = { id: cittadino._id, ruolo: 'cittadino' };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
+    res.redirect(`${FRONTEND}/auth/callback?token=${encodeURIComponent(token)}`);
+  }
 );
 
 router.post('/complete-profile', async (req, res) => {
-    const { cittadinoId, nome, cognome, eta, genere, categoria } = req.body;
+  const { cittadinoId, dataNascita, comuneResidenza, circoscrizione } = req.body;
 
-    if (!nome || !cognome || !eta || !genere || !categoria) {
-         return res.status(400).json({ message: 'Tutti i campi del profilo sono obbligatori.' });
+  if (!dataNascita || !comuneResidenza) {
+    return res.status(400).json({ message: 'Tutti i campi del profilo sono obbligatori.' });
+  }
+
+  const nascita = new Date(dataNascita);
+  const oggi = new Date();
+  const eta =
+    oggi.getFullYear() -
+    nascita.getFullYear() -
+    (oggi < new Date(oggi.getFullYear(), nascita.getMonth(), nascita.getDate()) ? 1 : 0);
+
+  if (isNaN(nascita.getTime()) || eta < 16 || eta > 120) {
+    return res.status(400).json({ message: 'Data di nascita non valida.' });
+  }
+
+  if (comuneResidenza === 'Trento' && !circoscrizione) {
+    return res.status(400).json({ message: 'Seleziona la tua circoscrizione.' });
+  }
+
+  try {
+    const cittadino = await Cittadino.findById(cittadinoId);
+    if (!cittadino) {
+      return res.status(404).json({ message: 'Cittadino non trovato.' });
     }
 
-    try {
-        const cittadino = await Cittadino.findById(cittadinoId);
+    cittadino.dataNascita = nascita;
+    cittadino.comuneResidenza = comuneResidenza;
+    cittadino.circoscrizione = circoscrizione || null;
+    cittadino.profiloCompleto = true;
+    await cittadino.save();
 
-        if (!cittadino) {
-            return res.status(404).json({ message: 'Cittadino non trovato.' });
-        }
-        
-        cittadino.nome = nome;
-        cittadino.cognome = cognome;
-        cittadino.eta = eta;
-        cittadino.genere = genere;
-        cittadino.categoria = categoria;
-        cittadino.profiloCompleto = true; 
-        
-        await cittadino.save(); 
+    const payload = { id: cittadino._id, ruolo: 'cittadino' };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
 
-        const payload = { id: cittadino._id, ruolo: 'cittadino' };
-        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
-
-        res.status(200).json({
-            message: 'Profilo completato, accesso eseguito!',
-            token: token
-        });
-
-    } catch (error) {
-        res.status(400).json({ message: 'Errore di validazione o server.', details: error.message });
-    }
+    res.status(200).json({ message: 'Profilo completato!', token });
+  } catch (error) {
+    res.status(400).json({ message: 'Errore di validazione o server.', details: error.message });
+  }
 });
 
 export default router;
