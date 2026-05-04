@@ -25,7 +25,7 @@ export default function ProfiloCompletatoPage() {
         Il tuo account è attivo. Presto potrai accedere alle votazioni e ai sondaggi della città.
       </p>
       <button
-        onClick={() => navigate('/')}
+        onClick={() => navigate('/cittadino/dashboard')}
         style={{
           marginTop: 8,
           padding: '12px 28px',

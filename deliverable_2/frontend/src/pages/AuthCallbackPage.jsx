@@ -9,7 +9,7 @@ export default function AuthCallbackPage() {
     const token = params.get('token');
     if (token) {
       localStorage.setItem('token', token);
-      navigate('/', { replace: true });
+      navigate('/cittadino/dashboard', { replace: true });
     } else {
       navigate('/login', { replace: true });
     }
