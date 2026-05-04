@@ -67,7 +67,7 @@ L'app avrà un linguaggio chiaro, semplice e diretto, facilmente comprensibile d
       \item \textbf{limiti di accessibilità per quanto riguarda persone con fascia alta d'età}: Nonostante il fatto che la piattaforma sia pensata per essere di facile utilizzo, la partecipazione della fascia d’età più anziana potrebbe essere limitata. Ci aspettiamo quindi una concentrazione di utenti in una fascia di età compresa tra i 18 e 60 anni.
       \item \textbf{resistenza alla coercizione}: A differenza del voto fisico in cabina elettorale, il sistema non può garantire che l'utente non stia votando sotto coercizione o supervisione di terzi nel proprio ambiente domestico. Pertanto, i risultati hanno valore consultivo e non legale/vincolante.
       \item \textbf{integrazione legacy}: Il sistema opera come entità autonoma e non si sincronizza in tempo reale con il Protocollo Informatico del Comune. L'interscambio dati avviene tramite export manuale (CSV/XML) da parte degli operatori.
-      \item \textbf{verifica dell’identità fisica}: L'autenticazione SPID garantisce l'identità digitale, ma non può impedire la cessione volontaria delle credenziali (es. un familiare che vota per conto di un altro).
+      \item \textbf{verifica dell’identità fisica}: L’autenticazione tramite Google OAuth garantisce l’identità digitale associata all’account Google, ma non può impedire la cessione volontaria delle credenziali (es. un familiare che vota per conto di un altro). In futuro è prevista l’integrazione con SPID o CIE per una verifica ufficiale dell’identità.
 \end{itemize}
 
 \subsection{Cio' che ci aspettiamo}
@@ -110,9 +110,9 @@ L’obiettivo finale quindi sarebbe quello di fornire uno strumento che possa av
 
 \subsection{Requisiti funzionali per account root}
 \begin{itemize}
-    \item \textbf{RF14 - Creazione account admin}: Il sistema deve prevedere la presenza di un account root preconfigurato e non eliminabile, utilizzato esclusivamente per la creazione e l’abilitazione degli account amministrativi destinati agli operatori del Comune. L’account root ha accesso unicamente alle funzionalità di creazione account amministratore, visualizzazione della lista amministratori e disattivazione degli account amministratore.
-    \item \textbf{RF15 - Visualizzazione lista amministratori}: Il sistema deve consentire all’account root di visualizzare l’elenco completo degli account amministrativi registrati nel sistema. La lista deve includere almeno nome utente, stato account (attivo/disattivato), data di creazione ed eventuale data di disattivazione.
-    \item \textbf{RF16 - Disattivazione account amministratore}: Il sistema deve consentire all’account root di disattivare uno o più account amministrativi esistenti senza eliminarne i dati. Il sistema deve impedire la disattivazione dell’account root stesso e registrare data e ora della disattivazione per finalità di audit.
+    \item \textbf{RF14 - Creazione account operatore}: Il sistema deve consentire a qualsiasi operatore autenticato di creare nuovi account operatore (\texttt{POST /operatore/register}), inserendo username, password, nome e cognome. Al primo avvio il sistema crea automaticamente un account root predefinito (\textit{seedRoot}) con credenziali iniziali note, non eliminabile.
+    \item \textbf{RF15 - Promozione a root}: Il sistema deve consentire all’account root di promuovere un operatore esistente al ruolo root tramite l’endpoint \texttt{PATCH /operatore/:id/promote}. Solo un operatore con flag \texttt{isRoot: true} può eseguire questa operazione.
+    \item \textbf{RF16 - Disattivazione account amministratore} \textit{(requisito futuro)}: In una versione futura il sistema dovrà consentire all’account root di disattivare account operatore esistenti senza eliminarne i dati, registrando data e ora dell’operazione per finalità di audit.
 \end{itemize}
 
 \section{Requisiti non funzionali}  
@@ -145,7 +145,7 @@ I requisiti non funzionali descrivono le caratteristiche qualitative del sistema
 	\item \textbf{Autenticazione sicura}: l’accesso avviene tramite Google OAuth 2.0; in futuro sarà integrabile SPID o CIE per garantire una verifica ufficiale dell’identità.  
 	\textit{Motivazione}: un sistema di autenticazione sicuro riduce il rischio di accessi non autorizzati e consente di validare l’identità degli utenti, preservando la sicurezza del sistema e la legittimità delle interazioni.
 
-	\item \textbf{Gestione sicura delle sessioni}: le sessioni devono scadere automaticamente dopo un periodo di inattività prestabilito, prevenendo accessi non autorizzati. Abbiamo deciso di impostare questo limite a 15 minuti di attivita per arrivare a un compromesso tra durata della sessione e sicurezza dei dati. 
+	\item \textbf{Gestione sicura delle sessioni}: l’autenticazione è basata su token JWT con scadenza fissa: 1 giorno per gli operatori e 7 giorni per i cittadini. L’utente può effettuare il logout esplicito in qualsiasi momento, invalidando la sessione corrente.
 	\textit{Motivazione}: la gestione corretta delle sessioni riduce i rischi legati all’uso improprio dei dispositivi condivisi o smarriti, garantendo un livello aggiuntivo di protezione.
 
 	\item \textbf{Crittografia dei dati}: tutte le comunicazioni client-server devono avvenire tramite protocollo HTTPS con TLS 1.3.  
@@ -173,7 +173,7 @@ I requisiti non funzionali descrivono le caratteristiche qualitative del sistema
 	\textit{Motivazione}: il monitoraggio costante del sistema è essenziale per prevenire incidenti di sicurezza, diagnosticare problemi prestazionali e migliorare la manutenzione proattiva. Garantisce un controllo continuo sullo stato di salute dell’infrastruttura.
 \end{enumerate}
 
-\subsection{Manutenibilità ed Estendibilità}
+\subsection{Manutenibilit\`a ed Estendibilit\`a}
 \begin{enumerate}[label=\textbf{RNF\arabic*}, resume]
 	\item \textbf{Architettura modulare}: il sistema sarà sviluppato seguendo principi di separazione dei componenti (front-end, back-end, database) per facilitare aggiornamenti futuri.  
 	\textit{Motivazione}: un’architettura modulare semplifica l’individuazione dei problemi e consente di aggiornare o sostituire parti del sistema senza compromettere l’intero servizio. Favorisce inoltre la collaborazione tra team di sviluppo diversi.
@@ -185,7 +185,7 @@ I requisiti non funzionali descrivono le caratteristiche qualitative del sistema
 	\textit{Motivazione}: la testabilità riduce la probabilità di errori in fase di rilascio e migliora la qualità complessiva del software. Un approccio basato sui test consente di identificare rapidamente regressioni o malfunzionamenti durante l’evoluzione del sistema.
 \end{enumerate}
 
-\subsection{Compatibilità}
+\subsection{Compatibilit\`a tecnica e interoperabilit\`a}
 \begin{enumerate}[label=\textbf{RNF\arabic*}, resume]
 	\item \textbf{Dispositivi}: la piattaforma dovrà essere pienamente fruibile sia da browser desktop che da dispositivi mobili (responsive design).  
 	\textit{Motivazione}: garantire la compatibilità con dispositivi mobili è fondamentale per un servizio rivolto a cittadini che accedono in mobilità. Il responsive design migliora l’usabilità e amplia la platea di utenti potenziali.
@@ -203,30 +203,63 @@ I requisiti non funzionali descrivono le caratteristiche qualitative del sistema
 	\textit{Motivazione}: la possibilità di integrare il sistema con altri servizi pubblici o di terze parti consente di ampliare le funzionalità future e garantisce interoperabilità con l’ecosistema digitale della pubblica amministrazione.
 \end{enumerate}
 
-\section{Use Case}
+\section{Use Case Diagram}
+
+\subsection*{Panoramica Use Case per ruolo}
+
+\textbf{Utente anonimo}
+\begin{itemize}
+    \item RF1 -- Accesso cittadino tramite Google OAuth
+\end{itemize}
+
+\textbf{Operatore}
+\begin{itemize}
+    \item RF1 -- Accesso operatore tramite credenziali
+    \item RF2 -- Accesso alla Dashboard operatore
+    \item RF3 -- Riepilogo risultati (dettaglio esteso)
+    \item RF4 -- Ricerca contenuti
+    \item RFO1 -- Creazione e gestione votazioni
+    \item RFO2 -- Creazione e gestione sondaggi
+    \item RFO3 -- Moderazione contenuti
+    \item RF14 -- Creazione account operatore
+    \item RF15 -- Promozione a root
+\end{itemize}
+
+\textbf{Cittadino autenticato}
+\begin{itemize}
+    \item RF2 -- Accesso alla Dashboard cittadino
+    \item RF3 -- Riepilogo risultati (sintetico)
+    \item RF4 -- Ricerca contenuti
+    \item RFC1 -- Gestione iniziative
+    \item RFC2 -- Votazioni e sondaggi (invio univoco)
+    \item RFC3 -- Visualizzazione attività attive
+\end{itemize}
 
 \subsection{RF1: Gestione Accessi}
 
-\textbf{Riassunto}: Descrive come i Cittadini e gli Operatori Comunali accedono alla piattaforma tramite due modalità distinte di autenticazione: SPID/CIE ID per cittadini e credenziali interne per operatori.
+\textbf{Riassunto}: Descrive come i Cittadini e gli Operatori Comunali accedono alla piattaforma tramite due modalità distinte di autenticazione: Google OAuth 2.0 per i cittadini e credenziali interne (username/password) per gli operatori.
 
-\subsubsection*{Flusso A: Accesso Cittadino (SPID/CIE ID)}
+\subsubsection*{Flusso A: Accesso Cittadino (Google OAuth 2.0)}
 \begin{enumerate}
-    \item Il Cittadino visualizza la schermata di login e seleziona \textit{``Accedi con SPID/CIE ID''}.
-    \item Il sistema avvia il protocollo SAML reindirizzando l’utente all’Identity Provider (IdP).
-    \item L’IdP restituisce una risposta SAML firmata digitalmente.
-    \item Il sistema verifica firma, validità e consistenza dell’asserzione.
-    \item Il sistema estrae ID univoco e attributi dell’utente.
-    \item Il sistema consulta il database usando l’ID univoco.
-    \item Se l’ID è presente, l’accesso è autorizzato; altrimenti viene attivata l’Estensione 1.
+    \item Il Cittadino visualizza la schermata di login e seleziona \textit{``Accedi con Google’’}.
+    \item Il sistema reindirizza il browser verso il servizio di autenticazione Google OAuth 2.0.
+    \item Il Cittadino inserisce le proprie credenziali Google e autorizza l’accesso.
+    \item Google restituisce al sistema il profilo dell’utente (ID univoco e indirizzo email).
+    \item Il sistema consulta il database usando l’ID univoco Google.
+    \item Se l’ID è presente e il profilo è completo (\texttt{profiloCompleto: true}), l’accesso è autorizzato e viene emesso un JWT; altrimenti viene attivata l’Estensione appropriata.
 \end{enumerate}
 
-\textbf{Estensione 1 — Registrazione ID Univoco} \\
-\textit{Condizione}: primo accesso del cittadino. \\
-\textit{Azione}: l’ID univoco viene memorizzato nel database e l’utente accede alla dashboard.
+\textbf{Estensione 1 — Primo accesso: registrazione ID univoco} \\
+\textit{Condizione}: nessun record con quell’ID Google esiste nel database. \\
+\textit{Azione}: il sistema crea un nuovo profilo cittadino con \texttt{profiloCompleto: false} e attiva l’Estensione 2.
+
+\textbf{Estensione 2 — Completamento profilo} \\
+\textit{Condizione}: \texttt{profiloCompleto: false} (primo accesso o profilo incompleto). \\
+\textit{Azione}: il cittadino viene reindirizzato alla schermata di completamento profilo (\texttt{POST /auth/complete-profile}); solo dopo aver fornito i dati mancanti riceve il JWT e accede alla dashboard.
 
 \textbf{Eccezioni}
 \begin{itemize}
-    \item Autenticazione SPID/CIE fallita → messaggio di errore e accesso negato.
+    \item Autenticazione Google fallita o accesso negato → messaggio di errore e accesso negato.
 \end{itemize}
 
 \subsubsection*{Flusso B: Accesso Operatore}
@@ -462,70 +495,97 @@ L’utente può applicare filtri demografici o tematici per analizzare i dati ag
 
 % --------------------------------------------------------
 
-\subsection{RF14: Creazione account amministrativo}
+\subsection{RF14: Creazione account operatore}
+
+\textbf{Riassunto}: Qualsiasi operatore autenticato può creare un nuovo account operatore.
+
 \begin{enumerate}
-    \item L'Account Root accede alla sezione di creazione account amministratore.
-    \item Il sistema presenta un form per nome utente e password iniziale.
-    \item L'Account Root inserisce i dati e conferma la creazione.
-    \item Il sistema valida i dati, crea l'account in stato \textbf{attivo} e registra la data di creazione.
+    \item L'operatore autenticato invia una richiesta \texttt{POST /operatore/register} con username, password, nome e cognome.
+    \item Il sistema valida i dati: verifica che l'username non sia già in uso e che tutti i campi obbligatori siano presenti.
+    \item Se valido, il sistema crea il nuovo account operatore (flag \texttt{isRoot: false}).
 \end{enumerate}
 
 \textbf{Eccezioni}
 \begin{itemize}
-    \item Dati incompleti: il sistema nega la creazione.
-    \item Nome utente già esistente: il sistema nega la creazione.
+    \item Dati incompleti: il sistema nega la creazione con errore 400.
+    \item Username già esistente: il sistema nega la creazione con errore 409.
 \end{itemize}
 
 % --------------------------------------------------------
 
-\subsection{RF15: Visualizzazione lista amministratori}
-\begin{enumerate}
-    \item L'Account Root accede alla sezione \textit{Gestione Amministratori}.
-    \item Il sistema recupera l'elenco completo degli account amministrativi.
-    \item Il sistema mostra per ogni account: nome utente, stato, data di creazione ed eventuale data di disattivazione.
-\end{enumerate}
+\subsection{RF15: Promozione a root}
 
-% --------------------------------------------------------
+\textbf{Riassunto}: L'account root può promuovere un operatore esistente al ruolo root.
 
-\subsection{RF16: Disattivazione account amministratore}
 \begin{enumerate}
-    \item L'Account Root visualizza la lista degli account amministrativi.
-    \item Seleziona uno o più account \textbf{attivi} da disattivare.
-    \item Il sistema richiede conferma esplicita.
-    \item Se confermata, il sistema imposta lo stato a \textbf{disattivato} e registra data/ora dell'operazione.
+    \item L'account root invia una richiesta \texttt{PATCH /operatore/:id/promote}.
+    \item Il sistema verifica che il richiedente abbia \texttt{isRoot: true}.
+    \item Il sistema imposta \texttt{isRoot: true} sull'operatore target.
 \end{enumerate}
 
 \textbf{Eccezioni}
 \begin{itemize}
-    \item Account già disattivato: il sistema non esegue l'azione e mostra un messaggio.
-    \item Tentativo di disattivazione dell'account root: il sistema blocca l'operazione.
+    \item Operatore target non trovato: il sistema restituisce errore 404.
+    \item Richiedente non root: il sistema nega l'operazione con errore 403.
 \end{itemize}
+
+% --------------------------------------------------------
+
+\subsection{RF16: Disattivazione account amministratore \textit{(requisito futuro)}}
+
+\textbf{Nota}: questo requisito non è ancora implementato nella versione corrente del sistema. In una versione futura, l'account root potrà disattivare account operatore esistenti senza eliminarne i dati, registrando data e ora dell'operazione per finalità di audit.
 
 % --------------------------------------------------------
 
 \section{User Stories}
 
-\subsection{User Story 1: Gestione Accessi (UC RF1)}
-\textbf{Titolo}: Scelta metodo di login (Google o credenziali locali)
+\subsection{User Story 1a: Accesso Cittadino (UC RF1 -- Flusso A)}
+\textbf{Titolo}: Accesso tramite Google OAuth
 
-\textbf{Come} cittadino o operatore,  
-\textbf{voglio} poter scegliere se accedere tramite credenziali locali o autenticazione Google,  
-\textbf{in modo da} selezionare il metodo che preferisco.
+\textbf{Come} cittadino,
+\textbf{voglio} accedere alla piattaforma usando il mio account Google,
+\textbf{in modo da} autenticarmi senza dover creare credenziali separate.
 
 \textbf{Criteri di accettazione}:
 \begin{itemize}
-    \item Entrambi gli utenti possono scegliere tra credenziali locali e Google.
-    \item In caso di successo, il sistema reindirizza alla dashboard corretta in base al ruolo.
-    \item In caso di errore, viene mostrato un messaggio informativo adeguato.
+    \item Il cittadino vede il pulsante ``Accedi con Google'' nella schermata di login.
+    \item Dopo l'autenticazione Google, il sistema reindirizza alla dashboard cittadino.
+    \item Al primo accesso, il sistema richiede il completamento del profilo prima di emettere il JWT.
+    \item In caso di errore (es. accesso Google negato), viene mostrato un messaggio informativo.
 \end{itemize}
 
 \textbf{Tasks}:
 \begin{enumerate}
-    \item Integrare entrambe le opzioni di login nella UI.
-    \item Implementare la logica di selezione del metodo di autenticazione.
-    \item Gestire il routing verso la dashboard corretta.
-    \item Implementare messaggi di errore specifici per ogni metodo.
-    \item Testare entrambe le modalità.
+    \item Integrare il pulsante Google OAuth nella pagina di login.
+    \item Implementare il flusso \texttt{GET /auth/google} e \texttt{GET /auth/google/callback}.
+    \item Gestire il redirect alla schermata di completamento profilo (\texttt{POST /auth/complete-profile}) al primo accesso.
+    \item Gestire il routing verso la dashboard cittadino dopo il login.
+    \item Testare il flusso completo incluso il caso di primo accesso.
+\end{enumerate}
+
+% -------------------------------------------------------------
+
+\subsection{User Story 1b: Accesso Operatore (UC RF1 -- Flusso B)}
+\textbf{Titolo}: Accesso tramite username e password
+
+\textbf{Come} operatore comunale,
+\textbf{voglio} accedere alla dashboard amministrativa inserendo username e password,
+\textbf{in modo da} gestire votazioni, sondaggi e contenuti della piattaforma.
+
+\textbf{Criteri di accettazione}:
+\begin{itemize}
+    \item L'operatore vede un form con campi username e password.
+    \item In caso di credenziali corrette, il sistema emette un JWT e reindirizza alla dashboard operatore.
+    \item In caso di credenziali errate, viene mostrato un messaggio di errore specifico.
+\end{itemize}
+
+\textbf{Tasks}:
+\begin{enumerate}
+    \item Implementare il form di login operatore nella UI.
+    \item Implementare l'endpoint \texttt{POST /operatore/login} con verifica bcrypt.
+    \item Gestire il routing verso la dashboard operatore dopo il login.
+    \item Implementare messaggi di errore per credenziali errate.
+    \item Testare login valido e scenari di errore.
 \end{enumerate}
 
 % -------------------------------------------------------------
@@ -749,6 +809,81 @@ L’utente può applicare filtri demografici o tematici per analizzare i dati ag
 
 \textbf{Eccezione}: Nessuna attività attiva.
 
+
+\section{Design Front-end}
+
+In questa sezione vengono presentate le schermate principali dell'applicazione IoSonoTrento, con riferimenti espliciti ai requisiti funzionali e non funzionali definiti nei capitoli precedenti.
+
+% -------------------------------------------------------
+
+\subsection*{Schermata 1: Landing Page e Login}
+
+\textit{[Figura 1: schermata di login con pulsante Google OAuth per i cittadini e form username/password per gli operatori]}
+
+La schermata di accesso unifica i due flussi di autenticazione:
+\begin{itemize}
+    \item \textbf{RF1 (Flusso A)}: il pulsante ``Accedi con Google'' avvia il flusso OAuth 2.0 per i cittadini.
+    \item \textbf{RF1 (Flusso B)}: il form con campi username e password è riservato agli operatori comunali.
+    \item \textbf{RNF -- Interfaccia intuitiva}: i due percorsi sono visivamente distinti e comprensibili senza documentazione.
+    \item \textbf{RNF -- Accessibilità}: contrasto adeguato e label semantiche per screen reader (WCAG 2.1 livello AA).
+\end{itemize}
+
+% -------------------------------------------------------
+
+\subsection*{Schermata 2: Dashboard Operatore}
+
+\textit{[Figura 2: dashboard operatore con sezioni Votazioni, Sondaggi, Iniziative e Profilo]}
+
+La dashboard amministrativa espone tutte le funzionalità riservate agli operatori:
+\begin{itemize}
+    \item \textbf{RFO1}: pulsante ``Crea Votazione'' e lista votazioni con stati (bozza / attivo / concluso / archiviato).
+    \item \textbf{RFO2}: pulsante ``Crea Sondaggio'' e lista sondaggi con relativi stati.
+    \item \textbf{RFO3}: sezione ``Moderazione'' per approvare o rifiutare le iniziative dei cittadini.
+    \item \textbf{RF3}: riepilogo risultati con dettaglio demografico accessibile dagli operatori.
+    \item \textbf{RNF -- Consistenza visiva}: layout coerente con colori istituzionali e componenti riusabili.
+    \item \textbf{RNF -- Prestazioni}: il caricamento della dashboard avviene entro 3 secondi in condizioni normali di rete.
+\end{itemize}
+
+% -------------------------------------------------------
+
+\subsection*{Schermata 3: Dashboard Cittadino}
+
+\textit{[Figura 3: dashboard cittadino con votazioni attive, sondaggi e bacheca iniziative]}
+
+La dashboard cittadino mostra le attività partecipative disponibili:
+\begin{itemize}
+    \item \textbf{RFC3}: lista delle votazioni e dei sondaggi in stato ``attivo'', separati per tipologia con titolo e periodo di validità.
+    \item \textbf{RFC1}: bacheca iniziative con possibilità di proporre una nuova iniziativa e votare quelle esistenti.
+    \item \textbf{RF3}: riepilogo sintetico e anonimizzato dei risultati delle votazioni concluse.
+    \item \textbf{RNF -- Multilingua}: interfaccia predisposta per l'estensione a ulteriori lingue tramite file di localizzazione.
+    \item \textbf{RNF -- Dispositivi}: layout responsive fruibile da desktop e da dispositivi mobili.
+\end{itemize}
+
+% -------------------------------------------------------
+
+\subsection*{Schermata 4: Creazione Votazione / Sondaggio}
+
+\textit{[Figura 4: form di creazione votazione con campi titolo, descrizione, opzioni di risposta, date apertura/chiusura]}
+
+Il form guidato permette all'operatore di configurare votazioni e sondaggi:
+\begin{itemize}
+    \item \textbf{RFO1 / RFO2}: campi per titolo, descrizione, opzioni di risposta, tipologia (singola/multipla) e date apertura/chiusura.
+    \item La votazione viene salvata in stato ``bozza'' fino alla pubblicazione esplicita.
+    \item \textbf{RNF -- Gestione degli errori}: messaggi di validazione chiari per campi mancanti o date incoerenti.
+\end{itemize}
+
+% -------------------------------------------------------
+
+\subsection*{Schermata 5: Riepilogo Risultati}
+
+\textit{[Figura 5: schermata riepilogo con grafici percentuali per votazioni concluse]}
+
+La schermata di riepilogo mostra i risultati in forma aggregata e anonimizzata:
+\begin{itemize}
+    \item \textbf{RF3}: percentuali e conteggi assoluti per ciascuna opzione di risposta.
+    \item Per gli operatori è disponibile un livello di dettaglio esteso con analisi per categorie demografiche.
+    \item \textbf{RNF -- Anonimato dei voti}: nessun dato individuale è esposto nelle visualizzazioni pubbliche.
+\end{itemize}
 
 \bibliographystyle{alpha}
 \bibliography{sample}
