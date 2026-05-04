@@ -59,16 +59,15 @@ router.post('/complete-profile', async (req, res) => {
   }
 
   try {
-    const cittadino = await Cittadino.findById(cittadinoId);
+    const cittadino = await Cittadino.findByIdAndUpdate(
+      cittadinoId,
+      { $set: { dataNascita: nascita, comuneResidenza, circoscrizione: circoscrizione || null, profiloCompleto: true } },
+      { new: true, runValidators: false }
+    );
+
     if (!cittadino) {
       return res.status(404).json({ message: 'Cittadino non trovato.' });
     }
-
-    cittadino.dataNascita = nascita;
-    cittadino.comuneResidenza = comuneResidenza;
-    cittadino.circoscrizione = circoscrizione || null;
-    cittadino.profiloCompleto = true;
-    await cittadino.save();
 
     const payload = { id: cittadino._id, ruolo: 'cittadino' };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
