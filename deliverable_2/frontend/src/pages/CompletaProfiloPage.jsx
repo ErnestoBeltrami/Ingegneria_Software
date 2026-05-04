@@ -129,7 +129,7 @@ export default function CompletaProfiloPage({
           </h1>
           <p className="cp-header__subtitle">
             Per partecipare alle votazioni e ai sondaggi della tua città abbiamo bisogno di
-            qualche informazione in più. Ti chiediamo solo l\u2019essenziale.
+            qualche informazione in più. Ti chiediamo solo l’essenziale.
           </p>
         </header>
 
