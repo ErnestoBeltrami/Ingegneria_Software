@@ -35,7 +35,7 @@ export default defineConfig({
         target: 'http://localhost:8000',
         changeOrigin: true,
         bypass(req) {
-          if (req.url.startsWith('/cittadino/dashboard') || req.url.startsWith('/cittadino/iniziativa')) {
+          if (req.url.startsWith('/cittadino/dashboard') || req.url.startsWith('/cittadino/iniziativa') || req.url.startsWith('/cittadino/profilo')) {
             return req.url;
           }
         },

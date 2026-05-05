@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Lightbulb } from 'lucide-react';
 import './CreaIniziativaPage.css';
 
@@ -79,10 +79,10 @@ export default function CreaIniziativaPage() {
     <div className="ci-page">
       <header className="ci-topbar">
         <span className="ci-topbar__logo">IoSonoTrento</span>
-        <div className="ci-topbar__user">
+        <Link to="/cittadino/profilo" className="ci-topbar__user">
           <div className="ci-topbar__avatar">{initials}</div>
           <span className="ci-topbar__name">{fullName}</span>
-        </div>
+        </Link>
       </header>
 
       <div className="ci-shell">
