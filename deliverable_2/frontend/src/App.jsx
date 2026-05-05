@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
-import Dashboard from './pages/dashboard/cittadino/Dashboard';
+import Dashboard from './pages/cittadino/dashboard/Dashboard';
 
 export default function App() {
 
