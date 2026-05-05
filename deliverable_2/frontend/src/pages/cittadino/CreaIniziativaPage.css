@@ -32,6 +32,28 @@
   letter-spacing: 0;
 }
 
+.ci-topbar__right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ci-topbar__theme {
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  opacity: 0.85;
+  transition: opacity 0.15s ease;
+  flex-shrink: 0;
+}
+.ci-topbar__theme:hover { opacity: 1; }
+
 .ci-topbar__user {
   display: flex;
   align-items: center;
@@ -41,6 +63,7 @@
   border-radius: 14px;
   padding: 0 13px;
   height: 36px;
+  text-decoration: none;
 }
 
 .ci-topbar__avatar {

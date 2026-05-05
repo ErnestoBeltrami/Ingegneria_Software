@@ -70,6 +70,29 @@ export const getCittadinoData = async (req, res) => {
     }
 };
 
+export const updateCittadinoData = async (req, res) => {
+    try {
+        const { nome, cognome } = req.body;
+        if (!nome?.trim() || !cognome?.trim()) {
+            return res.status(400).json({ message: 'Nome e cognome sono obbligatori.' });
+        }
+        const cittadino = await Cittadino.findByIdAndUpdate(
+            req.user._id,
+            { $set: { nome: nome.trim(), cognome: cognome.trim() } },
+            { new: true, runValidators: false }
+        );
+        if (!cittadino) {
+            return res.status(404).json({ message: 'Cittadino non trovato.' });
+        }
+        return res.status(200).json({
+            message: 'Profilo aggiornato con successo.',
+            data: { nome: cittadino.nome, cognome: cittadino.cognome },
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'Errore interno del server.', error: error.message });
+    }
+};
+
 export const answerVote = async (req,res) => {
     try
     {
