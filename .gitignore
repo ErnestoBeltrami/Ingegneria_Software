@@ -141,3 +141,4 @@ deliverable_1/*.bbl
 deliverable_1/*.blg
 deliverable_1/%OUTDIR%/
 CLAUDE.md
+*.puml
