@@ -1,0 +1,32 @@
+@startuml Consultazione
+
+skinparam classAttributeIconSize 0
+skinparam classFontStyle bold
+skinparam classFontSize 12
+skinparam classBackgroundColor #F8F9FA
+skinparam classBorderColor #0052A3
+skinparam classHeaderBackgroundColor #0052A3
+skinparam classHeaderFontColor #FFFFFF
+
+class Consultazione {
+  + _id : ObjectId
+  + tipo : String <<enum: votazione, sondaggio>>
+  + stato : String <<enum: bozza, attivo, concluso, archiviato>>
+  + titolo : String <<unique, required>>
+  + descrizione : String <<required>>
+  + data_inizio : Date <<required>>
+  + data_fine : Date <<required>>
+  + data_discussione : Date <<required>>
+  + ID_domanda : ObjectId <<FK, solo votazione>>
+  + ID_domande : ObjectId[] <<FK, solo sondaggio>>
+  + creatoDa : ObjectId <<FK Operatore>>
+  + createdAt : Date
+  + updatedAt : Date
+}
+
+note right of Consultazione
+  ID_domanda e ID_domande
+  sono mutuamente esclusivi
+end note
+
+@enduml

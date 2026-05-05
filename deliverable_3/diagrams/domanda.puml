@@ -1,0 +1,26 @@
+@startuml Domanda
+
+skinparam classAttributeIconSize 0
+skinparam classFontStyle bold
+skinparam classFontSize 12
+skinparam classBackgroundColor #F8F9FA
+skinparam classBorderColor #0052A3
+skinparam classHeaderBackgroundColor #0052A3
+skinparam classHeaderFontColor #FFFFFF
+
+class Domanda {
+  + _id : ObjectId
+  + titolo : String <<required>>
+  + tipo : String <<enum: risposta_singola, risposta_multipla>>
+  + createdAt : Date
+  + updatedAt : Date
+}
+
+class Opzione {
+  + _id : ObjectId
+  + testo : String <<required>>
+}
+
+Domanda "1" *-- "2..*" Opzione : contiene
+
+@enduml

@@ -1,0 +1,16 @@
+@startuml CategoriaIniziativa
+
+skinparam classAttributeIconSize 0
+skinparam classFontStyle bold
+skinparam classFontSize 12
+skinparam classBackgroundColor #F8F9FA
+skinparam classBorderColor #0052A3
+skinparam classHeaderBackgroundColor #0052A3
+skinparam classHeaderFontColor #FFFFFF
+
+class CategoriaIniziativa {
+  + _id : ObjectId
+  + nome : String <<unique, required>>
+}
+
+@enduml

@@ -1,0 +1,81 @@
+@startuml ComponentDiagram
+
+top to bottom direction
+
+skinparam componentStyle uml2
+skinparam componentFontSize 11
+skinparam componentFontStyle bold
+skinparam componentBackgroundColor #F0F4FF
+skinparam componentBorderColor #0052A3
+skinparam databaseBackgroundColor #F0F4FF
+skinparam databaseBorderColor #0052A3
+skinparam arrowColor #333333
+skinparam nodesep 60
+skinparam ranksep 80
+
+' ─── Riga 1: Browser Cittadino ───────────────────────────────────────────────
+component [Browser Cittadino] as BC
+
+' ─── Riga 2: CMPs (senza Google) ─────────────────────────────────────────────
+together {
+  component [CMP6\nStatistiche] as CMP6
+  component [CMP5\nProfilo] as CMP5
+  component [CMP4\nIniziative] as CMP4
+  component [CMP7\nScheduler] as CMP7
+  component [CMP3\nConsultazioni] as CMP3
+  component [CMP1\nAutenticazione] as CMP1
+}
+
+' Google OAuth alla destra della riga, forzato da hidden+right
+component [Google OAuth 2.0] as Google
+
+' ─── Riga 3: CMP2 ────────────────────────────────────────────────────────────
+component [CMP2\nGestione Database] as CMP2
+
+' ─── MongoDB sotto CMP2 ──────────────────────────────────────────────────────
+database [MongoDB] as MongoDB
+
+' ─── Riga 4: Browser Operatore ───────────────────────────────────────────────
+component [Browser Operatore] as BO
+
+' ─── Ordine verticale forzato (hidden) ───────────────────────────────────────
+BC     -[hidden]-> CMP1
+BC     -[hidden]-> CMP6
+CMP1   -[hidden]-> CMP2
+CMP6   -[hidden]-> CMP2
+CMP2   -[hidden]-> BO
+
+' Google alla destra di CMP1, stessa riga
+CMP1   -[hidden]right-> Google
+Google -[hidden]-> CMP2
+
+' ─── CMP1 ↔ Google OAuth ─────────────────────────────────────────────────────
+CMP1 -right-> Google
+Google -left-> CMP1
+
+' ─── Browser Cittadino → CMPs ────────────────────────────────────────────────
+BC -down-> CMP1 : login Google
+BC -down-> CMP3 : vota
+BC -down-> CMP4 : propone / supporta
+BC -down-> CMP5 : completa profilo
+
+' ─── Browser Operatore → CMPs ────────────────────────────────────────────────
+BO -up-> CMP1 : login
+BO -up-> CMP3 : crea / gestisce
+BO -up-> CMP4 : modera
+BO -up-> CMP5 : gestisce account
+BO -up-> CMP6 : visualizza statistiche
+
+' ─── CMPs → CMP2 ─────────────────────────────────────────────────────────────
+CMP1 -down-> CMP2
+CMP3 -down-> CMP2
+CMP4 -down-> CMP2
+CMP5 -down-> CMP2
+CMP6 -down-> CMP2
+CMP7 -down-> CMP2
+
+' ─── CMP2 → MongoDB (sotto) ──────────────────────────────────────────────────
+CMP2 -down-> MongoDB
+MongoDB -up-> CMP2 : read/write
+
+@enduml

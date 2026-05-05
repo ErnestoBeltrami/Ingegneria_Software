@@ -1,0 +1,24 @@
+@startuml VotoIniziativa
+
+skinparam classAttributeIconSize 0
+skinparam classFontStyle bold
+skinparam classFontSize 12
+skinparam classBackgroundColor #F8F9FA
+skinparam classBorderColor #0052A3
+skinparam classHeaderBackgroundColor #0052A3
+skinparam classHeaderFontColor #FFFFFF
+
+class VotoIniziativa {
+  + _id : ObjectId
+  + ID_cittadino : ObjectId <<FK Cittadino>>
+  + ID_iniziativa : ObjectId <<FK Iniziativa>>
+  + createdAt : Date
+  + updatedAt : Date
+}
+
+note bottom of VotoIniziativa
+  Indice univoco:
+  (ID_cittadino, ID_iniziativa)
+end note
+
+@enduml
