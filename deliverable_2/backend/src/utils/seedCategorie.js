@@ -10,11 +10,17 @@ const CATEGORIE_DEFAULT = [
 ];
 
 export const seedCategorie = async () => {
-  const esistenti = await CategoriaIniziativa.countDocuments();
-  if (esistenti > 0) {
-    console.log(`Categorie già presenti (${esistenti})`);
-    return;
+  const ops = CATEGORIE_DEFAULT.map((nome) => ({
+    updateOne: {
+      filter: { nome },
+      update: { $setOnInsert: { nome } },
+      upsert: true,
+    },
+  }));
+  const result = await CategoriaIniziativa.bulkWrite(ops);
+  if (result.upsertedCount > 0) {
+    console.log(`${result.upsertedCount} categorie di default create`);
+  } else {
+    console.log('Categorie già presenti');
   }
-  await CategoriaIniziativa.insertMany(CATEGORIE_DEFAULT.map((nome) => ({ nome })));
-  console.log(`${CATEGORIE_DEFAULT.length} categorie di default create`);
 };

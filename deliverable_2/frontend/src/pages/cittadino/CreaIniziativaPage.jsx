@@ -8,6 +8,7 @@ export default function CreaIniziativaPage() {
 
   const [nome, setNome] = useState('');
   const [cognome, setCognome] = useState('');
+  const [cittadinoId, setCittadinoId] = useState('');
   const [titolo, setTitolo] = useState('');
   const [descrizione, setDescrizione] = useState('');
   const [categoriaSelezionata, setCategoriaSelezionata] = useState(null);
@@ -27,6 +28,7 @@ export default function CreaIniziativaPage() {
         if (data?.data) {
           setNome(data.data.nome || '');
           setCognome(data.data.cognome || '');
+          setCittadinoId(data.data.id || '');
         }
       })
       .catch(() => {});
@@ -60,6 +62,7 @@ export default function CreaIniziativaPage() {
           titolo: titolo.trim(),
           descrizione: descrizione.trim(),
           ID_categoria: categoriaSelezionata,
+          ID_cittadino: cittadinoId,
         }),
       });
       const data = await res.json();
