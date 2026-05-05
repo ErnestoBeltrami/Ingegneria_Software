@@ -304,14 +304,41 @@
 }
 
 /* =====================
-   Section label
+   Section label + edit toggle
    ===================== */
+.cp-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .cp-section-label {
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.7px;
   text-transform: uppercase;
   color: var(--text-faint);
+}
+
+.cp-btn-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 9999px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-raised);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.cp-btn-edit:hover {
+  background: var(--surface-hover);
+  color: var(--text);
 }
 
 /* =====================
@@ -330,6 +357,110 @@
 .cp-row__v { font-size: 14px; color: var(--text-secondary); font-weight: 500; text-align: right; }
 .cp-row--missing { background: rgba(217, 159, 12, 0.06); border-radius: 8px; padding: 12px 8px; margin: 0 -8px; }
 .cp-row__v--missing { color: #f5c842; font-style: italic; }
+
+/* =====================
+   Edit form
+   ===================== */
+.cp-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cp-edit-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 4px;
+  border-top: 1px solid var(--border);
+}
+
+.cp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cp-field__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.cp-field__req { color: #ff6b6b; }
+
+.cp-field__input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 9px 13px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  box-sizing: border-box;
+}
+.cp-field__input:focus {
+  border-color: var(--border-strong);
+  background: var(--surface-raised);
+}
+.cp-field__select { cursor: pointer; }
+
+.cp-edit-error {
+  font-size: 13px;
+  font-weight: 500;
+  color: #ff6b6b;
+  margin: 0;
+}
+
+.cp-edit-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.cp-btn-cancel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(231, 0, 11, 0.28);
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ff6b6b;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  flex: 1;
+}
+.cp-btn-cancel:hover:not(:disabled) { opacity: 0.80; }
+.cp-btn-cancel:disabled { opacity: 0.40; cursor: not-allowed; }
+
+.cp-btn-save {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 196, 122, 0.3);
+  background: #007a52;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 122, 82, 0.35);
+  transition: opacity 0.15s ease;
+  flex: 2;
+}
+.cp-btn-save:hover:not(:disabled) { opacity: 0.88; }
+.cp-btn-save:disabled { opacity: 0.40; cursor: not-allowed; }
 
 /* =====================
    Logout section
