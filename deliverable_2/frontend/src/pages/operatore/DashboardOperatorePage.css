@@ -416,3 +416,21 @@
   color: #00d48a;
   border: 1px solid rgba(0, 196, 122, 0.2);
 }
+
+[data-theme="light"] .badge--tipo {
+  background: rgba(31, 58, 137, 0.10);
+  color: #1f3a89;
+  border-color: rgba(31, 58, 137, 0.30);
+}
+
+[data-theme="light"] .badge--stato {
+  background: rgba(0, 122, 82, 0.10);
+  color: #007a52;
+  border-color: rgba(0, 122, 82, 0.30);
+}
+
+[data-theme="light"] .badge--sondaggio {
+  background: rgba(0, 122, 82, 0.10);
+  color: #007a52;
+  border-color: rgba(0, 122, 82, 0.30);
+}
