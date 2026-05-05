@@ -171,8 +171,9 @@ ruolo (\texttt{operatore} o \texttt{cittadino}). Viene incluso nelle successive 
 header \texttt{Authorization: Bearer <token>}.
 
 \interfacciarichiesta{completamento profilo cittadino}\\
-Al primo accesso Google, se \texttt{profiloCompleto = false}, il cittadino deve fornire nome,
-cognome, codice fiscale e data di nascita tramite \texttt{POST /auth/complete-profile}.
+Al primo accesso Google, se \texttt{profiloCompleto = false}, il cittadino deve fornire data di
+nascita, comune di residenza e circoscrizione (se residente a Trento) tramite
+\texttt{POST /auth/complete-profile}.
 
 \interfacciafornita{autenticazione}\\
 Permette all'utente autenticato di accedere a tutte le funzionalità a lui riservate, garantendo
@@ -194,8 +195,8 @@ Username, password in chiaro e flag \texttt{isRoot}. Il componente salva la pass
 bcrypt.
 
 \interfacciarichiesta{dati profilo cittadino}\\
-Dati anagrafici del cittadino (nome, cognome, codice fiscale, data di nascita) necessari per
-portare \texttt{profiloCompleto} a \texttt{true}.
+Dati anagrafici del cittadino (nome, cognome, data di nascita, comune di residenza, circoscrizione)
+necessari per portare \texttt{profiloCompleto} a \texttt{true} o per aggiornare il profilo.
 
 \interfacciarichiesta{dati consultazione}\\
 Tipo (\texttt{votazione} | \texttt{sondaggio}), titolo, date di inizio, fine e discussione,
@@ -286,14 +287,19 @@ Conferma dell'aggiunta o rimozione del voto di supporto di un cittadino a un'ini
 
 \textbf{Descrizione:}\\
 Il componente raggruppa le funzionalità legate al profilo del cittadino: la visualizzazione dei
-propri dati, il completamento del profilo al primo accesso e il logout. Per gli operatori espone
-funzionalità analoghe: visualizzazione del profilo, cambio password e promozione a \textit{root}.
+propri dati, il completamento del profilo al primo accesso, la modifica dei dati anagrafici e il
+logout. Per gli operatori espone funzionalità analoghe: visualizzazione del profilo, cambio
+password e promozione a \textit{root}.
 
 \interfacciarichiesta{autenticazione}\\
 JWT valido per garantire che ogni utente acceda solo al proprio profilo.
 
 \interfacciarichiesta{dati completamento profilo}\\
-Nome, cognome, codice fiscale e data di nascita, forniti dal cittadino al primo accesso.
+Data di nascita, comune di residenza e circoscrizione (se residente a Trento), forniti dal
+cittadino tramite \texttt{POST /auth/complete-profile}.
+
+\interfacciarichiesta{dati aggiornamento anagrafica}\\
+Nome e cognome aggiornati, inviati dal cittadino tramite \texttt{PATCH /cittadino/me}.
 
 \interfacciarichiesta{nuova password operatore}\\
 Password attuale e nuova password, utilizzate per il cambio credenziali
@@ -389,16 +395,18 @@ incompleto (\texttt{profiloCompleto = false}) e deve essere completato prima di 
   \item \texttt{nome}, \texttt{cognome}: dati anagrafici
   \item \texttt{email}: indirizzo e-mail Google
   \item \texttt{ID\_univoco\_esterno}: Google ID (sub claim del token OAuth)
-  \item \texttt{codiceFiscale}: codice fiscale italiano
   \item \texttt{dataNascita}: data di nascita (usata per le statistiche per fascia d'età)
+  \item \texttt{comuneResidenza}: comune di residenza del cittadino
+  \item \texttt{circoscrizione}: circoscrizione di Trento (valorizzata solo se residente a Trento)
   \item \texttt{profiloCompleto}: booleano, \texttt{false} al primo accesso
   \item \texttt{loggedIn}: booleano, aggiornato a ogni login/logout
 \end{itemize}
 
 \noindent\textbf{Metodi principali:}
 \begin{itemize}
-  \item \texttt{completeProfile(dati)}: imposta i campi anagrafici e porta
-        \texttt{profiloCompleto} a \texttt{true}
+  \item \texttt{completeProfile(dati)}: imposta \texttt{dataNascita}, \texttt{comuneResidenza} e
+        \texttt{circoscrizione}; porta \texttt{profiloCompleto} a \texttt{true}
+  \item \texttt{updateProfile(dati)}: aggiorna \texttt{nome} e \texttt{cognome}
   \item \texttt{logout()}: aggiorna \texttt{loggedIn} a \texttt{false}
   \item \texttt{getProfile()}: restituisce i dati del profilo
 \end{itemize}
@@ -627,6 +635,7 @@ endpoint. Di seguito viene riportata la mappatura tra classi/metodi e route HTTP
   Cittadino.oauthCallback() & GET & /auth/google/callback \\
   Cittadino.completeProfile() & POST & /auth/complete-profile \\
   Cittadino.getProfile() & GET & /cittadino/profile \\
+  Cittadino.updateProfile() & PATCH & /cittadino/me \\
   Cittadino.logout() & POST & /cittadino/logout \\
   \addlinespace
   % Votazioni
