@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, LogOut, AlertTriangle, Pencil, X, Check } from 'lucide-react';
+import { ArrowLeft, LogOut, AlertTriangle, Pencil, X, Check, Moon, Sun } from 'lucide-react';
+import { useTheme } from '../../contexts/ThemeContext';
 import './ProfiloCittadinePage.css';
 
 const CIRCOSCRIZIONI = [
@@ -171,14 +172,24 @@ export default function ProfiloCittadinePage() {
   const initials = `${nome.charAt(0)}${cognome.charAt(0)}`.toUpperCase() || '?';
   const fullName = [nome, cognome].filter(Boolean).join(' ') || 'Cittadino';
   const profiloIncompleto = profilo && (!profilo.dataNascita || !profilo.comuneResidenza);
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <div className="cp-page">
       <header className="cp-topbar">
         <span className="cp-topbar__logo">IoSonoTrento</span>
+        <div className="cp-topbar__right">
+        <button
+          className="cp-topbar__theme"
+          onClick={toggleTheme}
+          aria-label={theme === 'dark' ? 'Attiva modalità chiara' : 'Attiva modalità scura'}
+        >
+          {theme === 'dark' ? <Moon size={18} /> : <Sun size={18} />}
+        </button>
         <div className="cp-topbar__user">
           <div className="cp-topbar__avatar">{initials}</div>
           <span className="cp-topbar__name">{fullName}</span>
+        </div>
         </div>
       </header>
 

@@ -31,6 +31,28 @@
   color: white;
 }
 
+.cp-topbar__right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cp-topbar__theme {
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: background 0.15s ease;
+  flex-shrink: 0;
+}
+.cp-topbar__theme:hover { background: rgba(255, 255, 255, 0.25); }
+
 .cp-topbar__user {
   display: flex;
   align-items: center;

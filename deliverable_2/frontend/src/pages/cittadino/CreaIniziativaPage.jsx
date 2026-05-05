@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Lightbulb } from 'lucide-react';
+import { ArrowLeft, Lightbulb, Moon, Sun } from 'lucide-react';
+import { useTheme } from '../../contexts/ThemeContext';
 import './CreaIniziativaPage.css';
 
 export default function CreaIniziativaPage() {
@@ -41,6 +42,7 @@ export default function CreaIniziativaPage() {
 
   const initials = `${nome.charAt(0)}${cognome.charAt(0)}`.toUpperCase() || '?';
   const fullName = [nome, cognome].filter(Boolean).join(' ') || 'Cittadino';
+  const { theme, toggleTheme } = useTheme();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,10 +81,19 @@ export default function CreaIniziativaPage() {
     <div className="ci-page">
       <header className="ci-topbar">
         <span className="ci-topbar__logo">IoSonoTrento</span>
+        <div className="ci-topbar__right">
+        <button
+          className="ci-topbar__theme"
+          onClick={toggleTheme}
+          aria-label={theme === 'dark' ? 'Attiva modalità chiara' : 'Attiva modalità scura'}
+        >
+          {theme === 'dark' ? <Moon size={18} /> : <Sun size={18} />}
+        </button>
         <Link to="/cittadino/profilo" className="ci-topbar__user">
           <div className="ci-topbar__avatar">{initials}</div>
           <span className="ci-topbar__name">{fullName}</span>
         </Link>
+        </div>
       </header>
 
       <div className="ci-shell">
