@@ -154,11 +154,13 @@
 
 .btn--cittadino {
   background: #007a52;
+  color: white;
   box-shadow: 0px 4px 18px 0px rgba(0, 122, 82, 0.35);
 }
 
 .btn--operatore {
   background: #1f3a89;
+  color: white;
   box-shadow: 0px 4px 18px 0px rgba(31, 58, 137, 0.35);
 }
 
