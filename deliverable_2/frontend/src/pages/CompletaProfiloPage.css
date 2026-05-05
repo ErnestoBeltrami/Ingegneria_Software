@@ -10,8 +10,8 @@
 
 .cp-page {
   min-height: 100vh;
-  background: #080808;
-  color: #fff;
+  background: var(--bg);
+  color: var(--text);
   font-family: 'Montserrat', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 
@@ -35,7 +35,7 @@
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 18px; font-weight: 700;
   letter-spacing: -0.2px;
-  color: rgba(255,255,255,0.85);
+  color: var(--text-secondary);
   margin: 0;
 }
 
@@ -59,24 +59,24 @@
 }
 .cp-header__subtitle {
   font-size: 15px; line-height: 22px;
-  color: rgba(255,255,255,0.65);
+  color: var(--text-secondary);
   margin: 4px 0 0;
   max-width: 56ch;
 }
 
 /* ── Google identity card ── */
 .cp-google {
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(255,255,255,0.14);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 16px 18px;
   display: flex; align-items: center; gap: 14px;
 }
 .cp-google__avatar {
   width: 48px; height: 48px; border-radius: 50%;
-  background: rgba(255,255,255,0.10);
+  background: var(--surface-raised);
   display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 16px; color: #fff;
+  font-weight: 700; font-size: 16px; color: var(--text);
   flex-shrink: 0; overflow: hidden;
 }
 .cp-google__avatar img {
@@ -84,31 +84,31 @@
 }
 .cp-google__info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .cp-google__name {
-  font-size: 15px; font-weight: 600; color: #fff;
+  font-size: 15px; font-weight: 600; color: var(--text);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   margin: 0;
 }
 .cp-google__email {
-  font-size: 13px; color: rgba(255,255,255,0.55);
+  font-size: 13px; color: var(--text-muted);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   margin: 0;
 }
 .cp-google__pill {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 5px 10px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.14);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 9999px;
   font-size: 11px; font-weight: 600;
-  color: rgba(255,255,255,0.7);
+  color: var(--text-secondary);
   flex-shrink: 0;
 }
 .cp-google__pill svg { display: block; }
 
 /* ── Form card ── */
 .cp-card {
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(255,255,255,0.14);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 24px;
   display: flex; flex-direction: column; gap: 20px;
@@ -117,7 +117,7 @@
 .cp-section-label {
   font-size: 11px; font-weight: 600;
   letter-spacing: 0.7px; text-transform: uppercase;
-  color: rgba(255,255,255,0.35);
+  color: var(--text-faint);
   margin: 0 0 -4px;
 }
 
@@ -125,34 +125,34 @@
 .cp-field { display: flex; flex-direction: column; gap: 6px; }
 .cp-field__label {
   font-size: 14px; font-weight: 600;
-  color: rgba(255,255,255,0.82);
+  color: var(--text-secondary);
   line-height: 20px;
 }
 .cp-field__required { color: #ff6b6b; }
 .cp-field__hint {
   font-size: 12px;
-  color: rgba(255,255,255,0.45);
+  color: var(--text-muted);
   line-height: 16px;
   margin: 0;
 }
 .cp-field__input,
 .cp-field__select {
   width: 100%;
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(255,255,255,0.14);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 12px 14px;
   font-family: inherit;
   font-size: 14px;
-  color: #fff;
+  color: var(--text);
   outline: none;
   transition: border-color 0.15s ease, background 0.15s ease;
 }
-.cp-field__input::placeholder { color: rgba(255,255,255,0.32); }
+.cp-field__input::placeholder { color: var(--text-faint); }
 .cp-field__input:focus,
 .cp-field__select:focus {
-  border-color: rgba(255,255,255,0.35);
-  background: rgba(255,255,255,0.10);
+  border-color: var(--border-strong);
+  background: var(--surface-raised);
 }
 .cp-field__input:disabled,
 .cp-field__select:disabled {
@@ -172,14 +172,14 @@
   content: '';
   position: absolute; right: 16px; top: 50%;
   width: 8px; height: 8px;
-  border-right: 2px solid rgba(255,255,255,0.55);
-  border-bottom: 2px solid rgba(255,255,255,0.55);
+  border-right: 2px solid var(--text-secondary);
+  border-bottom: 2px solid var(--text-secondary);
   transform: translateY(-70%) rotate(45deg);
   pointer-events: none;
 }
 .cp-field__select option {
-  background: #141414;
-  color: #fff;
+  background: var(--surface-raised);
+  color: var(--text);
 }
 
 /* date input chrome */
@@ -207,15 +207,15 @@
 /* ── Privacy note ── */
 .cp-privacy {
   font-size: 12px; line-height: 18px;
-  color: rgba(255,255,255,0.45);
+  color: var(--text-muted);
   margin: 0;
 }
 .cp-privacy a {
-  color: rgba(255,255,255,0.7);
+  color: var(--text-secondary);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
-.cp-privacy a:hover { color: #fff; }
+.cp-privacy a:hover { color: var(--text); }
 
 /* ── Submit button ── */
 .cp-submit {
@@ -223,7 +223,7 @@
   border-radius: 14px;
   border: 1px solid rgba(100,130,255,0.25);
   background: #1f3a89;
-  color: #fff;
+  color: white;
   font-family: inherit;
   font-size: 15px; font-weight: 600;
   cursor: pointer;
@@ -238,7 +238,7 @@
 /* ── Footer note ── */
 .cp-footer-note {
   font-size: 12px;
-  color: rgba(255,255,255,0.35);
+  color: var(--text-faint);
   text-align: center;
   margin: 4px 0 0;
 }
