@@ -129,16 +129,24 @@ dist
 .pnp.*
 context/
 
-# LaTeX build artifacts (deliverable_1)
-deliverable_1/*.aux
-deliverable_1/*.log
-deliverable_1/*.out
-deliverable_1/*.toc
-deliverable_1/*.fls
-deliverable_1/*.fdb_latexmk
-deliverable_1/*.synctex.gz
-deliverable_1/*.bbl
-deliverable_1/*.blg
-deliverable_1/%OUTDIR%/
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bbl
+*.blg
+*.lof
+*.lot
+*.idx
+*.ind
+*.ilg
+*.glg
+*.glo
+*.gls
+%OUTDIR%/
 CLAUDE.md
 *.puml
