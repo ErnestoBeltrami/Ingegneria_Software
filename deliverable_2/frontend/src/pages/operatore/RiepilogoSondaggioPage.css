@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: #080808;
+  background: var(--bg);
 }
 
 .rs-page {
@@ -20,7 +20,7 @@
 /* Status */
 .rs-status {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   padding: 8px 0;
   margin: 0;
 }
@@ -39,7 +39,7 @@
   font-family: 'Montserrat', sans-serif;
   font-size: 13px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--text-faint);
   cursor: pointer;
   padding: 0;
   margin-bottom: 8px;
@@ -55,14 +55,14 @@
   flex-direction: column;
   gap: 6px;
   padding-bottom: 28px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--border);
 }
 
 .rs-header__title {
   font-family: 'Playfair Display', serif;
   font-size: 24px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text);
   line-height: 32px;
   margin: 0;
 }
@@ -72,7 +72,7 @@
   align-items: center;
   gap: 10px;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--text-muted);
   margin: 0;
   flex-wrap: wrap;
 }
@@ -102,21 +102,21 @@
 }
 
 .rs-badge--concluso {
-  background: rgba(255, 255, 255, 0.10);
-  color: rgba(255, 255, 255, 0.65);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: var(--surface-raised);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
 }
 
 .rs-badge--archiviato {
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: var(--surface);
+  color: var(--text-faint);
+  border: 1px solid var(--surface-raised);
 }
 
 /* Stat card */
 .rs-stat {
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-top: 3px solid #00c47a;
   border-radius: 16px;
   padding: 16px 20px;
@@ -138,7 +138,7 @@
 .rs-stat__label {
   font-size: 12px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--text-secondary);
   margin: 0;
 }
 
@@ -150,8 +150,8 @@
 }
 
 .rs-domanda {
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 20px;
   display: flex;
@@ -168,7 +168,7 @@
 .rs-domanda__num {
   font-size: 11px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-faint);
   text-transform: uppercase;
   letter-spacing: 0.8px;
   white-space: nowrap;
@@ -177,7 +177,7 @@
 .rs-domanda__titolo {
   font-size: 15px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text);
   line-height: 22px;
   margin: 0;
 }
@@ -205,7 +205,7 @@
 .rs-opzione__testo {
   font-size: 13px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.82);
+  color: var(--text-secondary);
   flex: 1;
   min-width: 0;
 }
@@ -220,7 +220,7 @@
 .rs-opzione__pct {
   font-size: 14px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text);
   min-width: 38px;
   text-align: right;
 }
@@ -228,14 +228,14 @@
 .rs-opzione__voti {
   font-size: 11px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-faint);
   white-space: nowrap;
 }
 
 /* Barra CSS */
 .rs-bar-track {
   height: 8px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--surface);
   border-radius: 9999px;
   overflow: hidden;
 }

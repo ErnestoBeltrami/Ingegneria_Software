@@ -104,7 +104,7 @@ export default function ProfiloOperatorePage() {
       <div className="po-shell">
 
         <button type="button" className="po-back" onClick={() => navigate(-1)}>
-          <ArrowLeft size={14} /> Profilo operatore
+          <ArrowLeft size={14} /> Indietro
         </button>
 
         <header className="po-header">

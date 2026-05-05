@@ -5,7 +5,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: #080808;
+  background: var(--bg);
 }
 
 .crea-page {
@@ -28,14 +28,14 @@
   align-items: center;
   gap: 14px;
   padding-bottom: 28px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--border);
 }
 
 .crea-header__back {
   width: 36px;
   height: 36px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -43,19 +43,19 @@
   cursor: pointer;
   flex-shrink: 0;
   transition: background 0.15s ease, border-color 0.15s ease;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
 }
 
 .crea-header__back:hover {
-  background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(255, 255, 255, 0.24);
+  background: var(--surface-hover);
+  border-color: var(--border-strong);
 }
 
 .crea-header__title {
   font-family: 'Playfair Display', serif;
   font-size: 24px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text);
   line-height: 32px;
   margin: 0;
 }
@@ -63,7 +63,7 @@
 .crea-header__subtitle {
   font-size: 14px;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--text-secondary);
   line-height: 20px;
   margin: 2px 0 0;
 }
@@ -82,8 +82,8 @@
    Card generica
    ===================== */
 .crea-card {
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 20px;
   display: flex;
@@ -94,7 +94,7 @@
 .crea-card__section-label {
   font-size: 12px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   letter-spacing: 0.8px;
   text-transform: uppercase;
   margin: 0;
@@ -121,19 +121,19 @@
 .crea-field__label {
   font-size: 14px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.82);
+  color: var(--text-secondary);
   line-height: 20px;
 }
 
 .crea-field__input {
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 10px 14px;
   font-family: 'Montserrat', sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #ffffff;
+  color: var(--text);
   outline: none;
   transition: border-color 0.15s ease, background 0.15s ease;
   width: 100%;
@@ -141,12 +141,12 @@
 }
 
 .crea-field__input::placeholder {
-  color: rgba(255, 255, 255, 0.32);
+  color: var(--text-faint);
 }
 
 .crea-field__input:focus {
-  border-color: rgba(255, 255, 255, 0.35);
-  background: rgba(255, 255, 255, 0.10);
+  border-color: var(--border-strong);
+  background: var(--surface-raised);
 }
 
 .crea-field__input--textarea {
@@ -177,14 +177,14 @@
 .crea-toggle__label {
   font-size: 14px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text);
   margin: 0 0 2px;
 }
 
 .crea-toggle__desc {
   font-size: 12px;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--text-muted);
   margin: 0;
 }
 
@@ -192,7 +192,7 @@
   width: 44px;
   height: 24px;
   border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.18);
+  background: var(--overlay-hover);
   border: none;
   cursor: pointer;
   position: relative;
@@ -310,20 +310,20 @@
 .crea-domanda__num {
   font-size: 14px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--text-secondary);
 }
 
 .crea-domanda__remove {
   width: 28px;
   height: 28px;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--text-faint);
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
@@ -352,7 +352,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.25);
+  border: 2px solid var(--text-faint);
   flex-shrink: 0;
 }
 
@@ -362,36 +362,36 @@
 
 .crea-opzione__input {
   flex: 1;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 8px 12px;
   font-family: 'Montserrat', sans-serif;
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--text-secondary);
   outline: none;
   transition: border-color 0.15s ease;
 }
 
 .crea-opzione__input::placeholder {
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--text-faint);
 }
 
 .crea-opzione__input:focus {
-  border-color: rgba(255, 255, 255, 0.28);
+  border-color: var(--border-strong);
 }
 
 .crea-opzione__delete {
   width: 24px;
   height: 24px;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--text-faint);
   flex-shrink: 0;
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
@@ -431,13 +431,13 @@
   gap: 8px;
   width: 100%;
   height: 52px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 2px dashed rgba(255, 255, 255, 0.18);
+  background: var(--surface);
+  border: 2px dashed var(--border-strong);
   border-radius: 16px;
   font-family: 'Montserrat', sans-serif;
   font-size: 14px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   cursor: pointer;
   transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
 }

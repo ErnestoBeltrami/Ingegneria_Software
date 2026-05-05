@@ -5,7 +5,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: #080808;
+  background: var(--bg);
 }
 
 .gs-page {
@@ -29,14 +29,14 @@
   justify-content: space-between;
   gap: 16px;
   padding-bottom: 28px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--border);
 }
 
 .gs-header__title {
   font-family: 'Playfair Display', serif;
   font-size: 24px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text);
   line-height: 32px;
   margin: 0;
 }
@@ -44,7 +44,7 @@
 .gs-header__subtitle {
   font-size: 14px;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--text-secondary);
   line-height: 20px;
   margin: 2px 0 0;
 }
@@ -102,8 +102,8 @@
 }
 
 .gs-counter--conclusa {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.14);
+  background: var(--surface);
+  border-color: var(--border);
 }
 
 .gs-counter__num {
@@ -114,12 +114,12 @@
 
 .gs-counter--bozza   .gs-counter__num { color: #f5c842; }
 .gs-counter--attiva  .gs-counter__num { color: #00d48a; }
-.gs-counter--conclusa .gs-counter__num { color: rgba(255, 255, 255, 0.75); }
+.gs-counter--conclusa .gs-counter__num { color: var(--text-secondary); }
 
 .gs-counter__label {
   font-size: 12px;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-muted);
   line-height: 16px;
 }
 
@@ -128,7 +128,7 @@
    ===================== */
 .gs-status {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.58);
+  color: var(--text-muted);
   padding: 4px 0;
 }
 
@@ -151,8 +151,8 @@
    Sondaggio card
    ===================== */
 .gs-card {
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 20px;
   display: flex;
@@ -162,8 +162,8 @@
 }
 
 .gs-card:hover {
-  background: rgba(255, 255, 255, 0.10);
-  border-color: rgba(255, 255, 255, 0.24);
+  background: var(--surface-raised);
+  border-color: var(--border-strong);
 }
 
 .gs-card__top {
@@ -197,21 +197,21 @@
 }
 
 .gs-badge--concluso {
-  background: rgba(255, 255, 255, 0.10);
-  color: rgba(255, 255, 255, 0.65);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: var(--surface-raised);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
 }
 
 .gs-badge--archiviato {
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: var(--surface);
+  color: var(--text-faint);
+  border: 1px solid var(--surface-raised);
 }
 
 .gs-card__titolo {
   font-size: 16px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text);
   line-height: 22px;
   margin: 0;
   flex: 1;
@@ -220,7 +220,7 @@
 .gs-card__termine {
   font-size: 12px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--text-muted);
   line-height: 16px;
   margin: 0;
 }
@@ -286,9 +286,9 @@
 }
 
 .gs-action--riepilogo-gray {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.16);
-  color: rgba(255, 255, 255, 0.65);
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text-secondary);
 }
 
 .gs-action--riepilogo-blue {

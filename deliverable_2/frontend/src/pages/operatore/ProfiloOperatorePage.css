@@ -1,7 +1,7 @@
 .po-page {
   min-height: 100vh;
-  background: #080808;
-  color: #fff;
+  background: var(--bg);
+  color: var(--text);
   font-family: 'Montserrat', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   display: flex;
@@ -31,7 +31,7 @@
   font-family: inherit;
   font-size: 13px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--text-faint);
   padding: 0;
   transition: color 0.15s ease;
 }
@@ -40,7 +40,7 @@
 /* header */
 .po-header {
   padding-bottom: 28px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--border);
 }
 .po-header h1 {
   font-family: 'Playfair Display', Georgia, serif;
@@ -52,7 +52,7 @@
 }
 .po-header p {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--text-secondary);
   line-height: 20px;
   margin: 4px 0 0;
 }
@@ -67,8 +67,8 @@
 
 /* card */
 .po-card {
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 20px;
   display: flex;
@@ -88,13 +88,13 @@
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--surface-raised);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 22px;
   font-weight: 700;
-  color: #fff;
+  color: var(--text);
 }
 .po-id-text {
   display: flex;
@@ -111,21 +111,21 @@
 }
 .po-username {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   line-height: 1.2;
   margin: 0;
 }
 .po-divider {
   width: 100%;
   height: 1px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--border);
 }
 .po-status {
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--text-secondary);
 }
 .po-status__dot {
   width: 8px;
@@ -154,9 +154,9 @@
   align-items: center;
 }
 .po-badge--operatore {
-  background: rgba(255, 255, 255, 0.10);
-  color: rgba(255, 255, 255, 0.65);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: var(--surface-raised);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
 }
 .po-badge--root {
   background: rgba(31, 58, 137, 0.25);
@@ -177,7 +177,7 @@
   font-weight: 600;
   letter-spacing: 0.7px;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--text-faint);
 }
 
 /* info rows */
@@ -187,18 +187,18 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid var(--surface);
 }
 .po-row:last-child { border-bottom: none; }
-.po-row__k { font-size: 13px; color: rgba(255, 255, 255, 0.65); }
-.po-row__v { font-size: 14px; color: rgba(255, 255, 255, 0.82); font-weight: 500; }
+.po-row__k { font-size: 13px; color: var(--text-secondary); }
+.po-row__v { font-size: 14px; color: var(--text-secondary); font-weight: 500; }
 
 /* form fields */
 .po-field { display: flex; flex-direction: column; gap: 6px; }
 .po-field__label {
   font-size: 14px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.82);
+  color: var(--text-secondary);
   line-height: 20px;
 }
 .po-field__required { color: #ff6b6b; }
@@ -206,20 +206,20 @@
 .po-field__inputwrap { position: relative; }
 .po-field__input {
   width: 100%;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 10px 42px 10px 14px;
   font-family: inherit;
   font-size: 14px;
-  color: #fff;
+  color: var(--text);
   outline: none;
   transition: border-color 0.15s ease, background 0.15s ease;
 }
-.po-field__input::placeholder { color: rgba(255, 255, 255, 0.32); }
+.po-field__input::placeholder { color: var(--text-faint); }
 .po-field__input:focus {
-  border-color: rgba(255, 255, 255, 0.35);
-  background: rgba(255, 255, 255, 0.10);
+  border-color: var(--border-strong);
+  background: var(--surface-raised);
 }
 .po-field__toggle {
   position: absolute;
@@ -229,14 +229,14 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 4px;
   transition: color 0.15s ease;
 }
-.po-field__toggle:hover { color: #fff; }
+.po-field__toggle:hover { color: var(--text); }
 
 /* messages */
 .po-msg { font-size: 13px; font-weight: 500; margin: 0; }
@@ -266,15 +266,15 @@
 }
 .po-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .po-btn--secondary {
-  background: rgba(231, 0, 11, 0.12);
-  border: 1px solid rgba(231, 0, 11, 0.25);
+  background: transparent;
+  border: 1px solid rgba(231, 0, 11, 0.35);
   color: #ff6b6b;
   flex: 1;
 }
 .po-btn--primary {
   background: #1f3a89;
   border: 1px solid rgba(100, 130, 255, 0.25);
-  color: #fff;
+  color: white;
   box-shadow: 0 4px 16px rgba(31, 58, 137, 0.45);
   flex: 2;
 }
