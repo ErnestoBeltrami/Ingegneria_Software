@@ -40,18 +40,18 @@
 .cp-topbar__theme {
   width: 32px;
   height: 32px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 50%;
+  background: none;
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   color: white;
-  transition: background 0.15s ease;
+  opacity: 0.85;
+  transition: opacity 0.15s ease;
   flex-shrink: 0;
 }
-.cp-topbar__theme:hover { background: rgba(255, 255, 255, 0.25); }
+.cp-topbar__theme:hover { opacity: 1; }
 
 .cp-topbar__user {
   display: flex;
