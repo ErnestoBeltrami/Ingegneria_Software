@@ -70,9 +70,7 @@ export default function Dashboard() {
         }
     };
 
-    // Filter: when a specific type tab is selected we can also do a
-    // targeted API call (for efficiency), but since both endpoints are
-    // already loaded on mount we just filter client-side.
+
     const handleFilterChange = (key) => {
         setActiveFilter(key);
     };
@@ -93,15 +91,23 @@ export default function Dashboard() {
         .filter(FILTER_MAP[activeFilter] || (() => true))
         .filter(isNotExpired);
 
-    // ─── Render ──────────────────────────────────────────────────────────────
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        window.location.href = '/login';
+    };
+
     return (
         <div className="dashboard-page">
-            <h1 className="dashboard-title">Tutte le attività</h1>
+            <div className="dashboard-header">
+                <h1 className="dashboard-title">Tutte le attività</h1>
+                <button className="logout-btn" onClick={handleLogout}>
+                    Esci
+                </button>
+            </div>
 
-            {/* Quick action cards — Figma nodes 420-286, 420-298, 420-314 */}
             <QuickActionCards />
 
-            {/* Filter pills */}
             <div className="filters">
                 {Object.keys(FILTER_MAP).map(key => (
                     <button
@@ -114,7 +120,6 @@ export default function Dashboard() {
                 ))}
             </div>
 
-            {/* Loading state */}
             {loading && (
                 <div className="dashboard-status">
                     <div className="spinner" />
@@ -122,7 +127,6 @@ export default function Dashboard() {
                 </div>
             )}
 
-            {/* Error state */}
             {error && !loading && (
                 <div className="dashboard-status dashboard-error">
                     <p>⚠️ {error}</p>
@@ -132,14 +136,12 @@ export default function Dashboard() {
                 </div>
             )}
 
-            {/* Empty state */}
             {!loading && !error && visible.length === 0 && (
                 <div className="dashboard-status">
                     <p>Nessuna attività disponibile al momento.</p>
                 </div>
             )}
 
-            {/* Activity cards grid */}
             {!loading && !error && visible.length > 0 && (
                 <div className="activities">
                     {visible.map(a => (

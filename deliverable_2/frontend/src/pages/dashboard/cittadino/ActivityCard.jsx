@@ -1,7 +1,6 @@
 import { Clock as ClockIcon, Check as CheckIcon, AlertCircle as ExpiredIcon } from 'lucide-react';
 import './ActivityCard.css';
 
-// Badge styles based on activity type (votazione vs sondaggio)
 const TYPE_BADGE_STYLES = {
     Votazione: { bg: '#EEF0FA', color: '#3949AB' },
     Sondaggio: { bg: '#FEF3E2', color: '#C56A00' },
@@ -13,7 +12,6 @@ const BUTTON_LABELS = {
     Proposta: 'Sostieni',
 }
 
-// Human-friendly status labels
 const STATO_LABELS = {
     attivo: 'Attivo',
     concluso: 'Concluso',
@@ -44,7 +42,6 @@ export function ActivityCard({ activity, onAction }) {
                 <p className="card-description">{description}</p>
             )}
 
-            {/* Card footer */}
             <div className="card-footer">
                 <span className="deadline">
                     <CheckIcon />

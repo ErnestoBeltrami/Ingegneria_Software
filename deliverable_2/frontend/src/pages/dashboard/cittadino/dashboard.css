@@ -8,11 +8,33 @@
     font-size: 24px;
     font-weight: 700;
     color: #101828;
-    margin-top: 0;
+    margin: 0;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 24px;
 }
 
-/* ── Filter pills ─────────────────────────────────────────── */
+.logout-btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid #E5E7EB;
+    background: #FFFFFF;
+    color: #DC2626;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+    background: #FEF2F2;
+    border-color: #F87171;
+}
+
 .filters {
     display: flex;
     flex-wrap: wrap;
@@ -43,7 +65,6 @@
     color: #FFFFFF;
 }
 
-/* ── Activity grid ────────────────────────────────────────── */
 .activities {
     display: grid;
     grid-template-columns: 1fr;
@@ -56,7 +77,6 @@
     }
 }
 
-/* ── Loading / Error / Empty states ───────────────────────── */
 .dashboard-status {
     display: flex;
     flex-direction: column;
@@ -94,7 +114,6 @@
     border-color: #9CA3AF;
 }
 
-/* ── Spinner ──────────────────────────────────────────────── */
 .spinner {
     width: 32px;
     height: 32px;
@@ -105,5 +124,7 @@
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
