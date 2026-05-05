@@ -50,7 +50,7 @@ export default function ProfiloCittadinePage() {
   const [loggingOut, setLoggingOut] = useState(false);
 
   const [editing, setEditing] = useState(false);
-  const [editData, setEditData] = useState({ dataNascita: '', comuneResidenza: '', circoscrizione: '' });
+  const [editData, setEditData] = useState({ nome: '', cognome: '', dataNascita: '', comuneResidenza: '', circoscrizione: '' });
   const [saving, setSaving] = useState(false);
   const [editError, setEditError] = useState('');
 
@@ -89,6 +89,8 @@ export default function ProfiloCittadinePage() {
 
   const startEdit = () => {
     setEditData({
+      nome: profilo.nome || '',
+      cognome: profilo.cognome || '',
       dataNascita: toInputDate(profilo.dataNascita),
       comuneResidenza: profilo.comuneResidenza || '',
       circoscrizione: profilo.circoscrizione || '',
@@ -104,6 +106,8 @@ export default function ProfiloCittadinePage() {
 
   const handleSave = async () => {
     setEditError('');
+    if (!editData.nome.trim()) return setEditError('Il nome è obbligatorio');
+    if (!editData.cognome.trim()) return setEditError('Il cognome è obbligatorio');
     if (!editData.dataNascita) return setEditError('La data di nascita è obbligatoria');
     if (!editData.comuneResidenza.trim()) return setEditError('Il comune di residenza è obbligatorio');
     if (editData.comuneResidenza === 'Trento' && !editData.circoscrizione) {
@@ -112,23 +116,42 @@ export default function ProfiloCittadinePage() {
 
     setSaving(true);
     try {
-      const res = await fetch('/auth/complete-profile', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          cittadinoId: profilo.id,
-          dataNascita: editData.dataNascita,
-          comuneResidenza: editData.comuneResidenza.trim(),
-          circoscrizione: editData.circoscrizione || null,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || `Errore ${res.status}`);
+      const token = localStorage.getItem('token');
 
-      if (data.token) localStorage.setItem('token', data.token);
+      const [resNome, resCompleta] = await Promise.all([
+        fetch('/cittadino/me', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ nome: editData.nome.trim(), cognome: editData.cognome.trim() }),
+        }),
+        fetch('/auth/complete-profile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            cittadinoId: profilo.id,
+            dataNascita: editData.dataNascita,
+            comuneResidenza: editData.comuneResidenza.trim(),
+            circoscrizione: editData.circoscrizione || null,
+          }),
+        }),
+      ]);
+
+      if (!resNome.ok) {
+        const d = await resNome.json();
+        throw new Error(d.message || `Errore ${resNome.status}`);
+      }
+      if (!resCompleta.ok) {
+        const d = await resCompleta.json();
+        throw new Error(d.message || `Errore ${resCompleta.status}`);
+      }
+
+      const dataCompleta = await resCompleta.json();
+      if (dataCompleta.token) localStorage.setItem('token', dataCompleta.token);
 
       setProfilo((p) => ({
         ...p,
+        nome: editData.nome.trim(),
+        cognome: editData.cognome.trim(),
         dataNascita: new Date(editData.dataNascita).toISOString(),
         comuneResidenza: editData.comuneResidenza.trim(),
         circoscrizione: editData.circoscrizione || null,
@@ -231,14 +254,39 @@ export default function ProfiloCittadinePage() {
                 ) : (
                   <div className="cp-edit-form">
                     <div className="cp-rows">
-                      <InfoRow label="Nome" value={nome} />
-                      <InfoRow label="Cognome" value={cognome} />
                       <InfoRow label="Email" value={email} />
                       <InfoRow label="Genere" value={profilo.genere} />
                       <InfoRow label="Categoria" value={profilo.categoria} />
                     </div>
 
                     <div className="cp-edit-fields">
+                      <div className="cp-field">
+                        <label className="cp-field__label" htmlFor="editNome">
+                          Nome <span className="cp-field__req">*</span>
+                        </label>
+                        <input
+                          id="editNome"
+                          type="text"
+                          className="cp-field__input"
+                          value={editData.nome}
+                          onChange={(e) => setEditData((d) => ({ ...d, nome: e.target.value }))}
+                          autoComplete="given-name"
+                        />
+                      </div>
+
+                      <div className="cp-field">
+                        <label className="cp-field__label" htmlFor="editCognome">
+                          Cognome <span className="cp-field__req">*</span>
+                        </label>
+                        <input
+                          id="editCognome"
+                          type="text"
+                          className="cp-field__input"
+                          value={editData.cognome}
+                          onChange={(e) => setEditData((d) => ({ ...d, cognome: e.target.value }))}
+                          autoComplete="family-name"
+                        />
+                      </div>
                       <div className="cp-field">
                         <label className="cp-field__label" htmlFor="dataNascita">
                           Data di nascita <span className="cp-field__req">*</span>
