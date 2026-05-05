@@ -197,7 +197,7 @@
 }
 
 .action-btn__title--dark {
-  color: var(--text);
+  color: inherit;
 }
 
 .action-btn__subtitle {
@@ -209,8 +209,8 @@
 }
 
 .action-btn__subtitle--dark {
-  color: var(--text-secondary);
-  opacity: 1;
+  color: inherit;
+  opacity: 0.72;
 }
 
 /* =====================
