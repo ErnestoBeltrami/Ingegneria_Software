@@ -2,6 +2,7 @@ import "./config/env.js";
 import connectDB from "./config/database.js";
 import app from "./app.js";
 import { createRootOperatore } from "./utils/seedRoot.js";
+import { seedCategorie } from "./utils/seedCategorie.js";
 import { avviaScheduler } from "./utils/scheduleConsultazioni.js";
 
 const startServer = async () => {
@@ -14,6 +15,7 @@ const startServer = async () => {
         });
 
         await createRootOperatore();
+        await seedCategorie();
         avviaScheduler();
 
         const port = process.env.PORT || 8000;

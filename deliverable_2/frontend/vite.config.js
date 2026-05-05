@@ -29,6 +29,17 @@ export default defineConfig({
       },
       '/votazioni': { target: 'http://localhost:8000', changeOrigin: true },
       '/sondaggio': { target: 'http://localhost:8000', changeOrigin: true },
+      '/categorie': { target: 'http://localhost:8000', changeOrigin: true },
+      '/iniziative': { target: 'http://localhost:8000', changeOrigin: true },
+      '/cittadino': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        bypass(req) {
+          if (req.url.startsWith('/cittadino/dashboard') || req.url.startsWith('/cittadino/iniziativa')) {
+            return req.url;
+          }
+        },
+      },
     },
   },
 });
