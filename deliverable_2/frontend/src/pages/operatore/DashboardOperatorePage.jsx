@@ -155,7 +155,7 @@ export default function DashboardOperatorePage() {
           </div>
           <ChevronRight size={16} />
         </button>
-        <button className="action-btn action-btn--secondary" onClick={() => navigate('/sondaggi/crea')}>
+        <button className="action-btn action-btn--green" onClick={() => navigate('/sondaggi/crea')}>
           <div className="action-btn__icon action-btn__icon--green">
             <Plus size={18} />
           </div>
