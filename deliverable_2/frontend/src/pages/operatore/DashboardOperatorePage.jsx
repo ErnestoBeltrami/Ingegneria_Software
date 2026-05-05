@@ -48,11 +48,16 @@ function formatDate(isoString) {
   return `${dd}/${mm}/${yy}`;
 }
 
-async function fetchWithAuth(url) {
+async function fetchWithAuth(url, navigate) {
   const token = localStorage.getItem('token');
   const res = await fetch(url, {
     headers: { Authorization: `Bearer ${token}` },
   });
+  if (res.status === 401 || res.status === 403) {
+    localStorage.clear();
+    navigate('/login', { replace: true });
+    throw new Error('Sessione scaduta');
+  }
   if (!res.ok) throw new Error(`Errore ${res.status}`);
   return res.json();
 }
@@ -80,21 +85,21 @@ export default function DashboardOperatorePage() {
         }
 
         if (filtro === 'Votazioni attive') {
-          const data = await fetchWithAuth('/votazioni?stato=attivo');
+          const data = await fetchWithAuth('/votazioni?stato=attivo', navigate);
           setActivities(data.votazioni ?? []);
           return;
         }
 
         if (filtro === 'Sondaggi attivi') {
-          const data = await fetchWithAuth('/sondaggio?stato=attivo');
+          const data = await fetchWithAuth('/sondaggio?stato=attivo', navigate);
           setActivities(data.sondaggi ?? data.votazioni ?? []);
           return;
         }
 
         // Tutte le attività
         const [vData, sData] = await Promise.all([
-          fetchWithAuth('/votazioni?stato=attivo'),
-          fetchWithAuth('/sondaggio?stato=attivo'),
+          fetchWithAuth('/votazioni?stato=attivo', navigate),
+          fetchWithAuth('/sondaggio?stato=attivo', navigate),
         ]);
         const merged = [
           ...(vData.votazioni ?? []),
