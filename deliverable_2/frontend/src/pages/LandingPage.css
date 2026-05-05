@@ -309,7 +309,7 @@
 .lp-preview-stat__label {
   height: 6px;
   width: 50%;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--surface);
   border-radius: 3px;
 }
 
