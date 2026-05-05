@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, LogOut } from 'lucide-react';
+import { ArrowLeft, LogOut, AlertTriangle } from 'lucide-react';
 import './ProfiloCittadinePage.css';
 
 function formatData(iso) {
@@ -9,11 +9,11 @@ function formatData(iso) {
   return d.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
-function InfoRow({ label, value }) {
+function InfoRow({ label, value, missing }) {
   return (
-    <div className="cp-row">
+    <div className={`cp-row${missing ? ' cp-row--missing' : ''}`}>
       <span className="cp-row__k">{label}</span>
-      <span className="cp-row__v">{value || '—'}</span>
+      <span className={`cp-row__v${missing ? ' cp-row__v--missing' : ''}`}>{value || '—'}</span>
     </div>
   );
 }
@@ -63,6 +63,17 @@ export default function ProfiloCittadinePage() {
   const email = profilo?.email || '';
   const initials = `${nome.charAt(0)}${cognome.charAt(0)}`.toUpperCase() || '?';
   const fullName = [nome, cognome].filter(Boolean).join(' ') || 'Cittadino';
+  const profiloIncompleto = profilo && (!profilo.dataNascita || !profilo.comuneResidenza);
+
+  const handleCompletaProfilo = () => {
+    const params = new URLSearchParams({
+      cittadinoId: profilo.id,
+      nome,
+      email,
+      picture: '',
+    });
+    navigate(`/completa-profilo?${params.toString()}`);
+  };
 
   return (
     <div className="cp-page">
@@ -85,6 +96,21 @@ export default function ProfiloCittadinePage() {
         </header>
 
         {loading && <p className="cp-status">Caricamento…</p>}
+
+        {!loading && profilo && profiloIncompleto && (
+          <div className="cp-warning">
+            <AlertTriangle size={18} className="cp-warning__icon" />
+            <div className="cp-warning__body">
+              <p className="cp-warning__title">Profilo incompleto</p>
+              <p className="cp-warning__desc">
+                Alcuni dati obbligatori non sono stati ancora inseriti. Completa il profilo per accedere a tutte le funzionalità.
+              </p>
+            </div>
+            <button type="button" className="cp-warning__btn" onClick={handleCompletaProfilo}>
+              Completa ora
+            </button>
+          </div>
+        )}
 
         {!loading && profilo && (
           <div className="cp-layout">
@@ -113,9 +139,9 @@ export default function ProfiloCittadinePage() {
                   <InfoRow label="Nome" value={nome} />
                   <InfoRow label="Cognome" value={cognome} />
                   <InfoRow label="Email" value={email} />
-                  <InfoRow label="Data di nascita" value={formatData(profilo.dataNascita)} />
-                  <InfoRow label="Comune di residenza" value={profilo.comuneResidenza} />
-                  <InfoRow label="Circoscrizione" value={profilo.circoscrizione} />
+                  <InfoRow label="Data di nascita" value={formatData(profilo.dataNascita)} missing={!profilo.dataNascita} />
+                  <InfoRow label="Comune di residenza" value={profilo.comuneResidenza} missing={!profilo.comuneResidenza} />
+                  <InfoRow label="Circoscrizione" value={profilo.circoscrizione} missing={profilo.comuneResidenza === 'Trento' && !profilo.circoscrizione} />
                   <InfoRow label="Genere" value={profilo.genere} />
                   <InfoRow label="Categoria" value={profilo.categoria} />
                 </div>
