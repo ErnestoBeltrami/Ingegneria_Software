@@ -5,7 +5,7 @@
   background: var(--topbar-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--topbar-border, var(--border));
   box-shadow: 0 1px 0 var(--shadow-line);
   padding: 0 24px;
   height: 60px;
@@ -19,7 +19,7 @@
   font-family: 'Playfair Display', serif;
   font-size: 20px;
   font-weight: 700;
-  color: var(--text);
+  color: var(--topbar-fg, var(--text));
   letter-spacing: 0;
   cursor: pointer;
   text-decoration: none;
@@ -43,7 +43,7 @@
   padding: 4px;
   opacity: 0.85;
   transition: opacity 0.15s ease;
-  color: var(--text);
+  color: var(--topbar-fg, var(--text));
 }
 
 .topbar__bell:hover {
@@ -54,8 +54,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--overlay);
-  border: 1px solid var(--overlay-hover);
+  background: var(--topbar-pill-bg, var(--overlay));
+  border: 1px solid var(--topbar-pill-border, var(--overlay-hover));
   border-radius: 14px;
   padding: 0 13px;
   height: 42px;
@@ -65,7 +65,7 @@
 }
 
 .topbar__user:hover {
-  background: var(--overlay-hover);
+  background: var(--topbar-pill-hover, var(--overlay-hover));
 }
 
 .topbar__avatar {
@@ -79,7 +79,7 @@
   font-family: 'Montserrat', sans-serif;
   font-size: 12px;
   font-weight: 700;
-  color: var(--text);
+  color: var(--topbar-fg, var(--text));
   flex-shrink: 0;
 }
 
@@ -87,6 +87,6 @@
   font-family: 'Montserrat', sans-serif;
   font-size: 14px;
   font-weight: 600;
-  color: var(--text);
+  color: var(--topbar-fg, var(--text));
   white-space: nowrap;
 }
