@@ -46,6 +46,7 @@ function CompletaProfiloRoute() {
 }
 
 export default function App() {
+
   return (
     <ThemeProvider>
       <BrowserRouter>
