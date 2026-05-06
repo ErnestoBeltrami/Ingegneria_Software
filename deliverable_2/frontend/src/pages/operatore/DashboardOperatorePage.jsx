@@ -72,7 +72,11 @@ export default function DashboardOperatorePage() {
       setError('');
       try {
         if (filtro === 'Proposte in arrivo') {
-          setActivities([]);
+          const data = await fetchWithAuth('/iniziative', navigate);
+          const inAttesa = (data.iniziative ?? [])
+            .filter(i => i.stato === 'in_attesa')
+            .map(i => ({ ...i, _tipo: 'iniziativa' }));
+          setActivities(inAttesa);
           return;
         }
 
@@ -169,7 +173,7 @@ export default function DashboardOperatorePage() {
         <Search size={16} color="rgba(255,255,255,0.35)" />
         <input
           type="text"
-          placeholder="Cerca una votazione o sondaggio…"
+          placeholder={filtro === 'Proposte in arrivo' ? 'Cerca una proposta…' : 'Cerca una votazione o sondaggio…'}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="dashboard-search__input"
@@ -204,14 +208,28 @@ export default function DashboardOperatorePage() {
 
         {!loading && !error && attivitàFiltrate.length > 0 && (
           <div className="activity-grid">
-            {attivitàFiltrate.map((a) => (
-              <ConsultazioneCard
-                key={a._id}
-                activity={a}
-                mode="operatore"
-                onAction={(id, tipo) => navigate(`/${tipo === 'votazione' ? 'votazioni' : 'sondaggi'}/${id}/riepilogo`)}
-              />
-            ))}
+            {attivitàFiltrate.map((a) =>
+              a._tipo === 'iniziativa' ? (
+                <div key={a._id} className="activity-card">
+                  <div className="activity-card__header">
+                    <span className="badge badge--categoria">{a.categoria}</span>
+                    <span className="badge badge--attesa">In attesa</span>
+                  </div>
+                  <p className="activity-card__titolo">{a.titolo}</p>
+                  <div className="activity-card__footer">
+                    <span className="activity-card__termine">Da: {a.nome_cittadino} {a.cognome_cittadino}</span>
+                    <button className="btn-gestisci" onClick={() => navigate('/moderazione')}>Esamina</button>
+                  </div>
+                </div>
+              ) : (
+                <ConsultazioneCard
+                  key={a._id}
+                  activity={a}
+                  mode="operatore"
+                  onAction={(id, tipo) => navigate(`/${tipo === 'votazione' ? 'votazioni' : 'sondaggi'}/${id}/riepilogo`)}
+                />
+              )
+            )}
           </div>
         )}
       </section>
