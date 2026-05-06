@@ -169,7 +169,7 @@ export default function DashboardOperatorePage() {
         <Search size={16} color="rgba(255,255,255,0.35)" />
         <input
           type="text"
-          placeholder="Ricerca una proposta o iniziativa…"
+          placeholder="Cerca una votazione o sondaggio…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="dashboard-search__input"

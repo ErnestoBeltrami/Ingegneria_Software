@@ -136,6 +136,40 @@
 }
 
 /* =====================
+   Barra di ricerca
+   ===================== */
+.cd-search {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 14px;
+    padding: 0 17px;
+    height: 46px;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.cd-search:focus-within {
+    background: var(--surface-raised);
+}
+
+.cd-search__input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text);
+    background: transparent;
+}
+
+.cd-search__input::placeholder {
+    color: var(--text-faint);
+}
+
+/* =====================
    Filtri
    ===================== */
 .cd-filters {
