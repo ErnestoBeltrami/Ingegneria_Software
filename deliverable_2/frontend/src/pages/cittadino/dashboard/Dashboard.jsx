@@ -2,7 +2,7 @@ import { ActivityCard } from "./ActivityCard";
 import { QuickActionCards } from "./QuickActionCard";
 import { useState, useEffect } from "react";
 import { fetchAllActivities, fetchVotazioni, fetchSondaggi } from "../../../services/api";
-import './dashboard.css';
+import './Dashboard.css';
 
 /*
     const initialData = [
@@ -98,7 +98,7 @@ export default function Dashboard() {
     };
 
     return (
-        <div className="dashboard-page">
+        <div className="cd-dashboard-page">
             <div className="dashboard-header">
                 <h1 className="dashboard-title">Tutte le attività</h1>
                 <button className="logout-btn" onClick={handleLogout}>
