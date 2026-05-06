@@ -25,30 +25,30 @@ export function ActivityCard({ activity, onAction }) {
     const isDisabled = voted || isConcluded;
 
     return (
-        <div className={`activity-card ${isDisabled ? 'voted' : ''}`}>
-            <div className="card-meta">
-                <span className="badge" style={{ background: badgeStyle.bg, color: badgeStyle.color }}>
+        <div className={`cd-activity-card ${isDisabled ? 'voted' : ''}`}>
+            <div className="cd-card-meta">
+                <span className="cd-badge" style={{ background: badgeStyle.bg, color: badgeStyle.color }}>
                     {type}
                 </span>
-                <span className={`card-stato ${isConcluded ? 'stato-concluded' : 'stato-active'}`}>
+                <span className={`cd-card-stato ${isConcluded ? 'cd-stato-concluded' : 'cd-stato-active'}`}>
                     {isConcluded ? <ExpiredIcon /> : <ClockIcon />}
                     {STATO_LABELS[stato] || stato}
                 </span>
             </div>
 
-            <p className="card-title">{title}</p>
+            <p className="cd-card-title">{title}</p>
 
             {description && (
-                <p className="card-description">{description}</p>
+                <p className="cd-card-description">{description}</p>
             )}
 
-            <div className="card-footer">
-                <span className="deadline">
+            <div className="cd-card-footer">
+                <span className="cd-deadline">
                     <CheckIcon />
                     Termine: {deadline}
                 </span>
                 <button
-                    className={`btn-action ${isDisabled ? 'btn-voted' : ''}`}
+                    className={`cd-btn-action ${isDisabled ? 'btn-voted' : ''}`}
                     disabled={isDisabled}
                     onClick={() => onAction(id)}
                 >

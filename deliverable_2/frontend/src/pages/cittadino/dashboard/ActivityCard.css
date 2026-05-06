@@ -5,7 +5,7 @@
     --primary-green: #007D54;
 }
 
-.activity-card {
+.cd-activity-card {
     background: #FFFFFF;
     border-radius: var(--radius-lg);
     padding: 24px;
@@ -17,40 +17,26 @@
     flex-direction: column;
 }
 
-.activity-card:hover {
+.cd-activity-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
 }
 
-.card-meta {
+.cd-card-meta {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 12px;
 }
 
-.badge {
+.cd-badge {
     padding: 4px 12px;
     border-radius: 999px;
     font-weight: 600;
     font-size: 12px;
 }
 
-.card-type {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: #6B7280;
-    font-size: 13px;
-    font-weight: 500;
-}
-
-.card-type svg {
-    width: 14px;
-    height: 14px;
-}
-
-.card-stato {
+.cd-card-stato {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -58,20 +44,20 @@
     font-weight: 500;
 }
 
-.card-stato svg {
+.cd-card-stato svg {
     width: 14px;
     height: 14px;
 }
 
-.stato-active {
+.cd-stato-active {
     color: #059669;
 }
 
-.stato-concluded {
+.cd-stato-concluded {
     color: #9CA3AF;
 }
 
-.card-title {
+.cd-card-title {
     font-size: 18px;
     font-weight: 700;
     color: #111827;
@@ -79,7 +65,7 @@
     line-height: 1.4;
 }
 
-.card-description {
+.cd-card-description {
     font-size: 14px;
     color: #6B7280;
     margin: 0 0 16px 0;
@@ -92,7 +78,7 @@
     overflow: hidden;
 }
 
-.card-footer {
+.cd-card-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -100,7 +86,7 @@
     padding-top: 16px;
 }
 
-.deadline {
+.cd-deadline {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -109,13 +95,13 @@
     font-weight: 500;
 }
 
-.deadline svg {
+.cd-deadline svg {
     color: #F59E0B;
     width: 16px;
     height: 16px;
 }
 
-.btn-action {
+.cd-btn-action {
     background: var(--primary-green);
     color: white;
     border: none;
@@ -127,18 +113,17 @@
     transition: background-color 0.2s ease;
 }
 
-.btn-action:hover:not(:disabled) {
+.cd-btn-action:hover:not(:disabled) {
     background: #006846;
 }
 
-.btn-action:disabled {
+.cd-btn-action:disabled {
     background: #E5E7EB;
     color: #9CA3AF;
     cursor: not-allowed;
 }
 
-/* Stato quando hai già votato */
-.activity-card.voted {
+.cd-activity-card.voted {
     opacity: 0.6;
     background: #F9FAFC;
     border-color: #E5E7EB;

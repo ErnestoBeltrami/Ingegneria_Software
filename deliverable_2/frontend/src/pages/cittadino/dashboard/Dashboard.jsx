@@ -99,20 +99,20 @@ export default function Dashboard() {
 
     return (
         <div className="cd-dashboard-page">
-            <div className="dashboard-header">
-                <h1 className="dashboard-title">Tutte le attività</h1>
-                <button className="logout-btn" onClick={handleLogout}>
+            <div className="cd-dashboard-header">
+                <h1 className="cd-dashboard-title">Tutte le attività</h1>
+                <button className="cd-logout-btn" onClick={handleLogout}>
                     Esci
                 </button>
             </div>
 
             <QuickActionCards />
 
-            <div className="filters">
+            <div className="cd-filters">
                 {Object.keys(FILTER_MAP).map(key => (
                     <button
                         key={key}
-                        className={`filter-btn ${activeFilter === key ? "active" : ""}`}
+                        className={`cd-filter-btn ${activeFilter === key ? "active" : ""}`}
                         onClick={() => handleFilterChange(key)}
                     >
                         {FILTER_LABELS[key]}
@@ -121,29 +121,29 @@ export default function Dashboard() {
             </div>
 
             {loading && (
-                <div className="dashboard-status">
-                    <div className="spinner" />
+                <div className="cd-dashboard-status">
+                    <div className="cd-spinner" />
                     <p>Caricamento attività…</p>
                 </div>
             )}
 
             {error && !loading && (
-                <div className="dashboard-status dashboard-error">
+                <div className="cd-dashboard-status cd-dashboard-error">
                     <p>⚠️ {error}</p>
-                    <button className="retry-btn" onClick={loadActivities}>
+                    <button className="cd-retry-btn" onClick={loadActivities}>
                         Riprova
                     </button>
                 </div>
             )}
 
             {!loading && !error && visible.length === 0 && (
-                <div className="dashboard-status">
+                <div className="cd-dashboard-status">
                     <p>Nessuna attività disponibile al momento.</p>
                 </div>
             )}
 
             {!loading && !error && visible.length > 0 && (
-                <div className="activities">
+                <div className="cd-activities">
                     {visible.map(a => (
                         <ActivityCard key={a.id} activity={a} onAction={handleAction} />
                     ))}
