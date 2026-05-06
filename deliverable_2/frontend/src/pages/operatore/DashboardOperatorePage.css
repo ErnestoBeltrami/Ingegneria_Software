@@ -6,6 +6,12 @@
   flex-direction: column;
   min-height: 100vh;
   background: var(--bg);
+  --topbar-bg: #1f3a89;
+  --topbar-fg: white;
+  --topbar-border: rgba(255,255,255,0.12);
+  --topbar-pill-bg: rgba(255,255,255,0.15);
+  --topbar-pill-border: rgba(255,255,255,0.25);
+  --topbar-pill-hover: rgba(255,255,255,0.22);
 }
 
 .dashboard-page {
@@ -75,12 +81,14 @@
   gap: 12px;
   text-decoration: none;
   color: inherit;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .nav-card:hover {
   background: var(--surface-raised);
   border-color: var(--border-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15);
 }
 
 .nav-card__icon {
@@ -289,8 +297,12 @@
   font-weight: 600;
   color: var(--text-secondary);
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
   white-space: nowrap;
+}
+
+.filter-btn:not(.filter-btn--active):hover {
+  transform: translateY(-1px);
 }
 
 .filter-btn--active {
@@ -323,12 +335,14 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .activity-card:hover {
   background: var(--surface-raised);
   border-color: var(--border-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15);
 }
 
 .activity-card__header {

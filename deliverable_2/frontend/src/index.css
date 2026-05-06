@@ -1,4 +1,7 @@
-*, *::before, *::after {
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -42,6 +45,13 @@
   --overlay-hover:   rgba(0, 0, 0, 0.12);
   --avatar-bg:       rgba(0, 0, 0, 0.15);
   --shadow-line:     rgba(0, 0, 0, 0.06);
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100vh;
 }
 
 body {

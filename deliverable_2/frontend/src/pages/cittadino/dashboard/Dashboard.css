@@ -1,0 +1,199 @@
+/* =====================
+   Layout
+   ===================== */
+.cd-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: var(--bg);
+}
+
+/* =====================
+   Topbar (verde)
+   ===================== */
+.cd-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #007a52;
+    padding: 0 24px;
+    height: 60px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.cd-topbar__logo {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+}
+
+.cd-topbar__right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cd-topbar__theme {
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    opacity: 0.85;
+    transition: opacity 0.15s ease;
+    flex-shrink: 0;
+}
+.cd-topbar__theme:hover { opacity: 1; }
+
+.cd-topbar__user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 14px;
+    padding: 0 13px;
+    height: 36px;
+    cursor: pointer;
+}
+
+.cd-topbar__avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.30);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: white;
+}
+
+.cd-topbar__name {
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+}
+
+/* =====================
+   Pagina
+   ===================== */
+.cd-page {
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    font-family: 'Montserrat', sans-serif;
+    flex: 1;
+}
+
+/* =====================
+   Header
+   ===================== */
+.cd-header {
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+}
+
+.cd-header__title {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 36px;
+}
+
+/* =====================
+   Sezione attività
+   ===================== */
+.cd-activity {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.cd-activity__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* =====================
+   Filtri
+   ===================== */
+.cd-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.cd-filter-btn {
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 9999px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    white-space: nowrap;
+}
+
+.cd-filter-btn--active {
+    background: #007a52;
+    border-color: rgba(0, 122, 82, 0.4);
+    color: white;
+    box-shadow: 0 2px 10px rgba(0, 122, 82, 0.4);
+}
+
+.cd-filter-btn:not(.cd-filter-btn--active):hover {
+    background: var(--surface-hover);
+    color: var(--text);
+    transform: translateY(-1px);
+}
+
+/* =====================
+   Griglia attività
+   ===================== */
+.cd-activity-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+@media (max-width: 640px) {
+    .cd-activity-grid { grid-template-columns: 1fr; }
+    .cd-page { padding: 20px; }
+}
+
+/* =====================
+   Messaggi di stato
+   ===================== */
+.cd-status {
+    color: var(--text-secondary);
+    font-size: 14px;
+    padding: 40px 0;
+    text-align: center;
+}
+
+.cd-status--error { color: #f87171; }
