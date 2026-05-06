@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Activity, Moon, Sun, Search } from 'lucide-react';
+import { Activity, Moon, Sun, Search, Lightbulb, ChevronRight } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { ConsultazioneCard } from '../../components/ConsultazioneCard';
 import { QuickActionCards } from '../../components/QuickActionCard';
@@ -89,6 +89,17 @@ export default function DashboardCittadinePage() {
                 </header>
 
                 <QuickActionCards />
+
+                <button className="cd-action-btn" onClick={() => navigate('/cittadino/iniziativa/crea')}>
+                    <div className="cd-action-btn__icon">
+                        <Lightbulb size={18} />
+                    </div>
+                    <div className="cd-action-btn__text">
+                        <span className="cd-action-btn__title">Proponi un'idea</span>
+                        <span className="cd-action-btn__subtitle">Invia una proposta alla comunità</span>
+                    </div>
+                    <ChevronRight size={16} color="rgba(255,255,255,0.5)" />
+                </button>
 
                 <div className="cd-search">
                     <Search size={16} color="rgba(128,128,128,0.5)" />
