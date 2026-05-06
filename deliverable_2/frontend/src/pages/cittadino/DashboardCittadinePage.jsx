@@ -56,9 +56,14 @@ export default function DashboardCittadinePage() {
         fetchProfile()
             .then(data => { if (data?.data) setProfilo(data.data); })
             .catch(() => {});
-        fetchNotifiche()
-            .then(data => setNotifiche(data.notifiche || []))
-            .catch(() => {});
+        const loadNotifiche = () =>
+            fetchNotifiche()
+                .then(data => setNotifiche(data.notifiche || []))
+                .catch(() => {});
+
+        loadNotifiche();
+        const notificheInterval = setInterval(loadNotifiche, 2 * 60 * 1000);
+        return () => clearInterval(notificheInterval);
     }, []);
 
     useEffect(() => {
