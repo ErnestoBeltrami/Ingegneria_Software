@@ -289,8 +289,12 @@
   font-weight: 600;
   color: var(--text-secondary);
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
   white-space: nowrap;
+}
+
+.filter-btn:not(.filter-btn--active):hover {
+  transform: translateY(-1px);
 }
 
 .filter-btn--active {
@@ -323,12 +327,14 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .activity-card:hover {
   background: var(--surface-raised);
   border-color: var(--border-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15);
 }
 
 .activity-card__header {
