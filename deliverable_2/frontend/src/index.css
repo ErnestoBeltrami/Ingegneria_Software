@@ -47,6 +47,13 @@
   --shadow-line:     rgba(0, 0, 0, 0.06);
 }
 
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
 body {
   font-family: 'Montserrat', sans-serif;
   -webkit-font-smoothing: antialiased;
