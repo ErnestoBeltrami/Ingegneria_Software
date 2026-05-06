@@ -59,6 +59,7 @@
 
 /* grid layout */
 .po-layout {
+  --topbar-bg: #1f3a89;
   display: grid;
   grid-template-columns: 280px 1fr;
   gap: 20px;

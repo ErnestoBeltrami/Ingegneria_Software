@@ -6,6 +6,7 @@
   flex-direction: column;
   min-height: 100vh;
   background: var(--bg);
+  --topbar-bg: #1f3a89;
 }
 
 .dashboard-page {
