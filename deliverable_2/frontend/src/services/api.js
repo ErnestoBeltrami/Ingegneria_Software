@@ -52,15 +52,41 @@ export const fetchSondaggi = () => apiFetch('/sondaggio/cittadino');
 
 // fetch votazioni + sondaggi in parallelo 
 export const fetchAllActivities = async () => {
-    const [votazioniRes, sondaggiRes] = await Promise.all([
-        fetchVotazioni(),
-        fetchSondaggi(),
-    ]);
+    try {
+        const [votazioniRes, sondaggiRes] = await Promise.all([
+            fetchVotazioni(),
+            fetchSondaggi(),
+        ]);
 
-    const votazioni = (votazioniRes.votazioni || []).map(normalise);
-    const sondaggi = (sondaggiRes.votazioni || []).map(normalise);
+        const votazioni = (votazioniRes.votazioni || []).map(normalise);
+        const sondaggi = (sondaggiRes.votazioni || []).map(normalise);
 
-    return [...votazioni, ...sondaggi];
+        return [...votazioni, ...sondaggi];
+    } catch (error) {
+        console.warn("Backend non raggiungibile, mostro dati fittizi per testare la UI:", error.message);
+        return [
+            {
+                id: 'vot_123',
+                type: 'Votazione',
+                title: 'Inserimento di cibo vegetariano nelle mense',
+                description: 'Si propone l\'inserimento di opzioni vegetariane in tutte le mense scolastiche e comunali...',
+                deadline: '30/05/26',
+                voted: false,
+                stato: 'attivo',
+                _rawDataFine: '2026-05-30T23:59:59.000Z'
+            },
+            {
+                id: 'sond_456',
+                type: 'Sondaggio',
+                title: 'Riqualificazione di Piazza Fiera',
+                description: 'Il comune intende raccogliere le opinioni sulle priorità per le aree verdi e la mobilità.',
+                deadline: '15/06/26',
+                voted: false,
+                stato: 'attivo',
+                _rawDataFine: '2026-06-15T23:59:59.000Z'
+            }
+        ];
+    }
 };
 export const fetchProfile = () => apiFetch('/cittadino/profile');
 
