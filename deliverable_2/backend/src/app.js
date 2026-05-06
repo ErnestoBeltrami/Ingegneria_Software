@@ -11,6 +11,7 @@ import votazioneRouter from "./routes/votazione.route.js";
 import iniziativaRouter from "./routes/iniziativa.route.js";
 import categoriaRouter from "./routes/categoria.route.js";
 import sondaggioRouter from "./routes/sondaggio.route.js";
+import notificaRouter from "./routes/notifica.route.js";
 const app = express();
 
 app.get("/health", (_req, res) => {
@@ -45,5 +46,6 @@ app.use("/votazioni", votazioneRouter);
 app.use("/iniziative", iniziativaRouter);
 app.use("/categorie", categoriaRouter);
 app.use("/sondaggio", sondaggioRouter);
+app.use("/notifiche", notificaRouter);
 
 export default app;

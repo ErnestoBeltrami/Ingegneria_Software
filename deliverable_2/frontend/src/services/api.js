@@ -53,3 +53,7 @@ export const fetchAllActivities = async () => {
     ];
 };
 export const fetchProfile = () => apiFetch('/cittadino/profile');
+
+export const fetchNotifiche = () => apiFetch('/notifiche');
+export const marcaNotificaLetta = (id) => apiFetch(`/notifiche/${id}/letta`, { method: 'PATCH' });
+export const marcaTutteNotificheLette = () => apiFetch('/notifiche/leggi-tutte', { method: 'PATCH' });
