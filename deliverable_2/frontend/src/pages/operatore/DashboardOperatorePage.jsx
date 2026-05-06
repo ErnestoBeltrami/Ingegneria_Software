@@ -5,6 +5,7 @@ import {
   Plus, Search, Activity, ChevronRight,
 } from 'lucide-react';
 import TopBar from '@/components/TopBar';
+import { ConsultazioneCard } from '@/components/ConsultazioneCard';
 import './DashboardOperatorePage.css';
 
 const NAV_CARDS = [
@@ -38,15 +39,6 @@ const NAV_CARDS = [
 ];
 
 const FILTERS = ['Tutte le attività', 'Votazioni attive', 'Sondaggi attivi', 'Proposte in arrivo'];
-
-function formatDate(isoString) {
-  if (!isoString) return '—';
-  const d = new Date(isoString);
-  const dd = String(d.getDate()).padStart(2, '0');
-  const mm = String(d.getMonth() + 1).padStart(2, '0');
-  const yy = String(d.getFullYear()).slice(-2);
-  return `${dd}/${mm}/${yy}`;
-}
 
 async function fetchWithAuth(url, navigate) {
   const token = localStorage.getItem('token');
@@ -213,21 +205,12 @@ export default function DashboardOperatorePage() {
         {!loading && !error && attivitàFiltrate.length > 0 && (
           <div className="activity-grid">
             {attivitàFiltrate.map((a) => (
-              <div key={a._id} className="activity-card">
-                <div className="activity-card__header">
-                  <span className={`badge badge--tipo badge--${a.tipo}`}>
-                    {a.tipo === 'votazione' ? 'Votazione' : 'Sondaggio'}
-                  </span>
-                  <span className="badge badge--stato">
-                    {a.stato === 'attivo' ? 'In corso' : a.stato}
-                  </span>
-                </div>
-                <p className="activity-card__titolo">{a.titolo}</p>
-                <div className="activity-card__footer">
-                  <span className="activity-card__termine">Termine: {formatDate(a.data_fine)}</span>
-                  <button className="btn-gestisci" onClick={() => navigate(`/${a.tipo === 'votazione' ? 'votazioni' : 'sondaggi'}/${a._id}/riepilogo`)}>Riepilogo</button>
-                </div>
-              </div>
+              <ConsultazioneCard
+                key={a._id}
+                activity={a}
+                mode="operatore"
+                onAction={(id, tipo) => navigate(`/${tipo === 'votazione' ? 'votazioni' : 'sondaggi'}/${id}/riepilogo`)}
+              />
             ))}
           </div>
         )}
