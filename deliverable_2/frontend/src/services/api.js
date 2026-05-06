@@ -41,38 +41,15 @@ const apiFetch = async (url, options = {}) => {
 export const fetchVotazioni = () => apiFetch('/votazioni/cittadino');
 export const fetchSondaggi = () => apiFetch('/sondaggio/cittadino');
 
-// fetch votazioni + sondaggi in parallelo 
+// fetch votazioni + sondaggi in parallelo
 export const fetchAllActivities = async () => {
     const [votazioniRes, sondaggiRes] = await Promise.all([
         fetchVotazioni(),
         fetchSondaggi(),
     ]);
-
-    const votazioni = (votazioniRes.votazioni || []).map(normalise);
-    const sondaggi = (sondaggiRes.votazioni || []).map(normalise);
-
-    return [...votazioni, ...sondaggi];
+    return [
+        ...(votazioniRes.votazioni || []).map(v => ({ ...v, voted: false })),
+        ...(sondaggiRes.votazioni || []).map(v => ({ ...v, voted: false })),
+    ];
 };
 export const fetchProfile = () => apiFetch('/cittadino/profile');
-
-// formato giusto per l'activitycard
-const normalise = (item) => ({
-    id: item._id,
-    type: item.tipo === 'votazione' ? 'Votazione' : 'Sondaggio',
-    title: item.titolo,
-    description: item.descrizione || '',
-    deadline: formatDate(item.data_fine),
-    stato: item.stato,
-    // raw ISO date kept for expiry comparison
-    _rawDataFine: item.data_fine,
-});
-
-// format giusto
-const formatDate = (isoString) => {
-    if (!isoString) return '—';
-    const d = new Date(isoString);
-    const dd = String(d.getDate()).padStart(2, '0');
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const yy = String(d.getFullYear()).slice(-2);
-    return `${dd}/${mm}/${yy}`;
-};
