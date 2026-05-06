@@ -15,12 +15,12 @@ import ProfiloOperatorePage from './pages/operatore/ProfiloOperatorePage';
 import CompletaProfiloPage from './pages/CompletaProfiloPage';
 import AuthCallbackPage from './pages/AuthCallbackPage';
 import ProfiloCompletatoPage from './pages/ProfiloCompletatoPage';
-import DashboardCittadino from './pages/cittadino/dashboard/Dashboard';
 import Votazione from './pages/cittadino/votazione/Votazione';
-import Sondaggio from './pages/cittadino/sondaggio/Sondaggio';
+import VotaSondaggio from './pages/cittadino/sondaggio/VotaSondaggio';
 import CreaIniziativaPage from './pages/cittadino/CreaIniziativaPage';
 import ProfiloCittadinePage from './pages/cittadino/ProfiloCittadinePage';
-import Dashboard from './pages/cittadino/dashboard/Dashboard';
+import DashboardCittadinoPage from './pages/cittadino/dashboard/DashboardCittadinoPage';
+
 
 function CompletaProfiloRoute() {
   const [params] = useSearchParams();
@@ -54,10 +54,26 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/cittadino/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" element={<DashboardOperatorePage />} />
+          <Route path="/sondaggi" element={<GestioneSondaggiPage />} />
+          <Route path="/sondaggi/crea" element={<CreaSondaggioPage />} />
+          <Route path="/votazioni" element={<GestioneVotazioniPage />} />
+          <Route path="/votazioni/crea" element={<CreaVotazionePage />} />
+          <Route path="/votazioni/:id/riepilogo" element={<RiepilogoVotazionePage />} />
+          <Route path="/sondaggi/:id/riepilogo" element={<RiepilogoSondaggioPage />} />
+          <Route path="/votazioni/:id/modifica" element={<ModificaVotazionePage />} />
+          <Route path="/sondaggi/:id/modifica" element={<ModificaSondaggioPage />} />
+          <Route path="/operatore/profilo" element={<ProfiloOperatorePage />} />
+          <Route path="/completa-profilo" element={<CompletaProfiloRoute />} />
+          <Route path="/profilo-completato" element={<ProfiloCompletatoPage />} />
+          <Route path="/cittadino/dashboard" element={<DashboardCittadinoPage />} />
           <Route path="/cittadino/votazione/:id" element={<Votazione />} />
-          <Route path="/cittadino/sondaggio/:id" element={<Sondaggio />} />
-          <Route path="*" element={<Navigate to="/cittadino/dashboard" replace />} />
+          <Route path="/cittadino/sondaggio/:id" element={<VotaSondaggio />} />
+          <Route path="/cittadino/iniziativa/crea" element={<CreaIniziativaPage />} />
+          <Route path="/cittadino/profilo" element={<ProfiloCittadinePage />} />
+          <Route path="/auth/callback" element={<AuthCallbackPage />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

@@ -1,14 +1,5 @@
-//
-//
-//
-// DA RIMUOVERE !!!!!!
-//
-//
-//
-const DEV_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzQxYjY4ZmEwMWMwMjMzZjY0ZjU2ZCIsInJ1b2xvIjoiY2l0dGFkaW5vIiwiaWF0IjoxNzc3OTAyMDY0LCJleHAiOjE3Nzg1MDY4NjR9.9tYQbdyrqSEi3vktq2g8vsCvGPIXWSRd8SpnYlz6JGA';
-
 const getAuthHeaders = () => {
-    const token = localStorage.getItem('token') || DEV_TOKEN;
+    const token = localStorage.getItem('token');
     if (!token) {
         throw new Error('Nessun token di autenticazione trovato. Effettua il login.');
     }
@@ -50,13 +41,24 @@ const apiFetch = async (url, options = {}) => {
 export const fetchVotazioni = () => apiFetch('/votazioni/cittadino');
 export const fetchSondaggi = () => apiFetch('/sondaggio/cittadino');
 
-// fetch votazioni + sondaggi in parallelo 
 export const fetchAllActivities = async () => {
     try {
         const [votazioniRes, sondaggiRes] = await Promise.all([
             fetchVotazioni(),
             fetchSondaggi(),
         ]);
+
+        const votedActivities = JSON.parse(localStorage.getItem('votedActivities') || '[]');
+
+        const normalise = (a) => ({
+            _id: a._id,
+            tipo: a.tipo,
+            titolo: a.titolo,
+            descrizione: a.descrizione,
+            data_fine: a.data_fine,
+            stato: a.stato,
+            voted: votedActivities.includes(a._id)
+        });
 
         const votazioni = (votazioniRes.votazioni || []).map(normalise);
         const sondaggi = (sondaggiRes.votazioni || []).map(normalise);
@@ -90,24 +92,49 @@ export const fetchAllActivities = async () => {
 };
 export const fetchProfile = () => apiFetch('/cittadino/profile');
 
-// formato giusto per l'activitycard
-const normalise = (item) => ({
-    id: item._id,
-    type: item.tipo === 'votazione' ? 'Votazione' : 'Sondaggio',
-    title: item.titolo,
-    description: item.descrizione || '',
-    deadline: formatDate(item.data_fine),
-    stato: item.stato,
-    // raw ISO date kept for expiry comparison
-    _rawDataFine: item.data_fine,
-});
+export const submitSondaggio = (sondaggioId, dettagliRisposte) => 
+    apiFetch('/cittadino/vote/sondaggio', { 
+        method: 'POST', 
+        body: JSON.stringify({ sondaggioId, dettagliRisposte }) 
+    });
 
-// format giusto
-const formatDate = (isoString) => {
-    if (!isoString) return '—';
-    const d = new Date(isoString);
-    const dd = String(d.getDate()).padStart(2, '0');
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const yy = String(d.getFullYear()).slice(-2);
-    return `${dd}/${mm}/${yy}`;
+// MOCK: fetch sondaggio by ID for cittadino
+export const fetchSondaggioCittadino = async (id) => {
+    try {
+        return await apiFetch(`/sondaggio/${id}`);
+    } catch (err) {
+        console.warn("API del sondaggio non disponibile per il cittadino, uso mock data.");
+        return {
+            sondaggio: {
+                _id: id,
+                titolo: 'Riqualificazione di Piazza Fiera (Mock)',
+                descrizione: 'Il comune di Trento intende raccogliere le opinioni della cittadinanza sulle priorità per la riqualificazione di Piazza Fiera. Il sondaggio ha l\'obiettivo di individuare le esigenze più sentite dai residenti in merito ad aree verdi, mobilità e arredo urbano. La tua opinione è fondamentale per il progetto finale.',
+                data_fine: '2026-06-15T23:59:59.000Z',
+                data_discussione: '2026-05-02T00:00:00.000Z',
+                ID_domande: [
+                    {
+                        _id: 'dom_1',
+                        titolo: 'Quale dovrebbe essere la priorità principale?',
+                        tipo: 'risposta_singola',
+                        opzioni: [
+                            { _id: 'op_1_1', testo: 'Aumento delle aree verdi' },
+                            { _id: 'op_1_2', testo: 'Più parcheggi per residenti' },
+                            { _id: 'op_1_3', testo: 'Aree pedonali più ampie' }
+                        ]
+                    },
+                    {
+                        _id: 'dom_2',
+                        titolo: 'Quali nuovi arredi urbani riterresti utili? (Puoi scegliere più opzioni)',
+                        tipo: 'risposta_multipla',
+                        opzioni: [
+                            { _id: 'op_2_1', testo: 'Nuove panchine' },
+                            { _id: 'op_2_2', testo: 'Fontanelle pubbliche' },
+                            { _id: 'op_2_3', testo: 'Cestini per la raccolta differenziata' },
+                            { _id: 'op_2_4', testo: 'Rastrelliere per biciclette' }
+                        ]
+                    }
+                ]
+            }
+        };
+    }
 };

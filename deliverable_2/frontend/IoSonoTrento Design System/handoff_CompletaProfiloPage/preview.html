@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<title>CompletaProfiloPage — IoSonoTrento</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="stylesheet" href="CompletaProfiloPage.css"/>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState } = React;
+
+const Icon = ({ size = 14, children }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">{children}</svg>
+);
+const Check = (p) => <Icon {...p}><path d="M20 6 9 17l-5-5"/></Icon>;
+const Lock  = (p) => <Icon {...p}><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></Icon>;
+
+const COMUNI_TRENTINO = ['Ala','Aldeno','Andalo','Arco','Avio','Baselga di Pinè','Borgo Valsugana','Cavalese','Cles','Levico Terme','Mezzocorona','Mezzolombardo','Mori','Pergine Valsugana','Predazzo','Riva del Garda','Rovereto','Tione di Trento','Trento','Vermiglio','Villa Lagarina'];
+const CIRCOSCRIZIONI_TRENTO = ['Gardolo','Meano','Bondone','Sardagna','Ravina-Romagnano','Argentario','Povo','Mattarello','Villazzano','Oltrefersina','San Giuseppe-Santa Chiara','Centro Storico-Piedicastello'];
+
+function CompletaProfiloPage({ googleUser, onSubmit }) {
+  const [dataNascita,setDataNascita] = useState('');
+  const [comuneResidenza,setComuneResidenza] = useState('');
+  const [circoscrizione,setCircoscrizione] = useState('');
+  const [submitting,setSubmitting] = useState(false);
+  const [error,setError] = useState('');
+
+  const isTrento = comuneResidenza === 'Trento';
+  const initials = (googleUser.nome || googleUser.email || '?').split(/\s+/).map(s => s.charAt(0)).join('').slice(0,2).toUpperCase();
+
+  const validate = () => {
+    if (!dataNascita) return 'Inserisci la tua data di nascita';
+    const d = new Date(dataNascita);
+    if (Number.isNaN(d.getTime())) return 'Data di nascita non valida';
+    const age = (Date.now() - d.getTime()) / (365.25 * 24 * 3600 * 1000);
+    if (age < 16)  return 'Devi avere almeno 16 anni per partecipare';
+    if (age > 120) return 'Data di nascita non valida';
+    if (!comuneResidenza) return 'Seleziona il tuo comune di residenza';
+    if (isTrento && !circoscrizione) return 'Seleziona la tua circoscrizione';
+    return '';
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const v = validate();
+    if (v) { setError(v); return; }
+    setError('');
+    try {
+      setSubmitting(true);
+      if (onSubmit) await onSubmit({ dataNascita, comuneResidenza, circoscrizione: isTrento ? circoscrizione : null });
+      else { await new Promise(r => setTimeout(r, 700)); alert('Profilo completato (demo)'); }
+    } catch (err) { setError(err?.message || 'Errore'); }
+    finally { setSubmitting(false); }
+  };
+
+  return (
+    <div className="cp-page">
+      <div className="cp-shell">
+        <p className="cp-wordmark">IoSonoTrento</p>
+
+        <header className="cp-header">
+          <p className="cp-header__eyebrow">Ultimo passo</p>
+          <h1 className="cp-header__title">
+            Benvenuto a Trento,<br/>
+            <span className="cp-header__title-em">{(googleUser.nome || '').split(' ')[0] || 'cittadino'}.</span>
+          </h1>
+          <p className="cp-header__subtitle">
+            Per partecipare alle votazioni e ai sondaggi della tua città abbiamo bisogno di
+            qualche informazione in più. Ti chiediamo solo l’essenziale.
+          </p>
+        </header>
+
+        <div className="cp-google" aria-label="Account Google collegato">
+          <div className="cp-google__avatar">
+            {googleUser.picture ? <img src={googleUser.picture} alt=""/> : initials}
+          </div>
+          <div className="cp-google__info">
+            <p className="cp-google__name">{googleUser.nome}</p>
+            <p className="cp-google__email">{googleUser.email}</p>
+          </div>
+          <span className="cp-google__pill">
+            <Check size={12}/> da Google
+          </span>
+        </div>
+
+        <form className="cp-card" onSubmit={handleSubmit} noValidate>
+          <p className="cp-section-label">Le tue informazioni</p>
+
+          <div className="cp-field">
+            <label className="cp-field__label" htmlFor="cp-data">Data di nascita <span className="cp-field__required">*</span></label>
+            <input id="cp-data" type="date" className="cp-field__input" value={dataNascita} onChange={(e) => setDataNascita(e.target.value)} max={new Date().toISOString().slice(0,10)}/>
+            <p className="cp-field__hint">Devi avere almeno 16 anni per partecipare alle consultazioni.</p>
+          </div>
+
+          <div className="cp-field">
+            <label className="cp-field__label" htmlFor="cp-comune">Comune di residenza <span className="cp-field__required">*</span></label>
+            <div className="cp-field__select-wrap">
+              <select id="cp-comune" className="cp-field__select" value={comuneResidenza}
+                onChange={(e) => { setComuneResidenza(e.target.value); if (e.target.value !== 'Trento') setCircoscrizione(''); }}>
+                <option value="">Seleziona un comune…</option>
+                {COMUNI_TRENTINO.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+            <p className="cp-field__hint">Solo i comuni della Provincia Autonoma di Trento.</p>
+          </div>
+
+          {isTrento && (
+            <div className="cp-field">
+              <label className="cp-field__label" htmlFor="cp-circ">Circoscrizione <span className="cp-field__required">*</span></label>
+              <div className="cp-field__select-wrap">
+                <select id="cp-circ" className="cp-field__select" value={circoscrizione} onChange={(e) => setCircoscrizione(e.target.value)}>
+                  <option value="">Seleziona la tua circoscrizione…</option>
+                  {CIRCOSCRIZIONI_TRENTO.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
+              <p className="cp-field__hint">Le 12 circoscrizioni del Comune di Trento. Servono per le consultazioni di quartiere.</p>
+            </div>
+          )}
+
+          {error && <p className="cp-msg cp-msg--error">{error}</p>}
+
+          <button type="submit" className="cp-submit" disabled={submitting}>
+            {submitting ? 'Salvataggio…' : 'Completa profilo e accedi'}
+          </button>
+
+          <p className="cp-privacy">
+            Procedendo accetti la <a href="#privacy">Privacy Policy</a> e i <a href="#tos">Termini di Servizio</a>.
+            I tuoi dati sono trattati dal Comune di Trento ai sensi del GDPR e non vengono mai condivisi con terze parti.
+          </p>
+        </form>
+
+        <p className="cp-footer-note">
+          <span className="cp-footer-note__lock"><Lock size={11}/> Connessione cifrata</span>
+          {' · '}IoSonoTrento {new Date().getFullYear()}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+const DEMO_GOOGLE_USER = { nome: 'Giulia Bianchi', email: 'giulia.bianchi@gmail.com', picture: null };
+ReactDOM.createRoot(document.getElementById('root')).render(<CompletaProfiloPage googleUser={DEMO_GOOGLE_USER}/>);
+</script>
+</body>
+</html>

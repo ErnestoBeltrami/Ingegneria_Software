@@ -1,4 +1,10 @@
 .rs-layout {
+  --topbar-bg: #1f3a89;
+  --topbar-fg: white;
+  --topbar-border: rgba(255,255,255,0.12);
+  --topbar-pill-bg: rgba(255,255,255,0.15);
+  --topbar-pill-border: rgba(255,255,255,0.25);
+  --topbar-pill-hover: rgba(255,255,255,0.22);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
