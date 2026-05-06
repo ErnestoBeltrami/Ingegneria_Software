@@ -1,0 +1,247 @@
+.rs-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.rs-page {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-family: 'Montserrat', sans-serif;
+  flex: 1;
+}
+
+/* Status */
+.rs-status {
+  font-size: 14px;
+  color: var(--text-muted);
+  padding: 8px 0;
+  margin: 0;
+}
+
+.rs-status--error {
+  color: #ff6b6b;
+}
+
+/* Header */
+.rs-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-faint);
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 8px;
+  transition: color 0.15s;
+}
+
+.rs-back:hover {
+  color: #00c47a;
+}
+
+.rs-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+}
+
+.rs-header__title {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 32px;
+  margin: 0;
+}
+
+.rs-header__meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+  flex-wrap: wrap;
+}
+
+/* Badge (identici alle altre pagine) */
+.rs-badge {
+  height: 22px;
+  padding: 0 10px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 22px;
+  text-transform: capitalize;
+  letter-spacing: 0.3px;
+}
+
+.rs-badge--bozza {
+  background: rgba(217, 159, 12, 0.25);
+  color: #f5c842;
+  border: 1px solid rgba(217, 159, 12, 0.35);
+}
+
+.rs-badge--attivo {
+  background: rgba(0, 122, 82, 0.30);
+  color: #00d48a;
+  border: 1px solid rgba(0, 196, 122, 0.3);
+}
+
+.rs-badge--concluso {
+  background: var(--surface-raised);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+.rs-badge--archiviato {
+  background: var(--surface);
+  color: var(--text-faint);
+  border: 1px solid var(--surface-raised);
+}
+
+/* Stat card */
+.rs-stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid #00c47a;
+  border-radius: 16px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-self: flex-start;
+  min-width: 180px;
+}
+
+.rs-stat__num {
+  font-size: 32px;
+  font-weight: 700;
+  color: #00c47a;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.rs-stat__label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Domande */
+.rs-domande {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rs-domanda {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rs-domanda__header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.rs-domanda__num {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+}
+
+.rs-domanda__titolo {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 22px;
+  margin: 0;
+}
+
+/* Opzioni con barre */
+.rs-opzioni {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rs-opzione {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rs-opzione__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.rs-opzione__testo {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  flex: 1;
+  min-width: 0;
+}
+
+.rs-opzione__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.rs-opzione__pct {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  min-width: 38px;
+  text-align: right;
+}
+
+.rs-opzione__voti {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+/* Barra CSS */
+.rs-bar-track {
+  height: 8px;
+  background: var(--surface);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.rs-bar-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.4s ease;
+}

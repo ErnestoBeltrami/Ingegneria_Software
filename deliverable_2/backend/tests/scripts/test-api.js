@@ -7,6 +7,9 @@ import { dirname, join, resolve, isAbsolute } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Timestamp univoco per questo run (usato come suffisso nei test per evitare duplicate key)
+const RUN_TIMESTAMP = Date.now().toString().slice(-6);
+
 // Colori per output
 const colors = {
     reset: '\x1b[0m',
@@ -505,6 +508,11 @@ function extractIdsFromResponse(responseBody, responseVariables) {
             }
         }
         
+        // Estrai SONDAGGIO_ID da sondaggioId diretto (risposta creazione sondaggio)
+        if (data.sondaggioId) {
+            responseVariables.SONDAGGIO_ID = String(data.sondaggioId);
+        }
+
         // Estrai SONDAGGIO_ID da sondaggio._id o sondaggio.id (singolare)
         if (data.sondaggio) {
             const sondaggioId = data.sondaggio._id || data.sondaggio.id;
@@ -576,7 +584,8 @@ async function replaceVariables(text, config, baseUrl, responseVariables = {}) {
     
     const variables = {
         '{{TOKEN_OPERATORE}}': async () => await getValidToken('operatore', config, baseUrl),
-        '{{TOKEN_CITTADINO}}': async () => await getValidToken('cittadino', config, baseUrl)
+        '{{TOKEN_CITTADINO}}': async () => await getValidToken('cittadino', config, baseUrl),
+        '{{TIMESTAMP}}': async () => RUN_TIMESTAMP
     };
     
     // Aggiungi variabili estratte dalle risposte

@@ -24,12 +24,15 @@
     "test:api": "node backend/tests/scripts/test-api.js",
     "test:api:votazione": "node backend/tests/scripts/test-api.js backend/tests/rest/votazione.rest",
     "test:api:operatore": "node backend/tests/scripts/test-api.js backend/tests/rest/operatore.rest",
-    "test:api:cittadino": "node backend/tests/scripts/test-api.js backend/tests/rest/cittadino.rest"
+    "test:api:cittadino": "node backend/tests/scripts/test-api.js backend/tests/rest/cittadino.rest",
+    "test:login": "node backend/tests/scripts/test-api.js backend/tests/rest/test-login-operatore.rest",
+    "test:dashboard": "node backend/tests/scripts/test-api.js backend/tests/rest/test-dashboard-flow.rest"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
     "dotenv": "^17.2.3",
+    "es-toolkit": "^1.46.1",
     "express": "^5.1.0",
     "express-session": "^1.18.2",
     "jsonwebtoken": "^9.0.2",
@@ -40,6 +43,7 @@
     "nodemon": "^3.1.11",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
+    "recharts": "^3.8.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   },

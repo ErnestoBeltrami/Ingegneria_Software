@@ -28,9 +28,9 @@ export function ActivityCard({ activity, onAction }) {
 
     const handleButtonClick = () => {
         if (type === 'Votazione') {
-            navigate(`/votazione/${id}`);
+            navigate(`/cittadino/votazione/${id}`);
         } else if (type === 'Sondaggio') {
-            navigate(`/sondaggio/${id}`);
+            navigate(`/cittadino/sondaggio/${id}`);
         } else {
             onAction(id);
         }

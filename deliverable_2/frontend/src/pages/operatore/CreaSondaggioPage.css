@@ -1,0 +1,454 @@
+/* =====================
+   Layout pagina
+   ===================== */
+.crea-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.crea-page {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-family: 'Montserrat', sans-serif;
+  flex: 1;
+}
+
+/* =====================
+   Header
+   ===================== */
+.crea-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+}
+
+.crea-header__back {
+  width: 36px;
+  height: 36px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  color: var(--text-secondary);
+}
+
+.crea-header__back:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-strong);
+}
+
+.crea-header__title {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 32px;
+  margin: 0;
+}
+
+.crea-header__subtitle {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 20px;
+  margin: 2px 0 0;
+}
+
+/* =====================
+   Body — 2 colonne
+   ===================== */
+.crea-body {
+  display: grid;
+  grid-template-columns: 298px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* =====================
+   Card generica
+   ===================== */
+.crea-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.crea-card__section-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* =====================
+   Sidebar (sinistra)
+   ===================== */
+.crea-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* =====================
+   Campi form
+   ===================== */
+.crea-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.crea-field__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  line-height: 20px;
+}
+
+.crea-field__input {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.crea-field__input::placeholder {
+  color: var(--text-faint);
+}
+
+.crea-field__input:focus {
+  border-color: var(--border-strong);
+  background: var(--surface-raised);
+}
+
+.crea-field__input--textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.crea-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* =====================
+   Toggle risposte multiple
+   ===================== */
+.crea-card--toggle {
+  gap: 0;
+}
+
+.crea-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.crea-toggle__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 2px;
+}
+
+.crea-toggle__desc {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.toggle-switch {
+  width: 44px;
+  height: 24px;
+  border-radius: 9999px;
+  background: var(--overlay-hover);
+  border: none;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+}
+
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.toggle-switch--on {
+  background: #007a52;
+}
+
+.toggle-switch--on::after {
+  transform: translateX(20px);
+}
+
+/* =====================
+   Bottoni azione
+   ===================== */
+.crea-card--actions {
+  gap: 12px;
+}
+
+.crea-error {
+  font-size: 13px;
+  font-weight: 500;
+  color: #ff6b6b;
+  margin: 0;
+}
+
+.crea-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.crea-btn {
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 12px;
+  border: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.crea-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.crea-btn--annulla {
+  background: rgba(231, 0, 11, 0.12);
+  border: 1px solid rgba(231, 0, 11, 0.25);
+  color: #ff6b6b;
+  flex: 1;
+  justify-content: center;
+}
+
+.crea-btn--annulla:hover:not(:disabled) {
+  opacity: 0.78;
+}
+
+.crea-btn--salva {
+  background: #007a52;
+  border: 1px solid rgba(0, 196, 122, 0.3);
+  color: white;
+  box-shadow: 0px 4px 16px 0px rgba(0, 122, 82, 0.40);
+  flex: 2;
+  justify-content: center;
+}
+
+.crea-btn--salva:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+/* =====================
+   Main (destra) — domande
+   ===================== */
+.crea-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* =====================
+   Card domanda
+   ===================== */
+.crea-domanda {
+  gap: 14px;
+}
+
+.crea-domanda__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.crea-domanda__num {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.crea-domanda__remove {
+  width: 28px;
+  height: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-faint);
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.crea-domanda__remove:hover {
+  background: rgba(231, 0, 11, 0.14);
+  border-color: rgba(231, 0, 11, 0.28);
+  color: #ff6b6b;
+}
+
+/* =====================
+   Opzioni
+   ===================== */
+.crea-opzioni {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.crea-opzione {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.crea-opzione__indicator {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--text-faint);
+  flex-shrink: 0;
+}
+
+.crea-opzione__indicator--check {
+  border-radius: 4px;
+}
+
+.crea-opzione__input {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: var(--text-secondary);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.crea-opzione__input::placeholder {
+  color: var(--text-faint);
+}
+
+.crea-opzione__input:focus {
+  border-color: var(--border-strong);
+}
+
+.crea-opzione__delete {
+  width: 24px;
+  height: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-faint);
+  flex-shrink: 0;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.crea-opzione__delete:hover {
+  background: rgba(231, 0, 11, 0.14);
+  border-color: rgba(231, 0, 11, 0.28);
+  color: #ff6b6b;
+}
+
+/* =====================
+   Aggiungi opzione / domanda
+   ===================== */
+.crea-add-opzione {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #00c47a;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.15s ease;
+}
+
+.crea-add-opzione:hover {
+  opacity: 0.75;
+}
+
+.crea-add-domanda {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 52px;
+  background: var(--surface);
+  border: 2px dashed var(--border-strong);
+  border-radius: 16px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.crea-add-domanda:hover:not(:disabled) {
+  background: rgba(0, 122, 82, 0.08);
+  border-color: rgba(0, 196, 122, 0.35);
+  color: #00c47a;
+}
+
+.crea-add-domanda:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}

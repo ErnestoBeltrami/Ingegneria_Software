@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { answerSondaggio, answerVote, getCittadinoData, votaIniziativa, logout, rimuoviVotoIniziativa } from "../controllers/cittadino_controller.js";
+import { answerSondaggio, answerVote, getCittadinoData, votaIniziativa, logout, rimuoviVotoIniziativa, updateCittadinoData } from "../controllers/cittadino_controller.js";
 import { protect, restrictTo } from "../middleware/auth_middleware.js";
 
 const router = Router();
 
 router.get('/profile', protect, getCittadinoData);
+router.patch('/me', protect, restrictTo(['cittadino']), updateCittadinoData);
 router.post('/logout', protect, restrictTo(['cittadino']), logout);
 
 router.post('/vote/votazione',protect,restrictTo(['cittadino']),answerVote);

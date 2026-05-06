@@ -1,0 +1,30 @@
+### Login con credenziali corrette
+POST http://localhost:8000/operatore/login
+Content-Type: application/json
+
+{
+  "username": "root",
+  "password_inserita": "rootPassword123"
+}
+
+### Login con password sbagliata (atteso 401)
+POST http://localhost:8000/operatore/login
+Content-Type: application/json
+
+{
+  "username": "root",
+  "password_inserita": "passwordSbagliata"
+}
+
+### Login con username inesistente (atteso 401)
+POST http://localhost:8000/operatore/login
+Content-Type: application/json
+
+{
+  "username": "utente_inesistente",
+  "password_inserita": "rootPassword123"
+}
+
+### Verifica che il token ottenuto funziona (accesso al profilo)
+GET http://localhost:8000/operatore/profile
+Authorization: Bearer {{TOKEN_OPERATORE}}

@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowRight, CheckSquare, Users, MapPin, ShieldCheck } from 'lucide-react';
 import './LoginPage.css';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
 
 export default function LoginPage() {
+  const navigate = useNavigate();
   const [view, setView] = useState('select'); // 'select' | 'operatore'
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -29,7 +31,9 @@ export default function LoginPage() {
       if (!res.ok) throw new Error(data.message || 'Credenziali non valide');
       localStorage.setItem('token', data.token);
       localStorage.setItem('role', 'operatore');
-      window.location.href = '/dashboard';
+      localStorage.setItem('nome', data.operatore?.nome ?? '');
+      localStorage.setItem('cognome', data.operatore?.cognome ?? '');
+      navigate('/dashboard');
     } catch (err) {
       setError(err.message);
     } finally {
@@ -53,51 +57,25 @@ export default function LoginPage() {
           <p className="login-left__subtitle">La tua voce per la tua città</p>
         </div>
 
-        <div className="login-left__hero">
-          <h2 className="login-left__hero-heading">
-            Partecipa alla vita<br />della tua città
-          </h2>
-          <p className="login-left__hero-text">
-            Vota sulle iniziative locali, proponi idee e contribuisci a costruire una Trento migliore.
-          </p>
-        </div>
-
-        <div className="login-left__features">
-          <div className="login-left__feature">
-            <div className="login-left__feature-icon">
-              <CheckSquare size={18} />
-            </div>
-            <div>
-              <p className="login-left__feature-name">Vota le proposte</p>
-              <p className="login-left__feature-desc">Esprimi la tua opinione su temi che contano</p>
-            </div>
-          </div>
-          <div className="login-left__feature">
-            <div className="login-left__feature-icon">
-              <Users size={18} />
-            </div>
-            <div>
-              <p className="login-left__feature-name">Proponi iniziative</p>
-              <p className="login-left__feature-desc">Condividi le tue idee con la comunità</p>
-            </div>
-          </div>
-          <div className="login-left__feature">
-            <div className="login-left__feature-icon">
-              <MapPin size={18} />
-            </div>
-            <div>
-              <p className="login-left__feature-name">Cambia Trento</p>
-              <p className="login-left__feature-desc">Partecipa attivamente alla vita civica</p>
-            </div>
-          </div>
-        </div>
-
         <p className="login-left__footer">Servizio offerto dal Comune di Trento</p>
       </div>
 
       {/* Pannello destro — form */}
       <div className="login-right">
-        {view === 'select' ? (
+        {view === 'success' ? (
+          <div className="login-card">
+            <div className="login-card__header">
+              <h2 className="login-card__title">Accesso effettuato</h2>
+              <p className="login-card__subtitle">
+                Bentornato, <strong>{username}</strong>. La dashboard è in costruzione.
+              </p>
+            </div>
+            <div className="login-card__security">
+              <ShieldCheck size={13} />
+              <span>Piattaforma sicura — Comune di Trento</span>
+            </div>
+          </div>
+        ) : view === 'select' ? (
           <div className="login-card">
             <div className="login-card__header">
               <h2 className="login-card__title">Benvenuto</h2>

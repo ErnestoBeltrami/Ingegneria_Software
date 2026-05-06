@@ -1,0 +1,299 @@
+/* =====================
+   Layout
+   ===================== */
+.gs-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.gs-page {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-family: 'Montserrat', sans-serif;
+  flex: 1;
+}
+
+/* =====================
+   Header
+   ===================== */
+.gs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+}
+
+.gs-header__title {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 32px;
+  margin: 0;
+}
+
+.gs-header__subtitle {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 20px;
+  margin: 2px 0 0;
+}
+
+.gs-btn-new {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 18px;
+  background: #007a52;
+  border: 1px solid rgba(0, 196, 122, 0.3);
+  border-radius: 14px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0px 4px 16px 0px rgba(0, 122, 82, 0.40);
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.gs-btn-new:hover {
+  opacity: 0.88;
+}
+
+/* =====================
+   Counter cards
+   ===================== */
+.gs-counters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.gs-counter {
+  border-radius: 16px;
+  border: 1px solid;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gs-counter--bozza {
+  background: rgba(217, 159, 12, 0.10);
+  border-color: rgba(217, 159, 12, 0.28);
+}
+
+.gs-counter--attiva {
+  background: rgba(0, 122, 82, 0.10);
+  border-color: rgba(0, 196, 122, 0.28);
+}
+
+.gs-counter--conclusa {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+.gs-counter__num {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+}
+
+.gs-counter--bozza   .gs-counter__num { color: #f5c842; }
+.gs-counter--attiva  .gs-counter__num { color: #00d48a; }
+.gs-counter--conclusa .gs-counter__num { color: var(--text-secondary); }
+
+.gs-counter__label {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-muted);
+  line-height: 16px;
+}
+
+/* =====================
+   Status / error
+   ===================== */
+.gs-status {
+  font-size: 14px;
+  color: var(--text-muted);
+  padding: 4px 0;
+}
+
+.gs-error {
+  font-size: 14px;
+  font-weight: 500;
+  color: #ff6b6b;
+}
+
+/* =====================
+   Cards grid
+   ===================== */
+.gs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+/* =====================
+   Sondaggio card
+   ===================== */
+.gs-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.gs-card:hover {
+  background: var(--surface-raised);
+  border-color: var(--border-strong);
+}
+
+.gs-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gs-badge {
+  height: 26px;
+  padding: 0 12px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 26px;
+  white-space: nowrap;
+  text-transform: capitalize;
+  letter-spacing: 0.3px;
+}
+
+.gs-badge--bozza {
+  background: rgba(217, 159, 12, 0.25);
+  color: #f5c842;
+  border: 1px solid rgba(217, 159, 12, 0.35);
+}
+
+.gs-badge--attivo {
+  background: rgba(0, 122, 82, 0.30);
+  color: #00d48a;
+  border: 1px solid rgba(0, 196, 122, 0.3);
+}
+
+.gs-badge--concluso {
+  background: var(--surface-raised);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+.gs-badge--archiviato {
+  background: var(--surface);
+  color: var(--text-faint);
+  border: 1px solid var(--surface-raised);
+}
+
+.gs-card__titolo {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 22px;
+  margin: 0;
+  flex: 1;
+}
+
+.gs-card__termine {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  line-height: 16px;
+  margin: 0;
+}
+
+/* =====================
+   Action buttons
+   ===================== */
+.gs-card__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.gs-action {
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: opacity 0.15s ease, background 0.15s ease;
+  white-space: nowrap;
+}
+
+.gs-action:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.gs-action:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.gs-action--elimina {
+  background: rgba(231, 0, 11, 0.14);
+  border-color: rgba(231, 0, 11, 0.30);
+  color: #ff6b6b;
+}
+
+.gs-action--modifica {
+  background: rgba(0, 122, 82, 0.15);
+  border-color: rgba(0, 196, 122, 0.22);
+  color: #00c47a;
+}
+
+.gs-action--pubblica {
+  background: #007a52;
+  border-color: rgba(0, 196, 122, 0.3);
+  color: white;
+}
+
+.gs-action--riepilogo {
+  width: 100%;
+  height: 38px;
+  justify-content: center;
+  font-size: 13px;
+  border-radius: 12px;
+}
+
+.gs-action--riepilogo-gray {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text-secondary);
+}
+
+.gs-action--riepilogo-blue {
+  background: #1f3a89;
+  border-color: rgba(100, 130, 255, 0.3);
+  color: white;
+  box-shadow: 0 2px 10px rgba(31, 58, 137, 0.4);
+}

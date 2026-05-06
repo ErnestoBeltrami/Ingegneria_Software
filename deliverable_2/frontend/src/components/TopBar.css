@@ -1,0 +1,92 @@
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--topbar-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 0 var(--shadow-line);
+  padding: 0 24px;
+  height: 60px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.topbar__logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.topbar__right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.topbar__bell {
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  opacity: 0.85;
+  transition: opacity 0.15s ease;
+  color: var(--text);
+}
+
+.topbar__bell:hover {
+  opacity: 1;
+}
+
+.topbar__user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--overlay);
+  border: 1px solid var(--overlay-hover);
+  border-radius: 14px;
+  padding: 0 13px;
+  height: 42px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-decoration: none;
+}
+
+.topbar__user:hover {
+  background: var(--overlay-hover);
+}
+
+.topbar__avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 9999px;
+  background: var(--avatar-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  flex-shrink: 0;
+}
+
+.topbar__name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
