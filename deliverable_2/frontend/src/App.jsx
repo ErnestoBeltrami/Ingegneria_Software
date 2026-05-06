@@ -15,7 +15,7 @@ import ProfiloOperatorePage from './pages/operatore/ProfiloOperatorePage';
 import CompletaProfiloPage from './pages/CompletaProfiloPage';
 import AuthCallbackPage from './pages/AuthCallbackPage';
 import ProfiloCompletatoPage from './pages/ProfiloCompletatoPage';
-import DashboardCittadinePage from './pages/cittadino/DashboardCittadinePage';
+import DashboardCittadino from './pages/cittadino/dashboard/Dashboard';
 import CreaIniziativaPage from './pages/cittadino/CreaIniziativaPage';
 import ProfiloCittadinePage from './pages/cittadino/ProfiloCittadinePage';
 
@@ -64,7 +64,7 @@ export default function App() {
         <Route path="/operatore/profilo" element={<ProfiloOperatorePage />} />
         <Route path="/completa-profilo" element={<CompletaProfiloRoute />} />
         <Route path="/profilo-completato" element={<ProfiloCompletatoPage />} />
-        <Route path="/cittadino/dashboard" element={<DashboardCittadinePage />} />
+        <Route path="/cittadino/dashboard" element={<DashboardCittadino />} />
         <Route path="/cittadino/iniziativa/crea" element={<CreaIniziativaPage />} />
         <Route path="/cittadino/profilo" element={<ProfiloCittadinePage />} />
         <Route path="/auth/callback" element={<AuthCallbackPage />} />

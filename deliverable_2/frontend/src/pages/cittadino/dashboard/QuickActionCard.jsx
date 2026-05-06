@@ -1,58 +1,61 @@
 import { ClipboardList, Newspaper, Lightbulb, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import './QuickActionCard.css';
 
-/**
- * Card configuration for the 3 quick-action cards from Figma.
- * Each card links to a specific section/feature of the dashboard.
- */
 const CARDS = [
     {
         id: 'votazioni-concluse',
         icon: ClipboardList,
         title: 'Votazioni concluse',
         actionLabel: 'Visualizza',
-        variant: 'light',          // white card
-        iconBg: '#E8EDF5',         // light blue-grey circle
-        iconColor: '#3949AB',      // dark blue icon
-        onClick: () => console.log('TODO: navigare a votazioni concluse'),
+        variant: 'light',
+        iconBg: '#E8EDF5',
+        iconColor: '#3949AB',
+        to: null,
     },
     {
         id: 'sondaggi-conclusi',
         icon: ClipboardList,
         title: 'Sondaggi',
         actionLabel: 'Visualizza',
-        variant: 'light',          
-        iconBg: '#E8EDF5',         
-        iconColor: '#3949AB',      
-        onClick: () => console.log('TODO: navigare a sondaggi conclusi'),
+        variant: 'light',
+        iconBg: '#E8EDF5',
+        iconColor: '#3949AB',
+        to: null,
     },
     {
         id: 'bacheca-iniziative',
         icon: Newspaper,
         title: 'Bacheca iniziative',
         actionLabel: 'Esplora',
-        variant: 'light',          // white card
-        iconBg: '#D1E7DD',         // light green circle
-        iconColor: '#007D54',      // dark green icon
-        onClick: () => console.log('TODO: navigare a bacheca iniziative'),
+        variant: 'light',
+        iconBg: '#D1E7DD',
+        iconColor: '#007D54',
+        to: null,
     },
     {
         id: 'proponi-idea',
         icon: Lightbulb,
-        title: 'Proponi un\'idea',
+        title: "Proponi un'idea",
         actionLabel: 'Crea proposta',
-        variant: 'dark',           // dark green card
+        variant: 'dark',
         iconBg: 'rgba(255,255,255,0.15)',
         iconColor: '#FFFFFF',
-        onClick: () => console.log('TODO: navigare a form creazione proposta'),
+        to: '/cittadino/iniziativa/crea',
     },
 ];
 
 export function QuickActionCards() {
+    const navigate = useNavigate();
+
     return (
         <div className="quick-actions">
             {CARDS.map(card => (
-                <QuickActionCard key={card.id} {...card} />
+                <QuickActionCard
+                    key={card.id}
+                    {...card}
+                    onClick={card.to ? () => navigate(card.to) : undefined}
+                />
             ))}
         </div>
     );
@@ -61,8 +64,9 @@ export function QuickActionCards() {
 function QuickActionCard({ icon: Icon, title, actionLabel, variant, iconBg, iconColor, onClick }) {
     return (
         <button
-            className={`quick-card ${variant === 'dark' ? 'quick-card--dark' : ''}`}
+            className={`quick-card ${variant === 'dark' ? 'quick-card--dark' : ''} ${!onClick ? 'quick-card--disabled' : ''}`}
             onClick={onClick}
+            disabled={!onClick}
         >
             <div className="quick-card__icon" style={{ background: iconBg }}>
                 <Icon size={24} color={iconColor} strokeWidth={2} />

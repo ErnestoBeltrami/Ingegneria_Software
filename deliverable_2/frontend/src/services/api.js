@@ -1,14 +1,5 @@
-//
-//
-//
-// DA RIMUOVERE !!!!!!
-//
-//
-//
-const DEV_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzQxYjY4ZmEwMWMwMjMzZjY0ZjU2ZCIsInJ1b2xvIjoiY2l0dGFkaW5vIiwiaWF0IjoxNzc3OTAyMDY0LCJleHAiOjE3Nzg1MDY4NjR9.9tYQbdyrqSEi3vktq2g8vsCvGPIXWSRd8SpnYlz6JGA';
-
 const getAuthHeaders = () => {
-    const token = localStorage.getItem('token') || DEV_TOKEN;
+    const token = localStorage.getItem('token');
     if (!token) {
         throw new Error('Nessun token di autenticazione trovato. Effettua il login.');
     }
