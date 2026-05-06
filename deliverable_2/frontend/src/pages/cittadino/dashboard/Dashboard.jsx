@@ -4,7 +4,7 @@ import { Activity, Moon, Sun } from 'lucide-react';
 import { useTheme } from '../../../contexts/ThemeContext';
 import { ActivityCard } from './ActivityCard';
 import { QuickActionCards } from './QuickActionCard';
-import { fetchAllActivities } from '../../../services/api';
+import { fetchAllActivities, fetchProfile } from '../../../services/api';
 import './Dashboard.css';
 
 const FILTER_MAP = {
@@ -23,17 +23,23 @@ export default function Dashboard() {
     const navigate = useNavigate();
     const { theme, toggleTheme } = useTheme();
 
-    const nome    = localStorage.getItem('nome')    || '';
-    const cognome = localStorage.getItem('cognome') || '';
-    const initials  = `${nome.charAt(0)}${cognome.charAt(0)}`.toUpperCase() || '?';
-    const fullName  = [nome, cognome].filter(Boolean).join(' ') || 'Cittadino';
-
+    const [profilo,      setProfilo]      = useState(null);
     const [activities,   setActivities]   = useState([]);
     const [activeFilter, setActiveFilter] = useState('All');
     const [loading,      setLoading]      = useState(true);
     const [error,        setError]        = useState(null);
 
-    useEffect(() => { loadActivities(); }, []);
+    const nome     = profilo?.nome     || '';
+    const cognome  = profilo?.cognome  || '';
+    const initials = `${nome.charAt(0)}${cognome.charAt(0)}`.toUpperCase() || '?';
+    const fullName = [nome, cognome].filter(Boolean).join(' ') || 'Cittadino';
+
+    useEffect(() => {
+        loadActivities();
+        fetchProfile()
+            .then(data => { if (data?.data) setProfilo(data.data); })
+            .catch(() => {});
+    }, []);
 
     const loadActivities = async () => {
         setLoading(true);
