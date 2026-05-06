@@ -1,4 +1,5 @@
 import { Clock as ClockIcon, Check as CheckIcon, AlertCircle as ExpiredIcon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import './ActivityCard.css';
 
 const TYPE_BADGE_STYLES = {
@@ -19,10 +20,21 @@ const STATO_LABELS = {
 }
 
 export function ActivityCard({ activity, onAction }) {
+    const navigate = useNavigate();
     const { id, type, title, description, deadline, voted, stato } = activity;
     const badgeStyle = TYPE_BADGE_STYLES[type] ?? TYPE_BADGE_STYLES.Votazione;
     const isConcluded = stato === 'concluso' || stato === 'archiviato';
     const isDisabled = voted || isConcluded;
+
+    const handleButtonClick = () => {
+        if (type === 'Votazione') {
+            navigate(`/votazione/${id}`);
+        } else if (type === 'Sondaggio') {
+            navigate(`/sondaggio/${id}`);
+        } else {
+            onAction(id);
+        }
+    };
 
     return (
         <div className={`activity-card ${isDisabled ? 'voted' : ''}`}>
@@ -50,7 +62,7 @@ export function ActivityCard({ activity, onAction }) {
                 <button
                     className={`btn-action ${isDisabled ? 'btn-voted' : ''}`}
                     disabled={isDisabled}
-                    onClick={() => onAction(id)}
+                    onClick={handleButtonClick}
                 >
                     {voted
                         ? 'Votato'
