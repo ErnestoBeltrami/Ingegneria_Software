@@ -687,6 +687,42 @@
  *                       type: string
  *                       description: Testo dell'opzione
  *                       example: "Eccellente"
+ *     Notifica:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           description: ID univoco della notifica
+ *           example: "507f1f77bcf86cd799439011"
+ *         ID_destinatario:
+ *           type: string
+ *           description: ID del cittadino destinatario
+ *           example: "507f1f77bcf86cd799439013"
+ *         tipo:
+ *           type: string
+ *           enum: ["iniziativa_approvata", "iniziativa_rifiutata"]
+ *           description: Tipo di notifica
+ *           example: "iniziativa_approvata"
+ *         messaggio:
+ *           type: string
+ *           description: Testo della notifica
+ *           example: 'La tua iniziativa "Pulizia parchi pubblici" è stata approvata e pubblicata.'
+ *         ID_iniziativa:
+ *           type: string
+ *           description: ID dell'iniziativa a cui si riferisce la notifica
+ *           example: "507f1f77bcf86cd799439012"
+ *         letta:
+ *           type: boolean
+ *           description: Indica se la notifica è stata letta
+ *           example: false
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: Data di creazione
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: Data di ultimo aggiornamento
  *   securitySchemes:
  *     sessionAuth:
  *       type: apiKey

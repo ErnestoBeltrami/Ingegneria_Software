@@ -1,6 +1,7 @@
 import { Iniziativa } from '../models/iniziativa.js';
 import { CategoriaIniziativa } from '../models/categoria_iniziativa.js';
 import { Cittadino } from '../models/cittadino.js';
+import { Notifica } from '../models/notifica.js';
 import mongoose from 'mongoose';
 
 // POST: Crea iniziativa
@@ -481,6 +482,17 @@ export const moderaIniziativa = async (req, res) => {
         iniziativa.stato = stato;
         if (motivazione) iniziativa.motivazione_moderazione = motivazione;
         await iniziativa.save();
+
+        const messaggio = stato === 'approvata'
+            ? `La tua iniziativa "${iniziativa.titolo}" è stata approvata e pubblicata.`
+            : `La tua iniziativa "${iniziativa.titolo}" è stata rifiutata. Motivazione: ${motivazione || 'nessuna motivazione fornita'}.`;
+
+        await Notifica.create({
+            ID_destinatario: iniziativa.ID_cittadino,
+            tipo: stato === 'approvata' ? 'iniziativa_approvata' : 'iniziativa_rifiutata',
+            messaggio,
+            ID_iniziativa: iniziativa._id,
+        });
 
         return res.status(200).json({
             message: `Iniziativa ${stato} con successo.`,

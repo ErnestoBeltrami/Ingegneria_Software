@@ -187,7 +187,8 @@ l'accesso sicuro alle risorse protette tramite il middleware \texttt{protect}.
 Il componente funge da strato di persistenza del sistema. Gestisce la connessione al database
 MongoDB e mette a disposizione degli altri componenti le operazioni CRUD sulle entità del dominio
 (\textit{Cittadino}, \textit{Operatore}, \textit{Consultazione}, \textit{Domanda},
-\textit{Iniziativa}, \textit{RispostaConsultazione}, \textit{VotoIniziativa}, \textit{Categoria}).
+\textit{Iniziativa}, \textit{RispostaConsultazione}, \textit{VotoIniziativa}, \textit{Categoria},
+\textit{Notifica}).
 Applica la validazione degli schemi Mongoose prima di ogni scrittura.
 
 \interfacciarichiesta{dati di registrazione operatore}\\
@@ -260,7 +261,8 @@ operatori al termine della consultazione.
 Il componente gestisce le iniziative civiche proposte dai cittadini. Un cittadino può creare
 un'iniziativa fornendo titolo, descrizione e categoria; gli altri cittadini possono sostenerla con
 un voto. Gli operatori moderano le iniziative, portandole dallo stato \texttt{in\_attesa} a
-\texttt{approvata} o \texttt{rifiutata} con una motivazione.
+\texttt{approvata} o \texttt{rifiutata} con una motivazione. Al termine della moderazione, il
+componente delega a \textit{CMP8} la creazione della notifica per il cittadino proponente.
 
 \interfacciarichiesta{autenticazione}\\
 JWT valido; il componente verifica il ruolo per decidere quali operazioni sono consentite.
@@ -349,8 +351,38 @@ Interrogazione periodica al database per recuperare le consultazioni in stato \t
 \texttt{attivo} che soddisfano i criteri di transizione.
 
 \interfacciafornita{aggiornamento stato consultazione}\\
-Scrittura del nuovo stato nel database; il componente non notifica direttamente gli utenti
-(funzionalità di notifica non inclusa nella versione corrente).
+Scrittura del nuovo stato nel database.
+
+% ····················································
+\subsubsection*{CMP8: Sistema di notifiche}
+\addcontentsline{toc}{subsubsection}{CMP8: Sistema di notifiche}
+
+\textbf{Descrizione:}\\
+Il componente gestisce le notifiche in-app destinate ai cittadini. Attualmente le notifiche vengono
+generate automaticamente dal componente \textit{CMP4 Gestione Iniziative} al termine della
+moderazione: il cittadino proponente riceve una notifica quando la propria iniziativa viene
+\texttt{approvata} o \texttt{rifiutata}. Il componente espone API per recuperare le notifiche,
+segnarle come lette singolarmente o tutte insieme. Il frontend effettua polling ogni 2 minuti
+per aggiornare il contatore delle notifiche non lette nella topbar.
+
+\interfacciarichiesta{evento di moderazione}\\
+Segnale proveniente da \textit{CMP4} al termine della \texttt{PATCH /iniziative/:id/modera}:
+contiene lo stato assegnato (\texttt{approvata} | \texttt{rifiutata}), la motivazione e
+l'identificativo del cittadino destinatario.
+
+\interfacciarichiesta{autenticazione}\\
+JWT valido con ruolo \texttt{cittadino}; ogni cittadino può leggere e gestire solo le proprie
+notifiche.
+
+\interfacciafornita{lista notifiche}\\
+Elenco delle notifiche del cittadino autenticato, ordinate dalla più recente, con il campo
+\texttt{letta} per distinguere le notifiche nuove da quelle già viste
+(\texttt{GET /notifiche}).
+
+\interfacciafornita{conferma lettura}\\
+Aggiornamento del flag \texttt{letta} a \texttt{true} per una singola notifica
+(\texttt{PATCH /notifiche/:id/letta}) o per tutte quelle non lette
+(\texttt{PATCH /notifiche/leggi-tutte}).
 
 % ────────────────────────────────────────────────────────────────────────────
 \subsection{Diagramma dei componenti}
@@ -590,6 +622,30 @@ La \textit{Categoria Iniziativa} è una tassonomia tematica usata per classifica
 \end{itemize}
 
 % ────────────────────────────────────────────────────────────────────────────
+\subsection*{9. Notifica}
+\addcontentsline{toc}{subsection}{9. Notifica}
+
+La \textit{Notifica} rappresenta un messaggio in-app generato automaticamente dal sistema e
+destinato a un cittadino. Attualmente viene creata alla moderazione di un'iniziativa per
+informare il proponente dell'esito (\texttt{approvata} o \texttt{rifiutata}).
+
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=0.7\textwidth]{diagrams/Notifica.png}
+  \caption{Classe Notifica}
+\end{figure}
+
+\noindent\textbf{Attributi principali:}
+\begin{itemize}
+  \item \texttt{ID\_destinatario}: riferimento al cittadino destinatario
+  \item \texttt{tipo}: \texttt{iniziativa\_approvata} | \texttt{iniziativa\_rifiutata}
+  \item \texttt{messaggio}: testo della notifica generato automaticamente
+  \item \texttt{ID\_iniziativa}: riferimento all'iniziativa a cui si riferisce la notifica
+  \item \texttt{letta}: booleano, \texttt{false} alla creazione; portato a \texttt{true}
+        quando il cittadino apre il pannello notifiche
+\end{itemize}
+
+% ────────────────────────────────────────────────────────────────────────────
 \subsection{Diagramma delle classi complessivo}
 
 Viene riportato di seguito il diagramma delle classi complessivo che mostra le relazioni tra
@@ -668,6 +724,11 @@ endpoint. Di seguito viene riportata la mappatura tra classi/metodi e route HTTP
   % Categorie
   Categoria.list() & GET & /categorie \\
   Categoria.create() & POST & /categorie \\
+  \addlinespace
+  % Notifiche
+  Notifica.list() & GET & /notifiche \\
+  Notifica.marcaLetta() & PATCH & /notifiche/:id/letta \\
+  Notifica.marcaTutteLette() & PATCH & /notifiche/leggi-tutte \\
 
 \end{longtable}
 
