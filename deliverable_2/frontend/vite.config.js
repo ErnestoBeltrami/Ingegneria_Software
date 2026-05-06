@@ -10,6 +10,9 @@ export default defineConfig({
   resolve: {
     alias: { '@': path.resolve(__dirname, './src') },
   },
+  optimizeDeps: {
+    include: ['recharts', 'recharts/es6/index'],
+  },
   server: {
     port: 5173,
     proxy: {
