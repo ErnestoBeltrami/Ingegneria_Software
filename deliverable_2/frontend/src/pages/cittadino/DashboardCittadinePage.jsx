@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Activity, Moon, Sun } from 'lucide-react';
+import { Activity, Moon, Sun, Search, Lightbulb, ChevronRight } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { ConsultazioneCard } from '../../components/ConsultazioneCard';
 import { QuickActionCards } from '../../components/QuickActionCard';
@@ -26,6 +26,7 @@ export default function DashboardCittadinePage() {
     const [profilo,      setProfilo]      = useState(null);
     const [activities,   setActivities]   = useState([]);
     const [activeFilter, setActiveFilter] = useState('All');
+    const [search,       setSearch]       = useState('');
     const [loading,      setLoading]      = useState(true);
     const [error,        setError]        = useState(null);
 
@@ -57,7 +58,8 @@ export default function DashboardCittadinePage() {
 
     const visible = activities
         .filter(FILTER_MAP[activeFilter] || (() => true))
-        .filter(isNotExpired);
+        .filter(isNotExpired)
+        .filter(a => search === '' || a.titolo.toLowerCase().includes(search.toLowerCase()));
 
     const handleAction = (id) =>
         setActivities(prev => prev.map(a => a._id === id ? { ...a, voted: !a.voted } : a));
@@ -87,6 +89,28 @@ export default function DashboardCittadinePage() {
                 </header>
 
                 <QuickActionCards />
+
+                <button className="cd-action-btn" onClick={() => navigate('/cittadino/iniziativa/crea')}>
+                    <div className="cd-action-btn__icon">
+                        <Lightbulb size={18} />
+                    </div>
+                    <div className="cd-action-btn__text">
+                        <span className="cd-action-btn__title">Proponi un'idea</span>
+                        <span className="cd-action-btn__subtitle">Invia una proposta alla comunità</span>
+                    </div>
+                    <ChevronRight size={16} color="rgba(255,255,255,0.5)" />
+                </button>
+
+                <div className="cd-search">
+                    <Search size={16} color="rgba(128,128,128,0.5)" />
+                    <input
+                        type="text"
+                        placeholder="Cerca una votazione o sondaggio…"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="cd-search__input"
+                    />
+                </div>
 
                 <section className="cd-activity">
                     <h2 className="cd-activity__title">

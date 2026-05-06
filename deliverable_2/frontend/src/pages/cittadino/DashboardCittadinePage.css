@@ -88,7 +88,7 @@
    Pagina
    ===================== */
 .cd-page {
-    max-width: 900px;
+    max-width: 845px;
     width: 100%;
     margin: 0 auto;
     padding: 32px;
@@ -116,6 +116,61 @@
 }
 
 /* =====================
+   Bottone azione
+   ===================== */
+.cd-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 17px 20px;
+    border-radius: 16px;
+    border: 1px solid rgba(0, 196, 122, 0.25);
+    background: #007a52;
+    box-shadow: 0px 4px 20px 0px rgba(0, 122, 82, 0.45);
+    color: white;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    text-align: left;
+    width: 100%;
+    transition: opacity 0.15s ease;
+}
+
+.cd-action-btn:hover {
+    opacity: 0.88;
+}
+
+.cd-action-btn__icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 14px;
+    background: rgba(0, 196, 122, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.cd-action-btn__text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.cd-action-btn__title {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+}
+
+.cd-action-btn__subtitle {
+    font-size: 12px;
+    font-weight: 500;
+    opacity: 0.72;
+    line-height: 16px;
+}
+
+/* =====================
    Sezione attività
    ===================== */
 .cd-activity {
@@ -133,6 +188,40 @@
     color: var(--text-secondary);
     letter-spacing: 1px;
     text-transform: uppercase;
+}
+
+/* =====================
+   Barra di ricerca
+   ===================== */
+.cd-search {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 14px;
+    padding: 0 17px;
+    height: 46px;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.cd-search:focus-within {
+    background: var(--surface-raised);
+}
+
+.cd-search__input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text);
+    background: transparent;
+}
+
+.cd-search__input::placeholder {
+    color: var(--text-faint);
 }
 
 /* =====================

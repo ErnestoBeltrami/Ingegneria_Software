@@ -5,7 +5,7 @@
 }
 
 @media (min-width: 640px) {
-    .quick-actions { grid-template-columns: repeat(4, 1fr); }
+    .quick-actions { grid-template-columns: repeat(3, 1fr); }
 }
 
 .quick-card {

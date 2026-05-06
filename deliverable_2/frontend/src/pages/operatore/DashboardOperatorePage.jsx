@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   Vote, BarChart2, LayoutGrid,
-  Plus, Search, Activity, ChevronRight,
+  Plus, Search, Activity, ChevronRight, X,
 } from 'lucide-react';
 import TopBar from '@/components/TopBar';
 import { ConsultazioneCard } from '@/components/ConsultazioneCard';
@@ -66,13 +66,62 @@ export default function DashboardOperatorePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const [modalIniziativa, setModalIniziativa] = useState(null);
+  const [modalMode, setModalMode] = useState('view');
+  const [motivazione, setMotivazione] = useState('');
+  const [modalLoading, setModalLoading] = useState(false);
+  const [modalError, setModalError] = useState('');
+
+  const openModal = (iniziativa) => {
+    setModalIniziativa(iniziativa);
+    setModalMode('view');
+    setMotivazione('');
+    setModalError('');
+  };
+
+  const closeModal = () => {
+    setModalIniziativa(null);
+    setModalMode('view');
+    setMotivazione('');
+    setModalError('');
+  };
+
+  const modera = async (stato) => {
+    if (stato === 'rifiutata' && !motivazione.trim()) {
+      setModalError('La motivazione è obbligatoria per il rifiuto.');
+      return;
+    }
+    setModalLoading(true);
+    setModalError('');
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`/iniziative/${modalIniziativa._id}/modera`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ stato, motivazione: motivazione.trim() || undefined }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || `Errore ${res.status}`);
+      setActivities(prev => prev.filter(a => a._id !== modalIniziativa._id));
+      closeModal();
+    } catch (err) {
+      setModalError(err.message);
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
   useEffect(() => {
     const load = async () => {
       setLoading(true);
       setError('');
       try {
         if (filtro === 'Proposte in arrivo') {
-          setActivities([]);
+          const data = await fetchWithAuth('/iniziative', navigate);
+          const inAttesa = (data.iniziative ?? [])
+            .filter(i => i.stato === 'in_attesa')
+            .map(i => ({ ...i, _tipo: 'iniziativa' }));
+          setActivities(inAttesa);
           return;
         }
 
@@ -113,6 +162,7 @@ export default function DashboardOperatorePage() {
   );
 
   return (
+    <>
     <div className="dashboard-layout">
       <TopBar nome={nome} cognome={cognome} />
     <div className="dashboard-page">
@@ -169,7 +219,7 @@ export default function DashboardOperatorePage() {
         <Search size={16} color="rgba(255,255,255,0.35)" />
         <input
           type="text"
-          placeholder="Ricerca una proposta o iniziativa…"
+          placeholder={filtro === 'Proposte in arrivo' ? 'Cerca una proposta…' : 'Cerca una votazione o sondaggio…'}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="dashboard-search__input"
@@ -204,18 +254,111 @@ export default function DashboardOperatorePage() {
 
         {!loading && !error && attivitàFiltrate.length > 0 && (
           <div className="activity-grid">
-            {attivitàFiltrate.map((a) => (
-              <ConsultazioneCard
-                key={a._id}
-                activity={a}
-                mode="operatore"
-                onAction={(id, tipo) => navigate(`/${tipo === 'votazione' ? 'votazioni' : 'sondaggi'}/${id}/riepilogo`)}
-              />
-            ))}
+            {attivitàFiltrate.map((a) =>
+              a._tipo === 'iniziativa' ? (
+                <div key={a._id} className="activity-card">
+                  <div className="activity-card__header">
+                    <span className="badge badge--categoria">{a.categoria}</span>
+                    <span className="badge badge--attesa">In attesa</span>
+                  </div>
+                  <p className="activity-card__titolo">{a.titolo}</p>
+                  <div className="activity-card__footer">
+                    <span className="activity-card__termine">Da: {a.nome_cittadino} {a.cognome_cittadino}</span>
+                    <button className="btn-gestisci" onClick={() => openModal(a)}>Esamina</button>
+                  </div>
+                </div>
+              ) : (
+                <ConsultazioneCard
+                  key={a._id}
+                  activity={a}
+                  mode="operatore"
+                  onAction={(id, tipo) => navigate(`/${tipo === 'votazione' ? 'votazioni' : 'sondaggi'}/${id}/riepilogo`)}
+                />
+              )
+            )}
           </div>
         )}
       </section>
     </div>
     </div>
+
+    {modalIniziativa && (
+
+      <div className="modal-overlay" onClick={closeModal}>
+        <div className="modal-card" onClick={e => e.stopPropagation()}>
+
+          <div className="modal-header">
+            <span className="badge badge--categoria">{modalIniziativa.categoria}</span>
+            <button className="modal-close" onClick={closeModal} aria-label="Chiudi">
+              <X size={18} />
+            </button>
+          </div>
+
+          <h2 className="modal-title">{modalIniziativa.titolo}</h2>
+          <p className="modal-meta">Proposta da {modalIniziativa.nome_cittadino} {modalIniziativa.cognome_cittadino}</p>
+
+          <p className="modal-descrizione">{modalIniziativa.descrizione}</p>
+
+          <div className="modal-divider" />
+
+          {modalMode === 'view' && (
+            <div className="modal-actions">
+              <button
+                className="modal-btn modal-btn--approve"
+                onClick={() => modera('approvata')}
+                disabled={modalLoading}
+              >
+                {modalLoading ? 'Salvataggio…' : 'Pubblica'}
+              </button>
+              <button
+                className="modal-btn modal-btn--reject"
+                onClick={() => setModalMode('reject')}
+                disabled={modalLoading}
+              >
+                Rifiuta
+              </button>
+            </div>
+          )}
+
+          {modalMode === 'reject' && (
+            <div className="modal-reject-section">
+              <label className="modal-reject-label">
+                Motivazione del rifiuto <span style={{ color: '#f87171' }}>*</span>
+              </label>
+              <textarea
+                className="modal-textarea"
+                placeholder="Spiega al cittadino perché la proposta non può essere pubblicata…"
+                value={motivazione}
+                onChange={e => setMotivazione(e.target.value)}
+                rows={4}
+              />
+              {modalError && <p className="modal-error">{modalError}</p>}
+              <div className="modal-actions">
+                <button
+                  className="modal-btn modal-btn--back"
+                  onClick={() => { setModalMode('view'); setModalError(''); }}
+                  disabled={modalLoading}
+                >
+                  Indietro
+                </button>
+                <button
+                  className="modal-btn modal-btn--confirm-reject"
+                  onClick={() => modera('rifiutata')}
+                  disabled={modalLoading || !motivazione.trim()}
+                >
+                  {modalLoading ? 'Salvataggio…' : 'Conferma rifiuto'}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {modalMode === 'view' && modalError && (
+            <p className="modal-error">{modalError}</p>
+          )}
+
+        </div>
+      </div>
+    )}
+    </>
   );
 }

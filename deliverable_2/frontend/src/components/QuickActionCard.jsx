@@ -1,4 +1,4 @@
-import { ClipboardList, Newspaper, Lightbulb, ChevronRight } from 'lucide-react';
+import { ClipboardList, Newspaper, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import './QuickActionCard.css';
 
@@ -32,16 +32,6 @@ const CARDS = [
         iconBg: '#D1E7DD',
         iconColor: '#007D54',
         to: null,
-    },
-    {
-        id: 'proponi-idea',
-        icon: Lightbulb,
-        title: "Proponi un'idea",
-        actionLabel: 'Crea proposta',
-        variant: 'dark',
-        iconBg: 'rgba(255,255,255,0.15)',
-        iconColor: '#FFFFFF',
-        to: '/cittadino/iniziativa/crea',
     },
 ];
 

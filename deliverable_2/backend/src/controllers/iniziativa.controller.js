@@ -118,6 +118,7 @@ export const getIniziative = async (req,res) => {
                 ID_categoria: 1,
                 categoria: "$categoria_dettagli.nome",
                 titolo: 1,
+                descrizione: 1,
                 stato: 1,
                 nome_cittadino: "$cittadino_dettagli.nome",
                 cognome_cittadino: "$cittadino_dettagli.cognome",
