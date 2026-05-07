@@ -60,8 +60,7 @@ export const createIniziativa = async (req, res) => {
     } catch (error) {
         console.error("Errore nella creazione dell'iniziativa:", error);
         return res.status(500).json({
-            message: "Errore interno del server durante la creazione dell'iniziativa.",
-            error: error.message
+            message: "Errore interno del server durante la creazione dell'iniziativa."
         });
     }
 };
@@ -150,8 +149,7 @@ export const getIniziative = async (req,res) => {
     catch(error){
         console.error("Errore nel recupero delle iniziative:", error);
         return res.status(500).json({
-            message: "Errore interno del server durante il recupero delle iniziative.",
-            error: error.message
+            message: "Errore interno del server durante il recupero delle iniziative."
         });
     }
 };
@@ -177,8 +175,7 @@ export const getIniziativaById = async (req, res) => {
     catch(error){
         console.error("Errore nel recupero dell'iniziativa con l'ID specificato:", error);
         return res.status(500).json({
-            message: "Errore interno del server durante il recupero dell'iniziativa con l'ID specificato.",
-            error: error.message
+            message: "Errore interno del server durante il recupero dell'iniziativa con l'ID specificato."
         });
     }
 };
@@ -248,8 +245,7 @@ export const updateIniziativa = async (req, res) => {
     catch(error){
         console.error("Errore nell'aggiornamento dell'iniziativa con l'ID specificato:", error);
         return res.status(500).json({
-            message: "Errore interno del server durante l'aggiornamento dell'iniziativa con l'ID specificato.",
-            error: error.message
+            message: "Errore interno del server durante l'aggiornamento dell'iniziativa con l'ID specificato."
         });
     }
 };
@@ -284,8 +280,7 @@ export const deleteIniziativa = async (req, res) => {
     }
     catch(error){
         return res.status(500).json({
-            message: "Errore interno del server durante l'eliminazione dell'iniziativa con l'ID specificato.",
-            error: error.message
+            message: "Errore interno del server durante l'eliminazione dell'iniziativa con l'ID specificato."
         });
     }
 };
@@ -446,8 +441,7 @@ export const ricercaIniziativa = async (req, res) => {
     } catch (error) {
         console.error("Errore nel recupero delle iniziative:", error);
         return res.status(500).json({
-            message: "Errore interno del server durante il recupero delle iniziative.",
-            error: error.message
+            message: "Errore interno del server durante il recupero delle iniziative."
         });
     }
 };
@@ -502,8 +496,7 @@ export const moderaIniziativa = async (req, res) => {
     } catch (error) {
         console.error("Errore nella moderazione dell'iniziativa:", error);
         return res.status(500).json({
-            message: "Errore interno del server durante la moderazione dell'iniziativa.",
-            error: error.message
+            message: "Errore interno del server durante la moderazione dell'iniziativa."
         });
     }
 };

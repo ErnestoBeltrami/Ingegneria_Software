@@ -103,8 +103,7 @@ export const creaSondaggio = async (req, res) => {
         }
 
         return res.status(500).json({
-            message: "Errore interno del server durante la creazione del sondaggio.",
-            error: error.message
+            message: "Errore interno del server durante la creazione del sondaggio."
         });
     }
 };
@@ -158,8 +157,7 @@ export const getSondaggi = async (req, res) => {
     } catch (error) {
         console.error('Errore nel recupero dei sondaggi:', error);
         return res.status(500).json({
-            message: 'Errore interno del server durante il recupero dei sondaggi.',
-            error: error.message
+            message: 'Errore interno del server durante il recupero dei sondaggi.'
         });
     }
 };
@@ -192,8 +190,7 @@ export const getSondaggiAvaiable = async (req, res) => {
     } catch (error) {
         console.error('Errore nel recupero dei sondaggi:', error);
         return res.status(500).json({
-            message: 'Errore interno del server durante il recupero dei sondaggi.',
-            error: error.message
+            message: 'Errore interno del server durante il recupero dei sondaggi.'
         });
     }
 };
@@ -223,8 +220,7 @@ export const getSondaggioById = async (req, res) => {
     } catch (error) {
         console.error('Errore nel recupero del sondaggio:', error);
         return res.status(500).json({
-            message: 'Errore interno del server durante il recupero del sondaggio.',
-            error: error.message
+            message: 'Errore interno del server durante il recupero del sondaggio.'
         });
     }
 };
@@ -291,8 +287,7 @@ export const updateSondaggio = async (req, res) => {
     } catch (error) {
         console.error('Errore nell\'aggiornamento della sondaggio:', error);
         return res.status(500).json({
-            message: 'Errore interno del server durante l\'aggiornamento del sondaggio.',
-            error: error.message
+            message: 'Errore interno del server durante l\'aggiornamento del sondaggio.'
         });
     }
 };
@@ -329,8 +324,7 @@ export const deleteSondaggio = async (req, res) => {
     } catch (error) {
         console.error('Errore nell\'eliminazione del sondaggio:', error);
         return res.status(500).json({
-            message: 'Errore interno del server durante l\'eliminazione del sondaggio.',
-            error: error.message
+            message: 'Errore interno del server durante l\'eliminazione del sondaggio.'
         });
     }
 };
@@ -369,8 +363,7 @@ export const publishSondaggio = async (req, res) => {
     } catch (error) {
         console.error('Errore nella pubblicazione del sondaggio:', error);
         return res.status(500).json({
-            message: 'Errore interno del server durante la pubblicazione del sondaggio.',
-            error: error.message
+            message: 'Errore interno del server durante la pubblicazione del sondaggio.'
         });
     }
 };
@@ -409,8 +402,7 @@ export const archiveSondaggio = async (req, res) => {
     } catch (error) {
         console.error('Errore nell\'archiviazione del sondaggio:', error);
         return res.status(500).json({
-            message: 'Errore interno del server durante l\'archiviazione del sondaggio.',
-            error: error.message
+            message: 'Errore interno del server durante l\'archiviazione del sondaggio.'
         });
     }
 };
@@ -502,8 +494,7 @@ export const getRiepilogoSintetico = async (req, res) => {
     } catch (error) {
         console.error('Errore nel recupero del riepilogo sintetico:', error);
         return res.status(500).json({
-            message: 'Errore interno del server.',
-            error: error.message
+            message: 'Errore interno del server.'
         });
     }
 };
@@ -632,8 +623,7 @@ export const getRiepilogoConFiltri = async (req, res) => {
     } catch (error) {
         console.error('Errore:', error);
         return res.status(500).json({
-            message: 'Errore interno del server.',
-            error: error.message
+            message: 'Errore interno del server.'
         });
     }
 };

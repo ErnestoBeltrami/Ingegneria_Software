@@ -17,8 +17,7 @@ export const logout = async (req, res) => {
     } catch (error) {
         console.error('Errore durante il logout:', error);
         return res.status(500).json({
-            message: 'Errore interno del server durante il logout.',
-            error: error.message
+            message: 'Errore interno del server durante il logout.'
         });
     }
 };
@@ -64,8 +63,7 @@ export const getCittadinoData = async (req, res) => {
     catch (error) {
         console.error("Errore nel recupero dati cittadino:", error);
         return res.status(500).json({
-            message: "Errore interno del server durante il recupero dei dati.",
-            error: error.message
+            message: "Errore interno del server durante il recupero dei dati."
         });
     }
 };
@@ -89,7 +87,7 @@ export const updateCittadinoData = async (req, res) => {
             data: { nome: cittadino.nome, cognome: cittadino.cognome },
         });
     } catch (error) {
-        return res.status(500).json({ message: 'Errore interno del server.', error: error.message });
+        return res.status(500).json({ message: 'Errore interno del server.' });
     }
 };
 
@@ -141,8 +139,7 @@ export const answerVote = async (req,res) => {
     {
         console.error('Errore nella votazione', error);
         return res.status(500).json({
-            message: 'Errore interno del server durante la votazione.',
-            error: error.message
+            message: 'Errore interno del server durante la votazione.'
         });
     }
 };
@@ -238,8 +235,7 @@ export const answerSondaggio = async (req, res) => {
     } catch (error) {
         console.error('Errore nella votazione:', error);
         return res.status(500).json({
-            message: 'Errore interno del server durante la votazione.',
-            error: error.message
+            message: 'Errore interno del server durante la votazione.'
         });
     }
 };
@@ -286,8 +282,7 @@ export const votaIniziativa = async (req,res) => {
     catch(error){
         console.error('Errore nella votazione', error);
         return res.status(500).json({
-            message: 'Errore interno del server durante la votazione.',
-            error: error.message
+            message: 'Errore interno del server durante la votazione.'
         });
     }
 };
@@ -315,8 +310,7 @@ export const rimuoviVotoIniziativa = async (req, res) => {
     } catch (error) {
         console.error('Errore nella rimozione del voto:', error);
         return res.status(500).json({
-            message: 'Errore interno del server durante la rimozione del voto.',
-            error: error.message
+            message: 'Errore interno del server durante la rimozione del voto.'
         });
     }
 };
