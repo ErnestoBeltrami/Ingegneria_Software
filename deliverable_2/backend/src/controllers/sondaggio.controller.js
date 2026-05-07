@@ -172,12 +172,12 @@ export const getSondaggiAvaiable = async (req, res) => {
             });
         }
 
-        const votazioni = await Consultazione.find({
+        const sondaggi = await Consultazione.find({
             stato: { $in: ["attivo", "concluso"] },
             tipo: 'sondaggio'
         }).sort({ data_inizio: -1 });
 
-        if(!votazioni){
+        if(!sondaggi){
             return res.status(200).json({
                 message : 'Nessun sondaggio disponibile al momento'
             });
@@ -185,7 +185,7 @@ export const getSondaggiAvaiable = async (req, res) => {
 
         return res.status(200).json({
             message: 'Sondaggi recuperati con successo.',
-            votazioni
+            sondaggi
         });
     } catch (error) {
         console.error('Errore nel recupero dei sondaggi:', error);
