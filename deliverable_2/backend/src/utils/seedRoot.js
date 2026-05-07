@@ -4,7 +4,7 @@ import { Operatore } from '../models/operatore.js';
 export const createRootOperatore = async () => {
     const rootPassword = process.env.ROOT_PASSWORD;
     if (!rootPassword) {
-        console.error('FATAL: ROOT_PASSWORD required');
+        logger.fatal('ROOT_PASSWORD required');
         process.exit(1);
     }
 
