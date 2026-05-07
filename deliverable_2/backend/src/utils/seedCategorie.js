@@ -1,3 +1,4 @@
+import logger from '../config/logger.js';
 import { CategoriaIniziativa } from '../models/categoria_iniziativa.js';
 
 const CATEGORIE_DEFAULT = [
@@ -19,8 +20,8 @@ export const seedCategorie = async () => {
   }));
   const result = await CategoriaIniziativa.bulkWrite(ops);
   if (result.upsertedCount > 0) {
-    console.log(`${result.upsertedCount} categorie di default create`);
+    logger.info(`${result.upsertedCount} categorie di default create`);
   } else {
-    console.log('Categorie già presenti');
+    logger.info('Categorie già presenti');
   }
 };

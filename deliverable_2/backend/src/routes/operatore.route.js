@@ -1,4 +1,5 @@
 import { Router } from "express";
+import rateLimit from "express-rate-limit";
 import {
     getByCredentials,
     getOperatoreData,
@@ -6,15 +7,23 @@ import {
     promoteOperatoreToRoot,
     changePassword
 } from '../controllers/operatore.controller.js'; // ⚠️ NECESSARIO per interagire con il DB
-import { 
-    protect,    
+import {
+    protect,
     restrictTo
 } from '../middleware/auth_middleware.js'
+
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 20,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { message: 'Troppi tentativi di login. Riprova tra 15 minuti.' },
+});
 
 const router = Router();
 
 //POST METHODS
-router.post('/login', getByCredentials);
+router.post('/login', loginLimiter, getByCredentials);
 router.post('/register', protect,restrictTo(['operatore']), createOperatore);
 
 //GET METHODS

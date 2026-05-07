@@ -1,4 +1,5 @@
 import { jest } from '@jest/globals';
+import logger from '../../src/config/logger.js';
 
 const mockFindOne = jest.fn();
 const mockCreate = jest.fn();
@@ -34,13 +35,13 @@ describe('seedRoot utility', () => {
 
   it('termina il processo se ROOT_PASSWORD non è impostata', async () => {
     delete process.env.ROOT_PASSWORD;
-    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const fatalSpy = jest.spyOn(logger, 'fatal').mockImplementation(() => {});
     const exitSpy = jest.spyOn(process, 'exit').mockImplementation((code) => {
       throw new Error(`process.exit:${code}`);
     });
 
     await expect(createRootOperatore()).rejects.toThrow('process.exit:1');
-    expect(errorSpy).toHaveBeenCalledWith('FATAL: ROOT_PASSWORD required');
+    expect(fatalSpy).toHaveBeenCalledWith('ROOT_PASSWORD required');
     expect(mockFindOne).not.toHaveBeenCalled();
     expect(exitSpy).toHaveBeenCalledWith(1);
   });

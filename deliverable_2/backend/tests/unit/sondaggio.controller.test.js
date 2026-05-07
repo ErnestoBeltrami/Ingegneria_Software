@@ -91,7 +91,7 @@ describe('sondaggio controller – getSondaggiAvaiable', () => {
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
         message: expect.any(String),
-        votazioni: fakeSondaggi,
+        sondaggi: fakeSondaggi,
       })
     );
   });

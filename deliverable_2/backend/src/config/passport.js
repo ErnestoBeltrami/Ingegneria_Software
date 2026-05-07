@@ -1,3 +1,4 @@
+import logger from './logger.js';
 import "../config/env.js";
 import crypto from "crypto";
 import passport from "passport";
@@ -27,7 +28,7 @@ passport.deserializeUser(async (id, done) => {
 });
 
 if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-  console.warn("Google OAuth credentials are missing. Google login is disabled.");
+  logger.warn("Google OAuth credentials are missing. Google login is disabled.");
 } else {
   passport.use(
     new GoogleStrategy(
