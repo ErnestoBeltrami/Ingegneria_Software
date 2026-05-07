@@ -36,9 +36,9 @@ router.get(
   }
 );
 
-router.post('/complete-profile', async (req, res) => {
+router.post('/complete-profile',protect, restrictTo(['cittadino']), async (req, res) => {
   const { dataNascita, comuneResidenza, circoscrizione } = req.body;
-  const cittadinoId = req.body.cittadinoId?.trim();
+  const cittadinoId = req.user._id; 
 
   if (!dataNascita || !comuneResidenza) {
     return res.status(400).json({ message: 'Tutti i campi del profilo sono obbligatori.' });

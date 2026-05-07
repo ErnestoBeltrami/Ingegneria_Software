@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { answerSondaggio, answerVote, getCittadinoData, votaIniziativa, logout, rimuoviVotoIniziativa, updateCittadinoData } from "../controllers/cittadino_controller.js";
-import { protect, restrictTo } from "../middleware/auth_middleware.js";
+import { protect, restrictTo, validateObjectId } from "../middleware/auth_middleware.js";
 
 const router = Router();
 
@@ -11,7 +11,7 @@ router.post('/logout', protect, restrictTo(['cittadino']), logout);
 router.post('/vote/votazione',protect,restrictTo(['cittadino']),answerVote);
 
 router.post('/vote/iniziativa', protect, restrictTo(['cittadino']), votaIniziativa);
-router.delete('/vote/iniziativa/:iniziativaId', protect, restrictTo(['cittadino']), rimuoviVotoIniziativa);
+router.delete('/vote/iniziativa/:iniziativaId', protect, restrictTo(['cittadino']),validateObjectId, rimuoviVotoIniziativa);
 
 router.post('/vote/sondaggio',protect,restrictTo(['cittadino']),answerSondaggio);
 

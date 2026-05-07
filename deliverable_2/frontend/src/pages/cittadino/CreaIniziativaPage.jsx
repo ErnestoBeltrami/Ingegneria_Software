@@ -64,7 +64,6 @@ export default function CreaIniziativaPage() {
           titolo: titolo.trim(),
           descrizione: descrizione.trim(),
           ID_categoria: categoriaSelezionata,
-          ID_cittadino: cittadinoId,
         }),
       });
       const data = await res.json();

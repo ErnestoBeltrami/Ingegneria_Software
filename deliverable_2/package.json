@@ -29,14 +29,12 @@
     "test:dashboard": "node backend/tests/scripts/test-api.js backend/tests/rest/test-dashboard-flow.rest"
   },
   "dependencies": {
-    "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
     "dotenv": "^17.2.3",
-    "es-toolkit": "^1.46.1",
+    
     "express": "^5.1.0",
     "express-session": "^1.18.2",
     "jsonwebtoken": "^9.0.2",
-    "mongodb": "^7.0.0",
     "mongoose": "^9.4.1",
     "mongosh": "^2.5.9",
     "node-cron": "^4.2.1",

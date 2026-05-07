@@ -15,7 +15,10 @@ import notificaRouter from "./routes/notifica.route.js";
 const app = express();
 
 app.get("/health", (_req, res) => {
-  res.status(200).json({ status: "ok" });
+  if(mongoose.connection.readyState !== 1){
+    return res.status(503).json({ status: 'db_down'});
+  }
+  res.status(200).json({ status:'ok'});
 });
 
 // give to the app the ability to parse json request
