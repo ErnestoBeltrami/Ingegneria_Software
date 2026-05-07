@@ -199,25 +199,39 @@ export const getSondaggiAvaiable = async (req, res) => {
 // GET: Dettaglio singola sondaggio
 export const getSondaggioById = async (req, res) => {
     try {
-        const userFromMiddleware = req.user;
         const { id } = req.params;
-        
+
+        if (req.ruolo === 'operatore') {
+            const sondaggio = await Consultazione.findOne({
+                _id: id,
+                tipo: 'sondaggio'
+            }).populate('ID_domande');
+
+            if (!sondaggio) {
+                return res.status(404).json({ message: 'Sondaggio non trovato.' });
+            }
+
+            return res.status(200).json({ message: 'Sondaggio trovato con successo.', sondaggio });
+        }
+
+        // Cittadino: vede solo sondaggi attivi o conclusi
         const sondaggio = await Consultazione.findOne({
             _id: id,
-            creatoDa: userFromMiddleware._id,
-            tipo: 'sondaggio'
+            tipo: 'sondaggio',
+            stato: { $in: ['attivo', 'concluso'] }
         }).populate('ID_domande');
 
         if (!sondaggio) {
-            return res.status(404).json({
-                message: 'Sondaggio non trovato.'
-            });
+            return res.status(404).json({ message: 'Sondaggio non trovato.' });
         }
 
-        return res.status(200).json({
-            message: 'Sondaggio trovato con successo.',
-            sondaggio
-        });
+        const voted = !!(await RispostaConsultazione.exists({
+            ID_consultazione: id,
+            ID_cittadino: req.user._id,
+            tipo_consultazione: 'sondaggio'
+        }));
+
+        return res.status(200).json({ message: 'Sondaggio trovato con successo.', sondaggio, voted });
     } catch (error) {
         logger.error('Errore nel recupero del sondaggio:', error);
         return res.status(500).json({
