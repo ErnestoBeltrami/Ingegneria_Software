@@ -176,7 +176,7 @@ export const getSondaggiAvaiable = async (req, res) => {
         const sondaggi = await Consultazione.find({
             stato: { $in: ["attivo", "concluso"] },
             tipo: 'sondaggio'
-        }).sort({ data_inizio: -1 });
+        }).populate('ID_domande').sort({ data_inizio: -1 });
 
         if(!sondaggi){
             return res.status(200).json({

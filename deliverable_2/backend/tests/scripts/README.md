@@ -45,7 +45,7 @@ Crea un file `.test-config.json` nella directory `backend/tests/scripts/` (puoi 
 {
   "operatore": {
     "username": "root",
-    "password": "rootPassword123"
+    "password": "INSERISCI_PASSWORD_ROOT_DA_ENV"
   },
   "cittadino": {
     "cittadinoId": "692f4df30c4b5d2083a1c3f1",
@@ -63,6 +63,8 @@ Crea un file `.test-config.json` nella directory `backend/tests/scripts/` (puoi 
 - `TEST_OPERATORE_USERNAME` / `TEST_OPERATORE_PASSWORD`
 - `TEST_CITTADINO_ID` / `TEST_CITTADINO_NOME` / `TEST_CITTADINO_COGNOME` / `TEST_CITTADINO_ETA` / `TEST_CITTADINO_GENERE` / `TEST_CITTADINO_CATEGORIA`
 - `TEST_BASE_URL`
+
+> Nota: l'utente `root` viene creato usando `ROOT_PASSWORD` all'avvio del backend. Usa lo stesso valore in `TEST_OPERATORE_PASSWORD` (o nel file `.test-config.json` locale).
 
 **Nota importante per cittadini:** L'ID cittadino (`cittadinoId`) deve esistere nel database. I cittadini vengono creati automaticamente tramite Google OAuth quando fanno il primo login. Per ottenere un ID valido:
 1. Esegui il login Google OAuth tramite `/auth/google` (richiede browser)
@@ -198,4 +200,3 @@ Response Body:
 - Pausa di 500ms tra le richieste per evitare rate limiting
 - Default URL: `http://localhost:8000` (modificabile in `.test-config.json` con il campo `baseUrl`)
 - Il file `.test-tokens.json` viene creato automaticamente e contiene i token cachati (non committarlo nel repository)
-
