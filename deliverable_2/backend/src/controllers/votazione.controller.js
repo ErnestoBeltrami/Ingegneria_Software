@@ -1,3 +1,4 @@
+import logger from '../config/logger.js';
 import { Consultazione } from '../models/consultazione.js';
 import { Domanda } from '../models/domanda.js';
 import { RispostaConsultazione } from '../models/risposta_consultazione.js';
@@ -60,7 +61,7 @@ export const createVotazione = async (req, res) => {
             votazione: nuovaVotazione
         });
     } catch (error) {
-        console.error('Errore nella creazione della votazione:', error);
+        logger.error('Errore nella creazione della votazione:', error);
         return res.status(500).json({
             message: 'Errore interno del server durante la creazione della votazione.'
         });
@@ -114,7 +115,7 @@ export const getVotazioni = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Errore nel recupero delle votazioni:', error);
+        logger.error('Errore nel recupero delle votazioni:', error);
         return res.status(500).json({
             message: 'Errore interno del server durante il recupero delle votazioni.'
         });
@@ -148,7 +149,7 @@ export const getVotazioni = async (req, res) => {
             votazioni
         });
     } catch (error) {
-        console.error('Errore nel recupero delle votazioni:', error);
+        logger.error('Errore nel recupero delle votazioni:', error);
         return res.status(500).json({
             message: 'Errore interno del server durante il recupero delle votazioni.'
         });
@@ -179,7 +180,7 @@ export const getVotazioneById = async (req, res) => {
             votazione
         });
     } catch (error) {
-        console.error('Errore nel recupero della votazione:', error);
+        logger.error('Errore nel recupero della votazione:', error);
         return res.status(500).json({
             message: 'Errore interno del server durante il recupero della votazione.'
         });
@@ -243,7 +244,7 @@ export const updateVotazione = async (req, res) => {
             votazione: votazioneAggiornata
         });
     } catch (error) {
-        console.error('Errore nell\'aggiornamento della votazione:', error);
+        logger.error('Errore nell\'aggiornamento della votazione:', error);
         return res.status(500).json({
             message: 'Errore interno del server durante l\'aggiornamento della votazione.'
         });
@@ -280,7 +281,7 @@ export const deleteVotazione = async (req, res) => {
             message: 'Votazione eliminata con successo.'
         });
     } catch (error) {
-        console.error('Errore nell\'eliminazione della votazione:', error);
+        logger.error('Errore nell\'eliminazione della votazione:', error);
         return res.status(500).json({
             message: 'Errore interno del server durante l\'eliminazione della votazione.'
         });
@@ -319,7 +320,7 @@ export const publishVotazione = async (req, res) => {
             votazione
         });
     } catch (error) {
-        console.error('Errore nella pubblicazione della votazione:', error);
+        logger.error('Errore nella pubblicazione della votazione:', error);
         return res.status(500).json({
             message: 'Errore interno del server durante la pubblicazione della votazione.'
         });
@@ -358,7 +359,7 @@ export const archiveVotazione = async (req, res) => {
             votazione
         });
     } catch (error) {
-        console.error('Errore nell\'archiviazione della votazione:', error);
+        logger.error('Errore nell\'archiviazione della votazione:', error);
         return res.status(500).json({
             message: 'Errore interno del server durante l\'archiviazione della votazione.'
         });
@@ -441,7 +442,7 @@ export const getRiepilogoSintetico = async (req, res) => {
         if (error.name === 'BSONTypeError' || error.name === 'CastError') {
              return res.status(400).json({ message: 'ID Votazione non valido.' });
         }
-        console.error('Errore nel riepilogo della votazione:', error);
+        logger.error('Errore nel riepilogo della votazione:', error);
         return res.status(500).json({
             message: 'Errore interno del server durante il riepilogo della votazione.'
         });
@@ -553,7 +554,7 @@ export const getRiepilogoDemografico = async (req, res) => {
         if (error.name === 'BSONTypeError' || error.name === 'CastError') {
             return res.status(400).json({ message: 'ID Votazione non valido.' });
         }
-        console.error('Errore nel riepilogo demografico:', error);
+        logger.error('Errore nel riepilogo demografico:', error);
         return res.status(500).json({ message: 'Errore interno del server.' });
     }
 };

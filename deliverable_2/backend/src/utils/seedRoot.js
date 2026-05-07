@@ -1,3 +1,4 @@
+import logger from '../config/logger.js';
 import { Operatore } from '../models/operatore.js';
 import bcrypt from 'bcryptjs';
 
@@ -11,8 +12,8 @@ export const createRootOperatore = async () => {
             cognome: 'Admin',
             isRoot: true
         });
-        console.log('Utente root creato');
+        logger.info('Utente root creato');
     } else {
-        console.log('Utente root già presente');
+        logger.info('Utente root già presente');
     }
 };

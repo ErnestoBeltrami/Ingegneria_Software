@@ -1,3 +1,4 @@
+import logger from '../config/logger.js';
 import { CategoriaIniziativa } from '../models/categoria_iniziativa.js';
 import { Iniziativa } from '../models/iniziativa.js';
 import mongoose from 'mongoose';
@@ -23,7 +24,7 @@ export const createCategoria = async (req, res) => {
             categoria: nuovaCategoria
         });
     } catch (error) {
-        console.error("Errore creazione categoria:", error);
+        logger.error("Errore creazione categoria:", error);
         return res.status(500).json({
             message: "Errore interno del server durante la creazione della categoria"
         });
@@ -47,7 +48,7 @@ export const getCategorie = async (req, res) => {
         });
         }
     } catch (error) {
-        console.error("Errore nella ricerca delle categorie:", error);
+        logger.error("Errore nella ricerca delle categorie:", error);
         return res.status(500).json({
             message: "Errore interno del server durante la ricerca delle categorie."
         });
@@ -72,7 +73,7 @@ export const getCategoriaById = async (req, res) => {
         });
         }
     } catch (error) {
-        console.error("Errore nella ricerca della categoria:", error);
+        logger.error("Errore nella ricerca della categoria:", error);
         return res.status(500).json({
             message: "Errore interno del server durante la ricerca della categoria."
         });
@@ -117,7 +118,7 @@ export const updateCategoria = async (req, res) => {
         });
     } 
     catch (error) {
-        console.error("Errore nell'aggiornamento della categoria:", error);
+        logger.error("Errore nell'aggiornamento della categoria:", error);
         return res.status(500).json({
             message: "Errore interno del server durante l'aggiornamento della categoria con l'ID specificato."
         });
@@ -152,7 +153,7 @@ export const deleteCategoria = async (req, res) => {
         });
     } 
     catch (error) {
-        console.error("Errore nell'eliminazione della categoria:", error);
+        logger.error("Errore nell'eliminazione della categoria:", error);
         return res.status(500).json({
             message: "Errore interno del server durante l'eliminazione della categoria con l'ID specificato."
         });
