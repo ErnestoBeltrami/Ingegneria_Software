@@ -204,7 +204,6 @@ export const getSondaggioById = async (req, res) => {
         if (req.ruolo === 'operatore') {
             const sondaggio = await Consultazione.findOne({
                 _id: id,
-                creatoDa: req.user._id,
                 tipo: 'sondaggio'
             }).populate('ID_domande');
 

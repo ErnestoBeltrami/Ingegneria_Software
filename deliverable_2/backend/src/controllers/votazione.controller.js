@@ -165,7 +165,6 @@ export const getVotazioneById = async (req, res) => {
 
         const votazione = await Consultazione.findOne({
             _id: id,
-            creatoDa: userFromMiddleware._id,
             tipo: 'votazione'
         }).populate('ID_domanda');
 
