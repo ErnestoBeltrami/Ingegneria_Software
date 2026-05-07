@@ -75,7 +75,7 @@ router.post('/complete-profile', async (req, res) => {
 
     res.status(200).json({ message: 'Profilo completato!', token });
   } catch (error) {
-    res.status(400).json({ message: 'Errore di validazione o server.', details: error.message });
+    res.status(400).json({ message: 'Errore di validazione o server.' });
   }
 });
 
