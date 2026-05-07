@@ -6,6 +6,7 @@ const mockDomandaCreate = jest.fn();
 const mockConsultazioneCreate = jest.fn();
 const mockConsultazioneFind = jest.fn();
 const mockConsultazioneFindOne = jest.fn();
+const mockConsultazioneFindById = jest.fn();
 const mockConsultazioneCountDocuments = jest.fn();
 
 jest.unstable_mockModule('../../src/models/domanda.js', () => ({
@@ -17,6 +18,7 @@ jest.unstable_mockModule('../../src/models/consultazione.js', () => ({
     create: mockConsultazioneCreate,
     find: mockConsultazioneFind,
     findOne: mockConsultazioneFindOne,
+    findById: mockConsultazioneFindById,
     countDocuments: mockConsultazioneCountDocuments,
   },
 }));
@@ -252,12 +254,16 @@ describe('votazione controller', () => {
 
     it('aggiorna i campi ammessi e restituisce 200', async () => {
       const fakeVot = {
+        _id: VOTAZIONE_ID,
         stato: 'bozza',
         titolo: 'Vecchio',
         descrizione: 'Desc',
         save: jest.fn().mockResolvedValueOnce(true),
       };
       mockConsultazioneFindOne.mockResolvedValueOnce(fakeVot);
+      mockConsultazioneFindById.mockReturnValue({
+        populate: jest.fn().mockResolvedValueOnce(fakeVot),
+      });
 
       const req = {
         user: { _id: OPERATORE_ID },

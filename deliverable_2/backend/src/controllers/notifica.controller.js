@@ -6,7 +6,7 @@ export const getNotifiche = async (req, res) => {
             .sort({ createdAt: -1 });
         return res.status(200).json({ notifiche });
     } catch (error) {
-        return res.status(500).json({ message: 'Errore nel recupero delle notifiche.', error: error.message });
+        return res.status(500).json({ message: 'Errore nel recupero delle notifiche.' });
     }
 };
 
@@ -18,7 +18,7 @@ export const marcaLetta = async (req, res) => {
         await notifica.save();
         return res.status(200).json({ notifica });
     } catch (error) {
-        return res.status(500).json({ message: 'Errore.', error: error.message });
+        return res.status(500).json({ message: 'Errore.' });
     }
 };
 
@@ -27,6 +27,6 @@ export const marcaTutteLette = async (req, res) => {
         await Notifica.updateMany({ ID_destinatario: req.user._id, letta: false }, { letta: true });
         return res.status(200).json({ message: 'Tutte le notifiche segnate come lette.' });
     } catch (error) {
-        return res.status(500).json({ message: 'Errore.', error: error.message });
+        return res.status(500).json({ message: 'Errore.' });
     }
 };

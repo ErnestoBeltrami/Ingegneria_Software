@@ -1,3 +1,4 @@
+import logger from '../config/logger.js';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import { Cittadino } from '../models/cittadino.js';
@@ -51,7 +52,7 @@ export const protect = async (req, res, next) => {
             next(); 
 
         } catch (error) {
-            console.error("Errore di verifica JWT:", error);
+            logger.error("Errore di verifica JWT:", error);
             return res.status(401).json({ message: 'Non autorizzato, token fallito o scaduto' }); 
         }
     }

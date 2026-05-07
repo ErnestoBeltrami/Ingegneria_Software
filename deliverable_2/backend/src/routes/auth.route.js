@@ -1,7 +1,16 @@
 import { Router } from "express";
+import rateLimit from "express-rate-limit";
 import passport from "../config/passport.js";
 import jwt from "jsonwebtoken";
 import { Cittadino } from "../models/cittadino.js";
+
+const completeProfileLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { message: 'Troppi tentativi. Riprova tra 15 minuti.' },
+});
 
 const router = Router();
 
@@ -36,7 +45,7 @@ router.get(
   }
 );
 
-router.post('/complete-profile', async (req, res) => {
+router.post('/complete-profile', completeProfileLimiter, async (req, res) => {
   const { dataNascita, comuneResidenza, circoscrizione } = req.body;
   const cittadinoId = req.body.cittadinoId?.trim();
 
@@ -75,7 +84,7 @@ router.post('/complete-profile', async (req, res) => {
 
     res.status(200).json({ message: 'Profilo completato!', token });
   } catch (error) {
-    res.status(400).json({ message: 'Errore di validazione o server.', details: error.message });
+    res.status(400).json({ message: 'Errore di validazione o server.' });
   }
 });
 

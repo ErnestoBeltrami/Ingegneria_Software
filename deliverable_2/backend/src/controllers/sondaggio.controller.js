@@ -1,3 +1,4 @@
+import logger from '../config/logger.js';
 import { Domanda } from "../models/domanda.js";
 import { Consultazione } from "../models/consultazione.js";
 import mongoose from 'mongoose';
@@ -79,18 +80,18 @@ export const creaSondaggio = async (req, res) => {
         // Cleanup: elimina il sondaggio se è stato creato
         if (sondaggio && sondaggio._id) {
             await Consultazione.findByIdAndDelete(sondaggio._id).catch(err => 
-                console.error(err)
+                logger.error(err)
             );
         }
         
         // Cleanup: elimina le domande create se il sondaggio non è stato creato o è fallito
         if (domandeCreate.length > 0 && (!sondaggio || !sondaggio._id)) {
             await Promise.all(
-                domandeCreate.map(d => Domanda.findByIdAndDelete(d._id).catch(err => console.error(err)))
+                domandeCreate.map(d => Domanda.findByIdAndDelete(d._id).catch(err => logger.error(err)))
             );
         }
 
-        console.error("Errore nella creazione del sondaggio:", error);
+        logger.error("Errore nella creazione del sondaggio:", error);
         
         if (error.name === 'ValidationError') {
              return res.status(400).json({ 
@@ -103,8 +104,7 @@ export const creaSondaggio = async (req, res) => {
         }
 
         return res.status(500).json({
-            message: "Errore interno del server durante la creazione del sondaggio.",
-            error: error.message
+            message: "Errore interno del server durante la creazione del sondaggio."
         });
     }
 };
@@ -156,10 +156,9 @@ export const getSondaggi = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Errore nel recupero dei sondaggi:', error);
+        logger.error('Errore nel recupero dei sondaggi:', error);
         return res.status(500).json({
-            message: 'Errore interno del server durante il recupero dei sondaggi.',
-            error: error.message
+            message: 'Errore interno del server durante il recupero dei sondaggi.'
         });
     }
 };
@@ -174,12 +173,12 @@ export const getSondaggiAvaiable = async (req, res) => {
             });
         }
 
-        const votazioni = await Consultazione.find({
+        const sondaggi = await Consultazione.find({
             stato: { $in: ["attivo", "concluso"] },
             tipo: 'sondaggio'
         }).populate('ID_domande').sort({ data_inizio: -1 });
 
-        if(!votazioni){
+        if(!sondaggi){
             return res.status(200).json({
                 message : 'Nessun sondaggio disponibile al momento'
             });
@@ -187,13 +186,12 @@ export const getSondaggiAvaiable = async (req, res) => {
 
         return res.status(200).json({
             message: 'Sondaggi recuperati con successo.',
-            votazioni
+            sondaggi
         });
     } catch (error) {
-        console.error('Errore nel recupero dei sondaggi:', error);
+        logger.error('Errore nel recupero dei sondaggi:', error);
         return res.status(500).json({
-            message: 'Errore interno del server durante il recupero dei sondaggi.',
-            error: error.message
+            message: 'Errore interno del server durante il recupero dei sondaggi.'
         });
     }
 };
@@ -201,30 +199,43 @@ export const getSondaggiAvaiable = async (req, res) => {
 // GET: Dettaglio singola sondaggio
 export const getSondaggioById = async (req, res) => {
     try {
-        const userFromMiddleware = req.user;
         const { id } = req.params;
-        
+
+        if (req.ruolo === 'operatore') {
+            const sondaggio = await Consultazione.findOne({
+                _id: id,
+                tipo: 'sondaggio'
+            }).populate('ID_domande');
+
+            if (!sondaggio) {
+                return res.status(404).json({ message: 'Sondaggio non trovato.' });
+            }
+
+            return res.status(200).json({ message: 'Sondaggio trovato con successo.', sondaggio });
+        }
+
+        // Cittadino: vede solo sondaggi attivi o conclusi
         const sondaggio = await Consultazione.findOne({
             _id: id,
-            creatoDa: userFromMiddleware._id,
-            tipo: 'sondaggio'
+            tipo: 'sondaggio',
+            stato: { $in: ['attivo', 'concluso'] }
         }).populate('ID_domande');
 
         if (!sondaggio) {
-            return res.status(404).json({
-                message: 'Sondaggio non trovato.'
-            });
+            return res.status(404).json({ message: 'Sondaggio non trovato.' });
         }
 
-        return res.status(200).json({
-            message: 'Sondaggio trovato con successo.',
-            sondaggio
-        });
+        const voted = !!(await RispostaConsultazione.exists({
+            ID_consultazione: id,
+            ID_cittadino: req.user._id,
+            tipo_consultazione: 'sondaggio'
+        }));
+
+        return res.status(200).json({ message: 'Sondaggio trovato con successo.', sondaggio, voted });
     } catch (error) {
-        console.error('Errore nel recupero del sondaggio:', error);
+        logger.error('Errore nel recupero del sondaggio:', error);
         return res.status(500).json({
-            message: 'Errore interno del server durante il recupero del sondaggio.',
-            error: error.message
+            message: 'Errore interno del server durante il recupero del sondaggio.'
         });
     }
 };
@@ -289,10 +300,9 @@ export const updateSondaggio = async (req, res) => {
             sondaggio: sondaggioAggiornato
         });
     } catch (error) {
-        console.error('Errore nell\'aggiornamento della sondaggio:', error);
+        logger.error('Errore nell\'aggiornamento della sondaggio:', error);
         return res.status(500).json({
-            message: 'Errore interno del server durante l\'aggiornamento del sondaggio.',
-            error: error.message
+            message: 'Errore interno del server durante l\'aggiornamento del sondaggio.'
         });
     }
 };
@@ -327,10 +337,9 @@ export const deleteSondaggio = async (req, res) => {
             message: 'Sondaggio eliminato con successo.'
         });
     } catch (error) {
-        console.error('Errore nell\'eliminazione del sondaggio:', error);
+        logger.error('Errore nell\'eliminazione del sondaggio:', error);
         return res.status(500).json({
-            message: 'Errore interno del server durante l\'eliminazione del sondaggio.',
-            error: error.message
+            message: 'Errore interno del server durante l\'eliminazione del sondaggio.'
         });
     }
 };
@@ -367,10 +376,9 @@ export const publishSondaggio = async (req, res) => {
             sondaggio
         });
     } catch (error) {
-        console.error('Errore nella pubblicazione del sondaggio:', error);
+        logger.error('Errore nella pubblicazione del sondaggio:', error);
         return res.status(500).json({
-            message: 'Errore interno del server durante la pubblicazione del sondaggio.',
-            error: error.message
+            message: 'Errore interno del server durante la pubblicazione del sondaggio.'
         });
     }
 };
@@ -407,10 +415,9 @@ export const archiveSondaggio = async (req, res) => {
             sondaggio
         });
     } catch (error) {
-        console.error('Errore nell\'archiviazione del sondaggio:', error);
+        logger.error('Errore nell\'archiviazione del sondaggio:', error);
         return res.status(500).json({
-            message: 'Errore interno del server durante l\'archiviazione del sondaggio.',
-            error: error.message
+            message: 'Errore interno del server durante l\'archiviazione del sondaggio.'
         });
     }
 };
@@ -500,10 +507,9 @@ export const getRiepilogoSintetico = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Errore nel recupero del riepilogo sintetico:', error);
+        logger.error('Errore nel recupero del riepilogo sintetico:', error);
         return res.status(500).json({
-            message: 'Errore interno del server.',
-            error: error.message
+            message: 'Errore interno del server.'
         });
     }
 };
@@ -630,10 +636,9 @@ export const getRiepilogoConFiltri = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Errore:', error);
+        logger.error('Errore:', error);
         return res.status(500).json({
-            message: 'Errore interno del server.',
-            error: error.message
+            message: 'Errore interno del server.'
         });
     }
 };

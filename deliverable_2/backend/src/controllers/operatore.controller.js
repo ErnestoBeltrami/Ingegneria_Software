@@ -1,3 +1,4 @@
+import logger from '../config/logger.js';
 import {Operatore} from '../models/operatore.js';
 import jwt from 'jsonwebtoken';
 import '../config/env.js';
@@ -32,8 +33,7 @@ export const getByCredentials = async  (req,res) => {
     }
     catch(error){
         return res.status(500).json({
-            message: "Errore interno del server durante il login.",
-            error: error.message
+            message: "Errore interno del server durante il login."
         });
     }
 }
@@ -68,10 +68,9 @@ export const getOperatoreData = async (req,res) => {
     }
     catch(error)
     {
-        console.error("Errore nel recupero dati operatore:", error);
+        logger.error("Errore nel recupero dati operatore:", error);
         return res.status(500).json({
-            message: "Errore interno del server durante il recupero dei dati.",
-            error: error.message
+            message: "Errore interno del server durante il recupero dei dati."
         });
     }
 } 
@@ -123,10 +122,9 @@ export const createOperatore = async (req, res) => {
             operatore: datiPubblici
         });
     } catch (error) {
-        console.error("Errore nella creazione operatore:", error);
+        logger.error("Errore nella creazione operatore:", error);
         return res.status(500).json({
-            message: "Errore interno del server durante la creazione dell'operatore.",
-            error: error.message
+            message: "Errore interno del server durante la creazione dell'operatore."
         });
     }
 }
@@ -185,10 +183,9 @@ export const changePassword = async (req, res) => {
         return res.status(200).json({ message: 'Password aggiornata con successo.' });
 
     } catch (error) {
-        console.error('Errore nel cambio password:', error);
+        logger.error('Errore nel cambio password:', error);
         return res.status(500).json({
-            message: 'Errore interno del server durante il cambio password.',
-            error: error.message
+            message: 'Errore interno del server durante il cambio password.'
         });
     }
 };
@@ -226,10 +223,9 @@ export const promoteOperatoreToRoot = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Errore nella promozione dell'operatore:", error);
+        logger.error("Errore nella promozione dell'operatore:", error);
         return res.status(500).json({
-            message: "Errore interno del server.",
-            error: error.message
+            message: "Errore interno del server."
         });
     }
 };
