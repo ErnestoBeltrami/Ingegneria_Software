@@ -82,20 +82,7 @@ export default function VotaSondaggio() {
                 opzioniScelte: answers[domandaId]
             }));
 
-            try {
-                await submitSondaggio(id, dettagliRisposte);
-            } catch (apiErr) {
-                // Il backend darà errore 400 perché le domande mockate (dom_1, ecc.) non esistono sul server vero.
-                // Lo logghiamo in console ma andiamo avanti a salvare lo stato per farti testare il blocco.
-                console.warn("L'API ha rifiutato i dati fittizi, ma continuiamo per testare la UI:", apiErr.message);
-            }
-            
-            // Salva nel localStorage per simulare che l'utente ha votato
-            const voted = JSON.parse(localStorage.getItem('votedActivities') || '[]');
-            if (!voted.includes(id)) {
-                localStorage.setItem('votedActivities', JSON.stringify([...voted, id]));
-            }
-
+            await submitSondaggio(id, dettagliRisposte);
             setHasSubmitted(true);
         } catch (err) {
             alert(err.message || "Errore durante l'invio del sondaggio.");

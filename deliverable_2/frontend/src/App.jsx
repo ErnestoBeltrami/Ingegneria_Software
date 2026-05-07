@@ -19,8 +19,7 @@ import Votazione from './pages/cittadino/votazione/Votazione';
 import VotaSondaggio from './pages/cittadino/sondaggio/VotaSondaggio';
 import CreaIniziativaPage from './pages/cittadino/CreaIniziativaPage';
 import ProfiloCittadinePage from './pages/cittadino/ProfiloCittadinePage';
-import DashboardCittadinoPage from './pages/cittadino/dashboard/DashboardCittadinoPage';
-
+import DashboardCittadinePage from './pages/cittadino/dashboard/DashboardCittadinePage';
 
 function CompletaProfiloRoute() {
   const [params] = useSearchParams();
@@ -66,7 +65,7 @@ export default function App() {
           <Route path="/operatore/profilo" element={<ProfiloOperatorePage />} />
           <Route path="/completa-profilo" element={<CompletaProfiloRoute />} />
           <Route path="/profilo-completato" element={<ProfiloCompletatoPage />} />
-          <Route path="/cittadino/dashboard" element={<DashboardCittadinoPage />} />
+          <Route path="/cittadino/dashboard" element={<DashboardCittadinePage />} />
           <Route path="/cittadino/votazione/:id" element={<Votazione />} />
           <Route path="/cittadino/sondaggio/:id" element={<VotaSondaggio />} />
           <Route path="/cittadino/iniziativa/crea" element={<CreaIniziativaPage />} />

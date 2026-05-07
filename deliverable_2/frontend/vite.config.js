@@ -34,6 +34,7 @@ export default defineConfig({
       '/sondaggio': { target: 'http://localhost:8000', changeOrigin: true },
       '/categorie': { target: 'http://localhost:8000', changeOrigin: true },
       '/iniziative': { target: 'http://localhost:8000', changeOrigin: true },
+      '/notifiche': { target: 'http://localhost:8000', changeOrigin: true },
       '/cittadino': {
         target: 'http://localhost:8000',
         changeOrigin: true,
