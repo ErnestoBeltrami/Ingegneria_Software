@@ -463,14 +463,19 @@
  *     CreateVotazioneInput:
  *       type: object
  *       required:
- *         - titoloVotazione
+ *         - tipo
+ *         - titolo
  *         - descrizione
  *         - data_inizio
  *         - data_fine
  *         - data_discussione
  *         - domanda
  *       properties:
- *         titoloVotazione:
+ *         tipo:
+ *           type: string
+ *           enum: [votazione]
+ *           example: "votazione"
+ *         titolo:
  *           type: string
  *           description: Titolo della votazione
  *           example: "Referendum sulla proposta X"

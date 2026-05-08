@@ -1,5 +1,11 @@
 import { Router } from "express";
-import {archiveSondaggio, creaSondaggio, deleteSondaggio, getRiepilogoSintetico, getSondaggi, getSondaggioById, publishSondaggio, updateSondaggio,getSondaggiAvaiable, getRiepilogoConFiltri} from "../controllers/sondaggio.controller.js";
+import { getRiepilogoSintetico, getSondaggi, getSondaggioById, updateSondaggio, getSondaggiAvaiable, getRiepilogoConFiltri } from "../controllers/sondaggio.controller.js";
+import {
+    creaConsultazione,
+    publishConsultazione,
+    archiveConsultazione,
+    deleteConsultazione
+} from "../controllers/consultazione.controller.js";
 import {
     protect,
     restrictTo,
@@ -8,8 +14,7 @@ import {
 
 const router = Router();
 
-// POST: Crea nuova categoria per iniziativa
-router.post("/",protect,restrictTo(['operatore']),creaSondaggio); 
+router.post("/", protect, restrictTo(['operatore']), creaConsultazione);
 
 router.get("/",protect,getSondaggi);
 
@@ -19,11 +24,11 @@ router.get("/:id", protect, validateObjectId, getSondaggioById);
 
 router.patch("/:id", protect, validateObjectId, restrictTo(['operatore']), updateSondaggio);
 
-router.delete("/:id", protect, validateObjectId, restrictTo(['operatore']), deleteSondaggio);
+router.delete("/:id", protect, validateObjectId, restrictTo(['operatore']), deleteConsultazione);
 
-router.patch("/:id/publish", protect, validateObjectId, restrictTo(['operatore']), publishSondaggio);
+router.patch("/:id/publish", protect, validateObjectId, restrictTo(['operatore']), publishConsultazione);
 
-router.patch("/:id/archive", protect, validateObjectId, restrictTo(['operatore']), archiveSondaggio);
+router.patch("/:id/archive", protect, validateObjectId, restrictTo(['operatore']), archiveConsultazione);
 
 router.get("/:id/riepilogo", protect, validateObjectId, getRiepilogoSintetico);
 

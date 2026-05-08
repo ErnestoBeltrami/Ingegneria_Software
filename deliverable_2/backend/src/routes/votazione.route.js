@@ -1,17 +1,18 @@
 import { Router } from "express";
 import {
-  createVotazione,
   getVotazioni,
   getVotazioneById,
   updateVotazione,
-  deleteVotazione,
-  publishVotazione,
-  archiveVotazione,
   getRiepilogoSintetico,
   getRiepilogoDemografico,
   getVotazioniAvailable
 } from "../controllers/votazione.controller.js";
-
+import {
+  creaConsultazione,
+  publishConsultazione,
+  archiveConsultazione,
+  deleteConsultazione
+} from "../controllers/consultazione.controller.js";
 import {
   protect,
   restrictTo,
@@ -38,19 +39,19 @@ router.get("/:id/riepilogo/demografico", protect, validateObjectId, restrictTo([
 router.get("/:id/riepilogo", protect, validateObjectId, getRiepilogoSintetico);
 
 // POST /votazioni - Creazione di una nuova votazione (solo operatore autenticato)
-router.post("/", protect, restrictTo(['operatore']), createVotazione);
+router.post("/", protect, restrictTo(['operatore']), creaConsultazione);
 
 // PATCH /votazioni/:id - Modifica votazione (solo stato "bozza")
 router.patch("/:id", protect, validateObjectId, restrictTo(['operatore']), updateVotazione);
 
 // DELETE /votazioni/:id - Eliminazione votazione (solo stato "bozza")
-router.delete("/:id", protect, validateObjectId, restrictTo(['operatore']), deleteVotazione);
+router.delete("/:id", protect, validateObjectId, restrictTo(['operatore']), deleteConsultazione);
 
 // PATCH /votazioni/:id/publish - Pubblicazione votazione (bozza -> attivo)
-router.patch("/:id/publish", protect, validateObjectId, restrictTo(['operatore']), publishVotazione);
+router.patch("/:id/publish", protect, validateObjectId, restrictTo(['operatore']), publishConsultazione);
 
 // PATCH /votazioni/:id/archive - Archiviazione votazione (concluso -> archiviato)
-router.patch("/:id/archive", protect, validateObjectId, restrictTo(['operatore']), archiveVotazione);
+router.patch("/:id/archive", protect, validateObjectId, restrictTo(['operatore']), archiveConsultazione);
 
 export default router;
 

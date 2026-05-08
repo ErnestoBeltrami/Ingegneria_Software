@@ -95,6 +95,7 @@ export default function CreaSondaggioPage() {
 
     const tipo = risposteMultiple ? 'risposta_multipla' : 'risposta_singola';
     const body = {
+      tipo: 'sondaggio',
       titolo: titolo.trim(),
       descrizione: descrizione.trim(),
       data_inizio: buildIso(dataApertura),

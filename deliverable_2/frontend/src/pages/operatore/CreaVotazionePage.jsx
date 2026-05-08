@@ -55,7 +55,8 @@ export default function CreaVotazionePage() {
 
     const tipo = risposteMultiple ? 'risposta_multipla' : 'risposta_singola';
     const body = {
-      titoloVotazione: titolo.trim(),
+      tipo: 'votazione',
+      titolo: titolo.trim(),
       descrizione: descrizione.trim(),
       data_inizio: buildIso(dataApertura),
       data_fine: buildIso(dataChiusura),
