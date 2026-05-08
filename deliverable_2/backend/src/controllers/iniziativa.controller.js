@@ -19,12 +19,11 @@ export const createIniziativa = async (req, res) => {
         const {
             ID_categoria,
             titolo,
-            ID_cittadino,
             descrizione
         } = req.body;
 
         // Validazione campi
-        if (!ID_categoria || !titolo || !ID_cittadino || !descrizione) {
+        if (!ID_categoria || !titolo || !descrizione) {
             return res.status(400).json({
                 message: "Dati mancanti per la creazione dell'iniziativa."
             });
@@ -49,7 +48,7 @@ export const createIniziativa = async (req, res) => {
         const nuovaIniziativa = await Iniziativa.create({
             ID_categoria,
             titolo,
-            ID_cittadino,
+            ID_cittadino: userFromMiddleware._id,
             descrizione
         });
 
