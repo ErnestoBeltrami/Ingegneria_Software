@@ -32,11 +32,11 @@ export default function Votazione() {
     const [selectedOption, setSelectedOption] = useState(null);
     const [hasVoted, setHasVoted] = useState(false);
 
-    // TODO (Seconda fase): fetch(api/votazione/:id) per sostituire i dati hardcoded
+    // TODO fetch api votazione
 
     const handleVote = () => {
         if (!selectedOption) return;
-        // TODO (Seconda fase): API POST per inviare il voto associato all'opzione
+        // TODO API POST per inviare il voto associato all'opzione
         setHasVoted(true);
         console.log("Voto registrato per l'opzione:", selectedOption);
     };
