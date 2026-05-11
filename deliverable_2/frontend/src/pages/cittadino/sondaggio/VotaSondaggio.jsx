@@ -25,6 +25,9 @@ export default function VotaSondaggio() {
             try {
                 const res = await fetchSondaggioCittadino(id);
                 setSondaggio(res.sondaggio);
+                if (res.voted) {
+                    setHasSubmitted(true);
+                }
             } catch (err) {
                 setError(err.message || 'Errore nel caricamento del sondaggio');
             } finally {

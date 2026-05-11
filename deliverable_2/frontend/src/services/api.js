@@ -61,7 +61,7 @@ export const fetchAllActivities = async () => {
         });
 
         const votazioni = (votazioniRes.votazioni || []).map(normalise);
-        const sondaggi = (sondaggiRes.votazioni || []).map(normalise);
+        const sondaggi = (sondaggiRes.sondaggi || []).map(normalise);
 
         return [...votazioni, ...sondaggi];
     } catch (error) {
@@ -103,8 +103,5 @@ export const submitSondaggio = (sondaggioId, dettagliRisposte) =>
     });
 
 export const fetchSondaggioCittadino = async (id) => {
-    const res = await fetchSondaggi();
-    const sondaggio = (res.votazioni || []).find(s => s._id === id);
-    if (!sondaggio) throw new Error("Sondaggio non trovato o non più disponibile.");
-    return { sondaggio };
+    return apiFetch(`/sondaggio/${id}`);
 };
