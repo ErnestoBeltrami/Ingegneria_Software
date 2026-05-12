@@ -6,12 +6,7 @@ import {
   getRiepilogoDemografico,
   getVotazioniAvailable
 } from "../controllers/votazione.controller.js";
-import {
-  creaConsultazione,
-  publishConsultazione,
-  archiveConsultazione,
-  deleteConsultazione
-} from "../controllers/consultazione.controller.js";
+
 import {
   protect,
   restrictTo,
