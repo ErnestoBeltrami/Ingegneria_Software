@@ -151,7 +151,7 @@ export const publishConsultazione = async (req, res) => {
             })
         }
 
-        if(consultazione.stato !== 'booza'){
+        if(consultazione.stato !== 'bozza'){
             return res.status(400).json({
                 message: 'Solo le bozze possono essere pubblicate'
             });

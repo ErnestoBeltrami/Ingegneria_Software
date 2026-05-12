@@ -52,6 +52,7 @@ const validVotazioneBody = {
 
 describe('consultazione controller', () => {
     let creaConsultazione;
+    let getConsultazioneById;
     let publishConsultazione;
     let archiveConsultazione;
     let deleteConsultazione;
@@ -59,6 +60,7 @@ describe('consultazione controller', () => {
     beforeAll(async () => {
         const mod = await import('../../src/controllers/consultazione.controller.js');
         creaConsultazione = mod.creaConsultazione;
+        getConsultazioneById = mod.getConsultazioneById;
         publishConsultazione = mod.publishConsultazione;
         archiveConsultazione = mod.archiveConsultazione;
         deleteConsultazione = mod.deleteConsultazione;
@@ -138,6 +140,66 @@ describe('consultazione controller', () => {
             const res = makeRes();
             await creaConsultazione(req, res);
             expect(res.status).toHaveBeenCalledWith(500);
+        });
+    });
+
+    // ── getConsultazioneById ───────────────────────────────────────────────────
+
+    describe('getConsultazioneById', () => {
+        it('restituisce 404 se la consultazione non esiste', async () => {
+            mockConsultazioneFindOne.mockResolvedValueOnce(null);
+            const req = { ruolo: 'operatore', params: { id: CONSULTAZIONE_ID } };
+            const res = makeRes();
+            await getConsultazioneById(req, res);
+            expect(res.status).toHaveBeenCalledWith(404);
+        });
+
+        it('restituisce 404 se un cittadino richiede una bozza', async () => {
+            const fake = { tipo: 'votazione', stato: 'bozza', populate: jest.fn() };
+            mockConsultazioneFindOne.mockResolvedValueOnce(fake);
+            const req = { ruolo: 'cittadino', params: { id: CONSULTAZIONE_ID } };
+            const res = makeRes();
+            await getConsultazioneById(req, res);
+            expect(res.status).toHaveBeenCalledWith(404);
+        });
+
+        it('restituisce 404 se un cittadino richiede una consultazione archiviata', async () => {
+            const fake = { tipo: 'votazione', stato: 'archiviato', populate: jest.fn() };
+            mockConsultazioneFindOne.mockResolvedValueOnce(fake);
+            const req = { ruolo: 'cittadino', params: { id: CONSULTAZIONE_ID } };
+            const res = makeRes();
+            await getConsultazioneById(req, res);
+            expect(res.status).toHaveBeenCalledWith(404);
+        });
+
+        it('restituisce 200 e popola ID_domanda per una votazione', async () => {
+            const fake = { tipo: 'votazione', stato: 'attivo', populate: jest.fn().mockResolvedValueOnce(undefined) };
+            mockConsultazioneFindOne.mockResolvedValueOnce(fake);
+            const req = { ruolo: 'operatore', params: { id: CONSULTAZIONE_ID } };
+            const res = makeRes();
+            await getConsultazioneById(req, res);
+            expect(fake.populate).toHaveBeenCalledWith('ID_domanda');
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ consultazione: fake }));
+        });
+
+        it('restituisce 200 e popola ID_domande per un sondaggio', async () => {
+            const fake = { tipo: 'sondaggio', stato: 'attivo', populate: jest.fn().mockResolvedValueOnce(undefined) };
+            mockConsultazioneFindOne.mockResolvedValueOnce(fake);
+            const req = { ruolo: 'operatore', params: { id: CONSULTAZIONE_ID } };
+            const res = makeRes();
+            await getConsultazioneById(req, res);
+            expect(fake.populate).toHaveBeenCalledWith('ID_domande');
+            expect(res.status).toHaveBeenCalledWith(200);
+        });
+
+        it('restituisce 200 per un cittadino con consultazione attiva', async () => {
+            const fake = { tipo: 'votazione', stato: 'attivo', populate: jest.fn().mockResolvedValueOnce(undefined) };
+            mockConsultazioneFindOne.mockResolvedValueOnce(fake);
+            const req = { ruolo: 'cittadino', params: { id: CONSULTAZIONE_ID } };
+            const res = makeRes();
+            await getConsultazioneById(req, res);
+            expect(res.status).toHaveBeenCalledWith(200);
         });
     });
 
