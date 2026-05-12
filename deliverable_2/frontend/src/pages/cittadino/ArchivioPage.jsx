@@ -73,7 +73,6 @@ export default function Archivio() {
                 </div>
             </header>
 
-            {/* ── Pagina ── */}
             <div className="cd-page">
                 <header className="cd-header">
                     <h1 className="cd-header__title">
@@ -82,7 +81,6 @@ export default function Archivio() {
                     </h1>
                 </header>
 
-                {/* ── Tab toggle ── */}
                 <div className="archivio-tabs">
                     <button
                         className={`archivio-tab ${activeTab === 'votazioni' ? 'archivio-tab--active' : ''}`}
@@ -121,10 +119,8 @@ export default function Archivio() {
                                     </span>
                                 </div>
 
-                                {/* Titolo */}
                                 <p className="archivio-card__titolo">{item.titolo}</p>
 
-                                {/* CTA */}
                                 <button
                                     className="archivio-card__btn"
                                     onClick={() => handleRiepilogo(item)}
