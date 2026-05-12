@@ -94,37 +94,6 @@ export const getVotazioni = async (req, res) => {
 };
 
 
-// GET: Dettaglio singola votazione
-export const getVotazioneById = async (req, res) => {
-    try {
-        const userFromMiddleware = req.user;
-        const { id } = req.params;
-
-        const votazione = await Consultazione.findOne({
-            _id: id,
-            creatoDa: userFromMiddleware._id,
-            tipo: 'votazione'
-        }).populate('ID_domanda');
-
-        if (!votazione) {
-            return res.status(404).json({
-                message: 'Votazione non trovata.'
-            });
-        }
-
-        return res.status(200).json({
-            message: 'Votazione trovata con successo.',
-            votazione
-        });
-    } catch (error) {
-        console.error('Errore nel recupero della votazione:', error);
-        return res.status(500).json({
-            message: 'Errore interno del server durante il recupero della votazione.',
-            error: error.message
-        });
-    }
-};
-
 // PATCH: Modifica votazione (solo in stato "bozza")
 export const updateVotazione = async (req, res) => {
     try {

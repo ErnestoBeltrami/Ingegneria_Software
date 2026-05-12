@@ -93,37 +93,6 @@ export const getSondaggiAvaiable = async (req, res) => {
     }
 };
 
-// GET: Dettaglio singola sondaggio
-export const getSondaggioById = async (req, res) => {
-    try {
-        const userFromMiddleware = req.user;
-        const { id } = req.params;
-        
-        const sondaggio = await Consultazione.findOne({
-            _id: id,
-            creatoDa: userFromMiddleware._id,
-            tipo: 'sondaggio'
-        }).populate('ID_domande');
-
-        if (!sondaggio) {
-            return res.status(404).json({
-                message: 'Sondaggio non trovato.'
-            });
-        }
-
-        return res.status(200).json({
-            message: 'Sondaggio trovato con successo.',
-            sondaggio
-        });
-    } catch (error) {
-        console.error('Errore nel recupero del sondaggio:', error);
-        return res.status(500).json({
-            message: 'Errore interno del server durante il recupero del sondaggio.',
-            error: error.message
-        });
-    }
-};
-
 export const updateSondaggio = async (req, res) => {
     try {
         const userFromMiddleware = req.user;

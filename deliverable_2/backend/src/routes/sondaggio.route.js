@@ -2,7 +2,6 @@ import { Router } from "express";
 import {
     getRiepilogoSintetico, 
     getSondaggi, 
-    getSondaggioById, 
     updateSondaggio,
     getSondaggiAvaiable, 
     getRiepilogoConFiltri
@@ -18,7 +17,8 @@ import {
     creaConsultazione,
     publishConsultazione,
     archiveConsultazione,
-    deleteConsultazione
+    deleteConsultazione,
+    getConsultazioneById
 } from "../controllers/consultazione.controller.js";
 
 const router = Router();
@@ -30,7 +30,7 @@ router.get("/",protect,getSondaggi);
 
 router.get("/cittadino",protect,restrictTo(['cittadino']),getSondaggiAvaiable);
 
-router.get("/:id", protect, validateObjectId, getSondaggioById);
+router.get("/:id", protect, validateObjectId, restrictTo(['operatore','cittadino']),getConsultazioneById);
 
 router.patch("/:id", protect, validateObjectId, restrictTo(['operatore']), updateSondaggio);
 

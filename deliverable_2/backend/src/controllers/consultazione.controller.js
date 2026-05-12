@@ -106,6 +106,32 @@ export const creaConsultazione = async (req, res) => {
   }
 };
 
+// GET: Dettaglio singola consultazione
+export const getConsultazioneById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const ruolo = req.ruolo;
+
+    const consultazione = await Consultazione.findOne({ _id: id }); // senza populate
+
+    if (!consultazione || (ruolo === 'cittadino' && ['bozza', 'archiviato'].includes(consultazione.stato))) {
+      return res.status(404).json({ message: 'Consultazione non trovata.' });
+    }
+
+    if (consultazione.tipo === 'votazione') {
+      await consultazione.populate('ID_domanda');
+    } else {
+      await consultazione.populate('ID_domande');
+    }
+
+    return res.status(200).json({ message: 'Consultazione trovata con successo.', consultazione });
+
+  } catch (error) {
+    console.error('Errore nel recupero della consultazione:', error);
+    return res.status(500).json({ message: 'Errore interno del server.', error: error.message });
+  }
+};
+
 //PATCH: Pubblicare consultazione (bozza -> attivo) 
 export const publishConsultazione = async (req, res) => {
     try{
