@@ -49,7 +49,7 @@ export const fetchAllActivities = async () => {
     ]);
     return [
         ...(votazioniRes.votazioni || []).map(v => ({ ...v, voted: false })),
-        ...(sondaggiRes.votazioni || []).map(v => ({ ...v, voted: false })),
+        ...(sondaggiRes.sondaggi || []).map(v => ({ ...v, voted: false })),
     ];
 };
 export const fetchProfile = () => apiFetch('/cittadino/profile');
