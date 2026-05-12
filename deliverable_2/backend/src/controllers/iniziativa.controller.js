@@ -1,3 +1,4 @@
+import logger from '../config/logger.js';
 import { Iniziativa } from '../models/iniziativa.js';
 import { CategoriaIniziativa } from '../models/categoria_iniziativa.js';
 import { Cittadino } from '../models/cittadino.js';
@@ -24,7 +25,7 @@ export const createIniziativa = async (req, res) => {
         const ID_cittadino = req.user._id;
 
         // Validazione campi
-        if (!ID_categoria || !titolo || !ID_cittadino || !descrizione) {
+        if (!ID_categoria || !titolo || !descrizione) {
             return res.status(400).json({
                 message: "Dati mancanti per la creazione dell'iniziativa."
             });
@@ -49,7 +50,7 @@ export const createIniziativa = async (req, res) => {
         const nuovaIniziativa = await Iniziativa.create({
             ID_categoria,
             titolo,
-            ID_cittadino,
+            ID_cittadino: userFromMiddleware._id,
             descrizione
         });
 
@@ -59,10 +60,9 @@ export const createIniziativa = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Errore nella creazione dell'iniziativa:", error);
+        logger.error("Errore nella creazione dell'iniziativa:", error);
         return res.status(500).json({
-            message: "Errore interno del server durante la creazione dell'iniziativa.",
-            error: error.message
+            message: "Errore interno del server durante la creazione dell'iniziativa."
         });
     }
 };
@@ -149,10 +149,9 @@ export const getIniziative = async (req,res) => {
 
     }
     catch(error){
-        console.error("Errore nel recupero delle iniziative:", error);
+        logger.error("Errore nel recupero delle iniziative:", error);
         return res.status(500).json({
-            message: "Errore interno del server durante il recupero delle iniziative.",
-            error: error.message
+            message: "Errore interno del server durante il recupero delle iniziative."
         });
     }
 };
@@ -176,10 +175,9 @@ export const getIniziativaById = async (req, res) => {
         }
     }
     catch(error){
-        console.error("Errore nel recupero dell'iniziativa con l'ID specificato:", error);
+        logger.error("Errore nel recupero dell'iniziativa con l'ID specificato:", error);
         return res.status(500).json({
-            message: "Errore interno del server durante il recupero dell'iniziativa con l'ID specificato.",
-            error: error.message
+            message: "Errore interno del server durante il recupero dell'iniziativa con l'ID specificato."
         });
     }
 };
@@ -247,10 +245,9 @@ export const updateIniziativa = async (req, res) => {
         });
     }
     catch(error){
-        console.error("Errore nell'aggiornamento dell'iniziativa con l'ID specificato:", error);
+        logger.error("Errore nell'aggiornamento dell'iniziativa con l'ID specificato:", error);
         return res.status(500).json({
-            message: "Errore interno del server durante l'aggiornamento dell'iniziativa con l'ID specificato.",
-            error: error.message
+            message: "Errore interno del server durante l'aggiornamento dell'iniziativa con l'ID specificato."
         });
     }
 };
@@ -285,8 +282,7 @@ export const deleteIniziativa = async (req, res) => {
     }
     catch(error){
         return res.status(500).json({
-            message: "Errore interno del server durante l'eliminazione dell'iniziativa con l'ID specificato.",
-            error: error.message
+            message: "Errore interno del server durante l'eliminazione dell'iniziativa con l'ID specificato."
         });
     }
 };
@@ -316,7 +312,7 @@ export const ricercaIniziativa = async (req, res) => {
             // Se l'ID non è valido, il costruttore di ObjectId può lanciare un errore
             if (!mongoose.Types.ObjectId.isValid(id)) {
                  // Potresti gestire l'errore qui o lasciare che il try/catch generale lo gestisca
-                 console.warn(`ID Categoria non valido: ${id}`);
+                 logger.warn(`ID Categoria non valido: ${id}`);
                  return null; // Esclude ID non validi
             }
             return new mongoose.Types.ObjectId(id);
@@ -445,10 +441,9 @@ export const ricercaIniziativa = async (req, res) => {
         }
 
     } catch (error) {
-        console.error("Errore nel recupero delle iniziative:", error);
+        logger.error("Errore nel recupero delle iniziative:", error);
         return res.status(500).json({
-            message: "Errore interno del server durante il recupero delle iniziative.",
-            error: error.message
+            message: "Errore interno del server durante il recupero delle iniziative."
         });
     }
 };
@@ -501,10 +496,9 @@ export const moderaIniziativa = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Errore nella moderazione dell'iniziativa:", error);
+        logger.error("Errore nella moderazione dell'iniziativa:", error);
         return res.status(500).json({
-            message: "Errore interno del server durante la moderazione dell'iniziativa.",
-            error: error.message
+            message: "Errore interno del server durante la moderazione dell'iniziativa."
         });
     }
 };

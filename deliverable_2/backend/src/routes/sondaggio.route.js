@@ -23,8 +23,7 @@ import {
 
 const router = Router();
 
-// POST: Crea nuova categoria per iniziativa
-router.post("/",protect,restrictTo(['operatore']),creaConsultazione); 
+router.post("/", protect, restrictTo(['operatore']), creaConsultazione);
 
 router.get("/",protect,getSondaggi);
 

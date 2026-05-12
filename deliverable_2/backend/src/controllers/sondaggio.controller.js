@@ -1,8 +1,8 @@
+import logger from '../config/logger.js';
 import { Domanda } from "../models/domanda.js";
 import { Consultazione } from "../models/consultazione.js";
 import mongoose from 'mongoose';
 import { RispostaConsultazione } from "../models/risposta_consultazione.js";
-
 
 export const getSondaggi = async (req, res) => {
     try {
@@ -51,10 +51,9 @@ export const getSondaggi = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Errore nel recupero dei sondaggi:', error);
+        logger.error('Errore nel recupero dei sondaggi:', error);
         return res.status(500).json({
-            message: 'Errore interno del server durante il recupero dei sondaggi.',
-            error: error.message
+            message: 'Errore interno del server durante il recupero dei sondaggi.'
         });
     }
 };
@@ -85,10 +84,9 @@ export const getSondaggiAvaiable = async (req, res) => {
             sondaggi
         });
     } catch (error) {
-        console.error('Errore nel recupero dei sondaggi:', error);
+        logger.error('Errore nel recupero dei sondaggi:', error);
         return res.status(500).json({
-            message: 'Errore interno del server durante il recupero dei sondaggi.',
-            error: error.message
+            message: 'Errore interno del server durante il recupero dei sondaggi.'
         });
     }
 };
@@ -153,10 +151,9 @@ export const updateSondaggio = async (req, res) => {
             sondaggio: sondaggioAggiornato
         });
     } catch (error) {
-        console.error('Errore nell\'aggiornamento della sondaggio:', error);
+        logger.error('Errore nell\'aggiornamento della sondaggio:', error);
         return res.status(500).json({
-            message: 'Errore interno del server durante l\'aggiornamento del sondaggio.',
-            error: error.message
+            message: 'Errore interno del server durante l\'aggiornamento del sondaggio.'
         });
     }
 };
@@ -247,10 +244,9 @@ export const getRiepilogoSintetico = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Errore nel recupero del riepilogo sintetico:', error);
+        logger.error('Errore nel recupero del riepilogo sintetico:', error);
         return res.status(500).json({
-            message: 'Errore interno del server.',
-            error: error.message
+            message: 'Errore interno del server.'
         });
     }
 };
@@ -377,10 +373,9 @@ export const getRiepilogoConFiltri = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Errore:', error);
+        logger.error('Errore:', error);
         return res.status(500).json({
-            message: 'Errore interno del server.',
-            error: error.message
+            message: 'Errore interno del server.'
         });
     }
 };

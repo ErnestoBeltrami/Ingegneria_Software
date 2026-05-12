@@ -1,3 +1,4 @@
+import logger from '../config/logger.js';
 import cron from 'node-cron';
 import { Consultazione } from '../models/consultazione.js';
 
@@ -18,19 +19,19 @@ const aggiornaStatiConsultazioni = async () => {
         );
 
         if (attivate.modifiedCount > 0 || concluse.modifiedCount > 0) {
-            console.log(
+            logger.info(
                 `[Scheduler] Consultazioni aggiornate — attivate: ${attivate.modifiedCount}, concluse: ${concluse.modifiedCount}`
             );
         }
     } catch (error) {
-        console.error('[Scheduler] Errore durante l\'aggiornamento degli stati:', error);
+        logger.error('[Scheduler] Errore durante l\'aggiornamento degli stati:', error);
     }
 };
 
 // Esegue ogni ora (minuto 0 di ogni ora)
 export const avviaScheduler = () => {
     cron.schedule('0 * * * *', aggiornaStatiConsultazioni);
-    console.log('[Scheduler] Avviato — aggiornamento stati consultazioni ogni ora.');
+    logger.info('[Scheduler] Avviato — aggiornamento stati consultazioni ogni ora.');
 
     // Esegue subito all'avvio per allineare eventuali stati rimasti indietro
     aggiornaStatiConsultazioni();

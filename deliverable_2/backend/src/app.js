@@ -2,6 +2,7 @@ import "./config/env.js";
 import express from "express";
 import session from "express-session";
 import passport from "./config/passport.js";
+import mongoose from "mongoose";
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger.js";
 import operatoreRouter from "./routes/operatore.route.js";
@@ -15,10 +16,10 @@ import notificaRouter from "./routes/notifica.route.js";
 const app = express();
 
 app.get("/health", (_req, res) => {
-  if(mongoose.connection.readyState !== 1){
-    return res.status(503).json({ status: 'db_down'});
+  if (mongoose.connection.readyState !== 1) {
+    return res.status(503).json({ status: "db_down" });
   }
-  res.status(200).json({ status:'ok'});
+  res.status(200).json({ status: "ok" });
 });
 
 // give to the app the ability to parse json request
