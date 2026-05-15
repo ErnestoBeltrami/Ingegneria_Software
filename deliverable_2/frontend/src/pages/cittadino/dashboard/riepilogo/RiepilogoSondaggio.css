@@ -36,7 +36,8 @@
 }
 
 .crs-back:hover {
-    color: #007a52; /* Verde istituzionale al passaggio del mouse */
+    color: #007a52;
+    /* Verde istituzionale al passaggio del mouse */
 }
 
 .crs-title {
@@ -58,27 +59,34 @@
 .crs-domande {
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Distanzia bene le card */
+    gap: 20px;
+    /* Distanzia bene le card */
 }
 
 /* Card Domanda */
 .crs-card {
-    background: var(--surface); /* Sfondo bianco o grigio a seconda del tema */
-    border: 1px solid var(--border); /* Bordo sottile grigio chiaro */
-    border-radius: 12px; /* Border-radius morbido */
-    padding: 24px; /* Buon padding interno */
-    position: relative; 
+    background: var(--surface);
+    /* Sfondo bianco o grigio a seconda del tema */
+    border: 1px solid var(--border);
+    /* Bordo sottile grigio chiaro */
+    border-radius: 12px;
+    /* Border-radius morbido */
+    padding: 24px;
+    /* Buon padding interno */
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 16px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); /* Ombra leggerissima per dare profondità */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    /* Ombra leggerissima per dare profondità */
 }
 
 .crs-card__header {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    padding-right: 90px; /* Lascia spazio al badge assoluto in alto a destra */
+    padding-right: 90px;
+    /* Lascia spazio al badge assoluto in alto a destra */
 }
 
 .crs-card__title {
@@ -94,8 +102,8 @@
     position: absolute;
     top: 24px;
     right: 24px;
-    background-color: #d1fae5; /* Verde chiarissimo */
-    color: #065f46; /* Verde scuro */
+    background-color: #d1fae5;
+    color: #065f46;
     font-size: 11px;
     font-weight: 600;
     padding: 4px 10px;
@@ -104,28 +112,82 @@
     letter-spacing: 0.5px;
 }
 
-/* Responsive */
+.crs-status {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.crs-status--error {
+    color: #ff6b6b;
+}
+
+.crs-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.crs-nav__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.crs-nav__btn:hover:not(:disabled) {
+    background: var(--surface-raised);
+    border-color: var(--border-strong);
+    color: var(--text);
+}
+
+.crs-nav__btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.crs-nav__indicator {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
 @media (max-width: 640px) {
     .crs-page {
         padding: 20px 16px 40px;
     }
-    
+
     .crs-title {
         font-size: 20px;
     }
-    
+
     .crs-card {
         padding: 20px;
     }
-    
+
     .crs-badge {
         top: 20px;
         right: 20px;
         font-size: 10px;
         padding: 3px 8px;
     }
-    
+
     .crs-card__header {
         padding-right: 80px;
+    }
+
+    .crs-nav__btn {
+        padding: 8px 12px;
+        font-size: 12px;
     }
 }
