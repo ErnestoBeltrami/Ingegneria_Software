@@ -52,8 +52,7 @@ export default function Archivio() {
         if (item.tipo === 'votazione') {
             navigate(`/cittadino/archivio/votazione/${item._id}`);
         } else {
-            // TODO: riepilogo sondaggio
-            console.log('Visualizza riepilogo sondaggio:', item._id);
+            navigate(`/cittadino/archivio/sondaggio/${item._id}`);
         }
     };
 

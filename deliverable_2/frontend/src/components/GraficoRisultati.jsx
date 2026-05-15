@@ -4,13 +4,6 @@ import {
 } from 'recharts';
 import './GraficoRisultati.css';
 
-/**
- * GraficoRisultati — progress-bar style orizzontale con Recharts.
- *
- * Props:
- *   dati       — Array<{ etichetta: string, percentuale: number, colore: string }>
- *   totaleVoti — number (mostrato sopra il grafico)
- */
 export default function GraficoRisultati({ dati = [], totaleVoti = 0 }) {
     if (!dati.length) return null;
 
@@ -20,7 +13,6 @@ export default function GraficoRisultati({ dati = [], totaleVoti = 0 }) {
 
     return (
         <div className="gr-container">
-            {/* Totale voti */}
             <div className="gr-total">
                 <span className="gr-total__num">{totaleVoti}</span>
                 <span className="gr-total__label">voti totali</span>
@@ -34,14 +26,14 @@ export default function GraficoRisultati({ dati = [], totaleVoti = 0 }) {
                     margin={{ top: 0, right: 64, left: 0, bottom: 0 }}
                     barCategoryGap="40%"
                 >
-                    {/* Asse X — nascosto, dominio 0–100 */}
+                    {/* non ci serve*/}
                     <XAxis
                         type="number"
                         domain={[0, 100]}
                         hide={true}
                     />
 
-                    {/* Asse Y — mostra le etichette, niente linee */}
+                    {/* etichette su asse y*/}
                     <YAxis
                         type="category"
                         dataKey="etichetta"
