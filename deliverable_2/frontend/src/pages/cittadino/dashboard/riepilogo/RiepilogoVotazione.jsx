@@ -52,8 +52,6 @@ export default function RiepilogoVotazione() {
     );
 
     const { votazione: titolo, totaleVoti, risultati = [] } = riepilogo;
-
-    /* Prepara dati per GraficoRisultati */
     const datiGrafico = [...risultati]
         .sort((a, b) => b.voti - a.voti)
         .map((r, i) => ({
