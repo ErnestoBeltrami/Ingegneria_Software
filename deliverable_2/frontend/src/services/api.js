@@ -54,6 +54,9 @@ export const fetchAllActivities = async () => {
 };
 export const fetchProfile = () => apiFetch('/cittadino/profile');
 
+// Riepilogo sintetico di una votazione (accessibile anche ai cittadini)
+export const fetchRiepilogoVotazione = (id) => apiFetch(`/votazioni/${id}/riepilogo`);
+
 export const fetchNotifiche = () => apiFetch('/notifiche');
 export const marcaNotificaLetta = (id) => apiFetch(`/notifiche/${id}/letta`, { method: 'PATCH' });
 export const marcaTutteNotificheLette = () => apiFetch('/notifiche/leggi-tutte', { method: 'PATCH' });

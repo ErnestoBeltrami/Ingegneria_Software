@@ -49,8 +49,12 @@ export default function Archivio() {
     const items = activities.filter(a => activeTab === 'votazioni' ? a.tipo === 'votazione' : a.tipo === 'sondaggio');
 
     const handleRiepilogo = (item) => {
-        // TODO: navigare alla pagina riepilogo quando sarà pronta
-        console.log('Visualizza riepilogo:', item._id);
+        if (item.tipo === 'votazione') {
+            navigate(`/cittadino/archivio/votazione/${item._id}`);
+        } else {
+            // TODO: riepilogo sondaggio
+            console.log('Visualizza riepilogo sondaggio:', item._id);
+        }
     };
 
     return (
