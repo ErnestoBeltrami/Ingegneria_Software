@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Moon, Sun } from 'lucide-react';
 import { useTheme } from '../../../../contexts/ThemeContext';
 import '../../DashboardCittadinePage.css';
-import '../riepilogo/RiepilogoVotazione.css';
+import './RiepilogoSondaggio.css';
 
 /* ── Mock data ── */
 const MOCK_SONDAGGIO = {
@@ -65,30 +65,35 @@ export default function RiepilogoSondaggio() {
                 </div>
             </header>
 
-            <div className="crv-page">
-                <button className="crv-back" onClick={() => navigate('/cittadino/archivio')}>
-                    <ArrowLeft size={16} />
-                    Torna all'archivio
-                </button>
+            <div className="crs-page">
+                <header className="crs-header">
+                    <button className="crs-back" onClick={() => navigate('/cittadino/archivio')}>
+                        <ArrowLeft size={16} />
+                        Torna all'archivio
+                    </button>
 
-                <h1 className="crv-title">{sondaggio.titolo}</h1>
-                <p>
-                    {sondaggio.descrizione}
-                </p>
+                    <h1 className="crs-title">{sondaggio.titolo}</h1>
+                    <p className="crs-descrizione">
+                        {sondaggio.descrizione}
+                    </p>
+                </header>
 
-                {/* Card per ogni domanda */}
-                {sondaggio.domande.map((domanda, index) => (
-                    <div key={domanda.id}>
-                        <p>
-                            Domanda {index + 1}
-                        </p>
-                        <h3>
-                            {domanda.titolo}
-                        </h3>
+                {/* Elenco Domande */}
+                <div className="crs-domande">
+                    {sondaggio.domande.map((domanda, index) => (
+                        <div key={domanda.id} className="crs-card">
+                            <span className="crs-badge">Domanda {index + 1}</span>
 
-                        {/* Corpo card — qui verrà inserito GraficoRisultati */}
-                    </div>
-                ))}
+                            <div className="crs-card__header">
+                                <h3 className="crs-card__title">
+                                    {domanda.titolo}
+                                </h3>
+                            </div>
+
+                            {/* todo: inserire il grafico */}
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );
