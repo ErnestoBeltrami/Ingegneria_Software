@@ -107,6 +107,7 @@ export default function DashboardCittadinePage() {
     };
 
     const visible = activities
+        .filter(a => a.stato !== 'concluso')
         .filter(FILTER_MAP[activeFilter] || (() => true))
         .filter(a => search === '' || a.titolo.toLowerCase().includes(search.toLowerCase()));
 
