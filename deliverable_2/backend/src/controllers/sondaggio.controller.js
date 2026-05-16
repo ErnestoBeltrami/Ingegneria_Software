@@ -184,9 +184,20 @@ export const getSondaggiAvaiable = async (req, res) => {
             });
         }
 
+        const risposte = await RispostaConsultazione.find({
+            ID_cittadino: userFromMiddleware._id,
+            tipo_consultazione: 'sondaggio'
+        }).select('ID_consultazione');
+        const votedIds = new Set(risposte.map(r => r.ID_consultazione.toString()));
+
+        const sondaggiWithVoted = sondaggi.map(s => ({
+            ...s.toObject(),
+            voted: votedIds.has(s._id.toString())
+        }));
+
         return res.status(200).json({
             message: 'Sondaggi recuperati con successo.',
-            sondaggi
+            sondaggi: sondaggiWithVoted
         });
     } catch (error) {
         logger.error('Errore nel recupero dei sondaggi:', error);

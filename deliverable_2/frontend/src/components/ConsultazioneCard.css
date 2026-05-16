@@ -17,7 +17,26 @@
 }
 
 .activity-card--voted {
-  opacity: 0.7;
+  border-color: rgba(0, 122, 82, 0.45);
+  background: rgba(0, 122, 82, 0.04);
+}
+
+.activity-card--voted:hover {
+  border-color: rgba(0, 122, 82, 0.65);
+  background: rgba(0, 122, 82, 0.08);
+}
+
+.activity-card__voted-tag {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #007a52;
+}
+
+[data-theme="light"] .activity-card__voted-tag {
+  color: #005c3c;
 }
 
 .activity-card__header {
@@ -124,6 +143,28 @@
 .btn-gestisci:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.btn-gestisci--voted {
+  background: rgba(0, 122, 82, 0.25);
+  border-color: rgba(0, 122, 82, 0.45);
+  color: #00d48a;
+}
+
+.btn-gestisci--voted:hover {
+  background: rgba(0, 122, 82, 0.40);
+  border-color: rgba(0, 122, 82, 0.65);
+  color: #00d48a;
+}
+
+[data-theme="light"] .btn-gestisci--voted {
+  background: rgba(0, 122, 82, 0.10);
+  border-color: rgba(0, 122, 82, 0.35);
+  color: #005c3c;
+}
+
+[data-theme="light"] .btn-gestisci--voted:hover {
+  background: rgba(0, 122, 82, 0.18);
 }
 
 [data-theme="light"] .badge--tipo {

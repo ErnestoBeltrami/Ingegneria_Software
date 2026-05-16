@@ -144,9 +144,20 @@ export const getVotazioni = async (req, res) => {
             });
         }
 
+        const risposte = await RispostaConsultazione.find({
+            ID_cittadino: userFromMiddleware._id,
+            tipo_consultazione: 'votazione'
+        }).select('ID_consultazione');
+        const votedIds = new Set(risposte.map(r => r.ID_consultazione.toString()));
+
+        const votazioniWithVoted = votazioni.map(v => ({
+            ...v.toObject(),
+            voted: votedIds.has(v._id.toString())
+        }));
+
         return res.status(200).json({
             message: 'Votazioni recuperate con successo.',
-            votazioni
+            votazioni: votazioniWithVoted
         });
     } catch (error) {
         logger.error('Errore nel recupero delle votazioni:', error);

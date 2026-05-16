@@ -590,7 +590,7 @@
  * /votazioni/cittadino:
  *   get:
  *     summary: Recupera votazioni disponibili per i cittadini
- *     description: Restituisce la lista di tutte le votazioni in stato "attivo" o "concluso", visibili ai cittadini autenticati. Le votazioni sono ordinate per data di inizio (più recenti prima).
+ *     description: Restituisce la lista di tutte le votazioni in stato "attivo" o "concluso", visibili ai cittadini autenticati. Le votazioni sono ordinate per data di inizio (più recenti prima). Ogni elemento include il campo `voted` (`true` se il cittadino ha già votato, `false` altrimenti).
  *     tags:
  *       - Votazioni
  *     security:
@@ -609,7 +609,14 @@
  *                 votazioni:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Votazione'
+ *                     allOf:
+ *                       - $ref: '#/components/schemas/Votazione'
+ *                       - type: object
+ *                         properties:
+ *                           voted:
+ *                             type: boolean
+ *                             description: "true se il cittadino autenticato ha già votato questa votazione"
+ *                             example: false
  *                   description: Array di votazioni disponibili (presente solo se ci sono votazioni)
  *             examples:
  *               withVotazioni:
@@ -626,6 +633,7 @@
  *                       data_discussione: "2025-12-05T00:00:00.000Z"
  *                       creatoDa: "507f1f77bcf86cd799439012"
  *                       ID_domande: []
+ *                       voted: true
  *                     - _id: "507f1f77bcf86cd799439013"
  *                       tipo: "votazione"
  *                       stato: "concluso"
@@ -636,6 +644,7 @@
  *                       data_discussione: "2025-10-25T00:00:00.000Z"
  *                       creatoDa: "507f1f77bcf86cd799439012"
  *                       ID_domande: []
+ *                       voted: false
  *               noVotazioni:
  *                 value:
  *                   message: "Nessuna votazione disponibile al momento"
