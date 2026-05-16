@@ -22,7 +22,7 @@ export default function Votazione() {
         const loadVotazione = async () => {
             try {
                 const res = await fetchVotazioneCittadino(id);
-                setVotazione(res.votazione);
+                setVotazione(res.consultazione ?? res.votazione);
                 if (res.voted) {
                     setHasVoted(true);
                 }

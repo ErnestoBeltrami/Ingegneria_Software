@@ -24,7 +24,7 @@ export default function VotaSondaggio() {
         const loadSondaggio = async () => {
             try {
                 const res = await fetchSondaggioCittadino(id);
-                setSondaggio(res.sondaggio);
+                setSondaggio(res.consultazione ?? res.sondaggio);
                 if (res.voted) {
                     setHasSubmitted(true);
                 }
