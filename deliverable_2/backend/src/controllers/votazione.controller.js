@@ -160,24 +160,39 @@ export const getVotazioni = async (req, res) => {
 // GET: Dettaglio singola votazione
 export const getVotazioneById = async (req, res) => {
     try {
-        const userFromMiddleware = req.user;
         const { id } = req.params;
 
+        if (req.ruolo === 'operatore') {
+            const votazione = await Consultazione.findOne({
+                _id: id,
+                tipo: 'votazione'
+            }).populate('ID_domanda');
+
+            if (!votazione) {
+                return res.status(404).json({ message: 'Votazione non trovata.' });
+            }
+
+            return res.status(200).json({ message: 'Votazione trovata con successo.', votazione });
+        }
+
+        // Cittadino: vede solo votazioni attive o concluse
         const votazione = await Consultazione.findOne({
             _id: id,
-            tipo: 'votazione'
+            tipo: 'votazione',
+            stato: { $in: ['attivo', 'concluso'] }
         }).populate('ID_domanda');
 
         if (!votazione) {
-            return res.status(404).json({
-                message: 'Votazione non trovata.'
-            });
+            return res.status(404).json({ message: 'Votazione non trovata.' });
         }
 
-        return res.status(200).json({
-            message: 'Votazione trovata con successo.',
-            votazione
-        });
+        const voted = !!(await RispostaConsultazione.exists({
+            ID_consultazione: id,
+            ID_cittadino: req.user._id,
+            tipo_consultazione: 'votazione'
+        }));
+
+        return res.status(200).json({ message: 'Votazione trovata con successo.', votazione, voted });
     } catch (error) {
         logger.error('Errore nel recupero della votazione:', error);
         return res.status(500).json({

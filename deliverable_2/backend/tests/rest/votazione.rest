@@ -22,9 +22,13 @@ Authorization: Bearer {{TOKEN_OPERATORE}}
 ### Lista votazioni dell'operatore
 GET http://localhost:3000/votazioni
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzQxNzY2MjUxNmIwNjUzZTFlY2Y5ZCIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY1MTI2MDExLCJleHAiOjE3NjUyMTI0MTF9.ENRXK2BhDmJGsBhgoOTPZ7ChQiQVyF7R5dTntAO1JJA
-### Dettaglio votazione
+### Dettaglio votazione (operatore)
 GET http://localhost:3000/votazioni/{{VOTAZIONE_ID}}
 Authorization: Bearer {{TOKEN_OPERATORE}}
+
+### Dettaglio votazione (cittadino) — include campo voted nella risposta
+GET http://localhost:3000/votazioni/{{VOTAZIONE_ID}}
+Authorization: Bearer {{TOKEN_CITTADINO}}
 
 ### Riepilogo Votazione
 GET http://localhost:3000/votazioni/693417b92516b0653e1ecfae/riepilogo

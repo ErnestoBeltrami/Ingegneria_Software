@@ -239,13 +239,18 @@
  *                 value:
  *                   message: "Scegliere almeno un opzione."
  *       403:
- *         description: L'utente ha già votato questa votazione
+ *         description: Voto non consentito
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
- *             example:
- *               message: "L'utente ha gia votato questa Votazione."
+ *             examples:
+ *               notActive:
+ *                 value:
+ *                   message: "La votazione non è attiva."
+ *               alreadyVoted:
+ *                 value:
+ *                   message: "L'utente ha gia votato questa Votazione."
  *       404:
  *         description: Cittadino non identificato
  *         content:

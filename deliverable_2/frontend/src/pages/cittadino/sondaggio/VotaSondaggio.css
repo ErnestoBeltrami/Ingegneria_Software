@@ -17,11 +17,24 @@
 }
 
 .sondaggio-header {
-    margin-bottom: 32px;
+    margin-bottom: 0;
 }
 
 .badge-container {
     margin-bottom: 16px;
+}
+
+.badge-stato {
+    display: inline-flex;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.badge-stato.attivo {
+    background: rgba(0, 122, 82, 0.15);
+    color: #007a52;
 }
 
 .sondaggio-title {
@@ -40,11 +53,15 @@
     font-size: 14px;
 }
 
-.sondaggio-content-stack {
+.meta-item {
     display: flex;
-    flex-direction: column;
-    gap: 32px;
-    margin-bottom: 40px;
+    align-items: center;
+    gap: 8px;
+}
+
+.deadline-meta {
+    color: #B45309;
+    font-weight: 500;
 }
 
 .info-section h2 {
@@ -87,6 +104,12 @@
     font-weight: 600;
     color: var(--text);
     margin-bottom: 8px;
+}
+
+.domanda-hint {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
 }
 
 .options-container {

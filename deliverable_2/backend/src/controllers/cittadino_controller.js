@@ -112,6 +112,13 @@ export const answerVote = async (req,res) => {
             });
         }
 
+        const votazioneDoc = await Consultazione.findOne({ _id: votazione, tipo: 'votazione' });
+        if (!votazioneDoc || votazioneDoc.stato !== 'attivo') {
+            return res.status(403).json({
+                message: 'La votazione non è attiva.'
+            });
+        }
+
         const duplicato = await RispostaConsultazione.findOne({
             ID_cittadino: userFromMiddleware._id,
             ID_consultazione: votazione,

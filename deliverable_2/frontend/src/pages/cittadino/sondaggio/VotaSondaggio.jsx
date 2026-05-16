@@ -56,7 +56,6 @@ export default function VotaSondaggio() {
             if (tipoDomanda === 'risposta_singola') {
                 return { ...prev, [domandaId]: [opzioneId] };
             } else {
-                // Risposta multipla
                 const currentSelections = prev[domandaId] || [];
                 if (currentSelections.includes(opzioneId)) {
                     return { ...prev, [domandaId]: currentSelections.filter(id => id !== opzioneId) };
@@ -79,7 +78,6 @@ export default function VotaSondaggio() {
 
         setIsSubmitting(true);
         try {
-            // Formattiamo le risposte come richiesto dal backend
             const dettagliRisposte = Object.keys(answers).map(domandaId => ({
                 ID_domanda: domandaId,
                 opzioniScelte: answers[domandaId]
@@ -144,7 +142,7 @@ export default function VotaSondaggio() {
             <div className="cd-layout">
                 {renderTopbar()}
                 <div className="cd-page">
-                    <button className="back-btn" onClick={() => navigate(-1)} style={{marginBottom: '24px'}}>
+                    <button className="back-btn" onClick={() => navigate(-1)}>
                         <ArrowLeft size={20} />
                         <span>Torna indietro</span>
                     </button>
@@ -163,29 +161,28 @@ export default function VotaSondaggio() {
         <div className="cd-layout">
             {renderTopbar()}
             <div className="cd-page">
-                <button className="back-btn" onClick={() => navigate(-1)} style={{marginBottom: '24px'}}>
-                <ArrowLeft size={20} />
-                <span>Torna indietro</span>
-            </button>
+                <button className="back-btn" onClick={() => navigate(-1)}>
+                    <ArrowLeft size={20} />
+                    <span>Torna indietro</span>
+                </button>
 
-            <div className="sondaggio-header">
-                <div className="badge-container">
-                    <span className="badge-stato attivo">Sondaggio in corso</span>
-                </div>
-                <h1 className="sondaggio-title">{sondaggio.titolo}</h1>
-                <div className="sondaggio-meta">
-                    <div className="meta-item">
-                        <CalendarDays size={18} />
-                        <span>Discusso il {formatDate(sondaggio.data_discussione)}</span>
+                <div className="sondaggio-header">
+                    <div className="badge-container">
+                        <span className="badge-stato attivo">Sondaggio in corso</span>
                     </div>
-                    <div className="meta-item deadline-meta">
-                        <Clock size={18} />
-                        <span>Scade il {formatDate(sondaggio.data_fine)}</span>
+                    <h1 className="sondaggio-title">{sondaggio.titolo}</h1>
+                    <div className="sondaggio-meta">
+                        <div className="meta-item">
+                            <CalendarDays size={18} />
+                            <span>Discusso il {formatDate(sondaggio.data_discussione)}</span>
+                        </div>
+                        <div className="meta-item deadline-meta">
+                            <Clock size={18} />
+                            <span>Scade il {formatDate(sondaggio.data_fine)}</span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div className="sondaggio-content-stack">
                 <section className="info-section">
                     <h2>Descrizione</h2>
                     <p className="descrizione-text">{sondaggio.descrizione}</p>
@@ -212,7 +209,7 @@ export default function VotaSondaggio() {
                                 <h3 className="domanda-testo">
                                     {currentQuestion.titolo}
                                 </h3>
-                                <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '16px' }}>
+                                <p className="domanda-hint">
                                     {currentQuestion.tipo === 'risposta_multipla' ? "(Puoi scegliere più opzioni)" : "(Scegli una singola opzione)"}
                                 </p>
 
@@ -273,7 +270,6 @@ export default function VotaSondaggio() {
                         </div>
                     )}
                 </section>
-            </div>
             </div>
         </div>
     );
