@@ -129,27 +129,28 @@ export default function GestioneVotazioniPage() {
           </div>
         </div>
 
-        <div className="gv-filters">
-          {FILTRI.map(({ key, label }) => (
-            <button
-              key={key}
-              className={`gv-filter-btn${filtroStato === key ? ' gv-filter-btn--active' : ''}`}
-              onClick={() => setFiltroStato(key)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-
-        <div className="dashboard-search">
-          <Search size={16} color="rgba(255,255,255,0.35)" />
-          <input
-            className="dashboard-search__input"
-            type="text"
-            placeholder="Cerca per titolo…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
+        <div className="gv-search-block">
+          <div className="dashboard-search">
+            <Search size={16} color="rgba(255,255,255,0.35)" />
+            <input
+              className="dashboard-search__input"
+              type="text"
+              placeholder="Cerca per titolo…"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </div>
+          <div className="gv-filters">
+            {FILTRI.map(({ key, label }) => (
+              <button
+                key={key}
+                className={`gv-filter-btn${filtroStato === key ? ' gv-filter-btn--active' : ''}`}
+                onClick={() => setFiltroStato(key)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {error && <p className="gv-error" role="alert">{error}</p>}

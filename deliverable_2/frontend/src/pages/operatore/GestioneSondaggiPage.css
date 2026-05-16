@@ -144,16 +144,22 @@
   color: #ff6b6b;
 }
 
+/* Search + filters block */
+.gs-search-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 /* Filters */
 .gs-filters {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  flex-wrap: wrap;
 }
 
 .gs-filter-btn {
   height: 34px;
-  padding: 0 16px;
   border-radius: 9999px;
   border: 1px solid var(--border-strong);
   background: var(--surface);
@@ -171,9 +177,10 @@
 }
 
 .gs-filter-btn--active {
-  background: rgba(0, 122, 82, 0.20);
-  border-color: rgba(0, 196, 122, 0.40);
-  color: #00d48a;
+  background: rgba(0, 122, 82, 0.30);
+  border-color: rgba(0, 196, 122, 0.50);
+  color: #ffffff;
+  font-weight: 600;
 }
 
 /* =====================

@@ -134,27 +134,28 @@ export default function GestioneSondaggiPage() {
           </div>
         </div>
 
-        <div className="gs-filters">
-          {FILTRI.map(({ key, label }) => (
-            <button
-              key={key}
-              className={`gs-filter-btn${filtroStato === key ? ' gs-filter-btn--active' : ''}`}
-              onClick={() => setFiltroStato(key)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-
-        <div className="dashboard-search">
-          <Search size={16} color="rgba(255,255,255,0.35)" />
-          <input
-            className="dashboard-search__input"
-            type="text"
-            placeholder="Cerca per titolo…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
+        <div className="gs-search-block">
+          <div className="dashboard-search">
+            <Search size={16} color="rgba(255,255,255,0.35)" />
+            <input
+              className="dashboard-search__input"
+              type="text"
+              placeholder="Cerca per titolo…"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </div>
+          <div className="gs-filters">
+            {FILTRI.map(({ key, label }) => (
+              <button
+                key={key}
+                className={`gs-filter-btn${filtroStato === key ? ' gs-filter-btn--active' : ''}`}
+                onClick={() => setFiltroStato(key)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {error && <p className="gs-error" role="alert">{error}</p>}
