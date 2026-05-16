@@ -106,11 +106,8 @@ export default function DashboardCittadinePage() {
         }
     };
 
-    const isNotExpired = (a) => !a.data_fine || new Date(a.data_fine) >= new Date();
-
     const visible = activities
         .filter(FILTER_MAP[activeFilter] || (() => true))
-        .filter(isNotExpired)
         .filter(a => search === '' || a.titolo.toLowerCase().includes(search.toLowerCase()));
 
     const handleAction = (id, tipo) => {
