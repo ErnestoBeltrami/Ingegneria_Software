@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Trash2, Pencil, ChevronRight } from 'lucide-react';
+import { Plus, Trash2, Pencil, ChevronRight, Search } from 'lucide-react';
 import TopBar from '@/components/TopBar';
 import './GestioneVotazioniPage.css';
 
@@ -34,6 +34,7 @@ export default function GestioneVotazioniPage() {
   const cognome = localStorage.getItem('cognome') || '';
 
   const [votazioni, setVotazioni] = useState([]);
+  const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [actionLoading, setActionLoading] = useState(null);
@@ -78,9 +79,12 @@ export default function GestioneVotazioniPage() {
     }
   };
 
-  const bozze    = votazioni.filter((v) => v.stato === 'bozza');
-  const attive   = votazioni.filter((v) => v.stato === 'attivo');
-  const concluse = votazioni.filter((v) => v.stato === 'concluso' || v.stato === 'archiviato');
+  const q = query.trim().toLowerCase();
+  const filtered = q ? votazioni.filter((v) => v.titolo.toLowerCase().includes(q)) : votazioni;
+
+  const bozze    = filtered.filter((v) => v.stato === 'bozza');
+  const attive   = filtered.filter((v) => v.stato === 'attivo');
+  const concluse = filtered.filter((v) => v.stato === 'concluso' || v.stato === 'archiviato');
 
   return (
     <div className="gv-layout">
@@ -113,16 +117,27 @@ export default function GestioneVotazioniPage() {
           </div>
         </div>
 
+        <div className="dashboard-search">
+          <Search size={16} color="rgba(255,255,255,0.35)" />
+          <input
+            className="dashboard-search__input"
+            type="text"
+            placeholder="Cerca per titolo…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </div>
+
         {error && <p className="gv-error" role="alert">{error}</p>}
         {loading && <p className="gv-status">Caricamento…</p>}
 
-        {!loading && votazioni.length === 0 && !error && (
-          <p className="gv-status">Nessuna votazione trovata.</p>
+        {!loading && filtered.length === 0 && !error && (
+          <p className="gv-status">{q ? 'Nessuna votazione trovata per questa ricerca.' : 'Nessuna votazione trovata.'}</p>
         )}
 
-        {!loading && votazioni.length > 0 && (
+        {!loading && filtered.length > 0 && (
           <div className="gv-grid">
-            {votazioni.map((v) => (
+            {filtered.map((v) => (
               <VotazioneCard
                 key={v._id}
                 votazione={v}

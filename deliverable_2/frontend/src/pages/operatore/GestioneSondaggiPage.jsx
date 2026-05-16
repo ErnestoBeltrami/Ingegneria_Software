@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Trash2, Pencil, ChevronRight } from 'lucide-react';
+import { Plus, Trash2, Pencil, ChevronRight, Search } from 'lucide-react';
 import TopBar from '@/components/TopBar';
 import './GestioneSondaggiPage.css';
 
@@ -34,9 +34,10 @@ export default function GestioneSondaggiPage() {
   const cognome = localStorage.getItem('cognome') || '';
 
   const [sondaggi, setSondaggi] = useState([]);
+  const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [actionLoading, setActionLoading] = useState(null); // id in corso
+  const [actionLoading, setActionLoading] = useState(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -78,9 +79,12 @@ export default function GestioneSondaggiPage() {
     }
   };
 
-  const bozze    = sondaggi.filter((s) => s.stato === 'bozza');
-  const attive   = sondaggi.filter((s) => s.stato === 'attivo');
-  const concluse = sondaggi.filter((s) => s.stato === 'concluso' || s.stato === 'archiviato');
+  const q = query.trim().toLowerCase();
+  const filtered = q ? sondaggi.filter((s) => s.titolo.toLowerCase().includes(q)) : sondaggi;
+
+  const bozze    = filtered.filter((s) => s.stato === 'bozza');
+  const attive   = filtered.filter((s) => s.stato === 'attivo');
+  const concluse = filtered.filter((s) => s.stato === 'concluso' || s.stato === 'archiviato');
 
   return (
     <div className="gs-layout">
@@ -118,20 +122,27 @@ export default function GestioneSondaggiPage() {
           </div>
         </div>
 
-        {/* Error */}
-        {error && <p className="gs-error" role="alert">{error}</p>}
+        <div className="dashboard-search">
+          <Search size={16} color="rgba(255,255,255,0.35)" />
+          <input
+            className="dashboard-search__input"
+            type="text"
+            placeholder="Cerca per titolo…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </div>
 
-        {/* Loading */}
+        {error && <p className="gs-error" role="alert">{error}</p>}
         {loading && <p className="gs-status">Caricamento…</p>}
 
-        {/* Cards grid */}
-        {!loading && sondaggi.length === 0 && !error && (
-          <p className="gs-status">Nessun sondaggio trovato.</p>
+        {!loading && filtered.length === 0 && !error && (
+          <p className="gs-status">{q ? 'Nessun sondaggio trovato per questa ricerca.' : 'Nessun sondaggio trovato.'}</p>
         )}
 
-        {!loading && sondaggi.length > 0 && (
+        {!loading && filtered.length > 0 && (
           <div className="gs-grid">
-            {sondaggi.map((s) => (
+            {filtered.map((s) => (
               <SondaggioCard
                 key={s._id}
                 sondaggio={s}
