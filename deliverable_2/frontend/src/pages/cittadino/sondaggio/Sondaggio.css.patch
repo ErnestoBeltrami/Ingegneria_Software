@@ -1,0 +1,52 @@
+--- deliverable_2/frontend/src/pages/cittadino/sondaggio/Sondaggio.css
++++ deliverable_2/frontend/src/pages/cittadino/sondaggio/Sondaggio.css
+@@ -282,3 +282,33 @@
+     font-size: 14px;
+     line-height: 1.5;
+ }
++
++.navigation-buttons {
++    display: flex;
++    justify-content: space-between;
++    gap: 16px;
++    margin-top: 32px;
++}
++
++.nav-btn {
++    display: flex;
++    align-items: center;
++    justify-content: center;
++    gap: 8px;
++    padding: 14px 24px;
++    border-radius: 12px;
++    font-size: 16px;
++    font-weight: 600;
++    cursor: pointer;
++    transition: all 0.2s ease;
++}
++
++.nav-btn-secondary {
++    background: #F3F4F6;
++    color: #4B5563;
++    border: 1px solid #D1D5DB;
++}
++
++.nav-btn-secondary:hover:not(:disabled) {
++    background: #E5E7EB;
++}
++
++.nav-btn-primary {
++    background: #E28114;
++    color: #FFFFFF;
++    border: none;
++    flex: 1;
++}
++
++.nav-btn-primary:hover:not(:disabled) {
++    background: #C56A00;
++}
++
++.nav-btn:disabled {
++    opacity: 0.5;
++    cursor: not-allowed;
++}

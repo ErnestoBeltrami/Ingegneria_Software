@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Activity, Moon, Sun, Search, Lightbulb, ChevronRight, Bell, Check, X } from 'lucide-react';
-import { useTheme } from '../../contexts/ThemeContext';
-import { ConsultazioneCard } from '../../components/ConsultazioneCard';
-import { QuickActionCards } from '../../components/QuickActionCard';
-import { fetchAllActivities, fetchProfile, fetchNotifiche, marcaNotificaLetta, marcaTutteNotificheLette } from '../../services/api';
+import { useTheme } from '../../../contexts/ThemeContext';
+import { ConsultazioneCard } from '../../../components/ConsultazioneCard';
+import { QuickActionCards } from '../../../components/QuickActionCard';
+import { fetchAllActivities, fetchProfile, fetchNotifiche, marcaNotificaLetta, marcaTutteNotificheLette } from '../../../services/api';
 import './DashboardCittadinePage.css';
 
 function formatRelativeTime(isoString) {
@@ -18,13 +18,13 @@ function formatRelativeTime(isoString) {
 }
 
 const FILTER_MAP = {
-    All:       () => true,
+    All: () => true,
     Votazione: (a) => a.tipo === 'votazione',
     Sondaggio: (a) => a.tipo === 'sondaggio',
 };
 
 const FILTER_LABELS = {
-    All:       'Tutte le attività',
+    All: 'Tutte le attività',
     Votazione: 'Votazioni attive',
     Sondaggio: 'Sondaggi attivi',
 };
@@ -33,21 +33,21 @@ export default function DashboardCittadinePage() {
     const navigate = useNavigate();
     const { theme, toggleTheme } = useTheme();
 
-    const [profilo,      setProfilo]      = useState(null);
-    const [activities,   setActivities]   = useState([]);
+    const [profilo, setProfilo] = useState(null);
+    const [activities, setActivities] = useState([]);
     const [activeFilter, setActiveFilter] = useState('All');
-    const [search,       setSearch]       = useState('');
-    const [loading,      setLoading]      = useState(true);
-    const [error,        setError]        = useState(null);
+    const [search, setSearch] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const [notifiche,      setNotifiche]      = useState([]);
-    const [showNotifiche,  setShowNotifiche]  = useState(false);
+    const [notifiche, setNotifiche] = useState([]);
+    const [showNotifiche, setShowNotifiche] = useState(false);
     const bellRef = useRef(null);
 
     const nonLette = notifiche.filter(n => !n.letta).length;
 
-    const nome     = profilo?.nome     || '';
-    const cognome  = profilo?.cognome  || '';
+    const nome = profilo?.nome || '';
+    const cognome = profilo?.cognome || '';
     const initials = `${nome.charAt(0)}${cognome.charAt(0)}`.toUpperCase() || '?';
     const fullName = [nome, cognome].filter(Boolean).join(' ') || 'Cittadino';
 
@@ -55,11 +55,11 @@ export default function DashboardCittadinePage() {
         loadActivities();
         fetchProfile()
             .then(data => { if (data?.data) setProfilo(data.data); })
-            .catch(() => {});
+            .catch(() => { });
         const loadNotifiche = () =>
             fetchNotifiche()
                 .then(data => setNotifiche(data.notifiche || []))
-                .catch(() => {});
+                .catch(() => { });
 
         loadNotifiche();
         const notificheInterval = setInterval(loadNotifiche, 2 * 60 * 1000);
@@ -83,7 +83,7 @@ export default function DashboardCittadinePage() {
             try {
                 await marcaNotificaLetta(n._id);
                 setNotifiche(prev => prev.map(x => x._id === n._id ? { ...x, letta: true } : x));
-            } catch {}
+            } catch { }
         }
     };
 
@@ -91,7 +91,7 @@ export default function DashboardCittadinePage() {
         try {
             await marcaTutteNotificheLette();
             setNotifiche(prev => prev.map(n => ({ ...n, letta: true })));
-        } catch {}
+        } catch { }
     };
 
     const loadActivities = async () => {
@@ -113,8 +113,13 @@ export default function DashboardCittadinePage() {
         .filter(isNotExpired)
         .filter(a => search === '' || a.titolo.toLowerCase().includes(search.toLowerCase()));
 
-    const handleAction = (id) =>
-        setActivities(prev => prev.map(a => a._id === id ? { ...a, voted: !a.voted } : a));
+    const handleAction = (id, tipo) => {
+        if (tipo === 'votazione') {
+            navigate(`/cittadino/votazione/${id}`);
+        } else if (tipo === 'sondaggio') {
+            navigate(`/cittadino/sondaggio/${id}`);
+        }
+    };
 
     return (
         <div className="cd-layout">

@@ -1,5 +1,6 @@
 import { Domanda } from "../models/domanda.js";
 import { Consultazione } from "../models/consultazione.js";
+import { RispostaConsultazione } from "../models/risposta_consultazione.js";
 
 // Helper: crea le domande e ritorna i loro _id
 const creaDomande = async (domande) => {
@@ -122,6 +123,15 @@ export const getConsultazioneById = async (req, res) => {
       await consultazione.populate('ID_domanda');
     } else {
       await consultazione.populate('ID_domande');
+    }
+
+    if (ruolo === 'cittadino') {
+      const voted = !!(await RispostaConsultazione.exists({
+        ID_consultazione: id,
+        ID_cittadino: req.user._id,
+        tipo_consultazione: consultazione.tipo,
+      }));
+      return res.status(200).json({ message: 'Consultazione trovata con successo.', consultazione, voted });
     }
 
     return res.status(200).json({ message: 'Consultazione trovata con successo.', consultazione });

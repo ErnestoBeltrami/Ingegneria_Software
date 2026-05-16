@@ -678,7 +678,7 @@
  * /sondaggi/cittadino:
  *   get:
  *     summary: Recupera sondaggi disponibili per i cittadini
- *     description: Restituisce la lista di tutti i sondaggi in stato "attivo" o "concluso", visibili ai cittadini autenticati. I sondaggi sono ordinati per data di inizio (più recenti prima). A differenza delle votazioni, i sondaggi contengono multiple domande (ID_domande array) invece di una singola domanda.
+ *     description: Restituisce la lista di tutti i sondaggi in stato "attivo" o "concluso", visibili ai cittadini autenticati. I sondaggi sono ordinati per data di inizio (più recenti prima). A differenza delle votazioni, i sondaggi contengono multiple domande (ID_domande array) invece di una singola domanda. Ogni elemento include il campo `voted` (`true` se il cittadino ha già risposto, `false` altrimenti).
  *     tags:
  *       - Sondaggi
  *     security:
@@ -711,6 +711,10 @@
  *                               type: string
  *                             description: Array di ID delle domande associate al sondaggio (minimo 1)
  *                             example: ["507f1f77bcf86cd799439015", "507f1f77bcf86cd799439016"]
+ *                           voted:
+ *                             type: boolean
+ *                             description: "true se il cittadino autenticato ha già risposto a questo sondaggio"
+ *                             example: false
  *                   description: Array di sondaggi disponibili (presente solo se ci sono sondaggi). Nota - la proprietà è chiamata "votazioni" per compatibilità con il controller.
  *             examples:
  *               withSondaggi:
@@ -729,6 +733,7 @@
  *                       ID_domande: ["507f1f77bcf86cd799439015", "507f1f77bcf86cd799439016", "507f1f77bcf86cd799439017"]
  *                       createdAt: "2025-12-01T10:30:00.000Z"
  *                       updatedAt: "2025-12-01T10:30:00.000Z"
+ *                       voted: false
  *                     - _id: "507f1f77bcf86cd799439013"
  *                       tipo: "sondaggio"
  *                       stato: "concluso"
@@ -741,6 +746,7 @@
  *                       ID_domande: ["507f1f77bcf86cd799439018", "507f1f77bcf86cd799439019"]
  *                       createdAt: "2025-10-20T14:20:00.000Z"
  *                       updatedAt: "2025-11-15T23:59:00.000Z"
+ *                       voted: true
  *               noSondaggi:
  *                 value:
  *                   message: "Nessun sondaggio disponibile al momento"

@@ -31,7 +31,7 @@ router.get("/cittadino",protect,restrictTo(['cittadino']),getVotazioniAvailable)
 
 //DA FINIRE SWAGGER
 
-// GET /votazioni/:id - Dettaglio singola votazione
+// GET /votazioni/:id - Dettaglio singola votazione (operatore: tutti gli stati; cittadino: attivo/concluso + voted)
 router.get("/:id", protect, validateObjectId, restrictTo(['operatore','cittadino']), getConsultazioneById);
 
 // GET /votazioni/:id/riepilogo/demografico - Riepilogo demografico (genere, età, partecipazione)

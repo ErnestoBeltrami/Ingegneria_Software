@@ -1,3 +1,4 @@
+import { CheckCircle } from 'lucide-react';
 import './ConsultazioneCard.css';
 
 const BUTTON_LABELS = {
@@ -16,16 +17,16 @@ function formatDate(isoString) {
 
 export function ConsultazioneCard({ activity, onAction, mode = 'operatore', voted = false }) {
   const { _id, tipo, titolo, data_fine, stato } = activity;
-  const isDisabled = mode === 'cittadino' && voted;
+  const showVoted = mode === 'cittadino' && voted;
 
   const buttonLabel = mode === 'operatore'
     ? 'Riepilogo'
     : voted
-      ? 'Votato'
+      ? 'Partecipato'
       : (BUTTON_LABELS[tipo] ?? 'Partecipa');
 
   return (
-    <div className={`activity-card${isDisabled ? ' activity-card--voted' : ''}`}>
+    <div className={`activity-card${showVoted ? ' activity-card--voted' : ''}`}>
       <div className="activity-card__header">
         <span className={`badge badge--tipo badge--${tipo}`}>
           {tipo === 'votazione' ? 'Votazione' : 'Sondaggio'}
@@ -36,10 +37,16 @@ export function ConsultazioneCard({ activity, onAction, mode = 'operatore', vote
       </div>
       <p className="activity-card__titolo">{titolo}</p>
       <div className="activity-card__footer">
-        <span className="activity-card__termine">Termine: {formatDate(data_fine)}</span>
+        {showVoted ? (
+          <span className="activity-card__voted-tag">
+            <CheckCircle size={13} />
+            Già partecipato
+          </span>
+        ) : (
+          <span className="activity-card__termine">Termine: {formatDate(data_fine)}</span>
+        )}
         <button
-          className={`btn-gestisci${isDisabled ? ' btn-gestisci--disabled' : ''}`}
-          disabled={isDisabled}
+          className={`btn-gestisci${showVoted ? ' btn-gestisci--voted' : ''}`}
           onClick={() => onAction(_id, tipo)}
         >
           {buttonLabel}
