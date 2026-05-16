@@ -46,7 +46,7 @@ Identico al modal già presente in `DashboardOperatorePage`:
 - View mode: pulsanti "Pubblica" (verde) e "Rifiuta" (rosso outline)
 - Reject mode: textarea motivazione obbligatoria + "Conferma rifiuto" / "Indietro"
 - Chiama `PATCH /iniziative/:id/modera` con `{ stato, motivazione }`
-- Alla chiusura con successo: rimuove la card dalla lista locale
+- Alla chiusura con successo: aggiorna lo stato della card in-place (non la rimuove dalla lista), così l'operatore vede il risultato dell'azione nel contesto della griglia completa
 
 CSS modal: le classi `.modal-*` rimangono in `DashboardOperatorePage.css`. La nuova pagina importa il proprio CSS (`ModerazioneBachecaPage.css`) senza duplicare le classi modal.
 

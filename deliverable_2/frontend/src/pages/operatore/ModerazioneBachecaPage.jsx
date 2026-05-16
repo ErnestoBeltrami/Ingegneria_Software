@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search, X } from 'lucide-react';
 import TopBar from '@/components/TopBar';
 import './ModerazioneBachecaPage.css';
+import './DashboardOperatorePage.css';
 
 function formatDate(iso) {
   if (!iso) return '—';
