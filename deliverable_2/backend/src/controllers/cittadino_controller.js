@@ -138,7 +138,7 @@ export const answerVote = async (req,res) => {
             ID_opzione: opzione_scelta
         });
 
-        return res.status(200).json({
+        return res.status(201).json({
             message : "Votazione avvenuta con successo."
         });
 
@@ -236,7 +236,7 @@ export const answerSondaggio = async (req, res) => {
             }))
         });
 
-        return res.status(200).json({
+        return res.status(201).json({
             message: "Risposta sondaggio avvenuta con successo"
         });
 
@@ -298,10 +298,10 @@ export const votaIniziativa = async (req,res) => {
 export const rimuoviVotoIniziativa = async (req, res) => {
     try {
         const user = req.user;
-        const { iniziativaId } = req.params;
+        const { id } = req.params;
 
         const voto = await VotoIniziativa.findOneAndDelete({
-            ID_iniziativa: iniziativaId,
+            ID_iniziativa: id,
             ID_cittadino: user._id
         });
 

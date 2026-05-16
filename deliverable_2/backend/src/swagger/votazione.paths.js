@@ -93,7 +93,8 @@
  *           schema:
  *             $ref: '#/components/schemas/CreateVotazioneInput'
  *           example:
- *             titoloVotazione: "Referendum sulla proposta X"
+ *             tipo: "votazione"
+ *             titolo: "Referendum sulla proposta X"
  *             descrizione: "Votazione per decidere se approvare la proposta X"
  *             data_inizio: "2025-12-10T00:00:00.000Z"
  *             data_fine: "2025-12-20T00:00:00.000Z"

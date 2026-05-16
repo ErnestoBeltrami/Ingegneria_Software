@@ -3,6 +3,7 @@ import rateLimit from "express-rate-limit";
 import passport from "../config/passport.js";
 import jwt from "jsonwebtoken";
 import { Cittadino } from "../models/cittadino.js";
+import { protect, restrictTo } from "../middleware/auth_middleware.js";
 
 const completeProfileLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
@@ -30,8 +31,13 @@ router.get(
     const FRONTEND = process.env.FRONTEND_URL || 'http://localhost:5173';
 
     if (!cittadino.profiloCompleto) {
+      const onboardingToken = jwt.sign(
+        { id: cittadino._id, ruolo: 'cittadino' },
+        process.env.JWT_SECRET,
+        { expiresIn: '30m' }
+      );
       const params = new URLSearchParams({
-        cittadinoId: cittadino._id.toString(),
+        onboardingToken,
         nome: cittadino.nome || '',
         email: cittadino.email || '',
         picture: cittadino._googlePicture || '',
@@ -45,9 +51,9 @@ router.get(
   }
 );
 
-router.post('/complete-profile', completeProfileLimiter, async (req, res) => {
+router.post('/complete-profile', completeProfileLimiter, protect, restrictTo(['cittadino']), async (req, res) => {
   const { dataNascita, comuneResidenza, circoscrizione } = req.body;
-  const cittadinoId = req.body.cittadinoId?.trim();
+  const cittadinoId = req.user._id;
 
   if (!dataNascita || !comuneResidenza) {
     return res.status(400).json({ message: 'Tutti i campi del profilo sono obbligatori.' });

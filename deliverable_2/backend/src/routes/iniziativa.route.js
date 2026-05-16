@@ -17,7 +17,7 @@ import {
 
 const router = Router();
 
-// POST: Crea votazione se sei cittadino
+// POST: Crea iniziativa se sei cittadino
 router.post("/", protect, restrictTo(['cittadino']), createIniziativa);
 
 //GET: Ritorna tutte le iniziative filtrate per data e numero di voti

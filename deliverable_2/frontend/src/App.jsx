@@ -30,13 +30,16 @@ function CompletaProfiloRoute() {
     email: params.get('email') || '',
     picture: params.get('picture') || '',
   };
-  const cittadinoId = params.get('cittadinoId');
+  const onboardingToken = params.get('onboardingToken');
 
   const handleSubmit = async ({ dataNascita, comuneResidenza, circoscrizione }) => {
     const res = await fetch('/auth/complete-profile', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ cittadinoId, dataNascita, comuneResidenza, circoscrizione }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${onboardingToken}`,
+      },
+      body: JSON.stringify({ dataNascita, comuneResidenza, circoscrizione }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.message);
