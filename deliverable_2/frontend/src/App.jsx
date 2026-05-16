@@ -12,6 +12,7 @@ import RiepilogoSondaggioPage from './pages/operatore/RiepilogoSondaggioPage';
 import ModificaVotazionePage from './pages/operatore/ModificaVotazionePage';
 import ModificaSondaggioPage from './pages/operatore/ModificaSondaggioPage';
 import ProfiloOperatorePage from './pages/operatore/ProfiloOperatorePage';
+import ModerazioneBachecaPage from './pages/operatore/ModerazioneBachecaPage';
 import CompletaProfiloPage from './pages/CompletaProfiloPage';
 import AuthCallbackPage from './pages/AuthCallbackPage';
 import ProfiloCompletatoPage from './pages/ProfiloCompletatoPage';
@@ -66,6 +67,7 @@ export default function App() {
           <Route path="/votazioni/:id/modifica" element={<ModificaVotazionePage />} />
           <Route path="/sondaggi/:id/modifica" element={<ModificaSondaggioPage />} />
           <Route path="/operatore/profilo" element={<ProfiloOperatorePage />} />
+          <Route path="/moderazione" element={<ModerazioneBachecaPage />} />
           <Route path="/completa-profilo" element={<CompletaProfiloRoute />} />
           <Route path="/profilo-completato" element={<ProfiloCompletatoPage />} />
           <Route path="/cittadino/dashboard" element={<DashboardCittadinePage />} />
