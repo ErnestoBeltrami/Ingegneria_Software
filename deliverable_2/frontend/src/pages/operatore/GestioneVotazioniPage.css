@@ -135,6 +135,45 @@
   color: #ff6b6b;
 }
 
+/* Search + filters block */
+.gv-search-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Filters */
+.gv-filters {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.gv-filter-btn {
+  height: 34px;
+  border-radius: 9999px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.gv-filter-btn:hover {
+  background: var(--surface-raised);
+  color: var(--text);
+}
+
+.gv-filter-btn--active {
+  background: rgba(31, 58, 137, 0.35);
+  border-color: rgba(100, 130, 255, 0.55);
+  color: #ffffff;
+  font-weight: 600;
+}
+
 /* Cards grid */
 .gv-grid {
   display: grid;
