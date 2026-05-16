@@ -35,9 +35,18 @@ export default function GestioneVotazioniPage() {
 
   const [votazioni, setVotazioni] = useState([]);
   const [query, setQuery] = useState('');
+  const [filtroStato, setFiltroStato] = useState('tutte');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [actionLoading, setActionLoading] = useState(null);
+
+  const STATO_ORDER = { attivo: 0, bozza: 1, concluso: 2, archiviato: 3 };
+  const FILTRI = [
+    { key: 'tutte',     label: 'Tutte' },
+    { key: 'attivo',    label: 'Attive' },
+    { key: 'bozza',     label: 'Bozze' },
+    { key: 'concluso',  label: 'Concluse' },
+  ];
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -80,11 +89,14 @@ export default function GestioneVotazioniPage() {
   };
 
   const q = query.trim().toLowerCase();
-  const filtered = q ? votazioni.filter((v) => v.titolo.toLowerCase().includes(q)) : votazioni;
+  const filtered = votazioni
+    .filter((v) => filtroStato === 'tutte' || v.stato === filtroStato || (filtroStato === 'concluso' && v.stato === 'archiviato'))
+    .filter((v) => !q || v.titolo.toLowerCase().includes(q))
+    .sort((a, b) => (STATO_ORDER[a.stato] ?? 9) - (STATO_ORDER[b.stato] ?? 9));
 
-  const bozze    = filtered.filter((v) => v.stato === 'bozza');
-  const attive   = filtered.filter((v) => v.stato === 'attivo');
-  const concluse = filtered.filter((v) => v.stato === 'concluso' || v.stato === 'archiviato');
+  const bozze    = votazioni.filter((v) => v.stato === 'bozza');
+  const attive   = votazioni.filter((v) => v.stato === 'attivo');
+  const concluse = votazioni.filter((v) => v.stato === 'concluso' || v.stato === 'archiviato');
 
   return (
     <div className="gv-layout">
@@ -115,6 +127,18 @@ export default function GestioneVotazioniPage() {
             <span className="gv-counter__num">{concluse.length}</span>
             <span className="gv-counter__label">Concluse</span>
           </div>
+        </div>
+
+        <div className="gv-filters">
+          {FILTRI.map(({ key, label }) => (
+            <button
+              key={key}
+              className={`gv-filter-btn${filtroStato === key ? ' gv-filter-btn--active' : ''}`}
+              onClick={() => setFiltroStato(key)}
+            >
+              {label}
+            </button>
+          ))}
         </div>
 
         <div className="dashboard-search">

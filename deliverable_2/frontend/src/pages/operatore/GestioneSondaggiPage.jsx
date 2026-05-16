@@ -35,9 +35,18 @@ export default function GestioneSondaggiPage() {
 
   const [sondaggi, setSondaggi] = useState([]);
   const [query, setQuery] = useState('');
+  const [filtroStato, setFiltroStato] = useState('tutte');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [actionLoading, setActionLoading] = useState(null);
+
+  const STATO_ORDER = { attivo: 0, bozza: 1, concluso: 2, archiviato: 3 };
+  const FILTRI = [
+    { key: 'tutte',     label: 'Tutte' },
+    { key: 'attivo',    label: 'Attivi' },
+    { key: 'bozza',     label: 'Bozze' },
+    { key: 'concluso',  label: 'Conclusi' },
+  ];
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -80,11 +89,14 @@ export default function GestioneSondaggiPage() {
   };
 
   const q = query.trim().toLowerCase();
-  const filtered = q ? sondaggi.filter((s) => s.titolo.toLowerCase().includes(q)) : sondaggi;
+  const filtered = sondaggi
+    .filter((s) => filtroStato === 'tutte' || s.stato === filtroStato || (filtroStato === 'concluso' && s.stato === 'archiviato'))
+    .filter((s) => !q || s.titolo.toLowerCase().includes(q))
+    .sort((a, b) => (STATO_ORDER[a.stato] ?? 9) - (STATO_ORDER[b.stato] ?? 9));
 
-  const bozze    = filtered.filter((s) => s.stato === 'bozza');
-  const attive   = filtered.filter((s) => s.stato === 'attivo');
-  const concluse = filtered.filter((s) => s.stato === 'concluso' || s.stato === 'archiviato');
+  const bozze    = sondaggi.filter((s) => s.stato === 'bozza');
+  const attive   = sondaggi.filter((s) => s.stato === 'attivo');
+  const concluse = sondaggi.filter((s) => s.stato === 'concluso' || s.stato === 'archiviato');
 
   return (
     <div className="gs-layout">
@@ -120,6 +132,18 @@ export default function GestioneSondaggiPage() {
             <span className="gs-counter__num">{concluse.length}</span>
             <span className="gs-counter__label">Concluse</span>
           </div>
+        </div>
+
+        <div className="gs-filters">
+          {FILTRI.map(({ key, label }) => (
+            <button
+              key={key}
+              className={`gs-filter-btn${filtroStato === key ? ' gs-filter-btn--active' : ''}`}
+              onClick={() => setFiltroStato(key)}
+            >
+              {label}
+            </button>
+          ))}
         </div>
 
         <div className="dashboard-search">
