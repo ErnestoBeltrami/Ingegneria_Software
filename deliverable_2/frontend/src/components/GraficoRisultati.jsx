@@ -1,80 +1,47 @@
-import {
-    BarChart, Bar, XAxis, YAxis,
-    ResponsiveContainer, Cell, LabelList,
-} from 'recharts';
+import { useState, useEffect } from 'react';
 import './GraficoRisultati.css';
 
 export default function GraficoRisultati({ dati = [], totaleVoti = 0 }) {
-    if (!dati.length) return null;
+    const [animate, setAnimate] = useState(false);
 
-    const BAR_H = 16;
-    const ROW_GAP = 56;
-    const chartHeight = dati.length * ROW_GAP + 24;
+    // Quando i dati cambiano, facciamo ripartire l'animazione da 0
+    useEffect(() => {
+        setAnimate(false);
+        const timer = setTimeout(() => setAnimate(true), 50);
+        return () => clearTimeout(timer);
+    }, [dati]);
+
+    if (!dati.length) return null;
 
     return (
         <div className="gr-container">
-            <div className="gr-total">
-                <span className="gr-total__num">{totaleVoti}</span>
-                <span className="gr-total__label">voti totali</span>
+            {totaleVoti > 0 && (
+                <div className="gr-total">
+                    <span className="gr-total__num">{totaleVoti}</span>
+                    <span className="gr-total__label">voti totali</span>
+                </div>
+            )}
+
+            <div className="gr-bars">
+                {dati.map((d, i) => (
+                    <div className="gr-row" key={i}>
+                        <div className="gr-row__header">
+                            <span className="gr-row__label">{d.etichetta}</span>
+                            <span className="gr-row__pct">{Number(d.percentuale).toFixed(0)}%</span>
+                        </div>
+                        <div className="gr-row__track">
+                            <div
+                                className="gr-row__fill"
+                                style={{
+                                    width: animate ? `${d.percentuale}%` : '0%',
+                                    backgroundColor: d.percentuale > 0 ? d.colore : 'transparent',
+                                }}
+                            />
+                        </div>
+                    </div>
+                ))}
             </div>
-
-            {/* Grafico */}
-            <ResponsiveContainer width="100%" height={chartHeight}>
-                <BarChart
-                    data={dati}
-                    layout="vertical"
-                    margin={{ top: 0, right: 64, left: 0, bottom: 0 }}
-                    barCategoryGap="40%"
-                >
-                    {/* non ci serve*/}
-                    <XAxis
-                        type="number"
-                        domain={[0, 100]}
-                        hide={true}
-                    />
-
-                    {/* etichette su asse y*/}
-                    <YAxis
-                        type="category"
-                        dataKey="etichetta"
-                        axisLine={false}
-                        tickLine={false}
-                        width={110}
-                        tick={{
-                            fontSize: 14,
-                            fontWeight: 500,
-                            fontFamily: 'Montserrat, sans-serif',
-                            fill: 'var(--text-secondary, #4b5563)',
-                        }}
-                    />
-
-                    {/* Barra con background (track grigio) */}
-                    <Bar
-                        dataKey="percentuale"
-                        barSize={BAR_H}
-                        radius={[10, 10, 10, 10]}
-                        background={{ fill: '#f3f4f6', radius: 10 }}
-                        isAnimationActive={true}
-                        animationDuration={800}
-                        animationEasing="ease-out"
-                    >
-                        {dati.map((entry, i) => (
-                            <Cell key={i} fill={entry.colore} />
-                        ))}
-                        <LabelList
-                            dataKey="percentuale"
-                            position="right"
-                            formatter={(v) => `${v.toFixed(0)}%`}
-                            style={{
-                                fontSize: 15,
-                                fontWeight: 700,
-                                fontFamily: 'Montserrat, sans-serif',
-                                fill: 'var(--text, #111827)',
-                            }}
-                        />
-                    </Bar>
-                </BarChart>
-            </ResponsiveContainer>
         </div>
     );
 }
+
