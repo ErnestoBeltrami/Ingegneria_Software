@@ -1,10 +1,12 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Moon, Sun, CalendarDays, ChevronRight, Archive } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import {
+    Moon, Sun, CalendarDays, ChevronRight, Archive,
+    Search, Vote, ClipboardList
+} from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { fetchProfile, fetchAllActivities } from '../../services/api';
-import { useEffect } from 'react';
-import './DashboardCittadinePage.css';   /* topbar + cd-layout + cd-page */
+import './DashboardCittadinePage.css';
 import './ArchivioPage.css';
 
 
@@ -21,11 +23,19 @@ function formatDate(isoString) {
 export default function Archivio() {
     const navigate = useNavigate();
     const { theme, toggleTheme } = useTheme();
-    const [activeTab, setActiveTab] = useState('votazioni');
+
+    const [searchParams, setSearchParams] = useSearchParams();
+    const tipoParam = searchParams.get('tipo');
+    const activeTab = tipoParam === 'sondaggi' ? 'sondaggi' : 'votazioni';
+
+    //dati
     const [profilo, setProfilo] = useState(null);
     const [activities, setActivities] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    //ricerca testuale
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         fetchProfile()
@@ -46,16 +56,62 @@ export default function Archivio() {
     const initials = `${nome.charAt(0)}${cognome.charAt(0)}`.toUpperCase() || '?';
     const fullName = [nome, cognome].filter(Boolean).join(' ') || 'Cittadino';
 
-    const items = activities.filter(a => activeTab === 'votazioni' ? a.tipo === 'votazione' : a.tipo === 'sondaggio');
+    //filtra per tipo e testo
+    const byType = activities.filter(a =>
+        activeTab === 'votazioni' ? a.tipo === 'votazione' : a.tipo === 'sondaggio'
+    );
+    const items = searchQuery.trim()
+        ? byType.filter(a => a.titolo?.toLowerCase().includes(searchQuery.trim().toLowerCase()))
+        : byType;
+
+    const handleTabChange = (tab) => {
+        setSearchQuery('');          // reset ricerca al cambio tab
+        setSearchParams({ tipo: tab });
+    };
 
     const handleRiepilogo = (item) => {
-        // TODO: navigare alla pagina riepilogo quando sarà pronta
-        console.log('Visualizza riepilogo:', item._id);
+        if (item.tipo === 'votazione') {
+            navigate(`/cittadino/archivio/votazione/${item._id}`);
+        } else {
+            navigate(`/cittadino/archivio/sondaggio/${item._id}`);
+        }
+    };
+
+    //empty state
+    const renderEmptyState = () => {
+        if (searchQuery.trim()) {
+            return (
+                <div className="archivio-empty">
+                    <div className="archivio-empty__icon">
+                        <Search size={36} strokeWidth={1.5} />
+                    </div>
+                    <p>Nessun risultato per &ldquo;<strong>{searchQuery.trim()}</strong>&rdquo;</p>
+                </div>
+            );
+        }
+        if (activeTab === 'votazioni') {
+            return (
+                <div className="archivio-empty">
+                    <div className="archivio-empty__icon">
+                        <Vote size={36} strokeWidth={1.5} />
+                    </div>
+                    <p>Nessuna votazione conclusa al momento</p>
+                </div>
+            );
+        }
+        return (
+            <div className="archivio-empty">
+                <div className="archivio-empty__icon">
+                    <ClipboardList size={36} strokeWidth={1.5} />
+                </div>
+                <p>Nessun sondaggio concluso al momento</p>
+            </div>
+        );
     };
 
     return (
         <div className="cd-layout">
-            {/* ── TopBar ── */}
+            {/* topbar */}
             <header className="cd-topbar">
                 <span className="cd-topbar__logo">IoSonoTrento</span>
                 <div className="cd-topbar__right">
@@ -81,16 +137,42 @@ export default function Archivio() {
                     </h1>
                 </header>
 
+                {/* ── Search bar ── */}
+                <div className="archivio-search">
+                    <Search size={16} className="archivio-search__icon" />
+                    <input
+                        id="archivio-search-input"
+                        type="text"
+                        className="archivio-search__input"
+                        placeholder="Cerca votazioni o sondaggi..."
+                        value={searchQuery}
+                        onChange={e => setSearchQuery(e.target.value)}
+                        aria-label="Cerca votazioni o sondaggi"
+                    />
+                    {searchQuery && (
+                        <button
+                            className="archivio-search__clear"
+                            onClick={() => setSearchQuery('')}
+                            aria-label="Cancella ricerca"
+                        >
+                            ×
+                        </button>
+                    )}
+                </div>
+
+                {/* ── Tab toggle ── */}
                 <div className="archivio-tabs">
                     <button
+                        id="tab-votazioni"
                         className={`archivio-tab ${activeTab === 'votazioni' ? 'archivio-tab--active' : ''}`}
-                        onClick={() => setActiveTab('votazioni')}
+                        onClick={() => handleTabChange('votazioni')}
                     >
                         Votazioni
                     </button>
                     <button
+                        id="tab-sondaggi"
                         className={`archivio-tab ${activeTab === 'sondaggi' ? 'archivio-tab--active' : ''}`}
-                        onClick={() => setActiveTab('sondaggi')}
+                        onClick={() => handleTabChange('sondaggi')}
                     >
                         Sondaggi
                     </button>
@@ -99,12 +181,8 @@ export default function Archivio() {
                 {/* ── Griglia card ── */}
                 {loading && <div className="archivio-empty"><p>Caricamento...</p></div>}
                 {error && !loading && <div className="archivio-empty"><p style={{ color: 'red' }}>⚠️ {error}</p></div>}
-                {!loading && !error && items.length === 0 ? (
-                    <div className="archivio-empty">
-                        <div className="archivio-empty__icon">📂</div>
-                        <p>Nessuna {activeTab === 'votazioni' ? 'votazione' : 'sondaggio'} archiviata.</p>
-                    </div>
-                ) : !loading && !error && (
+                {!loading && !error && items.length === 0 && renderEmptyState()}
+                {!loading && !error && items.length > 0 && (
                     <div className="archivio-grid">
                         {items.map(item => (
                             <div className="archivio-card" key={item._id}>

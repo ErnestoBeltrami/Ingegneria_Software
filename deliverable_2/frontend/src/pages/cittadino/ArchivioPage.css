@@ -1,6 +1,74 @@
-/* =====================
-   Archivio – Tab toggle
-   ===================== */
+.archivio-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 0 14px;
+    height: 46px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 12px;
+}
+
+.archivio-search:focus-within {
+    border-color: #007a52;
+    box-shadow: 0 0 0 3px rgba(0, 122, 82, 0.15);
+}
+
+.archivio-search__icon {
+    flex-shrink: 0;
+    color: var(--text-muted);
+    margin-right: 10px;
+    pointer-events: none;
+    transition: color 0.2s ease;
+}
+
+.archivio-search:focus-within .archivio-search__icon {
+    color: #007a52;
+}
+
+.archivio-search__input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    min-width: 0;
+}
+
+.archivio-search__input::placeholder {
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.archivio-search__clear {
+    flex-shrink: 0;
+    border: none;
+    background: var(--surface-hover);
+    color: var(--text-muted);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 16px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.archivio-search__clear:hover {
+    background: rgba(0, 122, 82, 0.15);
+    color: #007a52;
+}
+
 .archivio-tabs {
     display: flex;
     background: var(--surface);
@@ -35,9 +103,7 @@
     color: var(--text-secondary);
 }
 
-/* =====================
-   Archivio – Griglia
-   ===================== */
+
 .archivio-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -50,9 +116,7 @@
     }
 }
 
-/* =====================
-   Archivio – Card
-   ===================== */
+
 .archivio-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -168,9 +232,7 @@
     transform: translateY(0);
 }
 
-/* =====================
-   Vuoto / Empty state
-   ===================== */
+
 .archivio-empty {
     text-align: center;
     padding: 52px 20px;
@@ -179,8 +241,25 @@
     font-weight: 500;
 }
 
+.archivio-empty p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+.archivio-empty p strong {
+    color: var(--text-secondary);
+}
+
 .archivio-empty__icon {
-    font-size: 40px;
-    margin-bottom: 12px;
-    opacity: 0.55;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px;
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    opacity: 0.75;
+    color: var(--text-muted);
 }
