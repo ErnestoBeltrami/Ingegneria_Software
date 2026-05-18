@@ -113,6 +113,13 @@ export default function RiepilogoSondaggio() {
                         Torna all'archivio
                     </button>
                     <h1 className="crs-title">{titolo}</h1>
+                    {dettaglio?.descrizione && (
+                        <p className="crs-descrizione">{dettaglio.descrizione}</p>
+                    )}
+                    <div className="crs-participants">
+                        <span className="crs-participants__num">{totaleVotiUnici}</span>
+                        <span className="crs-participants__label">partecipanti totali</span>
+                    </div>
                 </header>
 
                 {totaleDomande === 0 ? (
@@ -127,7 +134,7 @@ export default function RiepilogoSondaggio() {
                                 <h3 className="crs-card__title">{domanda.titoloDomanda}</h3>
                             </div>
 
-                            <GraficoRisultati dati={datiGrafico} totaleVoti={totaleVotiUnici} />
+                            <GraficoRisultati dati={datiGrafico} />
                         </div>
 
                         {/* Navigazione avanti/indietro */}

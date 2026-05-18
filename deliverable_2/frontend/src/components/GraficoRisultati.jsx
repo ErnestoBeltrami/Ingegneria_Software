@@ -1,27 +1,11 @@
-import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import './GraficoRisultati.css';
 
-export default function GraficoRisultati({ dati = [], totaleVoti = 0 }) {
-    const [animate, setAnimate] = useState(false);
-
-    // Quando i dati cambiano, facciamo ripartire l'animazione da 0
-    useEffect(() => {
-        setAnimate(false);
-        const timer = setTimeout(() => setAnimate(true), 50);
-        return () => clearTimeout(timer);
-    }, [dati]);
-
+export default function GraficoRisultati({ dati = [] }) {
     if (!dati.length) return null;
 
     return (
         <div className="gr-container">
-            {totaleVoti > 0 && (
-                <div className="gr-total">
-                    <span className="gr-total__num">{totaleVoti}</span>
-                    <span className="gr-total__label">voti totali</span>
-                </div>
-            )}
-
             <div className="gr-bars">
                 {dati.map((d, i) => (
                     <div className="gr-row" key={i}>
@@ -30,10 +14,12 @@ export default function GraficoRisultati({ dati = [], totaleVoti = 0 }) {
                             <span className="gr-row__pct">{Number(d.percentuale).toFixed(0)}%</span>
                         </div>
                         <div className="gr-row__track">
-                            <div
+                            <motion.div
                                 className="gr-row__fill"
+                                initial={{ width: 0 }}
+                                animate={{ width: `${d.percentuale}%` }}
+                                transition={{ duration: 0.8, ease: "easeOut" }}
                                 style={{
-                                    width: animate ? `${d.percentuale}%` : '0%',
                                     backgroundColor: d.percentuale > 0 ? d.colore : 'transparent',
                                 }}
                             />
@@ -44,4 +30,3 @@ export default function GraficoRisultati({ dati = [], totaleVoti = 0 }) {
         </div>
     );
 }
-

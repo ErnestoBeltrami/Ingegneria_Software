@@ -80,17 +80,22 @@ export default function RiepilogoVotazione() {
             </header>
 
             <div className="crv-page">
-                <button className="crv-back" onClick={() => navigate('/cittadino/archivio')}>
-                    <ArrowLeft size={16} />
-                    Torna all'archivio
-                </button>
-
-                <h1 className="crv-title">{titolo}</h1>
+                <header className="crv-header">
+                    <button className="crv-back" onClick={() => navigate('/cittadino/archivio')}>
+                        <ArrowLeft size={16} />
+                        Torna all'archivio
+                    </button>
+                    <h1 className="crv-title">{titolo}</h1>
+                    <div className="crv-participants">
+                        <span className="crv-participants__num">{totaleVoti}</span>
+                        <span className="crv-participants__label">voti totali</span>
+                    </div>
+                </header>
 
                 {totaleVoti === 0 ? (
                     <p className="crv-status">Nessun voto registrato.</p>
                 ) : (
-                    <GraficoRisultati dati={datiGrafico} totaleVoti={totaleVoti} />
+                    <GraficoRisultati dati={datiGrafico} />
                 )}
             </div>
         </div>

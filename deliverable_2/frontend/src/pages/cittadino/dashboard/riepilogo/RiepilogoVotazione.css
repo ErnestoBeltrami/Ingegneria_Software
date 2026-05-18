@@ -31,12 +31,40 @@
     color: #009966;
 }
 
+.crv-header {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
 .crv-title {
     font-size: 20px;
     font-weight: 700;
     color: var(--text);
     line-height: 28px;
     margin: 0;
+}
+
+.crv-participants {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.crv-participants__num {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text, #111827);
+    line-height: 1;
+}
+
+.crv-participants__label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted, #9ca3af);
 }
 
 .crv-status {

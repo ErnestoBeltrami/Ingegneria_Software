@@ -55,6 +55,28 @@
     line-height: 1.6;
 }
 
+.crs-participants {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.crs-participants__num {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text, #111827);
+    line-height: 1;
+}
+
+.crs-participants__label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted, #9ca3af);
+}
+
 /* Elenco Domande */
 .crs-domande {
     display: flex;
