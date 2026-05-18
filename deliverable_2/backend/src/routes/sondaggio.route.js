@@ -1,16 +1,25 @@
 import { Router } from "express";
-import { getRiepilogoSintetico, getSondaggi, getSondaggioById, updateSondaggio, getSondaggiAvaiable, getRiepilogoConFiltri } from "../controllers/sondaggio.controller.js";
 import {
-    creaConsultazione,
-    publishConsultazione,
-    archiveConsultazione,
-    deleteConsultazione
-} from "../controllers/consultazione.controller.js";
+    getRiepilogoSintetico, 
+    getSondaggi, 
+    updateSondaggio,
+    getSondaggiAvaiable, 
+    getRiepilogoConFiltri
+} from "../controllers/sondaggio.controller.js";
+
 import {
     protect,
     restrictTo,
     validateObjectId
 } from "../middleware/auth_middleware.js";
+
+import {
+    creaConsultazione,
+    publishConsultazione,
+    archiveConsultazione,
+    deleteConsultazione,
+    getConsultazioneById
+} from "../controllers/consultazione.controller.js";
 
 const router = Router();
 
@@ -20,7 +29,7 @@ router.get("/",protect,getSondaggi);
 
 router.get("/cittadino",protect,restrictTo(['cittadino']),getSondaggiAvaiable);
 
-router.get("/:id", protect, validateObjectId, getSondaggioById);
+router.get("/:id", protect, validateObjectId, restrictTo(['operatore','cittadino']),getConsultazioneById);
 
 router.patch("/:id", protect, validateObjectId, restrictTo(['operatore']), updateSondaggio);
 

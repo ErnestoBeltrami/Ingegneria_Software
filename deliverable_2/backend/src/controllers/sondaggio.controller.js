@@ -79,58 +79,25 @@ export const getSondaggiAvaiable = async (req, res) => {
             });
         }
 
+        const risposte = await RispostaConsultazione.find({
+            ID_cittadino: userFromMiddleware._id,
+            tipo_consultazione: 'sondaggio'
+        }).select('ID_consultazione');
+        const votedIds = new Set(risposte.map(r => r.ID_consultazione.toString()));
+
+        const sondaggiWithVoted = sondaggi.map(s => ({
+            ...s.toObject(),
+            voted: votedIds.has(s._id.toString())
+        }));
+
         return res.status(200).json({
             message: 'Sondaggi recuperati con successo.',
-            sondaggi
+            sondaggi: sondaggiWithVoted
         });
     } catch (error) {
         logger.error('Errore nel recupero dei sondaggi:', error);
         return res.status(500).json({
             message: 'Errore interno del server durante il recupero dei sondaggi.'
-        });
-    }
-};
-
-// GET: Dettaglio singola sondaggio
-export const getSondaggioById = async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        if (req.ruolo === 'operatore') {
-            const sondaggio = await Consultazione.findOne({
-                _id: id,
-                tipo: 'sondaggio'
-            }).populate('ID_domande');
-
-            if (!sondaggio) {
-                return res.status(404).json({ message: 'Sondaggio non trovato.' });
-            }
-
-            return res.status(200).json({ message: 'Sondaggio trovato con successo.', sondaggio });
-        }
-
-        // Cittadino: vede solo sondaggi attivi o conclusi
-        const sondaggio = await Consultazione.findOne({
-            _id: id,
-            tipo: 'sondaggio',
-            stato: { $in: ['attivo', 'concluso'] }
-        }).populate('ID_domande');
-
-        if (!sondaggio) {
-            return res.status(404).json({ message: 'Sondaggio non trovato.' });
-        }
-
-        const voted = !!(await RispostaConsultazione.exists({
-            ID_consultazione: id,
-            ID_cittadino: req.user._id,
-            tipo_consultazione: 'sondaggio'
-        }));
-
-        return res.status(200).json({ message: 'Sondaggio trovato con successo.', sondaggio, voted });
-    } catch (error) {
-        logger.error('Errore nel recupero del sondaggio:', error);
-        return res.status(500).json({
-            message: 'Errore interno del server durante il recupero del sondaggio.'
         });
     }
 };
@@ -202,7 +169,7 @@ export const updateSondaggio = async (req, res) => {
     }
 };
 
-// DELETE: Eliminazione sondaggio (solo in stato "bozza")
+
 export const getRiepilogoSintetico = async (req, res) => {
     const sondaggioId = req.params.id;
 

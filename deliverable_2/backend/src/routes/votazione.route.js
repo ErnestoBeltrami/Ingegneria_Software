@@ -1,23 +1,25 @@
 import { Router } from "express";
 import {
   getVotazioni,
-  getVotazioneById,
   updateVotazione,
   getRiepilogoSintetico,
   getRiepilogoDemografico,
   getVotazioniAvailable
 } from "../controllers/votazione.controller.js";
-import {
-  creaConsultazione,
-  publishConsultazione,
-  archiveConsultazione,
-  deleteConsultazione
-} from "../controllers/consultazione.controller.js";
+
 import {
   protect,
   restrictTo,
   validateObjectId
 } from "../middleware/auth_middleware.js";
+
+import {
+  creaConsultazione,
+  publishConsultazione,
+  archiveConsultazione,
+  deleteConsultazione,
+  getConsultazioneById
+} from "../controllers/consultazione.controller.js"
 
 const router = Router();
 
@@ -29,8 +31,8 @@ router.get("/cittadino",protect,restrictTo(['cittadino']),getVotazioniAvailable)
 
 //DA FINIRE SWAGGER
 
-// GET /votazioni/:id - Dettaglio singola votazione
-router.get("/:id", protect, validateObjectId, restrictTo(['operatore']), getVotazioneById);
+// GET /votazioni/:id - Dettaglio singola votazione (operatore: tutti gli stati; cittadino: attivo/concluso + voted)
+router.get("/:id", protect, validateObjectId, restrictTo(['operatore','cittadino']), getConsultazioneById);
 
 // GET /votazioni/:id/riepilogo/demografico - Riepilogo demografico (genere, età, partecipazione)
 router.get("/:id/riepilogo/demografico", protect, validateObjectId, restrictTo(['operatore']), getRiepilogoDemografico);

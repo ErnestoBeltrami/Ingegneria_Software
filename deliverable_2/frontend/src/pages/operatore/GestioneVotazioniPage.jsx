@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Trash2, Pencil, ChevronRight } from 'lucide-react';
+import { Plus, Trash2, Pencil, ChevronRight, Search } from 'lucide-react';
 import TopBar from '@/components/TopBar';
 import './GestioneVotazioniPage.css';
 
@@ -34,9 +34,19 @@ export default function GestioneVotazioniPage() {
   const cognome = localStorage.getItem('cognome') || '';
 
   const [votazioni, setVotazioni] = useState([]);
+  const [query, setQuery] = useState('');
+  const [filtroStato, setFiltroStato] = useState('tutte');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [actionLoading, setActionLoading] = useState(null);
+
+  const STATO_ORDER = { attivo: 0, bozza: 1, concluso: 2, archiviato: 3 };
+  const FILTRI = [
+    { key: 'tutte',     label: 'Tutte' },
+    { key: 'attivo',    label: 'Attive' },
+    { key: 'bozza',     label: 'Bozze' },
+    { key: 'concluso',  label: 'Concluse' },
+  ];
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -78,6 +88,12 @@ export default function GestioneVotazioniPage() {
     }
   };
 
+  const q = query.trim().toLowerCase();
+  const filtered = votazioni
+    .filter((v) => filtroStato === 'tutte' || v.stato === filtroStato || (filtroStato === 'concluso' && v.stato === 'archiviato'))
+    .filter((v) => !q || v.titolo.toLowerCase().includes(q))
+    .sort((a, b) => (STATO_ORDER[a.stato] ?? 9) - (STATO_ORDER[b.stato] ?? 9));
+
   const bozze    = votazioni.filter((v) => v.stato === 'bozza');
   const attive   = votazioni.filter((v) => v.stato === 'attivo');
   const concluse = votazioni.filter((v) => v.stato === 'concluso' || v.stato === 'archiviato');
@@ -113,16 +129,40 @@ export default function GestioneVotazioniPage() {
           </div>
         </div>
 
+        <div className="gv-search-block">
+          <div className="dashboard-search">
+            <Search size={16} color="rgba(255,255,255,0.35)" />
+            <input
+              className="dashboard-search__input"
+              type="text"
+              placeholder="Cerca per titolo…"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </div>
+          <div className="gv-filters">
+            {FILTRI.map(({ key, label }) => (
+              <button
+                key={key}
+                className={`gv-filter-btn${filtroStato === key ? ' gv-filter-btn--active' : ''}`}
+                onClick={() => setFiltroStato(key)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {error && <p className="gv-error" role="alert">{error}</p>}
         {loading && <p className="gv-status">Caricamento…</p>}
 
-        {!loading && votazioni.length === 0 && !error && (
-          <p className="gv-status">Nessuna votazione trovata.</p>
+        {!loading && filtered.length === 0 && !error && (
+          <p className="gv-status">{q ? 'Nessuna votazione trovata per questa ricerca.' : 'Nessuna votazione trovata.'}</p>
         )}
 
-        {!loading && votazioni.length > 0 && (
+        {!loading && filtered.length > 0 && (
           <div className="gv-grid">
-            {votazioni.map((v) => (
+            {filtered.map((v) => (
               <VotazioneCard
                 key={v._id}
                 votazione={v}

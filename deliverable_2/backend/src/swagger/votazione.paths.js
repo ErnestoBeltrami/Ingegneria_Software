@@ -152,7 +152,12 @@
  * /votazioni/{id}:
  *   get:
  *     summary: Ottieni dettaglio di una votazione
- *     description: Restituisce i dettagli completi di una votazione specifica, inclusa la domanda associata. Solo per votazioni create dall'operatore autenticato.
+ *     description: |
+ *       Restituisce i dettagli completi di una votazione specifica, inclusa la domanda con le opzioni.
+ *       Il comportamento varia in base al ruolo del chiamante:
+ *       - **Operatore**: accede a votazioni in qualsiasi stato (bozza, attivo, concluso, archiviato).
+ *       - **Cittadino**: accede solo a votazioni in stato `attivo` o `concluso`. La risposta include
+ *         il campo `voted` (`true` se il cittadino ha già espresso il proprio voto, `false` altrimenti).
  *     tags:
  *       - Votazioni
  *     security:
@@ -178,6 +183,56 @@
  *                   example: "Votazione trovata con successo."
  *                 votazione:
  *                   $ref: '#/components/schemas/VotazioneWithDomanda'
+ *                 voted:
+ *                   type: boolean
+ *                   description: "Presente solo per il cittadino: true se ha già votato questa votazione"
+ *                   example: false
+ *             examples:
+ *               operatore:
+ *                 summary: Risposta operatore (nessun campo voted)
+ *                 value:
+ *                   message: "Votazione trovata con successo."
+ *                   votazione:
+ *                     _id: "507f1f77bcf86cd799439011"
+ *                     tipo: "votazione"
+ *                     stato: "attivo"
+ *                     titolo: "Referendum sulla proposta X"
+ *                     descrizione: "Votazione per decidere..."
+ *                     data_inizio: "2026-05-01T00:00:00.000Z"
+ *                     data_fine: "2026-05-30T23:59:59.000Z"
+ *                     data_discussione: "2026-04-15T00:00:00.000Z"
+ *                     ID_domanda:
+ *                       _id: "507f1f77bcf86cd799439012"
+ *                       titolo: "Sei favorevole alla proposta?"
+ *                       tipo: "risposta_singola"
+ *                       opzioni:
+ *                         - _id: "507f1f77bcf86cd799439013"
+ *                           testo: "Sì"
+ *                         - _id: "507f1f77bcf86cd799439014"
+ *                           testo: "No"
+ *               cittadino:
+ *                 summary: Risposta cittadino (include campo voted)
+ *                 value:
+ *                   message: "Votazione trovata con successo."
+ *                   votazione:
+ *                     _id: "507f1f77bcf86cd799439011"
+ *                     tipo: "votazione"
+ *                     stato: "attivo"
+ *                     titolo: "Referendum sulla proposta X"
+ *                     descrizione: "Votazione per decidere..."
+ *                     data_inizio: "2026-05-01T00:00:00.000Z"
+ *                     data_fine: "2026-05-30T23:59:59.000Z"
+ *                     data_discussione: "2026-04-15T00:00:00.000Z"
+ *                     ID_domanda:
+ *                       _id: "507f1f77bcf86cd799439012"
+ *                       titolo: "Sei favorevole alla proposta?"
+ *                       tipo: "risposta_singola"
+ *                       opzioni:
+ *                         - _id: "507f1f77bcf86cd799439013"
+ *                           testo: "Sì"
+ *                         - _id: "507f1f77bcf86cd799439014"
+ *                           testo: "No"
+ *                   voted: false
  *       400:
  *         description: ID non valido
  *         content:
@@ -187,13 +242,13 @@
  *             example:
  *               message: "ID non valido."
  *       401:
- *         description: Operatore non autenticato
+ *         description: Utente non autenticato
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *       404:
- *         description: Votazione non trovata
+ *         description: Votazione non trovata (o non visibile al cittadino perché in stato bozza/archiviato)
  *         content:
  *           application/json:
  *             schema:
@@ -536,7 +591,7 @@
  * /votazioni/cittadino:
  *   get:
  *     summary: Recupera votazioni disponibili per i cittadini
- *     description: Restituisce la lista di tutte le votazioni in stato "attivo" o "concluso", visibili ai cittadini autenticati. Le votazioni sono ordinate per data di inizio (più recenti prima).
+ *     description: Restituisce la lista di tutte le votazioni in stato "attivo" o "concluso", visibili ai cittadini autenticati. Le votazioni sono ordinate per data di inizio (più recenti prima). Ogni elemento include il campo `voted` (`true` se il cittadino ha già votato, `false` altrimenti).
  *     tags:
  *       - Votazioni
  *     security:
@@ -555,7 +610,14 @@
  *                 votazioni:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Votazione'
+ *                     allOf:
+ *                       - $ref: '#/components/schemas/Votazione'
+ *                       - type: object
+ *                         properties:
+ *                           voted:
+ *                             type: boolean
+ *                             description: "true se il cittadino autenticato ha già votato questa votazione"
+ *                             example: false
  *                   description: Array di votazioni disponibili (presente solo se ci sono votazioni)
  *             examples:
  *               withVotazioni:
@@ -572,6 +634,7 @@
  *                       data_discussione: "2025-12-05T00:00:00.000Z"
  *                       creatoDa: "507f1f77bcf86cd799439012"
  *                       ID_domande: []
+ *                       voted: true
  *                     - _id: "507f1f77bcf86cd799439013"
  *                       tipo: "votazione"
  *                       stato: "concluso"
@@ -582,6 +645,7 @@
  *                       data_discussione: "2025-10-25T00:00:00.000Z"
  *                       creatoDa: "507f1f77bcf86cd799439012"
  *                       ID_domande: []
+ *                       voted: false
  *               noVotazioni:
  *                 value:
  *                   message: "Nessuna votazione disponibile al momento"

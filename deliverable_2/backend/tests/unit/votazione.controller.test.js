@@ -51,13 +51,11 @@ const validBody = {
 
 describe('votazione controller', () => {
   let getVotazioni;
-  let getVotazioneById;
   let updateVotazione;
 
   beforeAll(async () => {
     const mod = await import('../../src/controllers/votazione.controller.js');
     getVotazioni = mod.getVotazioni;
-    getVotazioneById = mod.getVotazioneById;
     updateVotazione = mod.updateVotazione;
   });
 
@@ -101,34 +99,6 @@ describe('votazione controller', () => {
           votazioni: fakeVotazioni,
           paginazione: expect.objectContaining({ totale: 1 }),
         })
-      );
-    });
-  });
-
-  // ── getVotazioneById ───────────────────────────────────────────────────────
-
-  describe('getVotazioneById', () => {
-    it('restituisce 404 se non trovata', async () => {
-      const chainable = { populate: jest.fn().mockResolvedValueOnce(null) };
-      mockConsultazioneFindOne.mockReturnValueOnce(chainable);
-
-      const req = { user: { _id: OPERATORE_ID }, params: { id: VOTAZIONE_ID } };
-      const res = makeRes();
-      await getVotazioneById(req, res);
-      expect(res.status).toHaveBeenCalledWith(404);
-    });
-
-    it('restituisce 200 con la votazione', async () => {
-      const fakeVot = { _id: VOTAZIONE_ID, titolo: 'Test' };
-      const chainable = { populate: jest.fn().mockResolvedValueOnce(fakeVot) };
-      mockConsultazioneFindOne.mockReturnValueOnce(chainable);
-
-      const req = { user: { _id: OPERATORE_ID }, params: { id: VOTAZIONE_ID } };
-      const res = makeRes();
-      await getVotazioneById(req, res);
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith(
-        expect.objectContaining({ votazione: fakeVot })
       );
     });
   });

@@ -80,9 +80,20 @@ export const getVotazioni = async (req, res) => {
             });
         }
 
+        const risposte = await RispostaConsultazione.find({
+            ID_cittadino: userFromMiddleware._id,
+            tipo_consultazione: 'votazione'
+        }).select('ID_consultazione');
+        const votedIds = new Set(risposte.map(r => r.ID_consultazione.toString()));
+
+        const votazioniWithVoted = votazioni.map(v => ({
+            ...v.toObject(),
+            voted: votedIds.has(v._id.toString())
+        }));
+
         return res.status(200).json({
             message: 'Votazioni recuperate con successo.',
-            votazioni
+            votazioni: votazioniWithVoted
         });
     } catch (error) {
         logger.error('Errore nel recupero delle votazioni:', error);
@@ -93,34 +104,6 @@ export const getVotazioni = async (req, res) => {
 };
 
 
-// GET: Dettaglio singola votazione
-export const getVotazioneById = async (req, res) => {
-    try {
-        const userFromMiddleware = req.user;
-        const { id } = req.params;
-
-        const votazione = await Consultazione.findOne({
-            _id: id,
-            tipo: 'votazione'
-        }).populate('ID_domanda');
-
-        if (!votazione) {
-            return res.status(404).json({
-                message: 'Votazione non trovata.'
-            });
-        }
-
-        return res.status(200).json({
-            message: 'Votazione trovata con successo.',
-            votazione
-        });
-    } catch (error) {
-        logger.error('Errore nel recupero della votazione:', error);
-        return res.status(500).json({
-            message: 'Errore interno del server durante il recupero della votazione.'
-        });
-    }
-};
 
 // PATCH: Modifica votazione (solo in stato "bozza")
 export const updateVotazione = async (req, res) => {
@@ -186,7 +169,7 @@ export const updateVotazione = async (req, res) => {
     }
 };
 
-// DELETE: Eliminazione votazione (solo in stato "bozza")
+
 export const getRiepilogoSintetico = async (req, res) => {
     const votazioneId = req.params.id;
 

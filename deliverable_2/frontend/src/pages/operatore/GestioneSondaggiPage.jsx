@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Trash2, Pencil, ChevronRight } from 'lucide-react';
+import { Plus, Trash2, Pencil, ChevronRight, Search } from 'lucide-react';
 import TopBar from '@/components/TopBar';
 import './GestioneSondaggiPage.css';
 
@@ -34,9 +34,19 @@ export default function GestioneSondaggiPage() {
   const cognome = localStorage.getItem('cognome') || '';
 
   const [sondaggi, setSondaggi] = useState([]);
+  const [query, setQuery] = useState('');
+  const [filtroStato, setFiltroStato] = useState('tutte');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [actionLoading, setActionLoading] = useState(null); // id in corso
+  const [actionLoading, setActionLoading] = useState(null);
+
+  const STATO_ORDER = { attivo: 0, bozza: 1, concluso: 2, archiviato: 3 };
+  const FILTRI = [
+    { key: 'tutte',     label: 'Tutte' },
+    { key: 'attivo',    label: 'Attivi' },
+    { key: 'bozza',     label: 'Bozze' },
+    { key: 'concluso',  label: 'Conclusi' },
+  ];
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -78,6 +88,12 @@ export default function GestioneSondaggiPage() {
     }
   };
 
+  const q = query.trim().toLowerCase();
+  const filtered = sondaggi
+    .filter((s) => filtroStato === 'tutte' || s.stato === filtroStato || (filtroStato === 'concluso' && s.stato === 'archiviato'))
+    .filter((s) => !q || s.titolo.toLowerCase().includes(q))
+    .sort((a, b) => (STATO_ORDER[a.stato] ?? 9) - (STATO_ORDER[b.stato] ?? 9));
+
   const bozze    = sondaggi.filter((s) => s.stato === 'bozza');
   const attive   = sondaggi.filter((s) => s.stato === 'attivo');
   const concluse = sondaggi.filter((s) => s.stato === 'concluso' || s.stato === 'archiviato');
@@ -118,20 +134,40 @@ export default function GestioneSondaggiPage() {
           </div>
         </div>
 
-        {/* Error */}
-        {error && <p className="gs-error" role="alert">{error}</p>}
+        <div className="gs-search-block">
+          <div className="dashboard-search">
+            <Search size={16} color="rgba(255,255,255,0.35)" />
+            <input
+              className="dashboard-search__input"
+              type="text"
+              placeholder="Cerca per titolo…"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </div>
+          <div className="gs-filters">
+            {FILTRI.map(({ key, label }) => (
+              <button
+                key={key}
+                className={`gs-filter-btn${filtroStato === key ? ' gs-filter-btn--active' : ''}`}
+                onClick={() => setFiltroStato(key)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
 
-        {/* Loading */}
+        {error && <p className="gs-error" role="alert">{error}</p>}
         {loading && <p className="gs-status">Caricamento…</p>}
 
-        {/* Cards grid */}
-        {!loading && sondaggi.length === 0 && !error && (
-          <p className="gs-status">Nessun sondaggio trovato.</p>
+        {!loading && filtered.length === 0 && !error && (
+          <p className="gs-status">{q ? 'Nessun sondaggio trovato per questa ricerca.' : 'Nessun sondaggio trovato.'}</p>
         )}
 
-        {!loading && sondaggi.length > 0 && (
+        {!loading && filtered.length > 0 && (
           <div className="gs-grid">
-            {sondaggi.map((s) => (
+            {filtered.map((s) => (
               <SondaggioCard
                 key={s._id}
                 sondaggio={s}

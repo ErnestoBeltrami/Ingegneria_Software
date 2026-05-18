@@ -41,15 +41,27 @@ const apiFetch = async (url, options = {}) => {
 export const fetchVotazioni = () => apiFetch('/votazioni/cittadino');
 export const fetchSondaggi = () => apiFetch('/sondaggio/cittadino');
 
-// fetch votazioni + sondaggi in parallelo
 export const fetchAllActivities = async () => {
     const [votazioniRes, sondaggiRes] = await Promise.all([
         fetchVotazioni(),
         fetchSondaggi(),
     ]);
+
+    const normalise = (a) => ({
+        _id: a._id,
+        tipo: a.tipo,
+        titolo: a.titolo,
+        descrizione: a.descrizione,
+        data_fine: a.data_fine,
+        data_discussione: a.data_discussione,
+        stato: a.stato,
+        ID_domande: a.ID_domande,
+        voted: a.voted ?? false,
+    });
+
     return [
-        ...(votazioniRes.votazioni || []).map(v => ({ ...v, voted: false })),
-        ...(sondaggiRes.sondaggi || []).map(v => ({ ...v, voted: false })),
+        ...(votazioniRes.votazioni || []).map(normalise),
+        ...(sondaggiRes.sondaggi || sondaggiRes.votazioni || []).map(normalise),
     ];
 };
 export const fetchProfile = () => apiFetch('/cittadino/profile');
@@ -57,3 +69,21 @@ export const fetchProfile = () => apiFetch('/cittadino/profile');
 export const fetchNotifiche = () => apiFetch('/notifiche');
 export const marcaNotificaLetta = (id) => apiFetch(`/notifiche/${id}/letta`, { method: 'PATCH' });
 export const marcaTutteNotificheLette = () => apiFetch('/notifiche/leggi-tutte', { method: 'PATCH' });
+
+export const submitSondaggio = (sondaggioId, dettagliRisposte) =>
+    apiFetch('/cittadino/vote/sondaggio', {
+        method: 'POST',
+        body: JSON.stringify({ sondaggioId, dettagliRisposte })
+    });
+
+export const fetchSondaggioCittadino = async (id) => {
+    return apiFetch(`/sondaggio/${id}`);
+};
+
+export const fetchVotazioneCittadino = (id) => apiFetch(`/votazioni/${id}`);
+
+export const submitVotazione = (votazioneId, opzioneId) =>
+    apiFetch('/cittadino/vote/votazione', {
+        method: 'POST',
+        body: JSON.stringify({ votazioneId, opzioneId })
+    });

@@ -696,16 +696,19 @@ endpoint. Di seguito viene riportata la mappatura tra classi/metodi e route HTTP
   \addlinespace
   % Votazioni
   Consultazione.create() (votazione) & POST & /votazioni \\
-  Consultazione.list() (votazione) & GET & /votazioni \\
-  Consultazione.getById() (votazione) & GET & /votazioni/:id \\
+  Consultazione.list() (votazione, op.) & GET & /votazioni \\
+  Consultazione.list() (votazione, cit.) & GET & /votazioni/cittadino \textsuperscript{§} \\
+  Consultazione.getById() (votazione, op.) & GET & /votazioni/:id \\
+  Consultazione.getById() (votazione, cit.) & GET & /votazioni/:id \textsuperscript{†} \\
   Consultazione.update() (votazione) & PATCH & /votazioni/:id \\
   Consultazione.delete() (votazione) & DELETE & /votazioni/:id \\
   Consultazione.getStatistiche() & GET & /votazioni/:id/statistiche \\
-  RispostaConsultazione.create() & POST & /cittadino/vote/votazione \\
+  RispostaConsultazione.create() & POST & /cittadino/vote/votazione \textsuperscript{‡} \\
   \addlinespace
   % Sondaggi
   Consultazione.create() (sondaggio) & POST & /sondaggio \\
-  Consultazione.list() (sondaggio) & GET & /sondaggio \\
+  Consultazione.list() (sondaggio, op.) & GET & /sondaggio \\
+  Consultazione.list() (sondaggio, cit.) & GET & /sondaggio/cittadino \textsuperscript{§} \\
   Consultazione.getById() (sondaggio) & GET & /sondaggio/:id \\
   Consultazione.update() (sondaggio) & PATCH & /sondaggio/:id \\
   Consultazione.delete() (sondaggio) & DELETE & /sondaggio/:id \\
@@ -733,6 +736,22 @@ endpoint. Di seguito viene riportata la mappatura tra classi/metodi e route HTTP
 \end{longtable}
 
 \vspace{1cm}
+
+\noindent\textsuperscript{†} \texttt{GET /votazioni/:id} è accessibile sia all'operatore che al cittadino.
+L'operatore riceve la votazione in qualsiasi stato; il cittadino vede solo votazioni in stato
+\texttt{attivo} o \texttt{concluso} e la risposta include il campo booleano \texttt{voted} che
+indica se il cittadino ha già espresso il proprio voto.
+
+\noindent\textsuperscript{‡} \texttt{POST /cittadino/vote/votazione} verifica che la votazione sia
+in stato \texttt{attivo} prima di accettare il voto; restituisce \texttt{403} se lo stato non è
+\texttt{attivo} o se il cittadino ha già votato.
+
+\noindent\textsuperscript{§} \texttt{GET /votazioni/cittadino} e \texttt{GET /sondaggio/cittadino}
+restituiscono solo consultazioni in stato \texttt{attivo} o \texttt{concluso}. Ogni elemento include
+il campo booleano \texttt{voted} che indica se il cittadino autenticato ha già partecipato a quella
+consultazione (calcolato con una singola query batch su \texttt{RispostaConsultazione}).
+
+\vspace{0.5cm}
 
 \noindent La protezione degli endpoint è garantita dal middleware \texttt{protect} (verifica JWT)
 e da \texttt{restrictTo(['ruolo'])} che limita l'accesso in base al ruolo. Il middleware

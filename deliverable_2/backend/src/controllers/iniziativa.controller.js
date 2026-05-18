@@ -22,6 +22,8 @@ export const createIniziativa = async (req, res) => {
             descrizione
         } = req.body;
 
+        const ID_cittadino = req.user._id;
+
         // Validazione campi
         if (!ID_categoria || !titolo || !descrizione) {
             return res.status(400).json({

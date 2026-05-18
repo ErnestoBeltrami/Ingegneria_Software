@@ -51,7 +51,10 @@
     transition: opacity 0.15s ease;
     flex-shrink: 0;
 }
-.cd-topbar__theme:hover { opacity: 1; }
+
+.cd-topbar__theme:hover {
+    opacity: 1;
+}
 
 .cd-topbar__user {
     display: flex;
@@ -271,8 +274,13 @@
 }
 
 @media (max-width: 640px) {
-    .cd-activity-grid { grid-template-columns: 1fr; }
-    .cd-page { padding: 20px; }
+    .cd-activity-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cd-page {
+        padding: 20px;
+    }
 }
 
 /* =====================
@@ -285,7 +293,9 @@
     text-align: center;
 }
 
-.cd-status--error { color: #f87171; }
+.cd-status--error {
+    color: #f87171;
+}
 
 /* =====================
    Campanellino notifiche
@@ -310,7 +320,9 @@
     flex-shrink: 0;
 }
 
-.cd-bell:hover { background: rgba(255, 255, 255, 0.22); }
+.cd-bell:hover {
+    background: rgba(255, 255, 255, 0.22);
+}
 
 .cd-bell__badge {
     position: absolute;
@@ -373,7 +385,9 @@
     letter-spacing: 0.3px;
 }
 
-[data-theme="light"] .cd-notifiche-panel__title { color: #1a1a1a; }
+[data-theme="light"] .cd-notifiche-panel__title {
+    color: #1a1a1a;
+}
 
 .cd-notifiche-panel__leggi-tutte {
     background: none;
@@ -387,7 +401,9 @@
     transition: opacity 0.15s ease;
 }
 
-.cd-notifiche-panel__leggi-tutte:hover { opacity: 0.72; }
+.cd-notifiche-panel__leggi-tutte:hover {
+    opacity: 0.72;
+}
 
 .cd-notifiche-lista {
     max-height: 340px;
@@ -402,7 +418,9 @@
     font-family: 'Montserrat', sans-serif;
 }
 
-[data-theme="light"] .cd-notifiche-vuote { color: rgba(0, 0, 0, 0.35); }
+[data-theme="light"] .cd-notifiche-vuote {
+    color: rgba(0, 0, 0, 0.35);
+}
 
 .cd-notifica {
     display: flex;
@@ -414,17 +432,29 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.cd-notifica:last-child { border-bottom: none; }
+.cd-notifica:last-child {
+    border-bottom: none;
+}
 
-[data-theme="light"] .cd-notifica { border-color: rgba(0, 0, 0, 0.05); }
+[data-theme="light"] .cd-notifica {
+    border-color: rgba(0, 0, 0, 0.05);
+}
 
-.cd-notifica:hover { background: rgba(255, 255, 255, 0.04); }
+.cd-notifica:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
 
-[data-theme="light"] .cd-notifica:hover { background: rgba(0, 0, 0, 0.03); }
+[data-theme="light"] .cd-notifica:hover {
+    background: rgba(0, 0, 0, 0.03);
+}
 
-.cd-notifica--nuova { background: rgba(0, 196, 122, 0.06); }
+.cd-notifica--nuova {
+    background: rgba(0, 196, 122, 0.06);
+}
 
-[data-theme="light"] .cd-notifica--nuova { background: rgba(0, 122, 82, 0.05); }
+[data-theme="light"] .cd-notifica--nuova {
+    background: rgba(0, 122, 82, 0.05);
+}
 
 .cd-notifica__icon {
     width: 30px;
@@ -437,10 +467,20 @@
     margin-top: 1px;
 }
 
-.cd-notifica__icon--ok { background: rgba(0, 196, 122, 0.18); color: #00c47a; }
-.cd-notifica__icon--ko { background: rgba(220, 38, 38, 0.18); color: #f87171; }
+.cd-notifica__icon--ok {
+    background: rgba(0, 196, 122, 0.18);
+    color: #00c47a;
+}
 
-.cd-notifica__body { flex: 1; min-width: 0; }
+.cd-notifica__icon--ko {
+    background: rgba(220, 38, 38, 0.18);
+    color: #f87171;
+}
+
+.cd-notifica__body {
+    flex: 1;
+    min-width: 0;
+}
 
 .cd-notifica__msg {
     font-size: 12px;
@@ -450,7 +490,9 @@
     font-weight: 500;
 }
 
-[data-theme="light"] .cd-notifica__msg { color: #1a1a1a; }
+[data-theme="light"] .cd-notifica__msg {
+    color: #1a1a1a;
+}
 
 .cd-notifica__time {
     display: block;
@@ -460,7 +502,9 @@
     margin-top: 3px;
 }
 
-[data-theme="light"] .cd-notifica__time { color: rgba(0, 0, 0, 0.38); }
+[data-theme="light"] .cd-notifica__time {
+    color: rgba(0, 0, 0, 0.38);
+}
 
 .cd-notifica__dot {
     width: 7px;

@@ -1,0 +1,54 @@
+--- deliverable_2/frontend/src/services/api.js
++++ deliverable_2/frontend/src/services/api.js
+@@ -88,4 +88,40 @@
+     }
+ };
++
+ export const fetchProfile = () => apiFetch('/cittadino/profile');
+ 
++export const submitSondaggio = (sondaggioId, dettagliRisposte) => 
++    apiFetch('/cittadino/vote/sondaggio', { 
++        method: 'POST', 
++        body: JSON.stringify({ sondaggioId, dettagliRisposte }) 
++    });
++
++// MOCK: fetch sondaggio by ID for cittadino (since backend lacks this populated endpoint)
++export const fetchSondaggioCittadino = async (id) => {
++    try {
++        // We try calling an endpoint. If it doesn't exist or fails, fallback to mock.
++        // The actual endpoint for operator is /sondaggio/:id but for cittadino it might fail
++        return await apiFetch(`/sondaggio/${id}`);
++    } catch (err) {
++        console.warn("API del sondaggio non disponibile per il cittadino, uso mock data.");
++        return {
++            sondaggio: {
++                _id: id,
++                titolo: 'Riqualificazione di Piazza Fiera (Mock)',
++                descrizione: 'Il comune di Trento intende raccogliere le opinioni della cittadinanza...',
++                data_fine: '2026-06-15T23:59:59.000Z',
++                data_discussione: '2026-05-02T00:00:00.000Z',
++                ID_domande: [
++                    {
++                        _id: 'dom_1',
++                        titolo: 'Quale dovrebbe essere la priorità principale?',
++                        tipo: 'risposta_singola',
++                        opzioni: [
++                            { _id: 'op_1_1', testo: 'Aumento delle aree verdi' },
++                            { _id: 'op_1_2', testo: 'Più parcheggi' }
++                        ]
++                    },
++                    {
++                        _id: 'dom_2',
++                        titolo: 'Quali nuovi arredi urbani riterresti utili? (Puoi scegliere più opzioni)',
++                        tipo: 'risposta_multipla',
++                        opzioni: [
++                            { _id: 'op_2_1', testo: 'Nuove panchine' },
++                            { _id: 'op_2_2', testo: 'Fontanelle' },
++                            { _id: 'op_2_3', testo: 'Cestini' }
++                        ]
++                    }
++                ]
++            }
++        };
++    }
++};
