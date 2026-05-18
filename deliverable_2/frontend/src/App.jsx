@@ -22,6 +22,8 @@ import VotaSondaggio from './pages/cittadino/sondaggio/VotaSondaggio';
 import CreaIniziativaPage from './pages/cittadino/CreaIniziativaPage';
 import ProfiloCittadinePage from './pages/cittadino/ProfiloCittadinePage';
 import ArchivioPage from './pages/cittadino/ArchivioPage';
+import RiepilogoVotazione from './pages/cittadino/dashboard/riepilogo/RiepilogoVotazione';
+import RiepilogoSondaggio from './pages/cittadino/dashboard/riepilogo/RiepilogoSondaggio';
 
 function CompletaProfiloRoute() {
   const [params] = useSearchParams();
@@ -77,6 +79,8 @@ export default function App() {
           <Route path="/cittadino/iniziativa/crea" element={<CreaIniziativaPage />} />
           <Route path="/cittadino/profilo" element={<ProfiloCittadinePage />} />
           <Route path="/cittadino/archivio" element={<ArchivioPage />} />
+          <Route path="/cittadino/archivio/votazione/:id" element={<RiepilogoVotazione />} />
+          <Route path="/cittadino/archivio/sondaggio/:id" element={<RiepilogoSondaggio />} />
           <Route path="/auth/callback" element={<AuthCallbackPage />} />
           <Route path="/" element={<LandingPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
