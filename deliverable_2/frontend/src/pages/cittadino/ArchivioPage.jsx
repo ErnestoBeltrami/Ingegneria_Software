@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { fetchProfile, fetchAllActivities } from '../../services/api';
-import './DashboardCittadinePage.css';
+import './dashboard/DashboardCittadinePage.css';
 import './ArchivioPage.css';
 
 

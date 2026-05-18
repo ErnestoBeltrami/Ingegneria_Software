@@ -76,31 +76,11 @@ export default function App() {
           <Route path="/cittadino/sondaggio/:id" element={<VotaSondaggio />} />
           <Route path="/cittadino/iniziativa/crea" element={<CreaIniziativaPage />} />
           <Route path="/cittadino/profilo" element={<ProfiloCittadinePage />} />
+          <Route path="/cittadino/archivio" element={<ArchivioPage />} />
           <Route path="/auth/callback" element={<AuthCallbackPage />} />
           <Route path="/" element={<LandingPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/dashboard" element={<DashboardOperatorePage />} />
-        <Route path="/sondaggi" element={<GestioneSondaggiPage />} />
-        <Route path="/sondaggi/crea" element={<CreaSondaggioPage />} />
-        <Route path="/votazioni" element={<GestioneVotazioniPage />} />
-        <Route path="/votazioni/crea" element={<CreaVotazionePage />} />
-        <Route path="/votazioni/:id/riepilogo" element={<RiepilogoVotazionePage />} />
-        <Route path="/sondaggi/:id/riepilogo" element={<RiepilogoSondaggioPage />} />
-        <Route path="/votazioni/:id/modifica" element={<ModificaVotazionePage />} />
-        <Route path="/sondaggi/:id/modifica" element={<ModificaSondaggioPage />} />
-        <Route path="/operatore/profilo" element={<ProfiloOperatorePage />} />
-        <Route path="/completa-profilo" element={<CompletaProfiloRoute />} />
-        <Route path="/profilo-completato" element={<ProfiloCompletatoPage />} />
-        <Route path="/cittadino/dashboard" element={<DashboardCittadinePage />} />
-        <Route path="/cittadino/iniziativa/crea" element={<CreaIniziativaPage />} />
-        <Route path="/cittadino/profilo" element={<ProfiloCittadinePage />} />
-        <Route path="/cittadino/archivio" element={<ArchivioPage />} />
-        <Route path="/auth/callback" element={<AuthCallbackPage />} />
-        <Route path="/" element={<LandingPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
     </BrowserRouter>
     </ThemeProvider >
   );
