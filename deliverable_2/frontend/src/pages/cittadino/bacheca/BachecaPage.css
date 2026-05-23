@@ -1,0 +1,247 @@
+/* =====================
+   Pagina
+   ===================== */
+.bac-page {
+    max-width: 1080px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 36px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    font-family: 'Montserrat', sans-serif;
+    flex: 1;
+}
+
+/* =====================
+   Header
+   ===================== */
+.bac-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.bac-header__title {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 4px;
+}
+
+.bac-header__subtitle {
+    font-size: 14px;
+    color: var(--text-muted, #6b7280);
+    margin: 0;
+}
+
+.bac-proponi-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 22px;
+    background: #007a52;
+    color: white;
+    border: none;
+    border-radius: 999px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.15s ease;
+    flex-shrink: 0;
+}
+
+.bac-proponi-btn:hover {
+    opacity: 0.88;
+}
+
+/* =====================
+   Barra di ricerca
+   ===================== */
+.bac-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card-bg, white);
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 999px;
+    padding: 0 18px;
+    height: 50px;
+}
+
+.bac-search__icon {
+    color: var(--text-muted, #9ca3af);
+    flex-shrink: 0;
+}
+
+.bac-search__input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    color: var(--text, #111);
+}
+
+.bac-search__input::placeholder {
+    color: var(--text-muted, #9ca3af);
+}
+
+.bac-search__filter {
+    color: var(--text-muted, #9ca3af);
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+/* =====================
+   Contatore
+   ===================== */
+.bac-count {
+    font-size: 13px;
+    color: var(--text-muted, #6b7280);
+    margin: 0;
+}
+
+/* =====================
+   Griglia card
+   ===================== */
+.bac-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+/* =====================
+   Card
+   ===================== */
+.bac-card {
+    background: var(--card-bg, white);
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.15s ease;
+}
+
+.bac-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Badge categoria */
+.bac-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: rgba(0, 122, 82, 0.1);
+    color: #007a52;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    width: fit-content;
+}
+
+.bac-card__title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0;
+    line-height: 1.35;
+}
+
+.bac-card__desc {
+    font-size: 14px;
+    color: var(--text-muted, #6b7280);
+    margin: 0;
+    line-height: 1.55;
+    flex: 1;
+}
+
+/* Box sostenitori */
+.bac-card__sostenitori {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg, #f9fafb);
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: var(--text-muted, #6b7280);
+}
+
+.bac-card__sostenitori svg {
+    color: #007a52;
+    flex-shrink: 0;
+}
+
+.bac-card__sostenitori strong {
+    color: var(--text);
+}
+
+/* Footer card */
+.bac-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.bac-card__proposto {
+    font-size: 13px;
+    color: var(--text-muted, #9ca3af);
+}
+
+.bac-card__proposto strong {
+    color: var(--text-muted, #6b7280);
+    font-weight: 600;
+}
+
+.bac-sostieni-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    background: #007a52;
+    color: white;
+    border: none;
+    border-radius: 999px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.bac-sostieni-btn:hover {
+    opacity: 0.88;
+}
+
+/* =====================
+   Responsive
+   ===================== */
+@media (max-width: 680px) {
+    .bac-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .bac-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .bac-proponi-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

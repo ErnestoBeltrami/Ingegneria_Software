@@ -39,7 +39,16 @@ export default defineConfig({
         target: 'http://localhost:8000',
         changeOrigin: true,
         bypass(req) {
-          if (req.url.startsWith('/cittadino/dashboard') || req.url.startsWith('/cittadino/iniziativa') || req.url.startsWith('/cittadino/profilo')) {
+          const frontendRoutes = [
+            '/cittadino/dashboard',
+            '/cittadino/bacheca',
+            '/cittadino/votazione',
+            '/cittadino/sondaggio',
+            '/cittadino/iniziativa',
+            '/cittadino/profilo',
+            '/cittadino/archivio',
+          ];
+          if (frontendRoutes.some(p => req.url.startsWith(p))) {
             return req.url;
           }
         },

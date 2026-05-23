@@ -20,6 +20,7 @@ import DashboardCittadinePage from './pages/cittadino/dashboard/DashboardCittadi
 import Votazione from './pages/cittadino/votazione/Votazione';
 import VotaSondaggio from './pages/cittadino/sondaggio/VotaSondaggio';
 import CreaIniziativaPage from './pages/cittadino/bacheca/CreaIniziativaPage';
+import BachecaPage from './pages/cittadino/bacheca/BachecaPage';
 import ProfiloCittadinePage from './pages/cittadino/ProfiloCittadinePage';
 
 function CompletaProfiloRoute() {
@@ -73,6 +74,7 @@ export default function App() {
           <Route path="/cittadino/dashboard" element={<DashboardCittadinePage />} />
           <Route path="/cittadino/votazione/:id" element={<Votazione />} />
           <Route path="/cittadino/sondaggio/:id" element={<VotaSondaggio />} />
+          <Route path="/cittadino/bacheca" element={<BachecaPage />} />
           <Route path="/cittadino/iniziativa/crea" element={<CreaIniziativaPage />} />
           <Route path="/cittadino/profilo" element={<ProfiloCittadinePage />} />
           <Route path="/auth/callback" element={<AuthCallbackPage />} />
