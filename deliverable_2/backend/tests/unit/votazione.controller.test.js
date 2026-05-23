@@ -8,6 +8,7 @@ const mockConsultazioneFind = jest.fn();
 const mockConsultazioneFindOne = jest.fn();
 const mockConsultazioneFindById = jest.fn();
 const mockConsultazioneCountDocuments = jest.fn();
+const mockRispostaFind = jest.fn();
 
 jest.unstable_mockModule('../../src/models/domanda.js', () => ({
   Domanda: { create: mockDomandaCreate },
@@ -24,7 +25,7 @@ jest.unstable_mockModule('../../src/models/consultazione.js', () => ({
 }));
 
 jest.unstable_mockModule('../../src/models/risposta_consultazione.js', () => ({
-  RispostaConsultazione: { aggregate: jest.fn() },
+  RispostaConsultazione: { aggregate: jest.fn(), find: mockRispostaFind },
 }));
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -50,13 +51,13 @@ const validBody = {
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
 describe('votazione controller', () => {
-  let getVotazioni;
-  let updateVotazione;
+  let getVotazioni, updateVotazione, getVotazioniAvailable;
 
   beforeAll(async () => {
     const mod = await import('../../src/controllers/votazione.controller.js');
     getVotazioni = mod.getVotazioni;
     updateVotazione = mod.updateVotazione;
+    getVotazioniAvailable = mod.getVotazioniAvailable;
   });
 
   beforeEach(() => jest.clearAllMocks());
@@ -157,6 +158,46 @@ describe('votazione controller', () => {
       expect(fakeVot.titolo).toBe('Nuovo');
       expect(fakeVot.descrizione).toBe('Nuova desc');
       expect(res.status).toHaveBeenCalledWith(200);
+    });
+  });
+
+  // ── getVotazioniAvailable ──────────────────────────────────────────────────
+
+  describe('getVotazioniAvailable', () => {
+    it('restituisce 401 se manca req.user', async () => {
+      const req = { user: null, query: {} };
+      const res = makeRes();
+      await getVotazioniAvailable(req, res);
+      expect(res.status).toHaveBeenCalledWith(401);
+    });
+
+    it('restituisce lista paginata con paginazione', async () => {
+      const fakeVot = {
+        _id: VOTAZIONE_ID,
+        titolo: 'Test',
+        toObject: () => ({ _id: VOTAZIONE_ID, titolo: 'Test' }),
+      };
+      const chainable = {
+        sort: jest.fn().mockReturnThis(),
+        skip: jest.fn().mockReturnThis(),
+        limit: jest.fn().mockResolvedValueOnce([fakeVot]),
+      };
+      mockConsultazioneFind.mockReturnValueOnce(chainable);
+      mockConsultazioneCountDocuments.mockResolvedValueOnce(7);
+
+      const risposteChain = { select: jest.fn().mockResolvedValueOnce([]) };
+      mockRispostaFind.mockReturnValueOnce(risposteChain);
+
+      const req = { user: { _id: OPERATORE_ID }, query: { page: '1', limit: '5' } };
+      const res = makeRes();
+      await getVotazioniAvailable(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          paginazione: expect.objectContaining({ totale: 7, pagina: 1, limite: 5 }),
+        })
+      );
     });
   });
 

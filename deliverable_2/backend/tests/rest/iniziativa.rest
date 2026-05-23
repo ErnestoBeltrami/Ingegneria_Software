@@ -12,6 +12,14 @@ Content-Type: application/json
 GET http://localhost:3000/iniziative
 Authorization: Bearer {{TOKEN_OPERATORE}}
 ###
+### Paginazione: pagina 1
+GET http://localhost:3000/iniziative?page=1&limit=5
+Authorization: Bearer {{TOKEN_OPERATORE}}
+###
+### Paginazione: pagina 2
+GET http://localhost:3000/iniziative?page=2&limit=5
+Authorization: Bearer {{TOKEN_OPERATORE}}
+###
 
 POST http://localhost:3000/iniziative
 Authorization: Bearer {{TOKEN_OPERATORE}}
@@ -76,4 +84,14 @@ Content-Type: application/json
         "ordina_per": "data",
         "ordine": -1
     }
+}
+###
+### Ricerca paginata: pagina 2
+POST http://localhost:3000/iniziative/ricerca?page=2&limit=5
+Authorization: Bearer {{TOKEN_OPERATORE}}
+Content-Type: application/json
+
+{
+    "parola_chiave": "",
+    "filtri": {}
 }

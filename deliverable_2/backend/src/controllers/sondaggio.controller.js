@@ -68,16 +68,17 @@ export const getSondaggiAvaiable = async (req, res) => {
             });
         }
 
-        const sondaggi = await Consultazione.find({
-            stato: { $in: ["attivo", "concluso"] },
-            tipo: 'sondaggio'
-        }).populate('ID_domande').sort({ data_inizio: -1 });
+        const { page, limit } = req.query;
+        const pageNum = Math.max(1, parseInt(page) || 1);
+        const limitNum = Math.min(100, Math.max(1, parseInt(limit) || 10));
+        const skip = (pageNum - 1) * limitNum;
 
-        if(!sondaggi){
-            return res.status(200).json({
-                message : 'Nessun sondaggio disponibile al momento'
-            });
-        }
+        const filtro = { stato: { $in: ['attivo', 'concluso'] }, tipo: 'sondaggio' };
+
+        const [sondaggi, totale] = await Promise.all([
+            Consultazione.find(filtro).populate('ID_domande').sort({ data_inizio: -1 }).skip(skip).limit(limitNum),
+            Consultazione.countDocuments(filtro)
+        ]);
 
         const risposte = await RispostaConsultazione.find({
             ID_cittadino: userFromMiddleware._id,
@@ -92,7 +93,13 @@ export const getSondaggiAvaiable = async (req, res) => {
 
         return res.status(200).json({
             message: 'Sondaggi recuperati con successo.',
-            sondaggi: sondaggiWithVoted
+            sondaggi: sondaggiWithVoted,
+            paginazione: {
+                totale,
+                pagina: pageNum,
+                limite: limitNum,
+                pagine: Math.ceil(totale / limitNum)
+            }
         });
     } catch (error) {
         logger.error('Errore nel recupero dei sondaggi:', error);

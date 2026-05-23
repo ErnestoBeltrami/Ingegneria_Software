@@ -174,3 +174,7 @@ Content-Type: application/json
 DELETE http://localhost:3000/sondaggio/6934649604701732457bbd54
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzQxNzY2MjUxNmIwNjUzZTFlY2Y5ZCIsInJ1b2xvIjoib3BlcmF0b3JlIiwiaWF0IjoxNzY1MDM4MzMyLCJleHAiOjE3NjUxMjQ3MzJ9.FwtIDmTohJRPIP6lfvp0uGV_JKQHyUSRWN11Q5uZV_o
 // AZIONE: Salva l'ID restituito come {{ID_SONDAGGIO_PER_DELETE}}
+###
+### Sondaggi cittadino paginati
+GET http://localhost:3000/sondaggi/cittadino?page=1&limit=5
+Authorization: Bearer {{TOKEN_CITTADINO}}

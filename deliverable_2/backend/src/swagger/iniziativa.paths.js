@@ -87,11 +87,24 @@
  *               error: "Duplicate key error"
  *   get:
  *     summary: Ottieni tutte le iniziative
- *     description: Restituisce l'elenco completo delle iniziative ordinate per data di creazione e numero di voti. Include dettagli della categoria e del cittadino creatore.
+ *     description: Restituisce la lista paginata delle iniziative ordinate per data di creazione e numero di voti. Supporta paginazione tramite ?page= e ?limit=. Include dettagli della categoria e del cittadino creatore.
  *     tags:
  *       - Iniziative
  *     security:
  *       - sessionAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Numero di pagina (default 1)
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Risultati per pagina (max 100, default 10)
  *     responses:
  *       200:
  *         description: Lista delle iniziative recuperata con successo
@@ -107,6 +120,21 @@
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/IniziativaWithDetails'
+ *                 paginazione:
+ *                   type: object
+ *                   properties:
+ *                     totale:
+ *                       type: integer
+ *                       example: 35
+ *                     pagina:
+ *                       type: integer
+ *                       example: 1
+ *                     limite:
+ *                       type: integer
+ *                       example: 10
+ *                     pagine:
+ *                       type: integer
+ *                       example: 4
  *             examples:
  *               withIniziative:
  *                 value:
@@ -153,6 +181,19 @@
  *       - Iniziative
  *     security:
  *       - sessionAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Numero di pagina (default 1)
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Risultati per pagina (max 100, default 10)
  *     requestBody:
  *       required: true
  *       content:
@@ -183,6 +224,21 @@
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/IniziativaWithDetails'
+ *                 paginazione:
+ *                   type: object
+ *                   properties:
+ *                     totale:
+ *                       type: integer
+ *                       example: 35
+ *                     pagina:
+ *                       type: integer
+ *                       example: 1
+ *                     limite:
+ *                       type: integer
+ *                       example: 10
+ *                     pagine:
+ *                       type: integer
+ *                       example: 4
  *             examples:
  *               withIniziative:
  *                 value:
