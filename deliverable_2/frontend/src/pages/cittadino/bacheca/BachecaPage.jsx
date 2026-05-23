@@ -13,6 +13,7 @@ export default function BachecaPage() {
     const [query, setQuery] = useState('');
     const [categoriaFiltro, setCategoriaFiltro] = useState('');
     const [pannelloAperto, setPannelloAperto] = useState(false);
+    const [sostenute, setSostenute] = useState(new Set());
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -30,10 +31,31 @@ export default function BachecaPage() {
                     propostoDa: `${i.nome_cittadino} ${i.cognome_cittadino}`.trim(),
                 }));
                 setIniziative(items);
+                const giaSostenute = new Set(
+                    (data.iniziative || []).filter(i => i.haSostenuto).map(i => i._id)
+                );
+                setSostenute(giaSostenute);
             })
             .catch(() => setError('Errore nel caricamento delle iniziative.'))
             .finally(() => setLoading(false));
     }, []);
+
+    const onSostieni = (id) => {
+        const token = localStorage.getItem('token');
+        fetch(`/iniziative/${id}/sostieni`, {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${token}` },
+        }).then(r => {
+            if (r.ok) {
+                setSostenute(prev => new Set(prev).add(id));
+                setIniziative(prev => prev.map(i =>
+                    i.id === id ? { ...i, sostenitori: i.sostenitori + 1 } : i
+                ));
+            } else if (r.status === 409) {
+                setSostenute(prev => new Set(prev).add(id));
+            }
+        }).catch(() => {});
+    };
 
     const categorie = useMemo(
         () => [...new Set(iniziative.map(i => i.categoria).filter(Boolean))],
@@ -127,7 +149,12 @@ export default function BachecaPage() {
                         ) : (
                             <div className="bac-grid">
                                 {iniziativeFiltrate.map(item => (
-                                    <IniziativaCard key={item.id} iniziativa={item} />
+                                    <IniziativaCard
+                                        key={item.id}
+                                        iniziativa={item}
+                                        giaSostenuta={sostenute.has(item.id)}
+                                        onSostieni={onSostieni}
+                                    />
                                 ))}
                             </div>
                         )}

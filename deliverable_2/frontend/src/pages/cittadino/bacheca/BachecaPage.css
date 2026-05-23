@@ -264,6 +264,17 @@
     opacity: 0.88;
 }
 
+.bac-sostieni-btn--sostenuto {
+    background: transparent;
+    border: 1.5px solid #007a52;
+    color: #007a52;
+    cursor: default;
+}
+
+.bac-sostieni-btn--sostenuto:hover {
+    opacity: 1;
+}
+
 @media (max-width: 680px) {
     .bac-grid {
         grid-template-columns: 1fr;
