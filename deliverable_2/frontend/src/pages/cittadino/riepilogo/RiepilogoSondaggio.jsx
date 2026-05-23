@@ -24,9 +24,11 @@ export default function RiepilogoSondaggio() {
     const [domandaCorrente, setDomandaCorrente] = useState(0);
 
     useEffect(() => {
+        let cancelled = false;
+
         if (!state?.profilo) {
             fetchProfile()
-                .then(data => { if (data?.data) setProfilo(data.data); })
+                .then(data => { if (!cancelled && data?.data) setProfilo(data.data); })
                 .catch(() => { });
         }
 
@@ -35,18 +37,22 @@ export default function RiepilogoSondaggio() {
 
         const fetchData = hasOpzioni
             ? fetchRiepilogoSondaggio(id).then(riepData => {
+                if (cancelled) return;
                 setRiepilogo(riepData);
                 setDettaglio(itemFromNav);
               })
             : Promise.all([fetchRiepilogoSondaggio(id), fetchSondaggioById(id)])
                 .then(([riepData, dettData]) => {
+                    if (cancelled) return;
                     setRiepilogo(riepData);
                     setDettaglio(dettData.consultazione ?? dettData.sondaggio ?? dettData);
                 });
 
         fetchData
-            .catch(err => setError(err.message || 'Errore nel caricamento'))
-            .finally(() => setLoading(false));
+            .catch(err => { if (!cancelled) setError(err.message || 'Errore nel caricamento'); })
+            .finally(() => { if (!cancelled) setLoading(false); });
+
+        return () => { cancelled = true; };
     }, [id]);
 
 

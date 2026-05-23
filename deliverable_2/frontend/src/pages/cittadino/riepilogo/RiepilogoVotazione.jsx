@@ -23,16 +23,20 @@ export default function RiepilogoVotazione() {
     const [error, setError] = useState('');
 
     useEffect(() => {
+        let cancelled = false;
+
         if (!state?.profilo) {
             fetchProfile()
-                .then(data => { if (data?.data) setProfilo(data.data); })
+                .then(data => { if (!cancelled && data?.data) setProfilo(data.data); })
                 .catch(() => { });
         }
 
         fetchRiepilogoVotazione(id)
-            .then(data => setRiepilogo(data))
-            .catch(err => setError(err.message || 'Errore nel caricamento'))
-            .finally(() => setLoading(false));
+            .then(data => { if (!cancelled) setRiepilogo(data); })
+            .catch(err => { if (!cancelled) setError(err.message || 'Errore nel caricamento'); })
+            .finally(() => { if (!cancelled) setLoading(false); });
+
+        return () => { cancelled = true; };
     }, [id]);
 
     const nome = profilo?.nome || '';
