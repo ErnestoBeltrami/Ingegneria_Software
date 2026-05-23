@@ -79,8 +79,8 @@ export const getIniziative = async (req,res) => {
         }
 
         const { page = 1, limit = 10 } = req.query;
-        const pageNum = Math.max(1, parseInt(page));
-        const limitNum = Math.min(100, Math.max(1, parseInt(limit)));
+        const pageNum = Math.max(1, parseInt(page) || 1);
+        const limitNum = Math.min(100, Math.max(1, parseInt(limit) || 10));
         const skip = (pageNum - 1) * limitNum;
 
         const matchStato = req.ruolo === 'operatore' ? {} : { stato: 'approvata' };
