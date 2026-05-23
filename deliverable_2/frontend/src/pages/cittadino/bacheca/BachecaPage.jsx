@@ -35,6 +35,7 @@ export default function BachecaPage() {
                     categoria: i.categoria,
                     sostenitori: i.numero_voti ?? 0,
                     propostoDa: `${i.nome_cittadino} ${i.cognome_cittadino}`.trim(),
+                    data: i.createdAt ?? null,
                 }));
                 setIniziative(items);
                 const giaSostenute = new Set(

@@ -1,11 +1,25 @@
-import { Users, TrendingUp, Check } from 'lucide-react';
+import { Users, TrendingUp, Check, CalendarDays } from 'lucide-react';
+
+function formatData(iso) {
+    if (!iso) return null;
+    const d = new Date(iso);
+    return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+}
 
 export default function IniziativaCard({ iniziativa, giaSostenuta, onSostieni }) {
-    const { id, categoria, titolo, descrizione, sostenitori, propostoDa } = iniziativa;
+    const { id, categoria, titolo, descrizione, sostenitori, propostoDa, data } = iniziativa;
 
     return (
         <div className="bac-card">
-            <span className="bac-badge">{categoria}</span>
+            <div className="bac-card__top">
+                <span className="bac-badge">{categoria}</span>
+                {data && (
+                    <span className="bac-card__data">
+                        <CalendarDays size={13} />
+                        {formatData(data)}
+                    </span>
+                )}
+            </div>
             <h2 className="bac-card__title">{titolo}</h2>
             <p className="bac-card__desc">{descrizione}</p>
             <div className="bac-card__sostenitori">
