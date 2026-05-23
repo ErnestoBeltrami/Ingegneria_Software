@@ -56,4 +56,9 @@ Authorization: Bearer {{TOKEN_OPERATORE}}
 DELETE http://localhost:3000/votazioni/{{VOTAZIONE_ID}}
 Authorization: Bearer {{TOKEN_OPERATORE}}
 
+###
+### Votazioni cittadino paginate
+GET http://localhost:3000/votazioni/cittadino?page=1&limit=5
+Authorization: Bearer {{TOKEN_CITTADINO}}
+
 

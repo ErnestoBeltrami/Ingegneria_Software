@@ -683,6 +683,19 @@
  *       - Sondaggi
  *     security:
  *       - sessionAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Numero di pagina (default 1)
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Risultati per pagina (max 100, default 10)
  *     responses:
  *       200:
  *         description: Sondaggi recuperati con successo o nessun sondaggio disponibile
@@ -716,6 +729,21 @@
  *                             description: "true se il cittadino autenticato ha già risposto a questo sondaggio"
  *                             example: false
  *                   description: Array di sondaggi disponibili (presente solo se ci sono sondaggi). Nota - la proprietà è chiamata "votazioni" per compatibilità con il controller.
+ *                 paginazione:
+ *                   type: object
+ *                   properties:
+ *                     totale:
+ *                       type: integer
+ *                       example: 35
+ *                     pagina:
+ *                       type: integer
+ *                       example: 1
+ *                     limite:
+ *                       type: integer
+ *                       example: 10
+ *                     pagine:
+ *                       type: integer
+ *                       example: 4
  *             examples:
  *               withSondaggi:
  *                 value:
