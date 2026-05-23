@@ -172,81 +172,74 @@ export const updateSondaggio = async (req, res) => {
 
 export const getRiepilogoSintetico = async (req, res) => {
     const sondaggioId = req.params.id;
+    const t0 = Date.now();
 
     try {
         if (!mongoose.Types.ObjectId.isValid(sondaggioId)) {
             return res.status(400).json({ message: "ID Sondaggio non valido." });
         }
-        
+
         const objectIdSondaggio = new mongoose.Types.ObjectId(sondaggioId);
-        let totaleVotiUnici = 0; // Contatore per il numero di cittadini che hanno risposto
+        let totaleVotiUnici = 0;
 
         const sondaggio = await Consultazione.findOne({
             _id: objectIdSondaggio,
             tipo: 'sondaggio'
         }).populate('ID_domande');
+        logger.debug({ ms: Date.now() - t0, sondaggioId }, 'riepilogoSintetico: findOne+populate');
 
         if (!sondaggio || sondaggio.ID_domande.length === 0) {
             return res.status(404).json({
                 message: 'Sondaggio non trovato o domande mancanti.'
             });
         }
-        
-        // Trova il numero totale di partecipanti (risposte uniche)
+
+        const tAgg0 = Date.now();
         const totalVotiResult = await RispostaConsultazione.aggregate([
             {$match: {ID_consultazione: objectIdSondaggio, tipo_consultazione: 'sondaggio'}},
             {$count: 'totale'}
         ]);
 
         totaleVotiUnici = totalVotiResult.length > 0 ? totalVotiResult[0].totale : 0;
-        
+
         const array_domande = sondaggio.ID_domande;
-        const riepilogoRisultati = []; // Array che conterrà il riepilogo finale
+        const riepilogoRisultati = [];
 
-        // Iterazione su tutte le domande del sondaggio
+        const risultatiTotali = await RispostaConsultazione.aggregate([
+            { $match: { ID_consultazione: objectIdSondaggio, tipo_consultazione: 'sondaggio' } },
+            { $unwind: '$dettagliRisposte' },
+            { $unwind: '$dettagliRisposte.opzioniScelte' },
+            { $group: { _id: { domanda: '$dettagliRisposte.ID_domanda', opzione: '$dettagliRisposte.opzioniScelte' }, voti: { $sum: 1 } } }
+        ]);
+        logger.debug({ ms: Date.now() - tAgg0, nDomande: array_domande.length }, 'riepilogoSintetico: aggregazioni (2 query fisse)');
+
+        const votiPerDomanda = new Map();
+        for (const entry of risultatiTotali) {
+            const key = entry._id.domanda.toString();
+            if (!votiPerDomanda.has(key)) votiPerDomanda.set(key, []);
+            votiPerDomanda.get(key).push({ opzioneId: entry._id.opzione, voti: entry.voti });
+        }
+
         for (const domanda of array_domande) {
-            const domandaId = domanda._id;
-            
-            const risultatiAggregati = await RispostaConsultazione.aggregate([
-                // 1. Filtra per il sondaggio specifico
-                {$match: {ID_consultazione: objectIdSondaggio, tipo_consultazione: 'sondaggio'}},
-
-                // 2. Espande l'array di oggetti 'dettagliRisposte'
-                {$unwind: '$dettagliRisposte'},
-                
-                // 3. Filtra per isolare solo la risposta della domanda corrente
-                {$match: {'dettagliRisposte.ID_domanda': domandaId}},
-                
-                // 4. Espande l'array 'opzioniScelte'
-                {$unwind: '$dettagliRisposte.opzioniScelte'},
-                
-                // 5. Raggruppa per ID dell'opzione e conta i voti
-                {$group: {
-                    _id: '$dettagliRisposte.opzioniScelte',
-                    voti: {$sum: 1}
-                }}
-            ]);
-
-            // Formattazione dei risultati per la risposta JSON
-            const risultatiFormattati = risultatiAggregati.map(res => {
-                const opzioneCorrispondente = domanda.opzioni.find(op => op._id.equals(res._id));
+            const voti = votiPerDomanda.get(domanda._id.toString()) || [];
+            const risultatiFormattati = voti.map(({ opzioneId, voti: v }) => {
+                const opzioneCorrispondente = domanda.opzioni.find(op => op._id.equals(opzioneId));
                 const testoOpzione = opzioneCorrispondente ? opzioneCorrispondente.testo : 'Opzione Sconosciuta';
-                
                 return {
-                    opzioneId: res._id,
-                    testoOpzione: testoOpzione,
-                    voti: res.voti,
-                    percentuale: totaleVotiUnici > 0 ? parseFloat(((res.voti / totaleVotiUnici) * 100).toFixed(2)) : 0
+                    opzioneId,
+                    testoOpzione,
+                    voti: v,
+                    percentuale: totaleVotiUnici > 0 ? parseFloat(((v / totaleVotiUnici) * 100).toFixed(2)) : 0
                 };
             });
-            
             riepilogoRisultati.push({
-                domandaId: domandaId,
+                domandaId: domanda._id,
                 titoloDomanda: domanda.titolo,
                 risultati: risultatiFormattati
             });
-        } // Fine del ciclo for...of
+        }
 
+        logger.info({ ms: Date.now() - t0, sondaggioId, nDomande: array_domande.length }, 'riepilogoSintetico: completato');
         return res.status(200).json({
             message: "Riepilogo sintetico recuperato con successo.",
             sondaggio: sondaggio.titolo,
@@ -265,6 +258,7 @@ export const getRiepilogoSintetico = async (req, res) => {
 export const getRiepilogoConFiltri = async (req, res) => {
     const sondaggioId = req.params.id;
     const { filters = {} } = req.body;
+    const t0 = Date.now();
 
     try {
         if (!mongoose.Types.ObjectId.isValid(sondaggioId)) {
@@ -277,6 +271,7 @@ export const getRiepilogoConFiltri = async (req, res) => {
             _id: objectIdSondaggio,
             tipo: 'sondaggio'
         }).populate('ID_domande');
+        logger.debug({ ms: Date.now() - t0, sondaggioId }, 'riepilogoConFiltri: findOne+populate');
 
         if (!sondaggio || sondaggio.ID_domande.length === 0) {
             return res.status(404).json({
@@ -301,6 +296,7 @@ export const getRiepilogoConFiltri = async (req, res) => {
             };
         }
 
+        const tAgg0 = Date.now();
         const totalVotiResult = await RispostaConsultazione.aggregate([
             { $match: { ID_consultazione: objectIdSondaggio, tipo_consultazione: 'sondaggio' } },
 
@@ -323,59 +319,46 @@ export const getRiepilogoConFiltri = async (req, res) => {
 
         const riepilogoRisultati = [];
 
+        const risultatiTotali = await RispostaConsultazione.aggregate([
+            { $match: { ID_consultazione: objectIdSondaggio, tipo_consultazione: 'sondaggio' } },
+            { $lookup: { from: 'cittadinos', localField: 'ID_cittadino', foreignField: '_id', as: 'cittadino' } },
+            { $unwind: '$cittadino' },
+            ...(Object.keys(matchCittadino).length > 0 ? [{ $match: matchCittadino }] : []),
+            { $unwind: '$dettagliRisposte' },
+            { $unwind: '$dettagliRisposte.opzioniScelte' },
+            { $group: { _id: { domanda: '$dettagliRisposte.ID_domanda', opzione: '$dettagliRisposte.opzioniScelte' }, voti: { $sum: 1 } } }
+        ]);
+        logger.debug({ ms: Date.now() - tAgg0, nDomande: sondaggio.ID_domande.length, filtri: Object.keys(filters) }, 'riepilogoConFiltri: aggregazioni (2 query fisse)');
+
+        const votiPerDomanda = new Map();
+        for (const entry of risultatiTotali) {
+            const key = entry._id.domanda.toString();
+            if (!votiPerDomanda.has(key)) votiPerDomanda.set(key, []);
+            votiPerDomanda.get(key).push({ opzioneId: entry._id.opzione, voti: entry.voti });
+        }
+
         for (const domanda of sondaggio.ID_domande) {
-            const domandaId = domanda._id;
-
-            const risultatiAggregati = await RispostaConsultazione.aggregate([
-                { $match: { ID_consultazione: objectIdSondaggio, tipo_consultazione: 'sondaggio' } },
-
-                {
-                    $lookup: {
-                        from: 'cittadinos',
-                        localField: 'ID_cittadino',
-                        foreignField: '_id',
-                        as: 'cittadino'
-                    }
-                },
-                { $unwind: '$cittadino' },
-
-                ...(Object.keys(matchCittadino).length > 0 ? [{ $match: matchCittadino }] : []),
-
-                { $unwind: '$dettagliRisposte' },
-
-                { $match: { 'dettagliRisposte.ID_domanda': domandaId } },
-
-                { $unwind: '$dettagliRisposte.opzioniScelte' },
-
-                {
-                    $group: {
-                        _id: '$dettagliRisposte.opzioniScelte',
-                        voti: { $sum: 1 }
-                    }
-                }
-            ]);
-
-            const risultatiFormattati = risultatiAggregati.map(res => {
-                const opzioneCorrispondente = domanda.opzioni.find(op => op._id.equals(res._id));
+            const voti = votiPerDomanda.get(domanda._id.toString()) || [];
+            const risultatiFormattati = voti.map(({ opzioneId, voti: v }) => {
+                const opzioneCorrispondente = domanda.opzioni.find(op => op._id.equals(opzioneId));
                 const testoOpzione = opzioneCorrispondente ? opzioneCorrispondente.testo : 'Opzione Sconosciuta';
-
                 return {
-                    opzioneId: res._id,
+                    opzioneId,
                     testoOpzione,
-                    voti: res.voti,
+                    voti: v,
                     percentuale: totaleVotiUnici > 0
-                        ? parseFloat(((res.voti / totaleVotiUnici) * 100).toFixed(2))
+                        ? parseFloat(((v / totaleVotiUnici) * 100).toFixed(2))
                         : 0
                 };
             });
-
             riepilogoRisultati.push({
-                domandaId: domandaId,
+                domandaId: domanda._id,
                 titoloDomanda: domanda.titolo,
                 risultati: risultatiFormattati
             });
         }
 
+        logger.info({ ms: Date.now() - t0, sondaggioId, nDomande: sondaggio.ID_domande.length, filtri: Object.keys(filters) }, 'riepilogoConFiltri: completato');
         return res.status(200).json({
             message: "Riepilogo filtrato recuperato con successo.",
             sondaggio: sondaggio.titolo,

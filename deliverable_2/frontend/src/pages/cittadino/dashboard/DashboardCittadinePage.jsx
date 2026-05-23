@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Activity, Moon, Sun, Search, Lightbulb, ChevronRight, Bell, Check, X } from 'lucide-react';
-import { useTheme } from '../../../contexts/ThemeContext';
+import { Activity, Search, Lightbulb, ChevronRight } from 'lucide-react';
 import { ConsultazioneCard } from '../../../components/ConsultazioneCard';
 import { QuickActionCards } from '../../../components/QuickActionCard';
-import { fetchAllActivities, fetchProfile, fetchNotifiche, marcaNotificaLetta, marcaTutteNotificheLette } from '../../../services/api';
+import { fetchAllActivities, fetchProfile } from '../../../services/api';
+import TopBarCittadino from '../../../components/TopBarCittadino';
 import './DashboardCittadinePage.css';
 
 function formatRelativeTime(isoString) {
@@ -31,7 +31,6 @@ const FILTER_LABELS = {
 
 export default function DashboardCittadinePage() {
     const navigate = useNavigate();
-    const { theme, toggleTheme } = useTheme();
 
     const [profilo, setProfilo] = useState(null);
     const [activities, setActivities] = useState([]);
@@ -40,59 +39,15 @@ export default function DashboardCittadinePage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const [notifiche, setNotifiche] = useState([]);
-    const [showNotifiche, setShowNotifiche] = useState(false);
-    const bellRef = useRef(null);
-
-    const nonLette = notifiche.filter(n => !n.letta).length;
-
     const nome = profilo?.nome || '';
     const cognome = profilo?.cognome || '';
-    const initials = `${nome.charAt(0)}${cognome.charAt(0)}`.toUpperCase() || '?';
-    const fullName = [nome, cognome].filter(Boolean).join(' ') || 'Cittadino';
 
     useEffect(() => {
         loadActivities();
         fetchProfile()
             .then(data => { if (data?.data) setProfilo(data.data); })
             .catch(() => { });
-        const loadNotifiche = () =>
-            fetchNotifiche()
-                .then(data => setNotifiche(data.notifiche || []))
-                .catch(() => { });
-
-        loadNotifiche();
-        const notificheInterval = setInterval(loadNotifiche, 2 * 60 * 1000);
-        return () => clearInterval(notificheInterval);
     }, []);
-
-    useEffect(() => {
-        const handler = (e) => {
-            if (bellRef.current && !bellRef.current.contains(e.target)) {
-                setShowNotifiche(false);
-            }
-        };
-        document.addEventListener('mousedown', handler);
-        return () => document.removeEventListener('mousedown', handler);
-    }, []);
-
-    const handleBellClick = () => setShowNotifiche(v => !v);
-
-    const handleNotificaClick = async (n) => {
-        if (!n.letta) {
-            try {
-                await marcaNotificaLetta(n._id);
-                setNotifiche(prev => prev.map(x => x._id === n._id ? { ...x, letta: true } : x));
-            } catch { }
-        }
-    };
-
-    const handleLeggiTutte = async () => {
-        try {
-            await marcaTutteNotificheLette();
-            setNotifiche(prev => prev.map(n => ({ ...n, letta: true })));
-        } catch { }
-    };
 
     const loadActivities = async () => {
         setLoading(true);
@@ -121,67 +76,7 @@ export default function DashboardCittadinePage() {
 
     return (
         <div className="cd-layout">
-            <header className="cd-topbar">
-                <span className="cd-topbar__logo">IoSonoTrento</span>
-                <div className="cd-topbar__right">
-                    <button
-                        className="cd-topbar__theme"
-                        onClick={toggleTheme}
-                        aria-label={theme === 'dark' ? 'Attiva modalità chiara' : 'Attiva modalità scura'}
-                    >
-                        {theme === 'dark' ? <Moon size={18} /> : <Sun size={18} />}
-                    </button>
-
-                    <div className="cd-notifiche-wrap" ref={bellRef}>
-                        <button className="cd-bell" onClick={handleBellClick} aria-label="Notifiche">
-                            <Bell size={17} />
-                            {nonLette > 0 && (
-                                <span className="cd-bell__badge">{nonLette > 9 ? '9+' : nonLette}</span>
-                            )}
-                        </button>
-
-                        {showNotifiche && (
-                            <div className="cd-notifiche-panel">
-                                <div className="cd-notifiche-panel__header">
-                                    <span className="cd-notifiche-panel__title">Notifiche</span>
-                                    {nonLette > 0 && (
-                                        <button className="cd-notifiche-panel__leggi-tutte" onClick={handleLeggiTutte}>
-                                            Segna tutte come lette
-                                        </button>
-                                    )}
-                                </div>
-                                <div className="cd-notifiche-lista">
-                                    {notifiche.length === 0 ? (
-                                        <p className="cd-notifiche-vuote">Nessuna notifica</p>
-                                    ) : (
-                                        notifiche.map(n => (
-                                            <div
-                                                key={n._id}
-                                                className={`cd-notifica ${!n.letta ? 'cd-notifica--nuova' : ''}`}
-                                                onClick={() => handleNotificaClick(n)}
-                                            >
-                                                <div className={`cd-notifica__icon ${n.tipo === 'iniziativa_approvata' ? 'cd-notifica__icon--ok' : 'cd-notifica__icon--ko'}`}>
-                                                    {n.tipo === 'iniziativa_approvata' ? <Check size={13} /> : <X size={13} />}
-                                                </div>
-                                                <div className="cd-notifica__body">
-                                                    <p className="cd-notifica__msg">{n.messaggio}</p>
-                                                    <span className="cd-notifica__time">{formatRelativeTime(n.createdAt)}</span>
-                                                </div>
-                                                {!n.letta && <span className="cd-notifica__dot" />}
-                                            </div>
-                                        ))
-                                    )}
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="cd-topbar__user" onClick={() => navigate('/cittadino/profilo')}>
-                        <div className="cd-topbar__avatar">{initials}</div>
-                        <span className="cd-topbar__name">{fullName}</span>
-                    </div>
-                </div>
-            </header>
+            <TopBarCittadino nome={nome} cognome={cognome} />
 
             <div className="cd-page">
                 <header className="cd-header">

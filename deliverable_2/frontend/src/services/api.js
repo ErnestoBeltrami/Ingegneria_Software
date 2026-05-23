@@ -66,14 +66,23 @@ export const fetchAllActivities = async () => {
 };
 export const fetchProfile = () => apiFetch('/cittadino/profile');
 
+// Riepilogo sintetico di una votazione (accessibile anche ai cittadini)
+export const fetchRiepilogoVotazione = (id) => apiFetch(`/votazioni/${id}/riepilogo`);
+
+// Riepilogo sintetico di un sondaggio (accessibile anche ai cittadini)
+export const fetchRiepilogoSondaggio = (id) => apiFetch(`/sondaggio/${id}/riepilogo`);
+
+// Dettaglio sondaggio con tutte le opzioni (accessibile anche ai cittadini)
+export const fetchSondaggioById = (id) => apiFetch(`/sondaggio/${id}`);
+
 export const fetchNotifiche = () => apiFetch('/notifiche');
 export const marcaNotificaLetta = (id) => apiFetch(`/notifiche/${id}/letta`, { method: 'PATCH' });
 export const marcaTutteNotificheLette = () => apiFetch('/notifiche/leggi-tutte', { method: 'PATCH' });
 
-export const submitSondaggio = (sondaggioId, dettagliRisposte) => 
-    apiFetch('/cittadino/vote/sondaggio', { 
-        method: 'POST', 
-        body: JSON.stringify({ sondaggioId, dettagliRisposte }) 
+export const submitSondaggio = (sondaggioId, dettagliRisposte) =>
+    apiFetch('/cittadino/vote/sondaggio', {
+        method: 'POST',
+        body: JSON.stringify({ sondaggioId, dettagliRisposte })
     });
 
 export const fetchSondaggioCittadino = async (id) => {

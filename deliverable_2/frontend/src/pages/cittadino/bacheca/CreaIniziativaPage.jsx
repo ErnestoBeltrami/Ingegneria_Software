@@ -1,7 +1,13 @@
 import { useState, useEffect } from 'react';
+<<<<<<< HEAD:deliverable_2/frontend/src/pages/cittadino/bacheca/CreaIniziativaPage.jsx
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Lightbulb, Moon, Sun } from 'lucide-react';
 import { useTheme } from '../../../contexts/ThemeContext';
+=======
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Lightbulb } from 'lucide-react';
+import TopBarCittadino from '../../components/TopBarCittadino';
+>>>>>>> origin/main:deliverable_2/frontend/src/pages/cittadino/CreaIniziativaPage.jsx
 import './CreaIniziativaPage.css';
 
 export default function CreaIniziativaPage() {
@@ -38,10 +44,6 @@ export default function CreaIniziativaPage() {
       .catch(() => {});
   }, []);
 
-  const initials = `${nome.charAt(0)}${cognome.charAt(0)}`.toUpperCase() || '?';
-  const fullName = [nome, cognome].filter(Boolean).join(' ') || 'Cittadino';
-  const { theme, toggleTheme } = useTheme();
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -76,22 +78,7 @@ export default function CreaIniziativaPage() {
 
   return (
     <div className="ci-page">
-      <header className="ci-topbar">
-        <span className="ci-topbar__logo">IoSonoTrento</span>
-        <div className="ci-topbar__right">
-        <button
-          className="ci-topbar__theme"
-          onClick={toggleTheme}
-          aria-label={theme === 'dark' ? 'Attiva modalità chiara' : 'Attiva modalità scura'}
-        >
-          {theme === 'dark' ? <Moon size={18} /> : <Sun size={18} />}
-        </button>
-        <Link to="/cittadino/profilo" className="ci-topbar__user">
-          <div className="ci-topbar__avatar">{initials}</div>
-          <span className="ci-topbar__name">{fullName}</span>
-        </Link>
-        </div>
-      </header>
+      <TopBarCittadino nome={nome} cognome={cognome} />
 
       <div className="ci-shell">
         <button type="button" className="ci-back" onClick={() => navigate(-1)}>
