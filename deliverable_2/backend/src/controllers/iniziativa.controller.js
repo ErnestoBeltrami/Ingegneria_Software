@@ -309,65 +309,53 @@ export const ricercaIniziativa = async (req, res) => {
             });
         }
 
-        // Dati di filtro dalla richiesta (usiamo i nomi definiti prima)
+        const { page = 1, limit = 10 } = req.query;
+        const pageNum = Math.max(1, parseInt(page) || 1);
+        const limitNum = Math.min(100, Math.max(1, parseInt(limit) || 10));
+        const skip = (pageNum - 1) * limitNum;
+
         const { parola_chiave, filtri } = req.body;
         const categorie = filtri?.categorie_id || [];
         const ordina_per = filtri?.ordina_per;
-        const ordine = filtri?.ordine || -1; // Default: Decrescente (-1)
+        const ordine = filtri?.ordine || -1;
 
-        // I cittadini vedono solo le iniziative approvate; gli operatori vedono tutto
         let matchStage = req.ruolo === 'operatore' ? {} : { stato: 'approvata' };
 
-        // 1. CORREZIONE: Mappa l'array di stringhe in array di ObjectId
         const categorieObjectId = categorie.map(id => {
-            // Se l'ID non è valido, il costruttore di ObjectId può lanciare un errore
             if (!mongoose.Types.ObjectId.isValid(id)) {
-                 // Potresti gestire l'errore qui o lasciare che il try/catch generale lo gestisca
-                 logger.warn(`ID Categoria non valido: ${id}`);
-                 return null; // Esclude ID non validi
+                logger.warn(`ID Categoria non valido: ${id}`);
+                return null;
             }
             return new mongoose.Types.ObjectId(id);
-        }).filter(id => id !== null); // Rimuove eventuali null (ID non validi)
+        }).filter(id => id !== null);
 
-
-        // 2. FILTRO PER CATEGORIE ($in)
         if (categorieObjectId.length > 0) {
             matchStage.ID_categoria = { $in: categorieObjectId };
         }
-        // 2. FILTRO PER PAROLA CHIAVE ($text)
         if (parola_chiave && parola_chiave.trim() !== '') {
             matchStage.$text = { $search: parola_chiave };
         }
 
-        // --- COSTRUZIONE DINAMICA DELL'ORDINAMENTO ---
         let sortCriteria = {};
-
         if (ordina_per === 'voti') {
-            // Se l'utente ordina per voti, la priorità è numero_voti
             sortCriteria.numero_voti = ordine;
-            sortCriteria.createdAt = -1; // Data come secondo criterio
+            sortCriteria.createdAt = -1;
         } else if (ordina_per === 'data') {
-            // Se l'utente ordina per data, la priorità è createdAt
             sortCriteria.createdAt = ordine;
-            sortCriteria.numero_voti = -1; // Voti come secondo criterio
+            sortCriteria.numero_voti = -1;
         } else if (parola_chiave && parola_chiave.trim() !== '') {
-            // Se c'è una ricerca $text e nessun ordinamento specificato, ordina per rilevanza
             sortCriteria.score = { $meta: "textScore" };
         } else {
-            // Ordinamento di default (nessun filtro text o sort specificato): data più recente
             sortCriteria.createdAt = -1;
             sortCriteria.numero_voti = -1;
         }
 
-        // --- PIPELINE DI AGGREGAZIONE ---
         const pipeline = [];
 
-        // 3. Aggiungi lo stage $match se ci sono filtri (categorie o $text)
         if (Object.keys(matchStage).length > 0) {
             pipeline.push({ $match: matchStage });
         }
-        
-        // La pipeline del voto (per calcolare numero_voti)
+
         pipeline.push(
             {
                 $lookup: {
@@ -384,22 +372,20 @@ export const ricercaIniziativa = async (req, res) => {
             }
         );
 
-        // Aggiungi il campo score per l'ordinamento se è stata usata la ricerca $text
         if (parola_chiave && parola_chiave.trim() !== '') {
             pipeline.push({
                 $project: {
-                    score: { $meta: "textScore" }, // Proietta il punteggio di rilevanza
+                    score: { $meta: "textScore" },
                     _id: 1,
                     ID_categoria: 1,
                     titolo: 1,
-                    ID_cittadino: 1, // Necessario per il $lookup successivo
+                    ID_cittadino: 1,
                     numero_voti: 1,
                     createdAt: 1
                 }
             });
         }
-        
-        // Il resto della pipeline per popolare i dettagli (come nella tua funzione base)
+
         pipeline.push(
             {
                 $lookup: {
@@ -427,29 +413,36 @@ export const ricercaIniziativa = async (req, res) => {
                     titolo: 1,
                     nome_cittadino: "$cittadino_dettagli.nome",
                     cognome_cittadino: "$cittadino_dettagli.cognome",
-                    numero_voti: 1, // numero_voti è stato calcolato prima
+                    numero_voti: 1,
                     createdAt: 1
                 }
             },
-            // 4. Aggiungi lo stage $sort con i criteri dinamici
             { $sort: sortCriteria }
         );
 
+        const countPipeline = Object.keys(matchStage).length > 0
+            ? [{ $match: matchStage }, { $count: 'totale' }]
+            : [{ $count: 'totale' }];
 
-        const iniziative = await Iniziativa.aggregate(pipeline);
+        const [iniziative, countResult] = await Promise.all([
+            Iniziativa.aggregate([...pipeline, { $skip: skip }, { $limit: limitNum }]),
+            Iniziativa.aggregate(countPipeline)
+        ]);
 
-        // 5. Risposta
-        if (iniziative.length === 0) {
-            return res.status(200).json({
-                message: "Nessuna iniziativa disponibile con i criteri specificati.",
-                iniziative: []
-            });
-        } else {
-            return res.status(200).json({
-                message: "Iniziative trovate:",
-                iniziative
-            });
-        }
+        const totale = countResult[0]?.totale ?? 0;
+
+        return res.status(200).json({
+            message: iniziative.length === 0
+                ? "Nessuna iniziativa disponibile con i criteri specificati."
+                : "Iniziative trovate:",
+            iniziative,
+            paginazione: {
+                totale,
+                pagina: pageNum,
+                limite: limitNum,
+                pagine: Math.ceil(totale / limitNum)
+            }
+        });
 
     } catch (error) {
         logger.error("Errore nel recupero delle iniziative:", error);

@@ -78,4 +78,37 @@ describe('iniziativa controller', () => {
       );
     });
   });
+
+  describe('ricercaIniziativa', () => {
+    let ricercaIniziativa;
+
+    beforeAll(async () => {
+      const mod = await import('../../src/controllers/iniziativa.controller.js');
+      ricercaIniziativa = mod.ricercaIniziativa;
+    });
+
+    it('restituisce lista paginata con oggetto paginazione', async () => {
+      const fakeItem = { _id: '507f1f77bcf86cd799439033', titolo: 'Ricerca' };
+      mockIniziativaAggregate
+        .mockResolvedValueOnce([fakeItem])
+        .mockResolvedValueOnce([{ totale: 5 }]);
+
+      const req = {
+        user: { _id: CITTADINO_ID },
+        query: { page: '2', limit: '5' },
+        ruolo: 'cittadino',
+        body: { parola_chiave: '', filtri: {} },
+      };
+      const res = makeRes();
+      await ricercaIniziativa(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          iniziative: [fakeItem],
+          paginazione: expect.objectContaining({ totale: 5, pagina: 2, limite: 5, pagine: 1 }),
+        })
+      );
+    });
+  });
 });
