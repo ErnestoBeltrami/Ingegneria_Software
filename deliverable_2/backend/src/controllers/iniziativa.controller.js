@@ -78,73 +78,84 @@ export const getIniziative = async (req,res) => {
             });
         }
 
-        // I cittadini vedono solo le iniziative approvate; gli operatori vedono tutto
+        const { page = 1, limit = 10 } = req.query;
+        const pageNum = Math.max(1, parseInt(page));
+        const limitNum = Math.min(100, Math.max(1, parseInt(limit)));
+        const skip = (pageNum - 1) * limitNum;
+
         const matchStato = req.ruolo === 'operatore' ? {} : { stato: 'approvata' };
 
-        const iniziative = await Iniziativa.aggregate([
-        { $match: matchStato },
-        {
-            $lookup: {
-                from: "votoiniziativas",
-                localField: "_id",
-                foreignField: "ID_iniziativa",
-                as: "voti"
+        const pipeline = [
+            { $match: matchStato },
+            {
+                $lookup: {
+                    from: "votoiniziativas",
+                    localField: "_id",
+                    foreignField: "ID_iniziativa",
+                    as: "voti"
+                }
+            },
+            {
+                $addFields: {
+                    numero_voti: { $size: "$voti" }
+                }
+            },
+            {
+                $lookup: {
+                    from: "cittadinos",
+                    localField: "ID_cittadino",
+                    foreignField: "_id",
+                    as: "cittadino_dettagli"
+                }
+            },
+            { $unwind: "$cittadino_dettagli" },
+            {
+                $lookup: {
+                    from: "categoriainiziativas",
+                    localField: "ID_categoria",
+                    foreignField: "_id",
+                    as: "categoria_dettagli"
+                }
+            },
+            { $unwind: "$categoria_dettagli" },
+            {
+                $project: {
+                    _id: 1,
+                    ID_categoria: 1,
+                    categoria: "$categoria_dettagli.nome",
+                    titolo: 1,
+                    descrizione: 1,
+                    stato: 1,
+                    nome_cittadino: "$cittadino_dettagli.nome",
+                    cognome_cittadino: "$cittadino_dettagli.cognome",
+                    numero_voti: "$numero_voti",
+                    createdAt: 1
+                }
+            },
+            {
+                $sort: {
+                    createdAt: -1,
+                    numero_voti: -1
+                }
             }
-        },
-        {
-            $addFields: {
-                numero_voti: { $size: "$voti" }
-            }
-        },
-        {
-            $lookup: {
-                from: "cittadinos",
-                localField: "ID_cittadino",
-                foreignField: "_id",
-                as: "cittadino_dettagli"
-            }
-        },
-        { $unwind: "$cittadino_dettagli" },
-        {
-            $lookup: {
-                from: "categoriainiziativas",
-                localField: "ID_categoria",
-                foreignField: "_id",
-                as: "categoria_dettagli"
-            }
-        },
-        { $unwind: "$categoria_dettagli" },
-        {
-            $project: {
-                _id: 1,
-                ID_categoria: 1,
-                categoria: "$categoria_dettagli.nome",
-                titolo: 1,
-                descrizione: 1,
-                stato: 1,
-                nome_cittadino: "$cittadino_dettagli.nome",
-                cognome_cittadino: "$cittadino_dettagli.cognome",
-                numero_voti: "$numero_voti",
-                createdAt: 1
-            }
-        },
-        {
-            $sort: {
-                createdAt: -1,
-                numero_voti: -1
-            }
-        }
+        ];
+
+        const [iniziative, countResult] = await Promise.all([
+            Iniziativa.aggregate([...pipeline, { $skip: skip }, { $limit: limitNum }]),
+            Iniziativa.aggregate([{ $match: matchStato }, { $count: 'totale' }])
         ]);
 
-        if (iniziative.length === 0) {
-            return res.status(200).json({
-                message: "Nessuna iniziativa disponibile.",
-                iniziative: []
-            });
-        }
+        const totale = countResult[0]?.totale ?? 0;
+
         return res.status(200).json({
-            message : "Iniziative trovate:",
-            iniziative
+            message: iniziative.length === 0 ? "Nessuna iniziativa disponibile." : "Iniziative trovate:",
+            iniziative,
+            paginazione: {
+                totale,
+                pagina: pageNum,
+                limite: limitNum,
+                pagine: Math.ceil(totale / limitNum)
+            }
         });
 
     }
