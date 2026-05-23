@@ -7,6 +7,7 @@ import './BachecaPage.css';
 
 export default function BachecaPage() {
     const navigate = useNavigate();
+    const [profilo, setProfilo] = useState(null);
     const [iniziative, setIniziative] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -18,6 +19,11 @@ export default function BachecaPage() {
     useEffect(() => {
         const token = localStorage.getItem('token');
         const headers = { Authorization: `Bearer ${token}` };
+
+        fetch('/cittadino/profile', { headers })
+            .then(r => r.json())
+            .then(data => { if (data?.data) setProfilo(data.data); })
+            .catch(() => {});
 
         fetch('/iniziative', { headers })
             .then(r => r.json())
@@ -85,7 +91,7 @@ export default function BachecaPage() {
 
     return (
         <div className="cd-layout">
-            <TopBarCittadino />
+            <TopBarCittadino nome={profilo?.nome || ''} cognome={profilo?.cognome || ''} />
 
             <div className="bac-page">
                 <header className="bac-header">
