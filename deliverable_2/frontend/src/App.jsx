@@ -19,7 +19,7 @@ import ProfiloCompletatoPage from './pages/ProfiloCompletatoPage';
 import DashboardCittadinePage from './pages/cittadino/dashboard/DashboardCittadinePage';
 import Votazione from './pages/cittadino/votazione/Votazione';
 import VotaSondaggio from './pages/cittadino/sondaggio/VotaSondaggio';
-import CreaIniziativaPage from './pages/cittadino/CreaIniziativaPage';
+import CreaIniziativaPage from './pages/cittadino/bacheca/CreaIniziativaPage';
 import ProfiloCittadinePage from './pages/cittadino/ProfiloCittadinePage';
 
 function CompletaProfiloRoute() {
