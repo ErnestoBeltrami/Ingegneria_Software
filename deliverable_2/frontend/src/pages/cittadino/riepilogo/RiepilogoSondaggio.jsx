@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { ArrowLeft, Moon, Sun, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useTheme } from '../../../../contexts/ThemeContext';
-import { fetchProfile, fetchRiepilogoSondaggio, fetchSondaggioById } from '../../../../services/api';
-import GraficoRisultati from '../../../../components/GraficoRisultati';
-import '../DashboardCittadinePage.css';
+import { useTheme } from '../../../contexts/ThemeContext';
+import { fetchProfile, fetchRiepilogoSondaggio, fetchSondaggioById } from '../../../services/api';
+import GraficoRisultati from '../../../components/GraficoRisultati';
+import '../dashboard/DashboardCittadinePage.css';
 import './RiepilogoSondaggio.css';
 
 const COLORI = ['#009966', '#e53e3e', '#3182ce', '#d69e2e', '#805ad5', '#a0aec0', '#dd6b20'];

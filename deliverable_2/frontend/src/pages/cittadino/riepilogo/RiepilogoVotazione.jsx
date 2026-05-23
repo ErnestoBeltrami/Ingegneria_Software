@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { ArrowLeft, Moon, Sun } from 'lucide-react';
-import { useTheme } from '../../../../contexts/ThemeContext';
-import { fetchProfile, fetchRiepilogoVotazione } from '../../../../services/api';
-import GraficoRisultati from '../../../../components/GraficoRisultati';
-import '../DashboardCittadinePage.css';
+import { useTheme } from '../../../contexts/ThemeContext';
+import { fetchProfile, fetchRiepilogoVotazione } from '../../../services/api';
+import GraficoRisultati from '../../../components/GraficoRisultati';
+import '../dashboard/DashboardCittadinePage.css';
 import './RiepilogoVotazione.css';
 
 /* Colori per opzioni */

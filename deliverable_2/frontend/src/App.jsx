@@ -22,8 +22,8 @@ import VotaSondaggio from './pages/cittadino/sondaggio/VotaSondaggio';
 import CreaIniziativaPage from './pages/cittadino/CreaIniziativaPage';
 import ProfiloCittadinePage from './pages/cittadino/ProfiloCittadinePage';
 import ArchivioPage from './pages/cittadino/ArchivioPage';
-import RiepilogoVotazione from './pages/cittadino/dashboard/riepilogo/RiepilogoVotazione';
-import RiepilogoSondaggio from './pages/cittadino/dashboard/riepilogo/RiepilogoSondaggio';
+import RiepilogoVotazione from './pages/cittadino/riepilogo/RiepilogoVotazione';
+import RiepilogoSondaggio from './pages/cittadino/riepilogo/RiepilogoSondaggio';
 
 function CompletaProfiloRoute() {
   const [params] = useSearchParams();
