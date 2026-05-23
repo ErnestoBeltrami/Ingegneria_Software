@@ -95,6 +95,16 @@
     margin: 0;
 }
 
+.bac-status {
+    font-size: 14px;
+    color: var(--text-muted, #6b7280);
+    margin: 0;
+}
+
+.bac-status--error {
+    color: #e53e3e;
+}
+
 .bac-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);

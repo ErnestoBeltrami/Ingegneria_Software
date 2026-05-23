@@ -1,38 +1,36 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, SlidersHorizontal } from 'lucide-react';
 import TopBarCittadino from '../../../components/TopBarCittadino';
 import IniziativaCard from './IniziativaCard';
 import './BachecaPage.css';
 
-const MOCK_INIZIATIVE = [
-    {
-        id: 1,
-        categoria: 'Sicurezza',
-        titolo: 'Illuminazione Parco Gocciadoro',
-        descrizione: 'Alcuni lampioni non funzionano da mesi e non ci sentiamo sicuri la sera, vanno riparate.',
-        sostenitori: 131,
-        propostoDa: 'Ernesto OG',
-    },
-    {
-        id: 2,
-        categoria: 'Sport',
-        titolo: 'Canestri del campo di basket P.zza Venezia',
-        descrizione: 'Sono rotte da mesi e i miei bambini non riescono più a giocarci.',
-        sostenitori: 70,
-        propostoDa: 'GenWoo OG',
-    },
-    {
-        id: 3,
-        categoria: 'Verde',
-        titolo: 'Più panchine al Parco delle Albere',
-        descrizione: 'Il parco è molto frequentato ma ha poche panchine, specialmente nella zona nord.',
-        sostenitori: 45,
-        propostoDa: 'Maria R.',
-    },
-];
-
 export default function BachecaPage() {
     const navigate = useNavigate();
+    const [iniziative, setIniziative] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        const headers = { Authorization: `Bearer ${token}` };
+
+        fetch('/iniziative', { headers })
+            .then(r => r.json())
+            .then(data => {
+                const items = (data.iniziative || []).map(i => ({
+                    id: i._id,
+                    titolo: i.titolo,
+                    descrizione: i.descrizione,
+                    categoria: i.categoria,
+                    sostenitori: i.numero_voti ?? 0,
+                    propostoDa: `${i.nome_cittadino} ${i.cognome_cittadino}`.trim(),
+                }));
+                setIniziative(items);
+            })
+            .catch(() => setError('Errore nel caricamento delle iniziative.'))
+            .finally(() => setLoading(false));
+    }, []);
 
     return (
         <div className="cd-layout">
@@ -60,13 +58,19 @@ export default function BachecaPage() {
                     <SlidersHorizontal size={16} className="bac-search__filter" />
                 </div>
 
-                <p className="bac-count">{MOCK_INIZIATIVE.length} iniziative trovate</p>
+                {loading && <p className="bac-status">Caricamento...</p>}
+                {error && <p className="bac-status bac-status--error">{error}</p>}
 
-                <div className="bac-grid">
-                    {MOCK_INIZIATIVE.map(item => (
-                        <IniziativaCard key={item.id} iniziativa={item} />
-                    ))}
-                </div>
+                {!loading && !error && (
+                    <>
+                        <p className="bac-count">{iniziative.length} iniziative trovate</p>
+                        <div className="bac-grid">
+                            {iniziative.map(item => (
+                                <IniziativaCard key={item.id} iniziativa={item} />
+                            ))}
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );
