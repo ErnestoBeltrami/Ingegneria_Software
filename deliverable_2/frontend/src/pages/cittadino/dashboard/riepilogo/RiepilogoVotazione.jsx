@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { ArrowLeft, Moon, Sun } from 'lucide-react';
 import { useTheme } from '../../../../contexts/ThemeContext';
 import { fetchProfile, fetchRiepilogoVotazione } from '../../../../services/api';
@@ -14,17 +14,20 @@ const colore = (i) => COLORI[i % COLORI.length];
 export default function RiepilogoVotazione() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { state } = useLocation();
     const { theme, toggleTheme } = useTheme();
 
-    const [profilo, setProfilo] = useState(null);
+    const [profilo, setProfilo] = useState(state?.profilo ?? null);
     const [riepilogo, setRiepilogo] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
     useEffect(() => {
-        fetchProfile()
-            .then(data => { if (data?.data) setProfilo(data.data); })
-            .catch(() => { });
+        if (!state?.profilo) {
+            fetchProfile()
+                .then(data => { if (data?.data) setProfilo(data.data); })
+                .catch(() => { });
+        }
 
         fetchRiepilogoVotazione(id)
             .then(data => setRiepilogo(data))

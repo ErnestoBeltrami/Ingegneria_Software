@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { ArrowLeft, Moon, Sun, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTheme } from '../../../../contexts/ThemeContext';
 import { fetchProfile, fetchRiepilogoSondaggio, fetchSondaggioById } from '../../../../services/api';
@@ -13,9 +13,10 @@ const colore = (i) => COLORI[i % COLORI.length];
 export default function RiepilogoSondaggio() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { state } = useLocation();
     const { theme, toggleTheme } = useTheme();
 
-    const [profilo, setProfilo] = useState(null);
+    const [profilo, setProfilo] = useState(state?.profilo ?? null);
     const [riepilogo, setRiepilogo] = useState(null);
     const [dettaglio, setDettaglio] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -23,19 +24,27 @@ export default function RiepilogoSondaggio() {
     const [domandaCorrente, setDomandaCorrente] = useState(0);
 
     useEffect(() => {
-        fetchProfile()
-            .then(data => { if (data?.data) setProfilo(data.data); })
-            .catch(() => { });
+        if (!state?.profilo) {
+            fetchProfile()
+                .then(data => { if (data?.data) setProfilo(data.data); })
+                .catch(() => { });
+        }
 
-        Promise.all([
-            fetchRiepilogoSondaggio(id),
-            fetchSondaggioById(id),
-        ])
-            .then(([riepData, dettData]) => {
+        const itemFromNav = state?.item;
+        const hasOpzioni = itemFromNav?.ID_domande?.[0]?.opzioni?.length > 0;
+
+        const fetchData = hasOpzioni
+            ? fetchRiepilogoSondaggio(id).then(riepData => {
                 setRiepilogo(riepData);
-                // L'API restituisce la consultazione sotto la chiave "consultazione"
-                setDettaglio(dettData.consultazione ?? dettData.sondaggio ?? dettData);
-            })
+                setDettaglio(itemFromNav);
+              })
+            : Promise.all([fetchRiepilogoSondaggio(id), fetchSondaggioById(id)])
+                .then(([riepData, dettData]) => {
+                    setRiepilogo(riepData);
+                    setDettaglio(dettData.consultazione ?? dettData.sondaggio ?? dettData);
+                });
+
+        fetchData
             .catch(err => setError(err.message || 'Errore nel caricamento'))
             .finally(() => setLoading(false));
     }, [id]);

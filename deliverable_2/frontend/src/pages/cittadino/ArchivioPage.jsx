@@ -70,10 +70,11 @@ export default function Archivio() {
     };
 
     const handleRiepilogo = (item) => {
+        const navState = { item, profilo };
         if (item.tipo === 'votazione') {
-            navigate(`/cittadino/archivio/votazione/${item._id}`);
+            navigate(`/cittadino/archivio/votazione/${item._id}`, { state: navState });
         } else {
-            navigate(`/cittadino/archivio/sondaggio/${item._id}`);
+            navigate(`/cittadino/archivio/sondaggio/${item._id}`, { state: navState });
         }
     };
 
