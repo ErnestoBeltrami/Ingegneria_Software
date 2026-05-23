@@ -707,7 +707,7 @@
  *                 message:
  *                   type: string
  *                   description: Messaggio di conferma
- *                 votazioni:
+ *                 sondaggi:
  *                   type: array
  *                   items:
  *                     allOf:
@@ -728,7 +728,7 @@
  *                             type: boolean
  *                             description: "true se il cittadino autenticato ha già risposto a questo sondaggio"
  *                             example: false
- *                   description: Array di sondaggi disponibili (presente solo se ci sono sondaggi). Nota - la proprietà è chiamata "votazioni" per compatibilità con il controller.
+ *                   description: Array di sondaggi disponibili (presente solo se ci sono sondaggi).
  *                 paginazione:
  *                   type: object
  *                   properties:
@@ -748,7 +748,7 @@
  *               withSondaggi:
  *                 value:
  *                   message: "Sondaggi recuperati con successo."
- *                   votazioni:
+ *                   sondaggi:
  *                     - _id: "507f1f77bcf86cd799439011"
  *                       tipo: "sondaggio"
  *                       stato: "attivo"
