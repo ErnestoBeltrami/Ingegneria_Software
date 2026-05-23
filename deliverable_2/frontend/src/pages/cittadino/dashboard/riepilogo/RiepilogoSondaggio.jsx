@@ -119,7 +119,7 @@ export default function RiepilogoSondaggio() {
 
             <div className="crs-page">
                 <header className="crs-header">
-                    <button className="crs-back" onClick={() => navigate('/cittadino/archivio')}>
+                    <button className="crs-back" onClick={() => navigate('/cittadino/archivio?tipo=sondaggi')}>
                         <ArrowLeft size={16} />
                         Torna all'archivio
                     </button>
