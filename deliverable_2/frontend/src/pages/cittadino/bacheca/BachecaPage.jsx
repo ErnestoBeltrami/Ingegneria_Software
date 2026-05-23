@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, SlidersHorizontal } from 'lucide-react';
 import TopBarCittadino from '../../../components/TopBarCittadino';
@@ -10,6 +10,9 @@ export default function BachecaPage() {
     const [iniziative, setIniziative] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [query, setQuery] = useState('');
+    const [categoriaFiltro, setCategoriaFiltro] = useState('');
+    const [pannelloAperto, setPannelloAperto] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -32,6 +35,32 @@ export default function BachecaPage() {
             .finally(() => setLoading(false));
     }, []);
 
+    const categorie = useMemo(
+        () => [...new Set(iniziative.map(i => i.categoria).filter(Boolean))],
+        [iniziative]
+    );
+
+    const iniziativeFiltrate = useMemo(() => {
+        const keywords = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+
+        let risultati = categoriaFiltro
+            ? iniziative.filter(i => i.categoria === categoriaFiltro)
+            : iniziative;
+
+        if (!keywords.length) return risultati;
+
+        return risultati
+            .map(i => {
+                const titolo = i.titolo.toLowerCase();
+                const desc = i.descrizione.toLowerCase();
+                const titoloMatch = keywords.filter(k => titolo.includes(k)).length;
+                const descMatch = keywords.filter(k => desc.includes(k)).length;
+                return { ...i, _titoloMatch: titoloMatch, _descMatch: descMatch };
+            })
+            .filter(i => i._titoloMatch > 0 || i._descMatch > 0)
+            .sort((a, b) => b._titoloMatch - a._titoloMatch || b._descMatch - a._descMatch);
+    }, [iniziative, query, categoriaFiltro]);
+
     return (
         <div className="cd-layout">
             <TopBarCittadino />
@@ -53,22 +82,55 @@ export default function BachecaPage() {
                         type="text"
                         className="bac-search__input"
                         placeholder="Cerca una proposta o iniziativa..."
-                        readOnly
+                        value={query}
+                        onChange={e => setQuery(e.target.value)}
                     />
-                    <SlidersHorizontal size={16} className="bac-search__filter" />
+                    <button
+                        className={`bac-search__filter-btn${categoriaFiltro ? ' bac-search__filter-btn--active' : ''}`}
+                        onClick={() => setPannelloAperto(p => !p)}
+                        aria-label="Filtra per categoria"
+                    >
+                        <SlidersHorizontal size={16} />
+                    </button>
                 </div>
+
+                {pannelloAperto && (
+                    <div className="bac-filtri">
+                        <button
+                            className={`bac-filtri__pill${!categoriaFiltro ? ' bac-filtri__pill--active' : ''}`}
+                            onClick={() => setCategoriaFiltro('')}
+                        >
+                            Tutte
+                        </button>
+                        {categorie.map(cat => (
+                            <button
+                                key={cat}
+                                className={`bac-filtri__pill${categoriaFiltro === cat ? ' bac-filtri__pill--active' : ''}`}
+                                onClick={() => setCategoriaFiltro(cat)}
+                            >
+                                {cat}
+                            </button>
+                        ))}
+                    </div>
+                )}
 
                 {loading && <p className="bac-status">Caricamento...</p>}
                 {error && <p className="bac-status bac-status--error">{error}</p>}
 
                 {!loading && !error && (
                     <>
-                        <p className="bac-count">{iniziative.length} iniziative trovate</p>
-                        <div className="bac-grid">
-                            {iniziative.map(item => (
-                                <IniziativaCard key={item.id} iniziativa={item} />
-                            ))}
-                        </div>
+                        <p className="bac-count">{iniziativeFiltrate.length} iniziative trovate</p>
+                        {iniziativeFiltrate.length === 0 ? (
+                            <div className="bac-empty">
+                                <p>Nessuna iniziativa trovata.</p>
+                            </div>
+                        ) : (
+                            <div className="bac-grid">
+                                {iniziativeFiltrate.map(item => (
+                                    <IniziativaCard key={item.id} iniziativa={item} />
+                                ))}
+                            </div>
+                        )}
                     </>
                 )}
             </div>
