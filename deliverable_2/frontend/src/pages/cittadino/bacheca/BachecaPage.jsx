@@ -1,8 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import { Moon, Sun, Search, SlidersHorizontal } from 'lucide-react';
-import { useTheme } from '../../../contexts/ThemeContext';
+import { Search, SlidersHorizontal } from 'lucide-react';
+import TopBarCittadino from '../../../components/TopBarCittadino';
 import IniziativaCard from './IniziativaCard';
-import '../dashboard/DashboardCittadinePage.css';
 import './BachecaPage.css';
 
 const MOCK_INIZIATIVE = [
@@ -34,22 +33,10 @@ const MOCK_INIZIATIVE = [
 
 export default function BachecaPage() {
     const navigate = useNavigate();
-    const { theme, toggleTheme } = useTheme();
 
     return (
         <div className="cd-layout">
-            <header className="cd-topbar">
-                <span className="cd-topbar__logo">IoSonoTrento</span>
-                <div className="cd-topbar__right">
-                    <button
-                        className="cd-topbar__theme"
-                        onClick={toggleTheme}
-                        aria-label={theme === 'dark' ? 'Attiva modalità chiara' : 'Attiva modalità scura'}
-                    >
-                        {theme === 'dark' ? <Moon size={18} /> : <Sun size={18} />}
-                    </button>
-                </div>
-            </header>
+            <TopBarCittadino />
 
             <div className="bac-page">
                 <header className="bac-header">

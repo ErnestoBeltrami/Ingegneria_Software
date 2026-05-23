@@ -1,13 +1,7 @@
 import { useState, useEffect } from 'react';
-<<<<<<< HEAD:deliverable_2/frontend/src/pages/cittadino/bacheca/CreaIniziativaPage.jsx
-import { useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Lightbulb, Moon, Sun } from 'lucide-react';
-import { useTheme } from '../../../contexts/ThemeContext';
-=======
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Lightbulb } from 'lucide-react';
-import TopBarCittadino from '../../components/TopBarCittadino';
->>>>>>> origin/main:deliverable_2/frontend/src/pages/cittadino/CreaIniziativaPage.jsx
+import TopBarCittadino from '../../../components/TopBarCittadino';
 import './CreaIniziativaPage.css';
 
 export default function CreaIniziativaPage() {
