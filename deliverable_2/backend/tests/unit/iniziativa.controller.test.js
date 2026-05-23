@@ -87,6 +87,8 @@ describe('iniziativa controller', () => {
       ricercaIniziativa = mod.ricercaIniziativa;
     });
 
+    beforeEach(() => jest.clearAllMocks());
+
     it('restituisce lista paginata con oggetto paginazione', async () => {
       const fakeItem = { _id: '507f1f77bcf86cd799439033', titolo: 'Ricerca' };
       mockIniziativaAggregate
