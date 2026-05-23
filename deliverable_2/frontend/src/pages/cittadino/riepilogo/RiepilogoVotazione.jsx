@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import { ArrowLeft, Moon, Sun } from 'lucide-react';
-import { useTheme } from '../../../contexts/ThemeContext';
+import { ArrowLeft } from 'lucide-react';
+import TopBarCittadino from '../../../components/TopBarCittadino';
 import { fetchProfile, fetchRiepilogoVotazione } from '../../../services/api';
 import GraficoRisultati from '../../../components/GraficoRisultati';
 import '../dashboard/DashboardCittadinePage.css';
@@ -15,8 +15,6 @@ export default function RiepilogoVotazione() {
     const { id } = useParams();
     const navigate = useNavigate();
     const { state } = useLocation();
-    const { theme, toggleTheme } = useTheme();
-
     const [profilo, setProfilo] = useState(state?.profilo ?? null);
     const [riepilogo, setRiepilogo] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -41,19 +39,17 @@ export default function RiepilogoVotazione() {
 
     const nome = profilo?.nome || '';
     const cognome = profilo?.cognome || '';
-    const initials = `${nome.charAt(0)}${cognome.charAt(0)}`.toUpperCase() || '?';
-    const fullName = [nome, cognome].filter(Boolean).join(' ') || 'Cittadino';
 
     if (loading) return (
         <div className="cd-layout">
-            <header className="cd-topbar"><span className="cd-topbar__logo">IoSonoTrento</span></header>
+            <TopBarCittadino nome={nome} cognome={cognome} />
             <div className="crv-page"><p className="crv-status">Caricamento…</p></div>
         </div>
     );
 
     if (error) return (
         <div className="cd-layout">
-            <header className="cd-topbar"><span className="cd-topbar__logo">IoSonoTrento</span></header>
+            <TopBarCittadino nome={nome} cognome={cognome} />
             <div className="crv-page"><p className="crv-status crv-status--error">⚠️ {error}</p></div>
         </div>
     );
@@ -69,22 +65,7 @@ export default function RiepilogoVotazione() {
 
     return (
         <div className="cd-layout">
-            <header className="cd-topbar">
-                <span className="cd-topbar__logo">IoSonoTrento</span>
-                <div className="cd-topbar__right">
-                    <button
-                        className="cd-topbar__theme"
-                        onClick={toggleTheme}
-                        aria-label={theme === 'dark' ? 'Attiva modalità chiara' : 'Attiva modalità scura'}
-                    >
-                        {theme === 'dark' ? <Moon size={18} /> : <Sun size={18} />}
-                    </button>
-                    <div className="cd-topbar__user" onClick={() => navigate('/cittadino/profilo')}>
-                        <div className="cd-topbar__avatar">{initials}</div>
-                        <span className="cd-topbar__name">{fullName}</span>
-                    </div>
-                </div>
-            </header>
+            <TopBarCittadino nome={nome} cognome={cognome} />
 
             <div className="crv-page">
                 <header className="crv-header">

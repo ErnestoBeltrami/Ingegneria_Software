@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Clock, CalendarDays, Moon, Sun } from 'lucide-react';
+import { ArrowLeft, Clock, CalendarDays } from 'lucide-react';
 import './Votazione.css';
 import { fetchVotazioneCittadino, submitVotazione, fetchProfile } from '../../../services/api';
-import { useTheme } from '../../../contexts/ThemeContext';
+import TopBarCittadino from '../../../components/TopBarCittadino';
 
 export default function Votazione() {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { theme, toggleTheme } = useTheme();
-
     const [profilo, setProfilo] = useState(null);
     const [votazione, setVotazione] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -46,8 +44,6 @@ export default function Votazione() {
 
     const nome = profilo?.nome || '';
     const cognome = profilo?.cognome || '';
-    const initials = `${nome.charAt(0)}${cognome.charAt(0)}`.toUpperCase() || '?';
-    const fullName = [nome, cognome].filter(Boolean).join(' ') || 'Cittadino';
 
     const handleVote = async () => {
         if (!selectedOption || isSubmitting) return;
@@ -67,29 +63,10 @@ export default function Votazione() {
         return d.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
     };
 
-    const renderTopbar = () => (
-        <header className="cd-topbar">
-            <span className="cd-topbar__logo">IoSonoTrento</span>
-            <div className="cd-topbar__right">
-                <button
-                    className="cd-topbar__theme"
-                    onClick={toggleTheme}
-                    aria-label={theme === 'dark' ? 'Attiva modalità chiara' : 'Attiva modalità scura'}
-                >
-                    {theme === 'dark' ? <Moon size={18} /> : <Sun size={18} />}
-                </button>
-                <div className="cd-topbar__user" onClick={() => navigate('/cittadino/profilo')}>
-                    <div className="cd-topbar__avatar">{initials}</div>
-                    <span className="cd-topbar__name">{fullName}</span>
-                </div>
-            </div>
-        </header>
-    );
-
     if (loading) {
         return (
             <div className="cd-layout">
-                {renderTopbar()}
+                <TopBarCittadino nome={nome} cognome={cognome} />
                 <div className="cd-page">
                     <p>Caricamento votazione in corso...</p>
                 </div>
@@ -100,7 +77,7 @@ export default function Votazione() {
     if (error || !votazione) {
         return (
             <div className="cd-layout">
-                {renderTopbar()}
+                <TopBarCittadino nome={nome} cognome={cognome} />
                 <div className="cd-page">
                     <button className="back-btn" onClick={() => navigate(-1)}>
                         <ArrowLeft size={20} />

@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
-    Moon, Sun, CalendarDays, ChevronRight, Archive,
+    CalendarDays, ChevronRight, Archive,
     Search, Vote, ClipboardList
 } from 'lucide-react';
-import { useTheme } from '../../contexts/ThemeContext';
+import TopBarCittadino from '../../components/TopBarCittadino';
 import { fetchProfile, fetchAllActivities } from '../../services/api';
 import './dashboard/DashboardCittadinePage.css';
 import './ArchivioPage.css';
@@ -22,8 +22,6 @@ function formatDate(isoString) {
 
 export default function Archivio() {
     const navigate = useNavigate();
-    const { theme, toggleTheme } = useTheme();
-
     const [searchParams, setSearchParams] = useSearchParams();
     const tipoParam = searchParams.get('tipo');
     const activeTab = tipoParam === 'sondaggi' ? 'sondaggi' : 'votazioni';
@@ -53,8 +51,6 @@ export default function Archivio() {
 
     const nome = profilo?.nome || '';
     const cognome = profilo?.cognome || '';
-    const initials = `${nome.charAt(0)}${cognome.charAt(0)}`.toUpperCase() || '?';
-    const fullName = [nome, cognome].filter(Boolean).join(' ') || 'Cittadino';
 
     //filtra per tipo e testo
     const byType = activities.filter(a =>
@@ -112,23 +108,7 @@ export default function Archivio() {
 
     return (
         <div className="cd-layout">
-            {/* topbar */}
-            <header className="cd-topbar">
-                <span className="cd-topbar__logo">IoSonoTrento</span>
-                <div className="cd-topbar__right">
-                    <button
-                        className="cd-topbar__theme"
-                        onClick={toggleTheme}
-                        aria-label={theme === 'dark' ? 'Attiva modalità chiara' : 'Attiva modalità scura'}
-                    >
-                        {theme === 'dark' ? <Moon size={18} /> : <Sun size={18} />}
-                    </button>
-                    <div className="cd-topbar__user" onClick={() => navigate('/cittadino/profilo')}>
-                        <div className="cd-topbar__avatar">{initials}</div>
-                        <span className="cd-topbar__name">{fullName}</span>
-                    </div>
-                </div>
-            </header>
+            <TopBarCittadino nome={nome} cognome={cognome} />
 
             <div className="cd-page">
                 <header className="cd-header">
