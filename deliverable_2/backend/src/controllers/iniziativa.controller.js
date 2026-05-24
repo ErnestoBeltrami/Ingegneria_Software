@@ -3,6 +3,7 @@ import { Iniziativa } from '../models/iniziativa.js';
 import { CategoriaIniziativa } from '../models/categoria_iniziativa.js';
 import { Cittadino } from '../models/cittadino.js';
 import { Notifica } from '../models/notifica.js';
+import { VotoIniziativa } from '../models/voto_iniziativa.js';
 import mongoose from 'mongoose';
 
 // POST: Crea iniziativa
@@ -83,7 +84,45 @@ export const getIniziative = async (req,res) => {
         const limitNum = Math.min(100, Math.max(1, parseInt(limit) || 10));
         const skip = (pageNum - 1) * limitNum;
 
-        const matchStato = req.ruolo === 'operatore' ? {} : { stato: 'approvata' };
+        const isCittadino = req.ruolo === 'cittadino';
+        const matchStato = isCittadino ? { stato: 'approvata' } : {};
+
+        const haVotatoStages = isCittadino ? [
+            {
+                $lookup: {
+                    from: "votoiniziativas",
+                    let: { ini_id: "$_id" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ["$ID_iniziativa", "$$ini_id"] },
+                                        { $eq: ["$ID_cittadino", user._id] }
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    as: "voto_utente"
+                }
+            },
+            { $addFields: { ha_votato: { $gt: [{ $size: "$voto_utente" }, 0] } } }
+        ] : [];
+
+        const projectFields = {
+            _id: 1,
+            ID_categoria: 1,
+            categoria: "$categoria_dettagli.nome",
+            titolo: 1,
+            descrizione: 1,
+            stato: 1,
+            nome_cittadino: "$cittadino_dettagli.nome",
+            cognome_cittadino: "$cittadino_dettagli.cognome",
+            numero_voti: "$numero_voti",
+            createdAt: 1
+        };
+        if (isCittadino) projectFields.ha_votato = 1;
 
         const pipeline = [
             { $match: matchStato },
@@ -95,11 +134,7 @@ export const getIniziative = async (req,res) => {
                     as: "voti"
                 }
             },
-            {
-                $addFields: {
-                    numero_voti: { $size: "$voti" }
-                }
-            },
+            { $addFields: { numero_voti: { $size: "$voti" } } },
             {
                 $lookup: {
                     from: "cittadinos",
@@ -118,26 +153,9 @@ export const getIniziative = async (req,res) => {
                 }
             },
             { $unwind: "$categoria_dettagli" },
-            {
-                $project: {
-                    _id: 1,
-                    ID_categoria: 1,
-                    categoria: "$categoria_dettagli.nome",
-                    titolo: 1,
-                    descrizione: 1,
-                    stato: 1,
-                    nome_cittadino: "$cittadino_dettagli.nome",
-                    cognome_cittadino: "$cittadino_dettagli.cognome",
-                    numero_voti: "$numero_voti",
-                    createdAt: 1
-                }
-            },
-            {
-                $sort: {
-                    createdAt: -1,
-                    numero_voti: -1
-                }
-            }
+            ...haVotatoStages,
+            { $project: projectFields },
+            { $sort: { createdAt: -1, numero_voti: -1 } }
         ];
 
         const [iniziative, countResult] = await Promise.all([
@@ -178,12 +196,19 @@ export const getIniziativaById = async (req, res) => {
                 iniziativa: null
             });
         }
-        else{
-            return res.status(200).json({
-                message: "Iniziativa trovata con successo.",
-                iniziativa
-            });
+
+        const response = iniziativa.toObject();
+        if (req.ruolo === 'cittadino') {
+            response.ha_votato = !!(await VotoIniziativa.exists({
+                ID_iniziativa: id,
+                ID_cittadino: req.user._id
+            }));
         }
+
+        return res.status(200).json({
+            message: "Iniziativa trovata con successo.",
+            iniziativa: response
+        });
     }
     catch(error){
         logger.error("Errore nel recupero dell'iniziativa con l'ID specificato:", error);
@@ -318,8 +343,9 @@ export const ricercaIniziativa = async (req, res) => {
         const categorie = filtri?.categorie_id || [];
         const ordina_per = filtri?.ordina_per;
         const ordine = filtri?.ordine || -1;
+        const isCittadino = req.ruolo === 'cittadino';
 
-        let matchStage = req.ruolo === 'operatore' ? {} : { stato: 'approvata' };
+        let matchStage = isCittadino ? { stato: 'approvata' } : {};
 
         const categorieObjectId = categorie.map(id => {
             if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -386,6 +412,18 @@ export const ricercaIniziativa = async (req, res) => {
             });
         }
 
+        const ricercaProjectFields = {
+            _id: 1,
+            ID_categoria: 1,
+            categoria: "$categoria_dettagli.nome",
+            titolo: 1,
+            nome_cittadino: "$cittadino_dettagli.nome",
+            cognome_cittadino: "$cittadino_dettagli.cognome",
+            numero_voti: 1,
+            createdAt: 1
+        };
+        if (isCittadino) ricercaProjectFields.ha_votato = 1;
+
         pipeline.push(
             {
                 $lookup: {
@@ -404,19 +442,36 @@ export const ricercaIniziativa = async (req, res) => {
                     as: "categoria_dettagli"
                 }
             },
-            { $unwind: "$categoria_dettagli" },
-            {
-                $project: {
-                    _id: 1,
-                    ID_categoria: 1,
-                    categoria: "$categoria_dettagli.nome",
-                    titolo: 1,
-                    nome_cittadino: "$cittadino_dettagli.nome",
-                    cognome_cittadino: "$cittadino_dettagli.cognome",
-                    numero_voti: 1,
-                    createdAt: 1
-                }
-            },
+            { $unwind: "$categoria_dettagli" }
+        );
+
+        if (isCittadino) {
+            pipeline.push(
+                {
+                    $lookup: {
+                        from: "votoiniziativas",
+                        let: { ini_id: "$_id" },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $and: [
+                                            { $eq: ["$ID_iniziativa", "$$ini_id"] },
+                                            { $eq: ["$ID_cittadino", user._id] }
+                                        ]
+                                    }
+                                }
+                            }
+                        ],
+                        as: "voto_utente"
+                    }
+                },
+                { $addFields: { ha_votato: { $gt: [{ $size: "$voto_utente" }, 0] } } }
+            );
+        }
+
+        pipeline.push(
+            { $project: ricercaProjectFields },
             { $sort: sortCriteria }
         );
 
