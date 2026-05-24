@@ -87,7 +87,7 @@
  *               error: "Duplicate key error"
  *   get:
  *     summary: Ottieni tutte le iniziative
- *     description: Restituisce la lista paginata delle iniziative ordinate per data di creazione e numero di voti. Supporta paginazione tramite ?page= e ?limit=. Include dettagli della categoria e del cittadino creatore.
+ *     description: Restituisce la lista paginata delle iniziative ordinate per data di creazione e numero di voti. Supporta paginazione tramite ?page= e ?limit=. Include dettagli della categoria e del cittadino creatore. Per i cittadini include il campo `ha_votato` che indica se l'utente ha già sostenuto l'iniziativa.
  *     tags:
  *       - Iniziative
  *     security:
@@ -147,6 +147,7 @@
  *                       nome_cittadino: "Mario"
  *                       cognome_cittadino: "Rossi"
  *                       numero_voti: 42
+ *                       ha_votato: false
  *                       createdAt: "2025-12-05T16:00:00.000Z"
  *               empty:
  *                 value:
@@ -176,7 +177,7 @@
  * /iniziative/ricerca:
  *   post:
  *     summary: Ricerca iniziative
- *     description: Ricusa iniziative tramite filtri e parole chiave
+ *     description: Ricerca iniziative tramite filtri e parole chiave. Per i cittadini include il campo `ha_votato` che indica se l'utente ha già sostenuto ciascuna iniziativa.
  *     tags:
  *       - Iniziative
  *     security:
@@ -251,6 +252,7 @@
  *                       nome_cittadino: "Mario"
  *                       cognome_cittadino: "Rossi"
  *                       numero_voti: 42
+ *                       ha_votato: true
  *                       createdAt: "2025-12-05T16:00:00.000Z"
  *               empty:
  *                 value:
@@ -280,7 +282,7 @@
  * /iniziative/{id}:
  *   get:
  *     summary: Ottieni dettagli iniziativa
- *     description: Restituisce i dettagli di una iniziativa specifica
+ *     description: Restituisce i dettagli di una iniziativa specifica. Per i cittadini include il campo `ha_votato` che indica se l'utente ha già sostenuto l'iniziativa.
  *     tags:
  *       - Iniziative
  *     security:
