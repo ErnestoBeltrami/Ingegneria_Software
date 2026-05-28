@@ -87,11 +87,24 @@
  *               error: "Duplicate key error"
  *   get:
  *     summary: Ottieni tutte le iniziative
- *     description: Restituisce l'elenco completo delle iniziative ordinate per data di creazione e numero di voti. Include dettagli della categoria e del cittadino creatore.
+ *     description: Restituisce la lista paginata delle iniziative ordinate per data di creazione e numero di voti. Supporta paginazione tramite ?page= e ?limit=. Include dettagli della categoria e del cittadino creatore. Per i cittadini include il campo `ha_votato` che indica se l'utente ha già sostenuto l'iniziativa.
  *     tags:
  *       - Iniziative
  *     security:
  *       - sessionAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Numero di pagina (default 1)
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Risultati per pagina (max 100, default 10)
  *     responses:
  *       200:
  *         description: Lista delle iniziative recuperata con successo
@@ -107,6 +120,21 @@
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/IniziativaWithDetails'
+ *                 paginazione:
+ *                   type: object
+ *                   properties:
+ *                     totale:
+ *                       type: integer
+ *                       example: 35
+ *                     pagina:
+ *                       type: integer
+ *                       example: 1
+ *                     limite:
+ *                       type: integer
+ *                       example: 10
+ *                     pagine:
+ *                       type: integer
+ *                       example: 4
  *             examples:
  *               withIniziative:
  *                 value:
@@ -119,6 +147,7 @@
  *                       nome_cittadino: "Mario"
  *                       cognome_cittadino: "Rossi"
  *                       numero_voti: 42
+ *                       ha_votato: false
  *                       createdAt: "2025-12-05T16:00:00.000Z"
  *               empty:
  *                 value:
@@ -148,11 +177,24 @@
  * /iniziative/ricerca:
  *   post:
  *     summary: Ricerca iniziative
- *     description: Ricusa iniziative tramite filtri e parole chiave
+ *     description: Ricerca iniziative tramite filtri e parole chiave. Per i cittadini include il campo `ha_votato` che indica se l'utente ha già sostenuto ciascuna iniziativa.
  *     tags:
  *       - Iniziative
  *     security:
  *       - sessionAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Numero di pagina (default 1)
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Risultati per pagina (max 100, default 10)
  *     requestBody:
  *       required: true
  *       content:
@@ -183,6 +225,21 @@
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/IniziativaWithDetails'
+ *                 paginazione:
+ *                   type: object
+ *                   properties:
+ *                     totale:
+ *                       type: integer
+ *                       example: 35
+ *                     pagina:
+ *                       type: integer
+ *                       example: 1
+ *                     limite:
+ *                       type: integer
+ *                       example: 10
+ *                     pagine:
+ *                       type: integer
+ *                       example: 4
  *             examples:
  *               withIniziative:
  *                 value:
@@ -195,6 +252,7 @@
  *                       nome_cittadino: "Mario"
  *                       cognome_cittadino: "Rossi"
  *                       numero_voti: 42
+ *                       ha_votato: true
  *                       createdAt: "2025-12-05T16:00:00.000Z"
  *               empty:
  *                 value:
@@ -224,7 +282,7 @@
  * /iniziative/{id}:
  *   get:
  *     summary: Ottieni dettagli iniziativa
- *     description: Restituisce i dettagli di una iniziativa specifica
+ *     description: Restituisce i dettagli di una iniziativa specifica. Per i cittadini include il campo `ha_votato` che indica se l'utente ha già sostenuto l'iniziativa.
  *     tags:
  *       - Iniziative
  *     security:

@@ -596,6 +596,19 @@
  *       - Votazioni
  *     security:
  *       - sessionAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Numero di pagina (default 1)
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Risultati per pagina (max 100, default 10)
  *     responses:
  *       200:
  *         description: Votazioni recuperate con successo o nessuna votazione disponibile
@@ -619,6 +632,21 @@
  *                             description: "true se il cittadino autenticato ha già votato questa votazione"
  *                             example: false
  *                   description: Array di votazioni disponibili (presente solo se ci sono votazioni)
+ *                 paginazione:
+ *                   type: object
+ *                   properties:
+ *                     totale:
+ *                       type: integer
+ *                       example: 35
+ *                     pagina:
+ *                       type: integer
+ *                       example: 1
+ *                     limite:
+ *                       type: integer
+ *                       example: 10
+ *                     pagine:
+ *                       type: integer
+ *                       example: 4
  *             examples:
  *               withVotazioni:
  *                 value:

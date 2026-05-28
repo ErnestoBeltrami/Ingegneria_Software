@@ -24,8 +24,8 @@ export const getVotazioni = async (req, res) => {
             });
         }
 
-        const pageNum = Math.max(1, parseInt(page));
-        const limitNum = Math.min(100, Math.max(1, parseInt(limit)));
+        const pageNum = Math.max(1, parseInt(page) || 1);
+        const limitNum = Math.min(100, Math.max(1, parseInt(limit) || 10));
         const skip = (pageNum - 1) * limitNum;
 
         const filtro = { creatoDa: userFromMiddleware._id, tipo: 'votazione' };
@@ -59,7 +59,7 @@ export const getVotazioni = async (req, res) => {
 };
 
 //GET: Ritorna le votazioni attive e concluse visibili ai cittadini
- export const getVotazioniAvailable = async (req, res) => {
+export const getVotazioniAvailable = async (req, res) => {
     try {
         const userFromMiddleware = req.user;
 
@@ -69,16 +69,17 @@ export const getVotazioni = async (req, res) => {
             });
         }
 
-        const votazioni = await Consultazione.find({
-            stato: { $in: ["attivo", "concluso"] },
-            tipo: 'votazione'
-        }).sort({ data_inizio: -1 });
+        const { page, limit } = req.query;
+        const pageNum = Math.max(1, parseInt(page) || 1);
+        const limitNum = Math.min(100, Math.max(1, parseInt(limit) || 10));
+        const skip = (pageNum - 1) * limitNum;
 
-        if(!votazioni){
-            return res.status(200).json({
-                message : 'Nessuna votazione disponibile al momento'
-            });
-        }
+        const filtro = { stato: { $in: ['attivo', 'concluso'] }, tipo: 'votazione' };
+
+        const [votazioni, totale] = await Promise.all([
+            Consultazione.find(filtro).sort({ data_inizio: -1 }).skip(skip).limit(limitNum),
+            Consultazione.countDocuments(filtro)
+        ]);
 
         const risposte = await RispostaConsultazione.find({
             ID_cittadino: userFromMiddleware._id,
@@ -93,7 +94,13 @@ export const getVotazioni = async (req, res) => {
 
         return res.status(200).json({
             message: 'Votazioni recuperate con successo.',
-            votazioni: votazioniWithVoted
+            votazioni: votazioniWithVoted,
+            paginazione: {
+                totale,
+                pagina: pageNum,
+                limite: limitNum,
+                pagine: Math.ceil(totale / limitNum)
+            }
         });
     } catch (error) {
         logger.error('Errore nel recupero delle votazioni:', error);

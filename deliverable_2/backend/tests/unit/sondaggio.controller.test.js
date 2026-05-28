@@ -5,6 +5,10 @@ import { jest } from '@jest/globals';
 const mockPopulate = jest.fn();
 const mockSort = jest.fn();
 const mockConsultazioneFind = jest.fn();
+const mockSkip = jest.fn();
+const mockLimit = jest.fn();
+const mockRispostaFind = jest.fn();
+const mockSondaggioCountDocuments = jest.fn();
 
 jest.unstable_mockModule('../../src/models/domanda.js', () => ({
   Domanda: { create: jest.fn() },
@@ -18,12 +22,12 @@ jest.unstable_mockModule('../../src/models/consultazione.js', () => ({
     findById: jest.fn(),
     findByIdAndDelete: jest.fn(),
     findByIdAndUpdate: jest.fn(),
-    countDocuments: jest.fn(),
+    countDocuments: mockSondaggioCountDocuments,
   },
 }));
 
 jest.unstable_mockModule('../../src/models/risposta_consultazione.js', () => ({
-  RispostaConsultazione: { aggregate: jest.fn() },
+  RispostaConsultazione: { aggregate: jest.fn(), find: mockRispostaFind },
 }));
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -68,65 +72,95 @@ describe('sondaggio controller – getSondaggiAvaiable', () => {
     );
   });
 
-  it('chiama populate("ID_domande") e restituisce 200 con i sondaggi', async () => {
-    const fakeSondaggi = [
-      {
-        _id: SONDAGGIO_ID,
-        tipo: 'sondaggio',
-        stato: 'attivo',
-        titolo: 'Test sondaggio',
-        ID_domande: [{ _id: DOMANDA_ID, titolo: 'Domanda 1', tipo: 'risposta_singola', opzioni: [] }],
-      },
-    ];
+  it('restituisce 200 con i sondaggi paginati', async () => {
+    const fakeSondaggio = {
+      _id: SONDAGGIO_ID,
+      tipo: 'sondaggio',
+      stato: 'attivo',
+      titolo: 'Test sondaggio',
+      ID_domande: [],
+      toObject: () => ({ _id: SONDAGGIO_ID, tipo: 'sondaggio', stato: 'attivo', titolo: 'Test sondaggio' }),
+    };
 
-    // Chain: find(...).populate(...).sort(...)
-    mockSort.mockResolvedValue(fakeSondaggi);
+    mockLimit.mockResolvedValueOnce([fakeSondaggio]);
+    mockSkip.mockReturnValue({ limit: mockLimit });
+    mockSort.mockReturnValue({ skip: mockSkip });
     mockPopulate.mockReturnValue({ sort: mockSort });
     mockConsultazioneFind.mockReturnValue({ populate: mockPopulate });
+    mockSondaggioCountDocuments.mockResolvedValueOnce(1);
 
-    const req = { user: { _id: CITTADINO_ID, ruolo: 'cittadino' } };
+    const risposteChain = { select: jest.fn().mockResolvedValueOnce([]) };
+    mockRispostaFind.mockReturnValueOnce(risposteChain);
+
+    const req = { user: { _id: CITTADINO_ID }, query: {} };
     const res = makeRes();
-
     await getSondaggiAvaiable(req, res);
 
-    // populate deve essere stato chiamato con 'ID_domande'
     expect(mockPopulate).toHaveBeenCalledWith('ID_domande');
-
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
         message: expect.any(String),
-        sondaggi: fakeSondaggi,
+        paginazione: expect.objectContaining({ totale: 1 }),
       })
     );
   });
 
-  it('restituisce 200 con messaggio se non ci sono sondaggi disponibili', async () => {
-    mockSort.mockResolvedValue([]);
+  it('restituisce 200 se non ci sono sondaggi', async () => {
+    mockLimit.mockResolvedValueOnce([]);
+    mockSkip.mockReturnValue({ limit: mockLimit });
+    mockSort.mockReturnValue({ skip: mockSkip });
     mockPopulate.mockReturnValue({ sort: mockSort });
     mockConsultazioneFind.mockReturnValue({ populate: mockPopulate });
+    mockSondaggioCountDocuments.mockResolvedValueOnce(0);
 
-    const req = { user: { _id: CITTADINO_ID, ruolo: 'cittadino' } };
+    const risposteChain = { select: jest.fn().mockResolvedValueOnce([]) };
+    mockRispostaFind.mockReturnValueOnce(risposteChain);
+
+    const req = { user: { _id: CITTADINO_ID }, query: {} };
     const res = makeRes();
-
     await getSondaggiAvaiable(req, res);
-
     expect(res.status).toHaveBeenCalledWith(200);
   });
 
   it('restituisce 500 in caso di errore del database', async () => {
     mockConsultazioneFind.mockReturnValue({
       populate: jest.fn().mockReturnValue({
-        sort: jest.fn().mockRejectedValue(new Error('DB error')),
-      }),
+        sort: jest.fn().mockReturnValue({
+          skip: jest.fn().mockReturnValue({
+            limit: jest.fn().mockRejectedValueOnce(new Error('DB Error'))
+          })
+        })
+      })
     });
+    mockSondaggioCountDocuments.mockResolvedValueOnce(0);
 
-    const req = { user: { _id: CITTADINO_ID, ruolo: 'cittadino' } };
+    const req = { user: { _id: CITTADINO_ID }, query: {} };
     const res = makeRes();
+    await getSondaggiAvaiable(req, res);
+    expect(res.status).toHaveBeenCalledWith(500);
+  });
 
+  it('rispetta page e limit dalla query string', async () => {
+    mockLimit.mockResolvedValueOnce([]);
+    mockSkip.mockReturnValue({ limit: mockLimit });
+    mockSort.mockReturnValue({ skip: mockSkip });
+    mockPopulate.mockReturnValue({ sort: mockSort });
+    mockConsultazioneFind.mockReturnValue({ populate: mockPopulate });
+    mockSondaggioCountDocuments.mockResolvedValueOnce(25);
+
+    const risposteChain = { select: jest.fn().mockResolvedValueOnce([]) };
+    mockRispostaFind.mockReturnValueOnce(risposteChain);
+
+    const req = { user: { _id: CITTADINO_ID }, query: { page: '3', limit: '5' } };
+    const res = makeRes();
     await getSondaggiAvaiable(req, res);
 
-    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        paginazione: expect.objectContaining({ totale: 25, pagina: 3, limite: 5, pagine: 5 }),
+      })
+    );
   });
 });
 
