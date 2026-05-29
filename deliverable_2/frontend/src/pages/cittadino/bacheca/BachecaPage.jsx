@@ -39,7 +39,7 @@ export default function BachecaPage() {
                 }));
                 setIniziative(items);
                 const giaSostenute = new Set(
-                    (data.iniziative || []).filter(i => i.haSostenuto).map(i => i._id)
+                    (data.iniziative || []).filter(i => i.ha_votato).map(i => i._id)
                 );
                 setSostenute(giaSostenute);
             })
