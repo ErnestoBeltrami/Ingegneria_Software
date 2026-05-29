@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search, SlidersHorizontal } from 'lucide-react';
 import TopBarCittadino from '../../../components/TopBarCittadino';
 import IniziativaCard from './IniziativaCard';
+import { sosteniIniziativa } from '../../../services/api';
 import './BachecaPage.css';
 
 export default function BachecaPage() {
@@ -47,21 +48,22 @@ export default function BachecaPage() {
             .finally(() => setLoading(false));
     }, []);
 
-    const onSostieni = (id) => {
-        const token = localStorage.getItem('token');
-        fetch(`/iniziative/${id}/sostieni`, {
-            method: 'POST',
-            headers: { Authorization: `Bearer ${token}` },
-        }).then(r => {
-            if (r.ok) {
-                setSostenute(prev => new Set(prev).add(id));
+    const onSostieni = async (id) => {
+        setSostenute(prev => new Set(prev).add(id));
+        setIniziative(prev => prev.map(i =>
+            i.id === id ? { ...i, sostenitori: i.sostenitori + 1 } : i
+        ));
+        try {
+            await sosteniIniziativa(id);
+        } catch (err) {
+            const alreadyVoted = err.message?.toLowerCase().includes('gia votato') || err.message?.toLowerCase().includes('già votato');
+            if (!alreadyVoted) {
+                setSostenute(prev => { const s = new Set(prev); s.delete(id); return s; });
                 setIniziative(prev => prev.map(i =>
-                    i.id === id ? { ...i, sostenitori: i.sostenitori + 1 } : i
+                    i.id === id ? { ...i, sostenitori: i.sostenitori - 1 } : i
                 ));
-            } else if (r.status === 409) {
-                setSostenute(prev => new Set(prev).add(id));
             }
-        }).catch(() => {});
+        }
     };
 
     const categorie = useMemo(
