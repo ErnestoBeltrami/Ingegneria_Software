@@ -48,10 +48,7 @@ export default defineConfig({
             '/cittadino/profilo',
             '/cittadino/archivio',
           ];
-          if (frontendRoutes.some(p => req.url.startsWith(p))) {
-          if (req.url.startsWith('/cittadino/dashboard') || req.url.startsWith('/cittadino/iniziativa') || req.url.startsWith('/cittadino/profilo') || req.url.startsWith('/cittadino/archivio') || req.url.startsWith('/cittadino/votazione') || req.url.startsWith('/cittadino/sondaggio')) {
-            return req.url;
-          }
+          if (frontendRoutes.some(p => req.url.startsWith(p))) return req.url;
         },
       },
     },
