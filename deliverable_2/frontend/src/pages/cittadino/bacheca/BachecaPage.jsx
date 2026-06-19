@@ -108,7 +108,7 @@ export default function BachecaPage() {
             <div className="bac-page">
                 <header className="bac-header">
                     <div className="bac-header__left">
-                        <h1 className="bac-header__title">Bacheca iniziative 📋</h1>
+                        <h1 className="bac-header__title">Bacheca iniziative</h1>
                         <p className="bac-header__subtitle">Proponi le tue idee e sostieni quelle degli altri</p>
                     </div>
                     <button className="bac-proponi-btn" onClick={() => navigate('/cittadino/iniziativa/crea')}>
