@@ -5,7 +5,17 @@ Content-Type: application/json
 
 {
     "votazioneId" : "693417b92516b0653e1ecfae",
-    "opzioneId" : "693417b92516b0653e1ecfab"
+    "opzioniId" : ["693417b92516b0653e1ecfab"]
+}
+###
+### Voto multiplo (domanda risposta_multipla): più opzioni in opzioniId
+POST http://localhost:3000/cittadino/vote/votazione
+Authorization: Bearer {{TOKEN_CITTADINO}}
+Content-Type: application/json
+
+{
+    "votazioneId" : "693417b92516b0653e1ecfae",
+    "opzioniId" : ["693417b92516b0653e1ecfab", "693417b92516b0653e1ecfac"]
 }
 ###
 ### Sostieni iniziativa (ha_votato diventa true per questa iniziativa)

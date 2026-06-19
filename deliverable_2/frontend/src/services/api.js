@@ -91,10 +91,10 @@ export const fetchSondaggioCittadino = async (id) => {
 
 export const fetchVotazioneCittadino = (id) => apiFetch(`/votazioni/${id}`);
 
-export const submitVotazione = (votazioneId, opzioneId) =>
+export const submitVotazione = (votazioneId, opzioni) =>
     apiFetch('/cittadino/vote/votazione', {
         method: 'POST',
-        body: JSON.stringify({ votazioneId, opzioneId })
+        body: JSON.stringify({ votazioneId, opzioniId: Array.isArray(opzioni) ? opzioni : [opzioni] })
     });
 
 export const sosteniIniziativa = (iniziativaID) =>
