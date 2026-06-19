@@ -1,10 +1,16 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, SlidersHorizontal } from 'lucide-react';
+import { Search, SlidersHorizontal, Users, TrendingUp, Check, CalendarDays, X } from 'lucide-react';
 import TopBarCittadino from '../../../components/TopBarCittadino';
 import IniziativaCard from './IniziativaCard';
 import { sosteniIniziativa } from '../../../services/api';
 import './BachecaPage.css';
+
+function formatData(iso) {
+    if (!iso) return null;
+    const d = new Date(iso);
+    return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+}
 
 export default function BachecaPage() {
     const navigate = useNavigate();
@@ -16,6 +22,9 @@ export default function BachecaPage() {
     const [categoriaFiltro, setCategoriaFiltro] = useState('');
     const [pannelloAperto, setPannelloAperto] = useState(false);
     const [sostenute, setSostenute] = useState(new Set());
+    const [modalId, setModalId] = useState(null);
+
+    const modalItem = modalId ? iniziative.find(i => i.id === modalId) : null;
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -163,6 +172,7 @@ export default function BachecaPage() {
                                         iniziativa={item}
                                         giaSostenuta={sostenute.has(item.id)}
                                         onSostieni={onSostieni}
+                                        onApri={setModalId}
                                     />
                                 ))}
                             </div>
@@ -170,6 +180,53 @@ export default function BachecaPage() {
                     </>
                 )}
             </div>
+
+            {modalItem && (
+                <div className="bac-modal-overlay" onClick={() => setModalId(null)}>
+                    <div className="bac-modal" onClick={e => e.stopPropagation()}>
+                        <div className="bac-modal__header">
+                            <span className="bac-badge">{modalItem.categoria}</span>
+                            <button
+                                className="bac-modal__close"
+                                onClick={() => setModalId(null)}
+                                aria-label="Chiudi"
+                            >
+                                <X size={18} />
+                            </button>
+                        </div>
+
+                        <h2 className="bac-modal__title">{modalItem.titolo}</h2>
+                        <p className="bac-modal__meta">
+                            Proposto da <strong>{modalItem.propostoDa}</strong>
+                            {modalItem.data && (
+                                <span className="bac-modal__data">
+                                    <CalendarDays size={13} />
+                                    {formatData(modalItem.data)}
+                                </span>
+                            )}
+                        </p>
+
+                        <p className="bac-modal__desc">{modalItem.descrizione}</p>
+
+                        <div className="bac-card__sostenitori">
+                            <Users size={16} />
+                            Sostenitori: <strong>{modalItem.sostenitori}</strong>
+                        </div>
+
+                        <div className="bac-modal__actions">
+                            {sostenute.has(modalItem.id) ? (
+                                <button className="bac-sostieni-btn bac-sostieni-btn--sostenuto" disabled>
+                                    Sostenuto <Check size={14} />
+                                </button>
+                            ) : (
+                                <button className="bac-sostieni-btn" onClick={() => onSostieni(modalItem.id)}>
+                                    Sostieni <TrendingUp size={14} />
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -1,3 +1,4 @@
+import { useRef, useState, useLayoutEffect } from 'react';
 import { Users, TrendingUp, Check, CalendarDays } from 'lucide-react';
 
 function formatData(iso) {
@@ -6,8 +7,16 @@ function formatData(iso) {
     return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
 }
 
-export default function IniziativaCard({ iniziativa, giaSostenuta, onSostieni }) {
+export default function IniziativaCard({ iniziativa, giaSostenuta, onSostieni, onApri }) {
     const { id, categoria, titolo, descrizione, sostenitori, propostoDa, data } = iniziativa;
+
+    const descRef = useRef(null);
+    const [troncata, setTroncata] = useState(false);
+
+    useLayoutEffect(() => {
+        const el = descRef.current;
+        if (el) setTroncata(el.scrollHeight > el.clientHeight + 1);
+    }, [descrizione]);
 
     return (
         <div className="bac-card">
@@ -20,8 +29,15 @@ export default function IniziativaCard({ iniziativa, giaSostenuta, onSostieni })
                     </span>
                 )}
             </div>
-            <h2 className="bac-card__title">{titolo}</h2>
-            <p className="bac-card__desc">{descrizione}</p>
+            <h2 className="bac-card__title bac-card__title--clickable" onClick={() => onApri(id)}>
+                {titolo}
+            </h2>
+            <p ref={descRef} className="bac-card__desc">{descrizione}</p>
+            {troncata && (
+                <button className="bac-card__leggi" onClick={() => onApri(id)}>
+                    Leggi tutto
+                </button>
+            )}
             <div className="bac-card__sostenitori">
                 <Users size={16} />
                 Sostenitori: <strong>{sostenitori}</strong>
