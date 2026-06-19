@@ -1,0 +1,4279 @@
+openapi: 3.0.0
+info:
+  title: IoSonoTrento API
+  version: 1.0.0
+paths:
+  /categorie:
+    post:
+      summary: Crea una nuova categoria per iniziativa
+      description: Permette a un operatore autenticato di creare una nuova categoria per le iniziative
+      tags:
+        - Categorie
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nome
+              properties:
+                nome:
+                  type: string
+                  description: Nome della categoria
+                  example: Ambiente
+      responses:
+        '201':
+          description: Categoria creata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Categoria creata con successo
+                  categoria:
+                    $ref: '#/components/schemas/Categoria'
+              examples:
+                success:
+                  value:
+                    message: Categoria creata con successo
+                    categoria:
+                      _id: 507f1f77bcf86cd799439011
+                      nome: Ambiente
+                      createdAt: '2025-12-05T16:00:00.000Z'
+                      updatedAt: '2025-12-05T16:00:00.000Z'
+        '400':
+          description: Dati mancanti o non validi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                missingNome:
+                  value:
+                    message: Nome categoria obbligatorio
+        '401':
+          description: Non autenticato - sessione non valida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Non autenticato
+        '403':
+          description: Accesso negato - ruolo non autorizzato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Accesso negato
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante la creazione della categoria
+                error: Duplicate key error
+    get:
+      summary: Ottieni tutte le categorie
+      description: Restituisce la lista di tutte le categorie
+      tags:
+        - Categorie
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Categorie recuperate con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Categorie recuperate con successo.
+                  categorie:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Categoria'
+              examples:
+                success:
+                  value:
+                    message: Categorie recuperate con successo.
+                    categorie:
+                      - _id: 507f1f77bcf86cd799439011
+                        nome: Ambiente
+                        createdAt: '2025-12-05T16:00:00.000Z'
+                        updatedAt: '2025-12-05T16:00:00.000Z'
+                empty:
+                  value:
+                    message: Nessuna categoria trovata.
+                    categorie: []
+        '401':
+          description: Non autenticato - sessione non valida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Non autenticato
+        '403':
+          description: Accesso negato - ruolo non autorizzato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Accesso negato
+        '500':
+          description: Errore interno del server durante la ricerca delle categorie.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante la ricerca delle categorie.
+                error: Database connection error
+  /categorie/{id}:
+    get:
+      summary: Ottieni dettagli categoria
+      description: Restituisce i dettagli di una categoria specifica
+      tags:
+        - Categorie
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID della categoria
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          description: Categoria recuperata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Categoria recuperata con successo.
+                  categoria:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: 507f1f77bcf86cd799439011
+                      nome:
+                        type: string
+                        example: Ambiente
+                    $ref: '#/components/schemas/Categoria'
+              examples:
+                success:
+                  value:
+                    message: Categoria recuperata con successo.
+                    categoria:
+                      _id: 507f1f77bcf86cd799439011
+                      nome: Ambiente
+                      createdAt: '2025-12-05T16:00:00.000Z'
+                      updatedAt: '2025-12-05T16:00:00.000Z'
+        '400':
+          description: ID non valido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: ID non valido.
+        '401':
+          description: Non autenticato - sessione non valida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Non autenticato
+        '403':
+          description: Accesso negato - ruolo non autorizzato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Accesso negato
+        '404':
+          description: Categoria non trovata con l'ID specificato.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Categoria non trovata con l'ID specificato.
+        '500':
+          description: Errore interno del server durante la ricerca della categoria con l'ID specificato.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante la ricerca della categoria.
+                error: Database connection error
+    patch:
+      summary: Aggiorna una categoria
+      description: Aggiorna una categoria specifica
+      tags:
+        - Categorie
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID della categoria
+          example: 507f1f77bcf86cd799439011
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - newNome
+              properties:
+                newNome:
+                  type: string
+                  description: Nuovo nome della categoria
+                  example: Ambiente
+      responses:
+        '200':
+          description: Categoria aggiornata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Categoria aggiornata con successo.
+                  categoria:
+                    $ref: '#/components/schemas/Categoria'
+              examples:
+                success:
+                  value:
+                    message: Categoria aggiornata con successo.
+                    categoria:
+                      _id: 507f1f77bcf86cd799439011
+                      nome: Ambiente
+                      createdAt: '2025-12-05T16:00:00.000Z'
+                      updatedAt: '2025-12-05T16:00:00.000Z'
+        '400':
+          description: ID non valido o dati mancanti
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidId:
+                  value:
+                    message: ID non valido.
+                missingFields:
+                  value:
+                    message: ID e nuovo nome categoria obbligatori.
+        '401':
+          description: Non autenticato - sessione non valida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Non autenticato
+        '403':
+          description: Accesso negato - ruolo non autorizzato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Accesso negato
+        '404':
+          description: Categoria non trovata con l'ID specificato.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Categoria non trovata con l'ID specificato.
+        '500':
+          description: Errore interno del server durante l'aggiornamento della categoria.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante l'aggiornamento della categoria.
+                error: Database connection error
+    delete:
+      summary: Elimina una categoria
+      description: Elimina una categoria specifica
+      tags:
+        - Categorie
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID della categoria
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          description: Categoria eliminata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Categoria eliminata con successo.
+        '400':
+          description: ID non valido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: ID non valido.
+        '401':
+          description: Non autenticato - sessione non valida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Non autenticato
+        '403':
+          description: Accesso negato - ruolo non autorizzato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Accesso negato
+        '404':
+          description: Categoria non trovata con l'ID specificato.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Categoria non trovata con l'ID specificato.
+        '500':
+          description: Errore interno del server durante l'eliminazione della categoria con l'ID specificato.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante l'eliminazione della categoria.
+                error: Database connection error
+  /auth/google:
+    get:
+      summary: Avvia autenticazione Google OAuth
+      description: Reindirizza l'utente alla pagina di autenticazione Google
+      tags:
+        - Autenticazione
+      responses:
+        '302':
+          description: Redirect a Google OAuth
+  /auth/google/callback:
+    get:
+      summary: Callback OAuth Google
+      description: >-
+        Gestisce il callback dopo l'autenticazione Google. Restituisce un token JWT se il profilo è completo,
+        altrimenti richiede il completamento del profilo.
+      tags:
+        - Autenticazione
+      responses:
+        '200':
+          description: Login riuscito - profilo completo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Login riuscito!
+                  token:
+                    type: string
+                    description: JWT token per autenticazione
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  status:
+                    type: string
+                    enum:
+                      - COMPLETE
+                    example: COMPLETE
+        '202':
+          description: Profilo incompleto - richiede completamento
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Profilo incompleto. Completamento necessario.
+                  status:
+                    type: string
+                    enum:
+                      - INCOMPLETE_PROFILE
+                    example: INCOMPLETE_PROFILE
+                  cittadinoId:
+                    type: string
+                    example: 507f1f77bcf86cd799439011
+                  email:
+                    type: string
+                    format: email
+                    example: mario.rossi@example.com
+  /auth/complete-profile:
+    post:
+      summary: Completa il profilo del cittadino
+      description: Permette di completare il profilo di un cittadino dopo il primo login con Google OAuth
+      tags:
+        - Autenticazione
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompleteProfileInput'
+      responses:
+        '200':
+          description: Profilo completato con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Profilo completato, accesso eseguito!
+                  token:
+                    type: string
+                    description: JWT token per autenticazione
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        '400':
+          description: Dati mancanti o non validi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Tutti i campi del profilo sono obbligatori.
+        '404':
+          description: Cittadino non trovato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Cittadino non trovato.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Errore di validazione o server.
+                  details:
+                    type: string
+                    example: Validation error details
+  /cittadino/logout:
+    post:
+      summary: Logout cittadino
+      description: >-
+        Effettua il logout del cittadino autenticato impostando il flag loggedIn a false. Il token JWT rimane
+        tecnicamente valido fino alla sua scadenza naturale — il client deve eliminarlo.
+      tags:
+        - Cittadino
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Logout effettuato con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Logout effettuato con successo.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante il logout.
+                error: Database error
+  /cittadino/profile:
+    get:
+      summary: Ottieni i dati del profilo del cittadino
+      description: Restituisce i dati pubblici del cittadino autenticato
+      tags:
+        - Cittadino
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Dati cittadino recuperati con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Dati cittadino recuperati con successo
+                  data:
+                    $ref: '#/components/schemas/Cittadino'
+        '404':
+          description: Utente non trovato o non identificato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                notIdentified:
+                  value:
+                    message: Utente non identificato dal sistema (Internal Error)
+                notFound:
+                  value:
+                    message: Risorsa utente non trovata nel database
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /cittadino/vote/votazione:
+    post:
+      summary: Rispondi a una votazione
+      description: >-
+        Permette a un cittadino autenticato di votare per una votazione. Se la domanda è a risposta multipla,
+        `opzioniId` può contenere più opzioni; se è a risposta singola deve contenerne esattamente una.
+      tags:
+        - Cittadino
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoteVotazioneInput'
+      responses:
+        '200':
+          description: Votazione avvenuta con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Votazione avvenuta con successo.
+        '400':
+          description: Dati mancanti o non validi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                missingOption:
+                  value:
+                    message: Scegliere almeno un'opzione.
+                singleRequired:
+                  value:
+                    message: La votazione richiede esattamente una risposta.
+                invalidOption:
+                  value:
+                    message: 'Le risposte contengono opzioni non valide: 507f1f77bcf86cd799439099'
+        '403':
+          description: Voto non consentito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                notActive:
+                  value:
+                    message: La votazione non è attiva.
+                alreadyVoted:
+                  value:
+                    message: L'utente ha gia votato questa Votazione.
+        '404':
+          description: Cittadino non identificato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Cittadino non identificato dal sistema (Internal Error)
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /cittadino/vote/iniziativa:
+    post:
+      summary: Vota un'iniziativa
+      description: Permette a un cittadino autenticato di votare per un'iniziativa
+      tags:
+        - Cittadino
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoteIniziativaInput'
+      responses:
+        '200':
+          description: Votazione avvenuta con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Votazione avvenuta con successo.
+        '403':
+          description: L'utente ha già votato questa iniziativa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Hai gia votato per questa iniziativa
+        '404':
+          description: Iniziativa non trovata o cittadino non identificato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                iniziativaNotFound:
+                  value:
+                    message: Iniziativa non trovata
+                cittadinoNotIdentified:
+                  value:
+                    message: Cittadino non identificato dal sistema (Internal Error)
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /cittadino/vote/iniziativa/{iniziativaId}:
+    delete:
+      summary: Rimuovi voto da un'iniziativa
+      description: >-
+        Permette a un cittadino autenticato di ritirare il proprio voto da un'iniziativa precedentemente
+        votata.
+      tags:
+        - Cittadino
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: iniziativaId
+          in: path
+          required: true
+          description: ID dell'iniziativa da cui rimuovere il voto
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          description: Voto rimosso con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Voto rimosso con successo.
+        '404':
+          description: Voto non trovato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Voto non trovato: non hai votato per questa iniziativa.'
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante la rimozione del voto.
+                error: Database error
+  /cittadino/vote/sondaggio:
+    post:
+      summary: Rispondi a un sondaggio
+      description: >-
+        Permette a un cittadino autenticato di rispondere a tutte le domande di un sondaggio attivo. L'utente
+        può rispondere una sola volta per sondaggio. Le risposte devono includere tutte le domande del
+        sondaggio e rispettare i vincoli (risposta singola o multipla).
+      tags:
+        - Cittadino
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - sondaggioId
+                - dettagliRisposte
+              properties:
+                sondaggioId:
+                  type: string
+                  description: ID del sondaggio a cui rispondere
+                  example: 507f1f77bcf86cd799439011
+                dettagliRisposte:
+                  type: array
+                  description: Array contenente le risposte per ogni domanda del sondaggio
+                  items:
+                    type: object
+                    required:
+                      - ID_domanda
+                      - opzioniScelte
+                    properties:
+                      ID_domanda:
+                        type: string
+                        description: ID della domanda
+                        example: 507f1f77bcf86cd799439012
+                      opzioniScelte:
+                        type: array
+                        description: >-
+                          Array di ID delle opzioni scelte (1 elemento per risposta singola, 1+ per risposta
+                          multipla)
+                        items:
+                          type: string
+                        example:
+                          - 507f1f77bcf86cd799439013
+            examples:
+              rispostaSingola:
+                summary: Esempio con risposte singole
+                value:
+                  sondaggioId: 507f1f77bcf86cd799439011
+                  dettagliRisposte:
+                    - ID_domanda: 507f1f77bcf86cd799439012
+                      opzioniScelte:
+                        - 507f1f77bcf86cd799439013
+                    - ID_domanda: 507f1f77bcf86cd799439014
+                      opzioniScelte:
+                        - 507f1f77bcf86cd799439015
+              rispostaMultipla:
+                summary: Esempio con risposta multipla
+                value:
+                  sondaggioId: 507f1f77bcf86cd799439011
+                  dettagliRisposte:
+                    - ID_domanda: 507f1f77bcf86cd799439012
+                      opzioniScelte:
+                        - 507f1f77bcf86cd799439013
+                    - ID_domanda: 507f1f77bcf86cd799439016
+                      opzioniScelte:
+                        - 507f1f77bcf86cd799439017
+                        - 507f1f77bcf86cd799439018
+                        - 507f1f77bcf86cd799439019
+      responses:
+        '200':
+          description: Risposta al sondaggio avvenuta con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Risposta sondaggio avvenuta con successo
+        '400':
+          description: Dati mancanti o non validi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                missingData:
+                  value:
+                    message: Dati di risposta mancanti o non validi.
+                wrongNumberOfAnswers:
+                  value:
+                    message: Il numero di risposte fornite non corrisponde al numero di domande nel sondaggio.
+                questionNotInSurvey:
+                  value:
+                    message: Domanda con ID 507f1f77bcf86cd799439012 non presente nel sondaggio.
+                wrongSingleAnswer:
+                  value:
+                    message: La domanda 507f1f77bcf86cd799439012 richiede esattamente una risposta.
+                invalidOptions:
+                  value:
+                    message: >-
+                      Le risposte per la domanda 507f1f77bcf86cd799439012 contengono opzioni non valide:
+                      507f1f77bcf86cd799439099
+        '401':
+          description: Cittadino non autenticato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Cittadino non identificato o non autenticato.
+        '403':
+          description: Sondaggio già votato o non disponibile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                alreadyVoted:
+                  value:
+                    message: L'utente ha già votato questo sondaggio.
+                surveyNotActive:
+                  value:
+                    message: Il sondaggio selezionato non è valido o non è attivo.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante la votazione.
+                error: Database connection error
+  /iniziative:
+    post:
+      summary: Crea una nuova iniziativa
+      description: Permette a un cittadino autenticato di creare una nuova iniziativa
+      tags:
+        - Iniziative
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateIniziativaInput'
+            examples:
+              puliziaParchi:
+                summary: Iniziativa per pulizia parchi
+                value:
+                  ID_categoria: 507f1f77bcf86cd799439012
+                  titolo: Pulizia parchi pubblici
+                  ID_cittadino: 507f1f77bcf86cd799439013
+                  descrizione: Proposta per organizzare giornate di pulizia nei parchi pubblici della città
+      responses:
+        '201':
+          description: Iniziativa creata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Iniziativa creata con successo.
+                  iniziativa:
+                    $ref: '#/components/schemas/Iniziativa'
+              examples:
+                success:
+                  value:
+                    message: Iniziativa creata con successo.
+                    iniziativa:
+                      _id: 507f1f77bcf86cd799439011
+                      ID_categoria: 507f1f77bcf86cd799439012
+                      titolo: Pulizia parchi pubblici
+                      ID_cittadino: 507f1f77bcf86cd799439013
+                      descrizione: Proposta per organizzare giornate di pulizia nei parchi pubblici della città
+                      createdAt: '2025-12-05T16:00:00.000Z'
+                      updatedAt: '2025-12-05T16:00:00.000Z'
+        '400':
+          description: Dati mancanti o non validi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                missingData:
+                  value:
+                    message: Dati mancanti per la creazione dell'iniziativa.
+                invalidCategoryId:
+                  value:
+                    message: ID categoria non valido.
+        '401':
+          description: Non autenticato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Cittadino non autenticato
+        '404':
+          description: Categoria non trovata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Categoria iniziativa non trovata.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante la creazione dell'iniziativa.
+                error: Duplicate key error
+    get:
+      summary: Ottieni tutte le iniziative
+      description: >-
+        Restituisce la lista paginata delle iniziative ordinate per data di creazione e numero di voti.
+        Supporta paginazione tramite ?page= e ?limit=. Include dettagli della categoria e del cittadino
+        creatore. Per i cittadini include il campo `ha_votato` che indica se l'utente ha già sostenuto
+        l'iniziativa.
+      tags:
+        - Iniziative
+      security:
+        - sessionAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Numero di pagina (default 1)
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+          description: Risultati per pagina (max 100, default 10)
+      responses:
+        '200':
+          description: Lista delle iniziative recuperata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Iniziative trovate:'
+                  iniziative:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/IniziativaWithDetails'
+                  paginazione:
+                    type: object
+                    properties:
+                      totale:
+                        type: integer
+                        example: 35
+                      pagina:
+                        type: integer
+                        example: 1
+                      limite:
+                        type: integer
+                        example: 10
+                      pagine:
+                        type: integer
+                        example: 4
+              examples:
+                withIniziative:
+                  value:
+                    message: 'Iniziative trovate:'
+                    iniziative:
+                      - _id: 507f1f77bcf86cd799439011
+                        ID_categoria: 507f1f77bcf86cd799439012
+                        categoria: Ambiente
+                        titolo: Pulizia parchi pubblici
+                        nome_cittadino: Mario
+                        cognome_cittadino: Rossi
+                        numero_voti: 42
+                        ha_votato: false
+                        createdAt: '2025-12-05T16:00:00.000Z'
+                empty:
+                  value:
+                    message: Nessuna iniziativa disponibile.
+                    iniziative: []
+        '401':
+          description: Non autenticato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore nell'autenticazione
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante il recupero delle iniziative.
+                error: Database connection error
+  /iniziative/ricerca:
+    post:
+      summary: Ricerca iniziative
+      description: >-
+        Ricerca iniziative tramite filtri e parole chiave. Per i cittadini include il campo `ha_votato` che
+        indica se l'utente ha già sostenuto ciascuna iniziativa.
+      tags:
+        - Iniziative
+      security:
+        - sessionAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Numero di pagina (default 1)
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+          description: Risultati per pagina (max 100, default 10)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RicercaIniziativaInput'
+            examples:
+              ricercaIniziativa:
+                summary: Ricerca iniziative
+                value:
+                  parola_chiave: giardino
+                  filtri:
+                    categorie_id:
+                      - 507f1f77bcf86cd799439012
+                    ordina_per: data
+                    ordine: -1
+      responses:
+        '200':
+          description: Lista delle iniziative recuperata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Iniziative trovate:'
+                  iniziative:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/IniziativaWithDetails'
+                  paginazione:
+                    type: object
+                    properties:
+                      totale:
+                        type: integer
+                        example: 35
+                      pagina:
+                        type: integer
+                        example: 1
+                      limite:
+                        type: integer
+                        example: 10
+                      pagine:
+                        type: integer
+                        example: 4
+              examples:
+                withIniziative:
+                  value:
+                    message: 'Iniziative trovate:'
+                    iniziative:
+                      - _id: 507f1f77bcf86cd799439011
+                        ID_categoria: 507f1f77bcf86cd799439012
+                        categoria: Ambiente
+                        titolo: Pulizia parchi pubblici
+                        nome_cittadino: Mario
+                        cognome_cittadino: Rossi
+                        numero_voti: 42
+                        ha_votato: true
+                        createdAt: '2025-12-05T16:00:00.000Z'
+                empty:
+                  value:
+                    message: Nessuna iniziativa disponibile con i criteri specificati.
+                    iniziative: []
+        '401':
+          description: Non autenticato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore nell'autenticazione
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante il recupero delle iniziative.
+                error: Database connection error
+  /iniziative/{id}:
+    get:
+      summary: Ottieni dettagli iniziativa
+      description: >-
+        Restituisce i dettagli di una iniziativa specifica, arricchiti tramite aggregation con il nome della
+        categoria, il nome e cognome del cittadino proponente e il numero di voti (sostenitori). Per i
+        cittadini include il campo `ha_votato` che indica se l'utente ha già sostenuto l'iniziativa.
+      tags:
+        - Iniziative
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID della iniziativa
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          description: Iniziativa recuperata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Iniziativa recuperata con successo.
+                  iniziativa:
+                    $ref: '#/components/schemas/Iniziativa'
+              examples:
+                success:
+                  value:
+                    message: Iniziativa recuperata con successo.
+                    iniziativa:
+                      _id: 507f1f77bcf86cd799439011
+                      ID_categoria: 507f1f77bcf86cd799439012
+                      categoria: Ambiente
+                      titolo: Pulizia parchi pubblici
+                      descrizione: Proposta per organizzare giornate di pulizia nei parchi pubblici della città
+                      stato: approvata
+                      nome_cittadino: Mario
+                      cognome_cittadino: Rossi
+                      numero_voti: 42
+                      ha_votato: false
+                      createdAt: '2025-12-05T16:00:00.000Z'
+        '400':
+          description: ID non valido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: ID non valido.
+        '401':
+          description: Non autenticato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore nell'autenticazione
+        '404':
+          description: Iniziativa non trovata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Iniziativa non trovata.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante il recupero dell'iniziativa con l'ID specificato.
+                error: Database connection error
+    patch:
+      summary: Aggiorna iniziativa
+      description: Aggiorna i dettagli di una iniziativa specifica
+      tags:
+        - Iniziative
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID della iniziativa
+          example: 507f1f77bcf86cd799439011
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateIniziativaInput'
+            examples:
+              updateIniziativa:
+                summary: Aggiorna iniziativa
+                value:
+                  titolo: Pulizia parchi pubblici
+                  descrizione: Proposta per organizzare giornate di pulizia nei parchi pubblici della città
+                  ID_categoria: 507f1f77bcf86cd799439012
+      responses:
+        '200':
+          description: Iniziativa aggiornata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Iniziativa aggiornata con successo.
+                  iniziativa:
+                    $ref: '#/components/schemas/Iniziativa'
+              examples:
+                success:
+                  value:
+                    message: Iniziativa aggiornata con successo.
+                    iniziativa:
+                      _id: 507f1f77bcf86cd799439011
+                      ID_categoria: 507f1f77bcf86cd799439012
+                      titolo: Pulizia parchi pubblici
+                      ID_cittadino: 507f1f77bcf86cd799439013
+                      descrizione: Proposta per organizzare giornate di pulizia nei parchi pubblici della città
+                      createdAt: '2025-12-05T16:00:00.000Z'
+                      updatedAt: '2025-12-05T16:00:00.000Z'
+        '400':
+          description: ID non valido o dati mancanti
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidId:
+                  value:
+                    message: ID non valido.
+                missingFields:
+                  value:
+                    message: Almeno un campo deve essere aggiornato.
+        '401':
+          description: Non autenticato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore nell'autenticazione
+        '403':
+          description: Accesso negato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Accesso negato: non sei il creatore dell''iniziativa.'
+        '404':
+          description: Iniziativa non trovata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Iniziativa non trovata.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante l'aggiornamento dell'iniziativa con l'ID specificato.
+                error: Database connection error
+    delete:
+      summary: Elimina iniziativa
+      description: Elimina una iniziativa specifica
+      tags:
+        - Iniziative
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID della iniziativa
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          description: Iniziativa eliminata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Iniziativa eliminata con successo.
+        '400':
+          description: ID non valido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: ID non valido.
+        '401':
+          description: Non autenticato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore nell'autenticazione
+        '403':
+          description: Accesso negato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Accesso negato: non sei il creatore dell''iniziativa.'
+        '404':
+          description: Iniziativa non trovata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Iniziativa non trovata.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante l'eliminazione dell'iniziativa con l'ID specificato.
+                error: Database connection error
+  /iniziative/{id}/modera:
+    patch:
+      summary: Modera un'iniziativa
+      description: >-
+        Permette a un operatore autenticato di approvare o rifiutare un'iniziativa in stato "in_attesa". Le
+        iniziative approvate diventano visibili ai cittadini; quelle rifiutate rimangono visibili solo agli
+        operatori. È possibile fornire una motivazione opzionale.
+      tags:
+        - Iniziative
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID dell'iniziativa da moderare
+          example: 507f1f77bcf86cd799439011
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - stato
+              properties:
+                stato:
+                  type: string
+                  enum:
+                    - approvata
+                    - rifiutata
+                  description: Nuovo stato dell'iniziativa
+                motivazione:
+                  type: string
+                  description: Motivazione opzionale della decisione
+                  example: L'iniziativa rispetta tutte le linee guida comunali.
+            examples:
+              approva:
+                summary: Approva iniziativa
+                value:
+                  stato: approvata
+                  motivazione: L'iniziativa rispetta tutte le linee guida comunali.
+              rifiuta:
+                summary: Rifiuta iniziativa
+                value:
+                  stato: rifiutata
+                  motivazione: Il contenuto non è pertinente all'ambito comunale.
+      responses:
+        '200':
+          description: Iniziativa moderata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Iniziativa approvata con successo.
+                  iniziativa:
+                    $ref: '#/components/schemas/Iniziativa'
+        '400':
+          description: ID non valido, stato non valido o iniziativa già moderata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidId:
+                  value:
+                    message: ID non valido.
+                invalidStato:
+                  value:
+                    message: 'Stato non valido. Valori ammessi: approvata, rifiutata.'
+                alreadyModerated:
+                  value:
+                    message: Solo le iniziative in stato "in_attesa" possono essere moderate.
+        '401':
+          description: Non autenticato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore nell'autenticazione
+        '403':
+          description: Accesso negato — solo operatori possono moderare
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Accesso negato. Ruolo non sufficiente
+        '404':
+          description: Iniziativa non trovata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Iniziativa non trovata.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante la moderazione dell'iniziativa.
+                error: Database error
+  /notifiche:
+    get:
+      summary: Recupera le notifiche del cittadino autenticato
+      description: Restituisce tutte le notifiche del cittadino in sessione, ordinate dalla più recente
+      tags:
+        - Notifiche
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Lista notifiche recuperata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notifiche:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Notifica'
+              examples:
+                success:
+                  value:
+                    notifiche:
+                      - _id: 507f1f77bcf86cd799439011
+                        ID_destinatario: 507f1f77bcf86cd799439013
+                        tipo: iniziativa_approvata
+                        messaggio: La tua iniziativa "Pulizia parchi" è stata approvata e pubblicata.
+                        ID_iniziativa: 507f1f77bcf86cd799439012
+                        letta: false
+                        createdAt: '2025-12-05T16:00:00.000Z'
+                        updatedAt: '2025-12-05T16:00:00.000Z'
+        '401':
+          description: Non autenticato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /notifiche/leggi-tutte:
+    patch:
+      summary: Segna tutte le notifiche come lette
+      description: Imposta letta=true su tutte le notifiche non lette del cittadino autenticato
+      tags:
+        - Notifiche
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Tutte le notifiche segnate come lette
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Tutte le notifiche segnate come lette.
+        '401':
+          description: Non autenticato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /notifiche/{id}/letta:
+    patch:
+      summary: Segna una notifica come letta
+      description: Imposta letta=true sulla notifica specificata. Solo il destinatario può segnare la propria notifica.
+      tags:
+        - Notifiche
+      security:
+        - sessionAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID della notifica da segnare come letta
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          description: Notifica segnata come letta
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Notifica segnata come letta.
+                  notifica:
+                    $ref: '#/components/schemas/Notifica'
+        '401':
+          description: Non autenticato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Accesso negato (notifica non appartiene al cittadino)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                forbidden:
+                  value:
+                    message: Accesso negato.
+        '404':
+          description: Notifica non trovata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                notFound:
+                  value:
+                    message: Notifica non trovata.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /operatore/login:
+    post:
+      summary: Login operatore
+      description: Autentica un operatore con username e password. Restituisce un token JWT valido per 1 giorno.
+      tags:
+        - Operatore
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginOperatoreInput'
+            examples:
+              admin:
+                summary: Login admin
+                value:
+                  username: admin
+                  password_inserita: password123
+      responses:
+        '200':
+          description: Login riuscito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Login operatore riuscito
+                  token:
+                    type: string
+                    description: JWT token per autenticazione (valido 1 giorno)
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  operatore:
+                    $ref: '#/components/schemas/Operatore'
+              examples:
+                success:
+                  value:
+                    message: Login operatore riuscito
+                    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                    operatore:
+                      _id: 507f1f77bcf86cd799439011
+                      username: admin
+                      nome: Mario
+                      cognome: Rossi
+                      isRoot: true
+        '401':
+          description: Credenziali non valide
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Credenziali non valide
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Internal server error
+                error: Database connection error
+  /operatore/register:
+    post:
+      summary: Crea un nuovo operatore
+      description: >-
+        Permette a un operatore root di creare un nuovo operatore. Solo gli operatori root possono eseguire
+        questa operazione.
+      tags:
+        - Operatore
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOperatoreInput'
+            examples:
+              newOperatore:
+                summary: Nuovo operatore
+                value:
+                  username: operatore1
+                  password: password123
+                  nome: Luigi
+                  cognome: Verdi
+      responses:
+        '201':
+          description: Operatore creato con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Operatore creato con successo.
+                  operatore:
+                    $ref: '#/components/schemas/OperatorePublic'
+              examples:
+                success:
+                  value:
+                    message: Operatore creato con successo.
+                    operatore:
+                      id: 507f1f77bcf86cd799439011
+                      username: operatore1
+                      nome: Luigi
+                      cognome: Verdi
+        '400':
+          description: Dati mancanti
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: username, password, nome e cognome sono obbligatori.
+        '403':
+          description: Solo root può creare operatori
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Solo l'utente root può creare nuovi operatori.
+        '409':
+          description: Username già in uso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Username già in uso.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante la creazione dell'operatore.
+                error: Validation error
+  /operatore/profile:
+    get:
+      summary: Ottieni i dati del profilo dell'operatore
+      description: Restituisce i dati pubblici dell'operatore autenticato
+      tags:
+        - Operatore
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Dati operatore recuperati con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Operatore trovato con successo
+                  data:
+                    $ref: '#/components/schemas/OperatorePublic'
+              examples:
+                success:
+                  value:
+                    message: Operatore trovato con successo
+                    data:
+                      id: 507f1f77bcf86cd799439011
+                      username: admin
+                      nome: Mario
+                      cognome: Rossi
+        '404':
+          description: Operatore non trovato o non identificato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                notIdentified:
+                  value:
+                    message: Utente non identificato nel sistema.
+                notFound:
+                  value:
+                    message: Operatore non trovato nel database
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante il recupero dei dati.
+                error: Database error
+  /operatore/me/password:
+    patch:
+      summary: Cambia la password dell'operatore
+      description: >-
+        Permette a un operatore autenticato di cambiare la propria password. La nuova password deve essere di
+        almeno 8 caratteri e contenere almeno una maiuscola, una minuscola, un numero e un carattere speciale.
+      tags:
+        - Operatore
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - vecchia_password
+                - nuova_password
+              properties:
+                vecchia_password:
+                  type: string
+                  description: Password attuale dell'operatore
+                  example: Vecchia@123
+                nuova_password:
+                  type: string
+                  description: >-
+                    Nuova password (min 8 caratteri, almeno 1 maiuscola, 1 minuscola, 1 numero, 1 carattere
+                    speciale)
+                  example: Nuova@456
+      responses:
+        '200':
+          description: Password aggiornata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Password aggiornata con successo.
+        '400':
+          description: Dati mancanti o password non valida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                missingFields:
+                  value:
+                    message: Vecchia password e nuova password sono obbligatorie.
+                tooShort:
+                  value:
+                    message: La nuova password deve essere di almeno 8 caratteri.
+                noUppercase:
+                  value:
+                    message: La nuova password deve contenere almeno una lettera maiuscola.
+                noLowercase:
+                  value:
+                    message: La nuova password deve contenere almeno una lettera minuscola.
+                noNumber:
+                  value:
+                    message: La nuova password deve contenere almeno un numero.
+                noSpecial:
+                  value:
+                    message: La nuova password deve contenere almeno un carattere speciale.
+        '401':
+          description: Vecchia password non corretta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Vecchia password non corretta.
+        '404':
+          description: Operatore non trovato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Operatore non trovato.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante il cambio password.
+                error: Database error
+  /operatore/{operatoreId}/promote:
+    patch:
+      summary: Promuovi un operatore a root
+      description: >-
+        Permette a un operatore root di promuovere un altro operatore a root. Solo gli operatori root possono
+        eseguire questa operazione.
+      tags:
+        - Operatore
+      security:
+        - sessionAuth: []
+      parameters:
+        - in: path
+          name: operatoreId
+          required: true
+          schema:
+            type: string
+          description: ID dell'operatore da promuovere
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          description: Operatore promosso a root con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Operatore promosso a root con successo.
+                  operatore:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: 507f1f77bcf86cd799439011
+                      username:
+                        type: string
+                        example: operatore1
+                      isRoot:
+                        type: boolean
+                        example: true
+              examples:
+                success:
+                  value:
+                    message: Operatore promosso a root con successo.
+                    operatore:
+                      id: 507f1f77bcf86cd799439011
+                      username: operatore1
+                      isRoot: true
+        '400':
+          description: Operatore già root
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Questo operatore è già root.
+        '403':
+          description: Solo root può promuovere operatori
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Solo l'utente root può promuovere operatori.
+        '404':
+          description: Operatore non trovato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Operatore non trovato.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server.
+                error: Database error
+  /sondaggi:
+    post:
+      summary: Crea un nuovo sondaggio
+      description: >-
+        Permette a un operatore autenticato di creare un nuovo sondaggio con multiple domande. Crea
+        automaticamente tutte le domande associate e il sondaggio. Se la creazione fallisce, elimina
+        automaticamente le risorse create (cleanup).
+      tags:
+        - Sondaggi
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSondaggioInput'
+            example:
+              titolo: Sondaggio sulla qualità dei servizi
+              descrizione: Sondaggio per valutare la soddisfazione dei cittadini sui servizi pubblici
+              data_inizio: '2025-12-10T00:00:00.000Z'
+              data_fine: '2025-12-20T00:00:00.000Z'
+              data_discussione: '2025-12-05T00:00:00.000Z'
+              domande:
+                - titolo: Come valuti la qualità del servizio?
+                  tipo: risposta_singola
+                  opzioni:
+                    - testo: Eccellente
+                    - testo: Buono
+                    - testo: Sufficiente
+                    - testo: Scarso
+                - titolo: Quali servizi utilizzi più spesso?
+                  tipo: risposta_multipla
+                  opzioni:
+                    - testo: Servizi sanitari
+                    - testo: Servizi educativi
+                    - testo: Servizi di trasporto
+                    - testo: Servizi amministrativi
+      responses:
+        '201':
+          description: Sondaggio creato con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Creazione sondaggio e domande avvenuta con successo.
+                  sondaggioId:
+                    type: string
+                    description: ID del sondaggio creato
+                    example: 507f1f77bcf86cd799439011
+        '400':
+          description: Dati mancanti o non validi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                missingFields:
+                  value:
+                    message: >-
+                      Inserire correttamente tutti i campi (titolo, descrizione, date, data_discussione e
+                      almeno una domanda).
+                invalidDates:
+                  value:
+                    message: La data di inizio deve essere antecedente alla data di fine.
+                invalidDiscussione:
+                  value:
+                    message: La data di discussione deve essere antecedente alla data di inizio.
+                invalidDomande:
+                  value:
+                    message: Tutte le domande devono avere titolo, tipo e un array di opzioni valido.
+        '401':
+          description: Operatore non autenticato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Operatore non autenticato.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante la creazione del sondaggio.
+    get:
+      summary: Lista sondaggi dell'operatore
+      description: >-
+        Restituisce la lista paginata dei sondaggi creati dall'operatore autenticato, ordinati per data di
+        inizio (più recenti prima). Supporta filtro per stato e paginazione.
+      tags:
+        - Sondaggi
+      security:
+        - sessionAuth: []
+      parameters:
+        - in: query
+          name: stato
+          schema:
+            type: string
+            enum:
+              - bozza
+              - attivo
+              - concluso
+              - archiviato
+          description: Filtra i sondaggi per stato
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Numero di pagina
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+          description: Numero di risultati per pagina (max 100)
+      responses:
+        '200':
+          description: Sondaggi recuperati con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Sondaggi recuperati con successo.
+                  sondaggi:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Sondaggio'
+                  paginazione:
+                    type: object
+                    properties:
+                      totale:
+                        type: integer
+                        example: 42
+                      pagina:
+                        type: integer
+                        example: 1
+                      limite:
+                        type: integer
+                        example: 10
+                      pagine:
+                        type: integer
+                        example: 5
+        '400':
+          description: Stato non valido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Stato non valido. Valori ammessi: bozza, attivo, concluso, archiviato.'
+        '401':
+          description: Operatore non autenticato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Operatore non autenticato.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante il recupero dei sondaggi.
+  /sondaggi/{id}:
+    get:
+      summary: Recupera dettagli di un singolo sondaggio
+      description: >-
+        Restituisce i dettagli completi di un sondaggio specifico con tutte le domande associate. L'utente può
+        visualizzare solo i sondaggi che ha creato.
+      tags:
+        - Sondaggi
+      security:
+        - sessionAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del sondaggio da recuperare
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          description: Sondaggio trovato con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Sondaggio trovato con successo.
+                  sondaggio:
+                    $ref: '#/components/schemas/Sondaggio'
+        '400':
+          description: ID non valido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: ID non valido.
+        '404':
+          description: Sondaggio non trovato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Sondaggio non trovato.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante il recupero del sondaggio.
+    patch:
+      summary: Aggiorna un sondaggio in bozza
+      description: >-
+        Permette a un operatore di aggiornare i campi di un sondaggio. Solo i sondaggi in stato "bozza"
+        possono essere modificati. I campi modificabili sono titolo, descrizione, data_inizio, data_fine e
+        data_discussione.
+      tags:
+        - Sondaggi
+      security:
+        - sessionAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del sondaggio da aggiornare
+          example: 507f1f77bcf86cd799439011
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                titolo:
+                  type: string
+                  description: Nuovo titolo del sondaggio
+                descrizione:
+                  type: string
+                  description: Nuova descrizione del sondaggio
+                data_inizio:
+                  type: string
+                  format: date-time
+                  description: Nuova data di inizio
+                data_fine:
+                  type: string
+                  format: date-time
+                  description: Nuova data di fine
+                data_discussione:
+                  type: string
+                  format: date-time
+                  description: Nuova data di discussione
+            example:
+              titolo: Sondaggio aggiornato sulla qualità dei servizi
+              descrizione: Descrizione aggiornata del sondaggio
+              data_inizio: '2025-12-15T00:00:00.000Z'
+              data_fine: '2025-12-25T00:00:00.000Z'
+      responses:
+        '200':
+          description: Sondaggio aggiornato con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Sondaggio aggiornato con successo.
+                  sondaggio:
+                    $ref: '#/components/schemas/Sondaggio'
+        '400':
+          description: ID non valido o sondaggio non in stato bozza
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidId:
+                  value:
+                    message: ID non valido.
+                notBozza:
+                  value:
+                    message: Solo i sondaggi in stato "bozza" possono essere modificate.
+        '401':
+          description: Operatore non autenticato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Operatore non autenticato.
+        '404':
+          description: Sondaggio non trovato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Sondaggio non trovato.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante l'aggiornamento del sondaggio.
+    delete:
+      summary: Elimina un sondaggio in bozza
+      description: >-
+        Permette a un operatore di eliminare definitivamente un sondaggio. Solo i sondaggi in stato "bozza"
+        possono essere eliminati.
+      tags:
+        - Sondaggi
+      security:
+        - sessionAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del sondaggio da eliminare
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          description: Sondaggio eliminato con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Sondaggio eliminato con successo.
+        '400':
+          description: ID non valido o sondaggio non in stato bozza
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidId:
+                  value:
+                    message: ID non valido.
+                notBozza:
+                  value:
+                    message: Solo i sondaggi in stato "bozza" possono essere eliminati.
+        '401':
+          description: Operatore non autenticato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Operatore non autenticato.
+        '404':
+          description: Sondaggio non trovato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Sondaggio non trovato.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante l'eliminazione del sondaggio.
+  /sondaggi/{id}/publish:
+    patch:
+      summary: Pubblica un sondaggio
+      description: >-
+        Cambia lo stato di un sondaggio da "bozza" ad "attivo", rendendolo disponibile per la partecipazione.
+        Solo i sondaggi in stato "bozza" possono essere pubblicati.
+      tags:
+        - Sondaggi
+      security:
+        - sessionAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del sondaggio da pubblicare
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          description: Sondaggio pubblicato con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Sondaggio pubblicato con successo.
+                  sondaggio:
+                    $ref: '#/components/schemas/Sondaggio'
+        '400':
+          description: ID non valido o sondaggio non in stato bozza
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidId:
+                  value:
+                    message: ID non valido.
+                notBozza:
+                  value:
+                    message: Solo i sondaggi in stato "bozza" possono essere pubblicate.
+        '401':
+          description: Operatore non autenticato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Operatore non autenticato.
+        '404':
+          description: Sondaggio non trovato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Sondaggio non trovato.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante la pubblicazione del sondaggio.
+  /sondaggi/{id}/archive:
+    patch:
+      summary: Archivia un sondaggio concluso
+      description: >-
+        Cambia lo stato di un sondaggio da "concluso" ad "archiviato". Solo i sondaggi in stato "concluso"
+        possono essere archiviati.
+      tags:
+        - Sondaggi
+      security:
+        - sessionAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del sondaggio da archiviare
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          description: Sondaggio archiviato con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Sondaggio archiviato con successo.
+                  sondaggio:
+                    $ref: '#/components/schemas/Sondaggio'
+        '400':
+          description: ID non valido o sondaggio non in stato concluso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidId:
+                  value:
+                    message: ID non valido.
+                notConcluso:
+                  value:
+                    message: Solo i sondaggi in stato "concluso" possono essere archiviate.
+        '401':
+          description: Operatore non autenticato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Operatore non autenticato.
+        '404':
+          description: Sondaggio non trovato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Sondaggio non trovato.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante l'archiviazione del sondaggio.
+  /sondaggi/{id}/riepilogo:
+    get:
+      summary: Recupera il riepilogo sintetico dei risultati di un sondaggio
+      description: >-
+        Restituisce un riepilogo completo dei risultati di un sondaggio con il conteggio dei voti per ogni
+        opzione di ogni domanda, incluse le percentuali calcolate sul totale dei partecipanti unici. Utilizza
+        aggregazione per calcolare i risultati in modo efficiente.
+      tags:
+        - Sondaggi
+      security:
+        - sessionAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del sondaggio di cui recuperare il riepilogo
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          description: Riepilogo sintetico recuperato con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Riepilogo sintetico recuperato con successo.
+                  sondaggio:
+                    type: string
+                    description: Titolo del sondaggio
+                    example: Sondaggio sulla qualità dei servizi
+                  totaleVotiUnici:
+                    type: integer
+                    description: Numero totale di cittadini che hanno partecipato al sondaggio
+                    example: 150
+                  riepilogoPerDomanda:
+                    type: array
+                    description: Array contenente i risultati per ogni domanda del sondaggio
+                    items:
+                      type: object
+                      properties:
+                        domandaId:
+                          type: string
+                          description: ID della domanda
+                          example: 507f1f77bcf86cd799439012
+                        titoloDomanda:
+                          type: string
+                          description: Testo della domanda
+                          example: Come valuti la qualità del servizio?
+                        risultati:
+                          type: array
+                          description: Array contenente i risultati per ogni opzione della domanda
+                          items:
+                            type: object
+                            properties:
+                              opzioneId:
+                                type: string
+                                description: ID dell'opzione
+                                example: 507f1f77bcf86cd799439013
+                              testoOpzione:
+                                type: string
+                                description: Testo dell'opzione
+                                example: Eccellente
+                              voti:
+                                type: integer
+                                description: Numero di voti ricevuti dall'opzione
+                                example: 45
+                              percentuale:
+                                type: number
+                                format: float
+                                description: Percentuale di voti rispetto al totale dei partecipanti
+                                example: 30
+              example:
+                message: Riepilogo sintetico recuperato con successo.
+                sondaggio: Sondaggio sulla qualità dei servizi
+                totaleVotiUnici: 150
+                riepilogoPerDomanda:
+                  - domandaId: 507f1f77bcf86cd799439012
+                    titoloDomanda: Come valuti la qualità del servizio?
+                    risultati:
+                      - opzioneId: 507f1f77bcf86cd799439013
+                        testoOpzione: Eccellente
+                        voti: 45
+                        percentuale: 30
+                      - opzioneId: 507f1f77bcf86cd799439014
+                        testoOpzione: Buono
+                        voti: 60
+                        percentuale: 40
+                      - opzioneId: 507f1f77bcf86cd799439015
+                        testoOpzione: Sufficiente
+                        voti: 30
+                        percentuale: 20
+                      - opzioneId: 507f1f77bcf86cd799439016
+                        testoOpzione: Scarso
+                        voti: 15
+                        percentuale: 10
+                  - domandaId: 507f1f77bcf86cd799439017
+                    titoloDomanda: Quali servizi utilizzi più spesso?
+                    risultati:
+                      - opzioneId: 507f1f77bcf86cd799439018
+                        testoOpzione: Servizi sanitari
+                        voti: 80
+                        percentuale: 53.33
+                      - opzioneId: 507f1f77bcf86cd799439019
+                        testoOpzione: Servizi educativi
+                        voti: 95
+                        percentuale: 63.33
+        '400':
+          description: ID non valido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: ID non valido.
+        '404':
+          description: Sondaggio non trovato o domande mancanti
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Sondaggio non trovato o domande mancanti.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server.
+                error: Database aggregation error
+  /sondaggi/cittadino:
+    get:
+      summary: Recupera sondaggi disponibili per i cittadini
+      description: >-
+        Restituisce la lista di tutti i sondaggi in stato "attivo" o "concluso", visibili ai cittadini
+        autenticati. I sondaggi sono ordinati per data di inizio (più recenti prima). A differenza delle
+        votazioni, i sondaggi contengono multiple domande (ID_domande array) invece di una singola domanda.
+        Ogni elemento include il campo `voted` (`true` se il cittadino ha già risposto, `false` altrimenti).
+      tags:
+        - Sondaggi
+      security:
+        - sessionAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Numero di pagina (default 1)
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+          description: Risultati per pagina (max 100, default 10)
+      responses:
+        '200':
+          description: Sondaggi recuperati con successo o nessun sondaggio disponibile
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Messaggio di conferma
+                  sondaggi:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Consultazione'
+                        - type: object
+                          properties:
+                            tipo:
+                              type: string
+                              enum:
+                                - sondaggio
+                              example: sondaggio
+                            ID_domande:
+                              type: array
+                              items:
+                                type: string
+                              description: Array di ID delle domande associate al sondaggio (minimo 1)
+                              example:
+                                - 507f1f77bcf86cd799439015
+                                - 507f1f77bcf86cd799439016
+                            voted:
+                              type: boolean
+                              description: true se il cittadino autenticato ha già risposto a questo sondaggio
+                              example: false
+                    description: Array di sondaggi disponibili (presente solo se ci sono sondaggi).
+                  paginazione:
+                    type: object
+                    properties:
+                      totale:
+                        type: integer
+                        example: 35
+                      pagina:
+                        type: integer
+                        example: 1
+                      limite:
+                        type: integer
+                        example: 10
+                      pagine:
+                        type: integer
+                        example: 4
+              examples:
+                withSondaggi:
+                  value:
+                    message: Sondaggi recuperati con successo.
+                    sondaggi:
+                      - _id: 507f1f77bcf86cd799439011
+                        tipo: sondaggio
+                        stato: attivo
+                        titolo: Sondaggio sulla qualità dei servizi
+                        descrizione: Sondaggio per valutare la soddisfazione dei cittadini sui servizi pubblici
+                        data_inizio: '2025-12-10T00:00:00.000Z'
+                        data_fine: '2025-12-20T00:00:00.000Z'
+                        data_discussione: '2025-12-05T00:00:00.000Z'
+                        creatoDa: 507f1f77bcf86cd799439012
+                        ID_domande:
+                          - 507f1f77bcf86cd799439015
+                          - 507f1f77bcf86cd799439016
+                          - 507f1f77bcf86cd799439017
+                        createdAt: '2025-12-01T10:30:00.000Z'
+                        updatedAt: '2025-12-01T10:30:00.000Z'
+                        voted: false
+                      - _id: 507f1f77bcf86cd799439013
+                        tipo: sondaggio
+                        stato: concluso
+                        titolo: Sondaggio sulla mobilità urbana
+                        descrizione: Raccolta opinioni sulla mobilità e trasporti pubblici
+                        data_inizio: '2025-11-01T00:00:00.000Z'
+                        data_fine: '2025-11-15T00:00:00.000Z'
+                        data_discussione: '2025-10-25T00:00:00.000Z'
+                        creatoDa: 507f1f77bcf86cd799439012
+                        ID_domande:
+                          - 507f1f77bcf86cd799439018
+                          - 507f1f77bcf86cd799439019
+                        createdAt: '2025-10-20T14:20:00.000Z'
+                        updatedAt: '2025-11-15T23:59:00.000Z'
+                        voted: true
+                noSondaggi:
+                  value:
+                    message: Nessun sondaggio disponibile al momento
+        '401':
+          description: Cittadino non autenticato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Cittadino non autenticato.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante il recupero dei sondaggi.
+                error: Database connection error
+  /votazioni:
+    get:
+      summary: Lista votazioni dell'operatore
+      description: >-
+        Restituisce la lista paginata delle votazioni create dall'operatore autenticato, ordinate per data di
+        inizio (più recenti prima). Supporta filtro per stato e paginazione.
+      tags:
+        - Votazioni
+      security:
+        - sessionAuth: []
+      parameters:
+        - in: query
+          name: stato
+          schema:
+            type: string
+            enum:
+              - bozza
+              - attivo
+              - concluso
+              - archiviato
+          description: Filtra le votazioni per stato
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Numero di pagina
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+          description: Numero di risultati per pagina (max 100)
+      responses:
+        '200':
+          description: Votazioni recuperate con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Votazioni recuperate con successo.
+                  votazioni:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/VotazioneWithDomanda'
+                  paginazione:
+                    type: object
+                    properties:
+                      totale:
+                        type: integer
+                        example: 35
+                      pagina:
+                        type: integer
+                        example: 1
+                      limite:
+                        type: integer
+                        example: 10
+                      pagine:
+                        type: integer
+                        example: 4
+        '400':
+          description: Stato non valido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Stato non valido. Valori ammessi: bozza, attivo, concluso, archiviato.'
+        '401':
+          description: Operatore non autenticato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Operatore non autenticato.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Crea una nuova votazione
+      description: >-
+        Permette a un operatore autenticato di creare una nuova votazione. Crea automaticamente anche la
+        domanda associata.
+      tags:
+        - Votazioni
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateVotazioneInput'
+            example:
+              tipo: votazione
+              titolo: Referendum sulla proposta X
+              descrizione: Votazione per decidere se approvare la proposta X
+              data_inizio: '2025-12-10T00:00:00.000Z'
+              data_fine: '2025-12-20T00:00:00.000Z'
+              data_discussione: '2025-12-05T00:00:00.000Z'
+              domanda:
+                titolo: Sei favorevole alla proposta?
+                tipo: risposta_singola
+                opzioni:
+                  - testo: Sì
+                  - testo: 'No'
+      responses:
+        '201':
+          description: Votazione creata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Votazione creata con successo.
+                  votazione:
+                    $ref: '#/components/schemas/Votazione'
+        '400':
+          description: Dati mancanti o non validi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                missingData:
+                  value:
+                    message: Dati mancanti per la creazione della votazione.
+                invalidDomanda:
+                  value:
+                    message: La domanda deve avere titolo, tipo e almeno due opzioni.
+        '401':
+          description: Operatore non autenticato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Operatore non autenticato.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /votazioni/{id}:
+    get:
+      summary: Ottieni dettaglio di una votazione
+      description: |
+        Restituisce i dettagli completi di una votazione specifica, inclusa la domanda con le opzioni.
+        Il comportamento varia in base al ruolo del chiamante:
+        - **Operatore**: accede a votazioni in qualsiasi stato (bozza, attivo, concluso, archiviato).
+        - **Cittadino**: accede solo a votazioni in stato `attivo` o `concluso`. La risposta include
+          il campo `voted` (`true` se il cittadino ha già espresso il proprio voto, `false` altrimenti).
+      tags:
+        - Votazioni
+      security:
+        - sessionAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID della votazione
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          description: Votazione trovata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Votazione trovata con successo.
+                  votazione:
+                    $ref: '#/components/schemas/VotazioneWithDomanda'
+                  voted:
+                    type: boolean
+                    description: 'Presente solo per il cittadino: true se ha già votato questa votazione'
+                    example: false
+              examples:
+                operatore:
+                  summary: Risposta operatore (nessun campo voted)
+                  value:
+                    message: Votazione trovata con successo.
+                    votazione:
+                      _id: 507f1f77bcf86cd799439011
+                      tipo: votazione
+                      stato: attivo
+                      titolo: Referendum sulla proposta X
+                      descrizione: Votazione per decidere...
+                      data_inizio: '2026-05-01T00:00:00.000Z'
+                      data_fine: '2026-05-30T23:59:59.000Z'
+                      data_discussione: '2026-04-15T00:00:00.000Z'
+                      ID_domanda:
+                        _id: 507f1f77bcf86cd799439012
+                        titolo: Sei favorevole alla proposta?
+                        tipo: risposta_singola
+                        opzioni:
+                          - _id: 507f1f77bcf86cd799439013
+                            testo: Sì
+                          - _id: 507f1f77bcf86cd799439014
+                            testo: 'No'
+                cittadino:
+                  summary: Risposta cittadino (include campo voted)
+                  value:
+                    message: Votazione trovata con successo.
+                    votazione:
+                      _id: 507f1f77bcf86cd799439011
+                      tipo: votazione
+                      stato: attivo
+                      titolo: Referendum sulla proposta X
+                      descrizione: Votazione per decidere...
+                      data_inizio: '2026-05-01T00:00:00.000Z'
+                      data_fine: '2026-05-30T23:59:59.000Z'
+                      data_discussione: '2026-04-15T00:00:00.000Z'
+                      ID_domanda:
+                        _id: 507f1f77bcf86cd799439012
+                        titolo: Sei favorevole alla proposta?
+                        tipo: risposta_singola
+                        opzioni:
+                          - _id: 507f1f77bcf86cd799439013
+                            testo: Sì
+                          - _id: 507f1f77bcf86cd799439014
+                            testo: 'No'
+                    voted: false
+        '400':
+          description: ID non valido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: ID non valido.
+        '401':
+          description: Utente non autenticato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Votazione non trovata (o non visibile al cittadino perché in stato bozza/archiviato)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Votazione non trovata.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      summary: Modifica una votazione
+      description: >-
+        Modifica una votazione in stato bozza. Campi modificabili sono titolo, descrizione, data_inizio,
+        data_fine, data_discussione
+      tags:
+        - Votazioni
+      security:
+        - sessionAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID della votazione
+          example: 507f1f77bcf86cd799439011
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateVotazioneInput'
+            example:
+              data_inizio: '2025-12-15T00:00:00.000Z'
+              data_fine: '2025-12-25T00:00:00.000Z'
+              data_discussione: '2025-12-10T00:00:00.000Z'
+      responses:
+        '200':
+          description: Votazione aggiornata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Votazione aggiornata con successo.
+                  votazione:
+                    $ref: '#/components/schemas/Votazione'
+        '400':
+          description: ID non valido o votazione non in stato bozza
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidId:
+                  value:
+                    message: ID non valido.
+                notBozza:
+                  value:
+                    message: Solo le votazioni in stato bozza possono essere modificate.
+        '404':
+          description: Votazione non trovata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Votazione non trovata.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Elimina una votazione
+      description: >-
+        Permette di eliminare una votazione solo se è in stato bozza. Solo le votazioni create dall'operatore
+        autenticato possono essere eliminate.
+      tags:
+        - Votazioni
+      security:
+        - sessionAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID della votazione
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          description: Votazione eliminata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Votazione eliminata con successo.
+        '400':
+          description: ID non valido o votazione non in stato bozza
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidId:
+                  value:
+                    message: ID non valido.
+                notBozza:
+                  value:
+                    message: Solo le votazioni in stato bozza possono essere eliminate.
+        '404':
+          description: Votazione non trovata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Votazione non trovata.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /votazioni/{id}/publish:
+    patch:
+      summary: Pubblica una votazione
+      description: >-
+        Cambia lo stato di una votazione da bozza a attivo, rendendola disponibile per il voto. Solo le
+        votazioni in stato bozza possono essere pubblicate.
+      tags:
+        - Votazioni
+      security:
+        - sessionAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID della votazione
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          description: Votazione pubblicata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Votazione pubblicata con successo.
+                  votazione:
+                    $ref: '#/components/schemas/Votazione'
+        '400':
+          description: ID non valido o votazione non in stato bozza
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidId:
+                  value:
+                    message: ID non valido.
+                notBozza:
+                  value:
+                    message: Solo le votazioni in stato bozza possono essere pubblicate.
+        '404':
+          description: Votazione non trovata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Votazione non trovata.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /votazioni/{id}/archive:
+    patch:
+      summary: Archivia una votazione
+      description: >-
+        Cambia lo stato di una votazione da concluso a archiviato. Solo le votazioni in stato concluso possono
+        essere archiviate.
+      tags:
+        - Votazioni
+      security:
+        - sessionAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID della votazione
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          description: Votazione archiviata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Votazione archiviata con successo.
+                  votazione:
+                    $ref: '#/components/schemas/Votazione'
+        '400':
+          description: ID non valido o votazione non in stato concluso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidId:
+                  value:
+                    message: ID non valido.
+                notConcluso:
+                  value:
+                    message: Solo le votazioni in stato concluso possono essere archiviate.
+        '404':
+          description: Votazione non trovata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Votazione non trovata.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /votazioni/{id}/riepilogo:
+    get:
+      summary: Ottieni riepilogo sintetico di una votazione
+      description: >-
+        Restituisce un riepilogo con il conteggio dei voti per ogni opzione, le percentuali e il totale dei
+        voti. Accessibile da qualsiasi utente autenticato.
+      tags:
+        - Votazioni
+      security:
+        - sessionAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID della votazione
+          example: 507f1f77bcf86cd799439011
+      responses:
+        '200':
+          description: Riepilogo sintetico recuperato con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Riepilogo sintetico recuperato.
+                  votazione:
+                    type: string
+                    description: Titolo della votazione
+                    example: Referendum sulla proposta X
+                  domanda:
+                    type: string
+                    description: Titolo della domanda
+                    example: Sei favorevole alla proposta?
+                  totaleVoti:
+                    type: number
+                    description: Numero totale di voti ricevuti
+                    example: 150
+                  risultati:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RiepilogoRisultato'
+              examples:
+                success:
+                  value:
+                    message: Riepilogo sintetico recuperato.
+                    votazione: Referendum sulla proposta X
+                    domanda: Sei favorevole alla proposta?
+                    totaleVoti: 150
+                    risultati:
+                      - opzioneId: 507f1f77bcf86cd799439011
+                        testoOpzione: Sì
+                        voti: 98
+                        percentuale: 65.33
+                      - opzioneId: 507f1f77bcf86cd799439012
+                        testoOpzione: 'No'
+                        voti: 52
+                        percentuale: 34.67
+        '400':
+          description: ID non valido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: ID non valido.
+        '404':
+          description: Votazione non trovata o domanda mancante
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Votazione non trovata o domanda collegata mancante.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /votazioni/cittadino:
+    get:
+      summary: Recupera votazioni disponibili per i cittadini
+      description: >-
+        Restituisce la lista di tutte le votazioni in stato "attivo" o "concluso", visibili ai cittadini
+        autenticati. Le votazioni sono ordinate per data di inizio (più recenti prima). Ogni elemento include
+        il campo `voted` (`true` se il cittadino ha già votato, `false` altrimenti).
+      tags:
+        - Votazioni
+      security:
+        - sessionAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Numero di pagina (default 1)
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+          description: Risultati per pagina (max 100, default 10)
+      responses:
+        '200':
+          description: Votazioni recuperate con successo o nessuna votazione disponibile
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Messaggio di conferma
+                  votazioni:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Votazione'
+                        - type: object
+                          properties:
+                            voted:
+                              type: boolean
+                              description: true se il cittadino autenticato ha già votato questa votazione
+                              example: false
+                    description: Array di votazioni disponibili (presente solo se ci sono votazioni)
+                  paginazione:
+                    type: object
+                    properties:
+                      totale:
+                        type: integer
+                        example: 35
+                      pagina:
+                        type: integer
+                        example: 1
+                      limite:
+                        type: integer
+                        example: 10
+                      pagine:
+                        type: integer
+                        example: 4
+              examples:
+                withVotazioni:
+                  value:
+                    message: Votazioni recuperate con successo.
+                    votazioni:
+                      - _id: 507f1f77bcf86cd799439011
+                        tipo: votazione
+                        stato: attivo
+                        titolo: Votazione sul nuovo piano urbanistico
+                        descrizione: Votazione per approvare il piano urbanistico 2025
+                        data_inizio: '2025-12-10T00:00:00.000Z'
+                        data_fine: '2025-12-20T00:00:00.000Z'
+                        data_discussione: '2025-12-05T00:00:00.000Z'
+                        creatoDa: 507f1f77bcf86cd799439012
+                        ID_domande: []
+                        voted: true
+                      - _id: 507f1f77bcf86cd799439013
+                        tipo: votazione
+                        stato: concluso
+                        titolo: Votazione sulla mobilità sostenibile
+                        descrizione: Votazione per le nuove piste ciclabili
+                        data_inizio: '2025-11-01T00:00:00.000Z'
+                        data_fine: '2025-11-15T00:00:00.000Z'
+                        data_discussione: '2025-10-25T00:00:00.000Z'
+                        creatoDa: 507f1f77bcf86cd799439012
+                        ID_domande: []
+                        voted: false
+                noVotazioni:
+                  value:
+                    message: Nessuna votazione disponibile al momento
+        '401':
+          description: Cittadino non autenticato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Cittadino non autenticato.
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Errore interno del server durante il recupero delle votazioni.
+                error: Database connection error
+components:
+  schemas:
+    Categoria:
+      type: object
+      required:
+        - nome
+      properties:
+        _id:
+          type: string
+          description: ID univoco della categoria
+          example: 507f1f77bcf86cd799439011
+        nome:
+          type: string
+          description: Nome della categoria
+          example: Ambiente
+        createdAt:
+          type: string
+          format: date-time
+          description: Data di creazione
+        updatedAt:
+          type: string
+          format: date-time
+          description: Data di ultimo aggiornamento
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Messaggio di errore
+        error:
+          type: string
+          description: Dettagli dell'errore (solo in caso di errore interno)
+    Cittadino:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID univoco del cittadino
+          example: 507f1f77bcf86cd799439011
+        ruolo:
+          type: string
+          enum:
+            - cittadino
+          example: cittadino
+        nome:
+          type: string
+          description: Nome del cittadino
+          example: Mario
+        cognome:
+          type: string
+          description: Cognome del cittadino
+          example: Rossi
+        email:
+          type: string
+          format: email
+          description: Email del cittadino
+          example: mario.rossi@example.com
+        dataNascita:
+          type: string
+          format: date
+          description: Data di nascita del cittadino
+          example: '1995-06-15'
+        comuneResidenza:
+          type: string
+          description: Comune di residenza
+          example: Trento
+        circoscrizione:
+          type: string
+          description: Circoscrizione (solo per Trento)
+          example: Centro storico - Piedicastello
+        genere:
+          type: string
+          enum:
+            - Uomo
+            - Donna
+          example: Uomo
+        categoria:
+          type: string
+          enum:
+            - Lavoratore
+            - Disoccupato
+            - Pensionato
+            - Studente
+            - Altro
+          example: Lavoratore
+        profiloCompleto:
+          type: boolean
+          description: Indica se il profilo è completo
+          example: true
+    CompleteProfileInput:
+      type: object
+      required:
+        - cittadinoId
+        - dataNascita
+        - comuneResidenza
+      properties:
+        cittadinoId:
+          type: string
+          description: ID del cittadino
+          example: 507f1f77bcf86cd799439011
+        dataNascita:
+          type: string
+          format: date
+          example: '1995-06-15'
+        comuneResidenza:
+          type: string
+          example: Trento
+        circoscrizione:
+          type: string
+          example: Centro storico - Piedicastello
+    VoteVotazioneInput:
+      type: object
+      required:
+        - votazioneId
+      properties:
+        opzioniId:
+          type: array
+          items:
+            type: string
+          description: >-
+            ID delle opzioni scelte. Per domande a risposta singola deve contenere un solo elemento; per la
+            risposta multipla può contenerne più di uno.
+          example:
+            - 507f1f77bcf86cd799439011
+            - 507f1f77bcf86cd799439013
+        opzioneId:
+          type: string
+          description: (Deprecato) ID di una singola opzione. Mantenuto per retrocompatibilità; preferire opzioniId.
+          example: 507f1f77bcf86cd799439011
+        votazioneId:
+          type: string
+          description: ID della votazione
+          example: 507f1f77bcf86cd799439012
+    VoteIniziativaInput:
+      type: object
+      required:
+        - iniziativaID
+      properties:
+        iniziativaID:
+          type: string
+          description: ID dell'iniziativa
+          example: 507f1f77bcf86cd799439011
+    Iniziativa:
+      type: object
+      required:
+        - ID_categoria
+        - titolo
+        - ID_cittadino
+        - descrizione
+      properties:
+        _id:
+          type: string
+          description: ID univoco dell'iniziativa
+          example: 507f1f77bcf86cd799439011
+        ID_categoria:
+          type: string
+          description: ID della categoria
+          example: 507f1f77bcf86cd799439012
+        titolo:
+          type: string
+          description: Titolo dell'iniziativa
+          example: Pulizia parchi pubblici
+        ID_cittadino:
+          type: string
+          description: ID del cittadino creatore
+          example: 507f1f77bcf86cd799439013
+        descrizione:
+          type: string
+          description: Descrizione dettagliata dell'iniziativa
+          example: Proposta per organizzare giornate di pulizia nei parchi pubblici della città
+        createdAt:
+          type: string
+          format: date-time
+          description: Data di creazione
+        updatedAt:
+          type: string
+          format: date-time
+          description: Data di ultimo aggiornamento
+    IniziativaWithDetails:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: ID univoco dell'iniziativa
+          example: 507f1f77bcf86cd799439011
+        ID_categoria:
+          type: string
+          description: ID della categoria
+          example: 507f1f77bcf86cd799439012
+        categoria:
+          type: string
+          description: Nome della categoria
+          example: Ambiente
+        titolo:
+          type: string
+          description: Titolo dell'iniziativa
+          example: Pulizia parchi pubblici
+        nome_cittadino:
+          type: string
+          description: Nome del cittadino creatore
+          example: Mario
+        cognome_cittadino:
+          type: string
+          description: Cognome del cittadino creatore
+          example: Rossi
+        numero_voti:
+          type: number
+          description: Numero di voti ricevuti
+          example: 42
+        createdAt:
+          type: string
+          format: date-time
+          description: Data di creazione
+    CreateIniziativaInput:
+      type: object
+      required:
+        - ID_categoria
+        - titolo
+        - ID_cittadino
+        - descrizione
+      properties:
+        ID_categoria:
+          type: string
+          description: ID della categoria
+          example: 507f1f77bcf86cd799439012
+        titolo:
+          type: string
+          description: Titolo dell'iniziativa
+          example: Pulizia parchi pubblici
+        ID_cittadino:
+          type: string
+          description: ID del cittadino creatore
+          example: 507f1f77bcf86cd799439013
+        descrizione:
+          type: string
+          description: Descrizione dettagliata dell'iniziativa
+          example: Proposta per organizzare giornate di pulizia nei parchi pubblici della città
+    UpdateIniziativaInput:
+      type: object
+      properties:
+        titolo:
+          type: string
+          description: Titolo dell'iniziativa
+          example: Pulizia parchi pubblici
+        descrizione:
+          type: string
+          description: Descrizione dettagliata dell'iniziativa
+          example: Proposta per organizzare giornate di pulizia nei parchi pubblici della città
+        ID_categoria:
+          type: string
+          description: ID della categoria
+          example: 507f1f77bcf86cd799439012
+    RicercaIniziativaInput:
+      type: object
+      properties:
+        parola_chiave:
+          type: string
+          description: Parola chiave per la ricerca nel titolo e descrizione
+          example: giardino
+        filtri:
+          type: object
+          properties:
+            categorie_id:
+              type: array
+              items:
+                type: string
+              description: Array di ID delle categorie da filtrare
+              example:
+                - 507f1f77bcf86cd799439012
+            ordina_per:
+              type: string
+              enum:
+                - data
+                - voti
+              description: Campo per l'ordinamento (data o voti)
+              example: data
+            ordine:
+              type: number
+              enum:
+                - 1
+                - -1
+              description: Ordine di ordinamento (1 = crescente, -1 = decrescente)
+              default: -1
+              example: -1
+    Operatore:
+      type: object
+      required:
+        - username
+        - password
+        - nome
+        - cognome
+      properties:
+        _id:
+          type: string
+          description: ID univoco dell'operatore
+          example: 507f1f77bcf86cd799439011
+        username:
+          type: string
+          description: Username dell'operatore
+          example: admin
+        nome:
+          type: string
+          description: Nome dell'operatore
+          example: Mario
+        cognome:
+          type: string
+          description: Cognome dell'operatore
+          example: Rossi
+        isRoot:
+          type: boolean
+          description: Indica se l'operatore ha privilegi root
+          example: false
+    OperatorePublic:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID univoco dell'operatore
+          example: 507f1f77bcf86cd799439011
+        username:
+          type: string
+          description: Username dell'operatore
+          example: admin
+        nome:
+          type: string
+          description: Nome dell'operatore
+          example: Mario
+        cognome:
+          type: string
+          description: Cognome dell'operatore
+          example: Rossi
+    LoginOperatoreInput:
+      type: object
+      required:
+        - username
+        - password_inserita
+      properties:
+        username:
+          type: string
+          description: Username dell'operatore
+          example: admin
+        password_inserita:
+          type: string
+          format: password
+          description: Password dell'operatore
+          example: password123
+    CreateOperatoreInput:
+      type: object
+      required:
+        - username
+        - password
+        - nome
+        - cognome
+      properties:
+        username:
+          type: string
+          description: Username dell'operatore
+          example: operatore1
+        password:
+          type: string
+          format: password
+          description: Password dell'operatore
+          example: password123
+        nome:
+          type: string
+          description: Nome dell'operatore
+          example: Mario
+        cognome:
+          type: string
+          description: Cognome dell'operatore
+          example: Rossi
+    Opzione:
+      type: object
+      required:
+        - testo
+      properties:
+        _id:
+          type: string
+          description: ID univoco dell'opzione
+          example: 507f1f77bcf86cd799439011
+        testo:
+          type: string
+          description: Testo dell'opzione
+          example: Sì
+    Domanda:
+      type: object
+      required:
+        - titolo
+        - tipo
+        - opzioni
+      properties:
+        _id:
+          type: string
+          description: ID univoco della domanda
+          example: 507f1f77bcf86cd799439011
+        titolo:
+          type: string
+          description: Testo della domanda
+          example: Sei favorevole alla proposta?
+        tipo:
+          type: string
+          enum:
+            - risposta_multipla
+            - risposta_singola
+          description: Tipo di risposta consentita
+          example: risposta_singola
+        opzioni:
+          type: array
+          minItems: 2
+          items:
+            $ref: '#/components/schemas/Opzione'
+          description: Array di opzioni di risposta
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    Votazione:
+      type: object
+      required:
+        - titolo
+        - descrizione
+        - data_inizio
+        - data_fine
+        - data_discussione
+        - ID_domanda
+        - creatoDa
+      properties:
+        _id:
+          type: string
+          description: ID univoco della votazione
+          example: 507f1f77bcf86cd799439011
+        titolo:
+          type: string
+          description: Titolo della votazione
+          example: Referendum sulla proposta X
+        descrizione:
+          type: string
+          description: Descrizione dettagliata della votazione
+          example: Votazione per decidere se approvare la proposta X
+        stato:
+          type: string
+          enum:
+            - attivo
+            - bozza
+            - concluso
+            - archiviato
+          default: bozza
+          description: Stato della votazione
+          example: bozza
+        ID_domanda:
+          type: string
+          description: ID della domanda associata
+          example: 507f1f77bcf86cd799439012
+        creatoDa:
+          type: string
+          description: ID dell'operatore creatore
+          example: 507f1f77bcf86cd799439013
+        data_inizio:
+          type: string
+          format: date-time
+          description: Data di inizio della votazione
+          example: '2025-12-10T00:00:00.000Z'
+        data_fine:
+          type: string
+          format: date-time
+          description: Data di fine della votazione
+          example: '2025-12-20T00:00:00.000Z'
+        data_discussione:
+          type: string
+          format: date-time
+          description: Data di discussione (deve essere prima di data_inizio)
+          example: '2025-12-05T00:00:00.000Z'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    VotazioneWithDomanda:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Votazione'
+        - type: object
+          properties:
+            ID_domanda:
+              $ref: '#/components/schemas/Domanda'
+    CreateVotazioneInput:
+      type: object
+      required:
+        - tipo
+        - titolo
+        - descrizione
+        - data_inizio
+        - data_fine
+        - data_discussione
+        - domanda
+      properties:
+        tipo:
+          type: string
+          enum:
+            - votazione
+          example: votazione
+        titolo:
+          type: string
+          description: Titolo della votazione
+          example: Referendum sulla proposta X
+        descrizione:
+          type: string
+          description: Descrizione dettagliata della votazione
+          example: Votazione per decidere se approvare la proposta X
+        data_inizio:
+          type: string
+          format: date-time
+          description: Data di inizio della votazione
+          example: '2025-12-10T00:00:00.000Z'
+        data_fine:
+          type: string
+          format: date-time
+          description: Data di fine della votazione
+          example: '2025-12-20T00:00:00.000Z'
+        data_discussione:
+          type: string
+          format: date-time
+          description: Data di discussione (deve essere prima di data_inizio)
+          example: '2025-12-05T00:00:00.000Z'
+        domanda:
+          type: object
+          required:
+            - titolo
+            - tipo
+            - opzioni
+          properties:
+            titolo:
+              type: string
+              example: Sei favorevole alla proposta?
+            tipo:
+              type: string
+              enum:
+                - risposta_multipla
+                - risposta_singola
+              example: risposta_singola
+            opzioni:
+              type: array
+              minItems: 2
+              items:
+                type: object
+                required:
+                  - testo
+                properties:
+                  testo:
+                    type: string
+                    example: Sì
+    UpdateVotazioneInput:
+      type: object
+      properties:
+        titolo:
+          type: string
+          example: Referendum sulla proposta X (aggiornato)
+        descrizione:
+          type: string
+          example: Descrizione aggiornata
+        data_inizio:
+          type: string
+          format: date-time
+          example: '2025-12-10T00:00:00.000Z'
+        data_fine:
+          type: string
+          format: date-time
+          example: '2025-12-20T00:00:00.000Z'
+        data_discussione:
+          type: string
+          format: date-time
+          example: '2025-12-05T00:00:00.000Z'
+    RiepilogoRisultato:
+      type: object
+      properties:
+        opzioneId:
+          type: string
+          description: ID dell'opzione
+          example: 507f1f77bcf86cd799439011
+        testoOpzione:
+          type: string
+          description: Testo dell'opzione
+          example: Sì
+        voti:
+          type: number
+          description: Numero di voti ricevuti
+          example: 42
+        percentuale:
+          type: number
+          format: float
+          description: Percentuale di voti (con 2 decimali)
+          example: 65.5
+    Sondaggio:
+      type: object
+      required:
+        - tipo
+        - titolo
+        - descrizione
+        - data_inizio
+        - data_fine
+        - data_discussione
+        - ID_domande
+        - creatoDa
+      properties:
+        _id:
+          type: string
+          description: ID univoco del sondaggio
+          example: 507f1f77bcf86cd799439011
+        tipo:
+          type: string
+          enum:
+            - sondaggio
+          example: sondaggio
+        stato:
+          type: string
+          enum:
+            - attivo
+            - bozza
+            - concluso
+            - archiviato
+          default: bozza
+          example: bozza
+        titolo:
+          type: string
+          description: Titolo del sondaggio
+          example: Sondaggio sulla qualità dei servizi
+        descrizione:
+          type: string
+          description: Descrizione dettagliata del sondaggio
+          example: Sondaggio per valutare la soddisfazione dei cittadini
+        ID_domande:
+          type: array
+          items:
+            type: string
+          description: Array di ID delle domande associate
+          example:
+            - 507f1f77bcf86cd799439011
+            - 507f1f77bcf86cd799439012
+        creatoDa:
+          type: string
+          description: ID dell'operatore creatore
+          example: 507f1f77bcf86cd799439013
+        data_inizio:
+          type: string
+          format: date-time
+          description: Data di inizio del sondaggio
+          example: '2025-12-10T00:00:00.000Z'
+        data_fine:
+          type: string
+          format: date-time
+          description: Data di fine del sondaggio
+          example: '2025-12-20T00:00:00.000Z'
+        data_discussione:
+          type: string
+          format: date-time
+          description: Data di discussione (deve essere prima di data_inizio)
+          example: '2025-12-05T00:00:00.000Z'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    CreateSondaggioInput:
+      type: object
+      required:
+        - titolo
+        - descrizione
+        - data_inizio
+        - data_fine
+        - data_discussione
+        - domande
+      properties:
+        titolo:
+          type: string
+          description: Titolo del sondaggio
+          example: Sondaggio sulla qualità dei servizi
+        descrizione:
+          type: string
+          description: Descrizione dettagliata del sondaggio
+          example: Sondaggio per valutare la soddisfazione dei cittadini
+        data_inizio:
+          type: string
+          format: date-time
+          description: Data di inizio del sondaggio
+          example: '2025-12-10T00:00:00.000Z'
+        data_fine:
+          type: string
+          format: date-time
+          description: Data di fine del sondaggio
+          example: '2025-12-20T00:00:00.000Z'
+        data_discussione:
+          type: string
+          format: date-time
+          description: Data di discussione (deve essere prima di data_inizio)
+          example: '2025-12-05T00:00:00.000Z'
+        domande:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+              - titolo
+              - tipo
+              - opzioni
+            properties:
+              titolo:
+                type: string
+                description: Testo della domanda
+                example: Come valuti la qualità del servizio?
+              tipo:
+                type: string
+                enum:
+                  - risposta_multipla
+                  - risposta_singola
+                description: Tipo di risposta consentita
+                example: risposta_singola
+              opzioni:
+                type: array
+                minItems: 2
+                items:
+                  type: object
+                  required:
+                    - testo
+                  properties:
+                    testo:
+                      type: string
+                      description: Testo dell'opzione
+                      example: Eccellente
+    Notifica:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: ID univoco della notifica
+          example: 507f1f77bcf86cd799439011
+        ID_destinatario:
+          type: string
+          description: ID del cittadino destinatario
+          example: 507f1f77bcf86cd799439013
+        tipo:
+          type: string
+          enum:
+            - iniziativa_approvata
+            - iniziativa_rifiutata
+          description: Tipo di notifica
+          example: iniziativa_approvata
+        messaggio:
+          type: string
+          description: Testo della notifica
+          example: La tua iniziativa "Pulizia parchi pubblici" è stata approvata e pubblicata.
+        ID_iniziativa:
+          type: string
+          description: ID dell'iniziativa a cui si riferisce la notifica
+          example: 507f1f77bcf86cd799439012
+        letta:
+          type: boolean
+          description: Indica se la notifica è stata letta
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+          description: Data di creazione
+        updatedAt:
+          type: string
+          format: date-time
+          description: Data di ultimo aggiornamento
+  securitySchemes:
+    sessionAuth:
+      type: apiKey
+      in: cookie
+      name: connect.sid
+      description: Session cookie per autenticazione
+tags: []
