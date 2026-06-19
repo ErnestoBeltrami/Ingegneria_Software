@@ -20,6 +20,10 @@ Authorization: Bearer {{TOKEN_OPERATORE}}
 GET http://localhost:3000/iniziative?page=2&limit=5
 Authorization: Bearer {{TOKEN_OPERATORE}}
 ###
+### Dettaglio iniziativa (categoria, proponente, numero_voti; ha_votato per cittadino)
+GET http://localhost:3000/iniziative/6933545492a7cd3ca0db64fc
+Authorization: Bearer {{TOKEN_OPERATORE}}
+###
 
 POST http://localhost:3000/iniziative
 Authorization: Bearer {{TOKEN_OPERATORE}}
