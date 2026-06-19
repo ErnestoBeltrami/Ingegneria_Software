@@ -744,9 +744,11 @@ L'operatore riceve la votazione in qualsiasi stato; il cittadino vede solo votaz
 \texttt{attivo} o \texttt{concluso} e la risposta include il campo booleano \texttt{voted} che
 indica se il cittadino ha già espresso il proprio voto.
 
-\noindent\textsuperscript{‡} \texttt{POST /cittadino/vote/votazione} verifica che la votazione sia
-in stato \texttt{attivo} prima di accettare il voto; restituisce \texttt{403} se lo stato non è
-\texttt{attivo} o se il cittadino ha già votato.
+\noindent\textsuperscript{‡} \texttt{POST /cittadino/vote/votazione} accetta in \texttt{opzioniId}
+una o più opzioni: per le domande a risposta singola ne è ammessa esattamente una, per quelle a
+risposta multipla anche più di una. Verifica che la votazione sia in stato \texttt{attivo} prima di
+accettare il voto e che le opzioni appartengano alla domanda; restituisce \texttt{403} se lo stato
+non è \texttt{attivo} o se il cittadino ha già votato.
 
 \noindent\textsuperscript{§} \texttt{GET /votazioni/cittadino} e \texttt{GET /sondaggio/cittadino}
 restituiscono solo consultazioni in stato \texttt{attivo} o \texttt{concluso}. Ogni elemento include

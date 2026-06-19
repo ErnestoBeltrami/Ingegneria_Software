@@ -206,7 +206,7 @@
  * /cittadino/vote/votazione:
  *   post:
  *     summary: Rispondi a una votazione
- *     description: Permette a un cittadino autenticato di votare per una votazione
+ *     description: Permette a un cittadino autenticato di votare per una votazione. Se la domanda è a risposta multipla, `opzioniId` può contenere più opzioni; se è a risposta singola deve contenerne esattamente una.
  *     tags:
  *       - Cittadino
  *     security:
@@ -237,7 +237,13 @@
  *             examples:
  *               missingOption:
  *                 value:
- *                   message: "Scegliere almeno un opzione."
+ *                   message: "Scegliere almeno un'opzione."
+ *               singleRequired:
+ *                 value:
+ *                   message: "La votazione richiede esattamente una risposta."
+ *               invalidOption:
+ *                 value:
+ *                   message: "Le risposte contengono opzioni non valide: 507f1f77bcf86cd799439099"
  *       403:
  *         description: Voto non consentito
  *         content:

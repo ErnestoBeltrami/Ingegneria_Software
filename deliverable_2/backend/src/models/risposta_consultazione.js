@@ -38,21 +38,21 @@ const rispostaConsultazioneSchema = new mongoose.Schema({
         required: [true, "L'ID del cittadino è obbligatorio."]
     },
 
-    // Per votazioni: singola opzione
-    ID_opzione: {
-        type: mongoose.Schema.Types.ObjectId,
+    // Per votazioni: una o più opzioni scelte (risposta singola o multipla)
+    ID_opzioni: {
+        type: [mongoose.Schema.Types.ObjectId],
         required: function() {
             return this.tipo_consultazione === 'votazione';
         },
         validate: {
             validator: function(v) {
                 if (this.tipo_consultazione === 'votazione') {
-                    return v != null;
+                    return Array.isArray(v) && v.length > 0;
                 }
-                // Per sondaggi, ID_opzione non deve essere presente
-                return v == null;
+                // Per sondaggi, ID_opzioni non deve essere presente
+                return v == null || v.length === 0;
             },
-            message: 'ID_opzione è obbligatorio per votazioni e non permesso per sondaggi.'
+            message: 'ID_opzioni è obbligatorio per votazioni (almeno una opzione) e non permesso per sondaggi.'
         }
     },
 

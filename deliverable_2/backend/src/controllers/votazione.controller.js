@@ -196,29 +196,35 @@ export const getRiepilogoSintetico = async (req, res) => {
         
         // 2. Pipeline di Aggregazione: Conversione esplicita e Conteggio
         const risultatiVoto = await RispostaConsultazione.aggregate([
-            { $match: { ID_consultazione: objectIdVotazione, tipo_consultazione: 'votazione' } }, 
-            
-            // FILTRO DI ROBUSTEZZA: Esclude ID nulli
-            { $match: { ID_opzione: { $ne: null, $exists: true } } }, 
-            
-            // 🚨 CONVERSIONE AGGREGATION: Proietta l'ID Opzione come Stringa
+            { $match: { ID_consultazione: objectIdVotazione, tipo_consultazione: 'votazione' } },
+
+            // Un documento risposta può contenere più opzioni (voto multiplo): le espande
+            { $unwind: "$ID_opzioni" },
+
+            // CONVERSIONE AGGREGATION: Proietta l'ID Opzione come Stringa
             {
                 $project: {
-                    ID_opzione_str: { $toString: "$ID_opzione" },
-                    _id: 0, // Rimuove l'ID originale del documento RispostaVotazione
+                    ID_opzione_str: { $toString: "$ID_opzioni" },
+                    _id: 0,
                 }
             },
-            
-            // Raggruppa i documenti (voti) per l'ID dell'opzione convertito
+
+            // Raggruppa per l'ID dell'opzione convertito
             {
                 $group: {
-                    _id: "$ID_opzione_str", // Ora il raggruppamento avviene sulla STRINGA
-                    conteggio: { $sum: 1 } 
+                    _id: "$ID_opzione_str",
+                    conteggio: { $sum: 1 }
                 }
             }
         ]);
-        
-        const totaleVoti = risultatiVoto.reduce((sum, result) => sum + result.conteggio, 0);
+
+        // Numero di votanti (documenti risposta): denominatore delle percentuali.
+        // Per la risposta singola coincide con la somma dei conteggi; per la multipla no,
+        // quindi le percentuali sono calcolate sui votanti e possono sommare oltre il 100%.
+        const totaleVoti = await RispostaConsultazione.countDocuments({
+            ID_consultazione: objectIdVotazione,
+            tipo_consultazione: 'votazione'
+        });
 
         // 4. Mappa, Unisce e Calcola le Percentuali
         const riepilogoFinale = domanda.opzioni.map(opzione => {
@@ -280,8 +286,10 @@ export const getRiepilogoDemografico = async (req, res) => {
             domanda.opzioni.map(o => [o._id.toString(), o.testo])
         );
 
-        const baseMatch = { $match: { ID_consultazione: objectIdVotazione, tipo_consultazione: 'votazione', ID_opzione: { $ne: null, $exists: true } } };
-        const projectOpzioneStr = { $project: { ID_opzione_str: { $toString: '$ID_opzione' }, ID_cittadino: 1, createdAt: 1 } };
+        const baseMatch = { $match: { ID_consultazione: objectIdVotazione, tipo_consultazione: 'votazione' } };
+        // Espande le opzioni: un voto multiplo conta su ogni opzione scelta
+        const unwindOpzioni = { $unwind: '$ID_opzioni' };
+        const projectOpzioneStr = { $project: { ID_opzione_str: { $toString: '$ID_opzioni' }, ID_cittadino: 1, createdAt: 1 } };
         const lookupCittadino = {
             $lookup: { from: 'cittadinos', localField: 'ID_cittadino', foreignField: '_id', as: 'cittadino' }
         };
@@ -291,6 +299,7 @@ export const getRiepilogoDemografico = async (req, res) => {
             // A) Per genere
             RispostaConsultazione.aggregate([
                 baseMatch,
+                unwindOpzioni,
                 projectOpzioneStr,
                 lookupCittadino,
                 unwindCittadino,
@@ -301,6 +310,7 @@ export const getRiepilogoDemografico = async (req, res) => {
             // B) Per fascia d'età
             RispostaConsultazione.aggregate([
                 baseMatch,
+                unwindOpzioni,
                 projectOpzioneStr,
                 lookupCittadino,
                 unwindCittadino,
