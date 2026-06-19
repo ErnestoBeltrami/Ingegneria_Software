@@ -51,7 +51,7 @@ export default function ModificaVotazionePage() {
   useEffect(() => {
     apiFetch(`/votazioni/${id}`)
       .then((data) => {
-        const v = data.votazione ?? data;
+        const v = data.consultazione ?? data.votazione ?? data;
         setTitolo(v.titoloVotazione ?? v.titolo ?? '');
         setDescrizione(v.descrizione ?? '');
         setDataApertura(isoToDate(v.data_inizio));
