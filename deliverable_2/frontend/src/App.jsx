@@ -19,7 +19,8 @@ import ProfiloCompletatoPage from './pages/ProfiloCompletatoPage';
 import DashboardCittadinePage from './pages/cittadino/dashboard/DashboardCittadinePage';
 import Votazione from './pages/cittadino/votazione/Votazione';
 import VotaSondaggio from './pages/cittadino/sondaggio/VotaSondaggio';
-import CreaIniziativaPage from './pages/cittadino/CreaIniziativaPage';
+import CreaIniziativaPage from './pages/cittadino/bacheca/CreaIniziativaPage';
+import BachecaPage from './pages/cittadino/bacheca/BachecaPage';
 import ProfiloCittadinePage from './pages/cittadino/ProfiloCittadinePage';
 import ArchivioPage from './pages/cittadino/ArchivioPage';
 import RiepilogoVotazione from './pages/cittadino/riepilogo/RiepilogoVotazione';
@@ -76,6 +77,7 @@ export default function App() {
           <Route path="/cittadino/dashboard" element={<DashboardCittadinePage />} />
           <Route path="/cittadino/votazione/:id" element={<Votazione />} />
           <Route path="/cittadino/sondaggio/:id" element={<VotaSondaggio />} />
+          <Route path="/cittadino/bacheca" element={<BachecaPage />} />
           <Route path="/cittadino/iniziativa/crea" element={<CreaIniziativaPage />} />
           <Route path="/cittadino/profilo" element={<ProfiloCittadinePage />} />
           <Route path="/cittadino/archivio" element={<ArchivioPage />} />

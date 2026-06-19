@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Lightbulb } from 'lucide-react';
-import TopBarCittadino from '../../components/TopBarCittadino';
+import TopBarCittadino from '../../../components/TopBarCittadino';
 import './CreaIniziativaPage.css';
 
 export default function CreaIniziativaPage() {

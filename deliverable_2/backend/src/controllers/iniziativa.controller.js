@@ -3,7 +3,6 @@ import { Iniziativa } from '../models/iniziativa.js';
 import { CategoriaIniziativa } from '../models/categoria_iniziativa.js';
 import { Cittadino } from '../models/cittadino.js';
 import { Notifica } from '../models/notifica.js';
-import { VotoIniziativa } from '../models/voto_iniziativa.js';
 import mongoose from 'mongoose';
 
 // POST: Crea iniziativa
@@ -189,7 +188,81 @@ export const getIniziative = async (req,res) => {
 export const getIniziativaById = async (req, res) => {
     try {
         const { id } = req.params;
-        const iniziativa = await Iniziativa.findById(id);
+        const isCittadino = req.ruolo === 'cittadino';
+
+        const haVotatoStages = isCittadino ? [
+            {
+                $lookup: {
+                    from: "votoiniziativas",
+                    let: { ini_id: "$_id" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ["$ID_iniziativa", "$$ini_id"] },
+                                        { $eq: ["$ID_cittadino", req.user._id] }
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    as: "voto_utente"
+                }
+            },
+            { $addFields: { ha_votato: { $gt: [{ $size: "$voto_utente" }, 0] } } }
+        ] : [];
+
+        const projectFields = {
+            _id: 1,
+            ID_categoria: 1,
+            categoria: "$categoria_dettagli.nome",
+            titolo: 1,
+            descrizione: 1,
+            stato: 1,
+            motivazione_moderazione: 1,
+            nome_cittadino: "$cittadino_dettagli.nome",
+            cognome_cittadino: "$cittadino_dettagli.cognome",
+            numero_voti: "$numero_voti",
+            createdAt: 1
+        };
+        if (isCittadino) projectFields.ha_votato = 1;
+
+        const pipeline = [
+            { $match: { _id: new mongoose.Types.ObjectId(id) } },
+            {
+                $lookup: {
+                    from: "votoiniziativas",
+                    localField: "_id",
+                    foreignField: "ID_iniziativa",
+                    as: "voti"
+                }
+            },
+            { $addFields: { numero_voti: { $size: "$voti" } } },
+            {
+                $lookup: {
+                    from: "cittadinos",
+                    localField: "ID_cittadino",
+                    foreignField: "_id",
+                    as: "cittadino_dettagli"
+                }
+            },
+            { $unwind: "$cittadino_dettagli" },
+            {
+                $lookup: {
+                    from: "categoriainiziativas",
+                    localField: "ID_categoria",
+                    foreignField: "_id",
+                    as: "categoria_dettagli"
+                }
+            },
+            { $unwind: "$categoria_dettagli" },
+            ...haVotatoStages,
+            { $project: projectFields }
+        ];
+
+        const [iniziativa] = await Iniziativa.aggregate(pipeline);
+
         if (!iniziativa) {
             return res.status(404).json({
                 message: "Iniziativa non trovata.",
@@ -197,17 +270,9 @@ export const getIniziativaById = async (req, res) => {
             });
         }
 
-        const response = iniziativa.toObject();
-        if (req.ruolo === 'cittadino') {
-            response.ha_votato = !!(await VotoIniziativa.exists({
-                ID_iniziativa: id,
-                ID_cittadino: req.user._id
-            }));
-        }
-
         return res.status(200).json({
             message: "Iniziativa trovata con successo.",
-            iniziativa: response
+            iniziativa
         });
     }
     catch(error){

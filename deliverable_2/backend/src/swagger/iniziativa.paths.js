@@ -282,7 +282,7 @@
  * /iniziative/{id}:
  *   get:
  *     summary: Ottieni dettagli iniziativa
- *     description: Restituisce i dettagli di una iniziativa specifica. Per i cittadini include il campo `ha_votato` che indica se l'utente ha già sostenuto l'iniziativa.
+ *     description: Restituisce i dettagli di una iniziativa specifica, arricchiti tramite aggregation con il nome della categoria, il nome e cognome del cittadino proponente e il numero di voti (sostenitori). Per i cittadini include il campo `ha_votato` che indica se l'utente ha già sostenuto l'iniziativa.
  *     tags:
  *       - Iniziative
  *     security:
@@ -313,11 +313,15 @@
  *                   iniziativa:
  *                     _id: "507f1f77bcf86cd799439011"
  *                     ID_categoria: "507f1f77bcf86cd799439012"
+ *                     categoria: "Ambiente"
  *                     titolo: "Pulizia parchi pubblici"
- *                     ID_cittadino: "507f1f77bcf86cd799439013"
  *                     descrizione: "Proposta per organizzare giornate di pulizia nei parchi pubblici della città"
+ *                     stato: "approvata"
+ *                     nome_cittadino: "Mario"
+ *                     cognome_cittadino: "Rossi"
+ *                     numero_voti: 42
+ *                     ha_votato: false
  *                     createdAt: "2025-12-05T16:00:00.000Z"
- *                     updatedAt: "2025-12-05T16:00:00.000Z"
  *       400:
  *         description: ID non valido
  *         content:

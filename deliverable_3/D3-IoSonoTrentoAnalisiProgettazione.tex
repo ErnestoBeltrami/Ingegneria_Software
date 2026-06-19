@@ -278,7 +278,9 @@ dall'operatore tramite \texttt{PATCH /iniziative/:id/modera}.
 Elenco delle iniziative, filtrabile per stato e categoria, con il numero di voti ricevuti.
 
 \interfacciafornita{dettaglio iniziativa}\\
-Documento con tutti i metadati, la descrizione e la motivazione di moderazione se presente.
+Documento con tutti i metadati e la descrizione completa, arricchito come la lista con il nome
+della categoria, il nominativo del cittadino proponente e il numero di voti ricevuti; per i
+cittadini include il flag \texttt{ha\_votato}.
 
 \interfacciafornita{esito voto iniziativa}\\
 Conferma dell'aggiunta o rimozione del voto di supporto di un cittadino a un'iniziativa.

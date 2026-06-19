@@ -96,3 +96,9 @@ export const submitVotazione = (votazioneId, opzioneId) =>
         method: 'POST',
         body: JSON.stringify({ votazioneId, opzioneId })
     });
+
+export const sosteniIniziativa = (iniziativaID) =>
+    apiFetch('/cittadino/vote/iniziativa', {
+        method: 'POST',
+        body: JSON.stringify({ iniziativaID }),
+    });
