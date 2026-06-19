@@ -435,6 +435,10 @@
   padding: 16px;
   margin: 0;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  max-height: 240px;
+  overflow-y: auto;
 }
 
 [data-theme="light"] .modal-descrizione {
