@@ -77,14 +77,25 @@ L’obiettivo finale quindi sarebbe quello di fornire uno strumento che possa av
 
 \subsection{Requisiti funzionali comuni per operatore e utente}
 \begin{enumerate}[label=\textbf{RF\arabic*}]
-	\item \textbf{Gestione accessi}: La piattaforma deve consentire l’accesso agli utenti. Gli utenti si registrano tramite Google Authentication; al primo accesso, l’ID univoco Google viene memorizzato nel database insieme alle informazioni necessarie per consentire i successivi login. Gli operatori del Comune accedono alla dashboard amministrativa tramite nome utente e password predefiniti nel database.
+	\item \textbf{Gestione accessi}: Il sistema deve consentire ai cittadini di autenticarsi tramite SPID o CIE ID.
+	\begin{itemize}
+		\item \textit{Primo Accesso e ID Univoco}:
+		\begin{enumerate}[label=\arabic*.]
+			\item Al primo accesso tramite SPID o CIE ID, l’IdP rilascia un’asserzione SAML contenente gli attributi dell’utente (nome, cognome, codice fiscale, email, ecc.) e un ID univoco (generalmente il codice fiscale o un identificativo persistente univoco e sicuro fornito dall’IdP).
+			\item Il sistema deve recuperare e memorizzare nel proprio database tale ID univoco/codice fiscale come identificatore primario dell’utente, insieme agli attributi minimi necessari.
+			\item Subito dopo il primo accesso l'utente dovra' completare le informazioni mancanti del suo profilo tramite un form che gli verra' presentato
+			\item Questo ID univoco funge da chiave per tutti i login successivi, garantendo che il ritorno dell’IdP sia sempre collegato al profilo utente corretto.
+		\end{enumerate}
+		\item \textit{Login Successivi}: per i login successivi, l’asserzione SAML confermerà l’identità dell’utente; il sistema collegherà l’ID univoco ricevuto dal protocollo al profilo memorizzato per autorizzare l’accesso.
+		\item Gli operatori del Comune accedono alla dashboard amministrativa tramite nome utente e password predefiniti nel database.
+	\end{itemize}
 
 	\item \textbf{Accesso alla Dashboard}: Tutti gli utenti autenticati devono poter accedere alla propria dashboard:
 	\begin{itemize}
 		\item Ai cittadini viene mostrata una dashboard con le votazioni attive, i risultati delle votazioni concluse, i sondaggi disponibili e la bacheca delle iniziative cittadine.
-		\item Agli operatori comunali è riservata una dashboard estesa che consente di avviare votazioni e sondaggi, monitorare risultati e gestire i contenuti pubblicati dai cittadini. 
+		\item Agli operatori comunali è riservata una dashboard estesa che consente di avviare votazioni e sondaggi, monitorare risultati e gestire i contenuti pubblicati dai cittadini.
 	\end{itemize}
-	
+
 	\item  \textbf{Riepilogo}: Tutti gli utenti devono poter visualizzare un riepilogo dei risultati delle votazioni.I cittadini vedono un riepilogo sintetico e anonimizzato: percentuale e numero assoluto di voti per scelta, mentre gli operatori possono accedere a un livello di dettaglio maggiore per effettuare analisi sulle preferenze espresse.
 
 	\item \textbf{Ricerca}: L’applicazione deve consentire la ricerca di iniziative e contenuti pubblicati dai cittadini tramite una barra di ricerca, disponibile sia per utenti che per operatori. Potranno essere applicati filtri (ad esempio per argomento, per votazioni,per data,...) per ordinare i risultati rendendo la ricerca più rapida.
@@ -96,23 +107,30 @@ L’obiettivo finale quindi sarebbe quello di fornire uno strumento che possa av
 	\item \textbf{Creazione e gestione delle votazioni}: Il sistema deve consentire agli operatori del Comune di creare, configurare e gestire le votazioni relative agli argomenti discussi in sede comunale. Ogni votazione potrà comprendere uno o più temi, ciascuno corredato da una breve descrizione e da eventuali materiali informativi allegati. Il sistema deve consentire all’operatore di inserire un numero fisso di risposte per ogni tema ed altre opzioni come votazione a risposta singola o multipla.  L’operatore deve avere la possibilità di impostare un limite di tempo per la durata della votazione, definendo una data e un’ora di chiusura oltre le quali non sarà più possibile esprimere voti. Inoltre, l’interfaccia dovrà permettere di modificare o eliminare votazioni già create, garantendo al contempo la tracciabilità delle operazioni effettuate per motivi di trasparenza e controllo.
 	\item \textbf{Creazione e gestione dei sondaggi}: L’applicazione deve permettere agli operatori di creare, pubblicare e gestire mini-sondaggi anonimi rivolti agli utenti registrati. Tali sondaggi possono essere collegati a specifiche votazioni o riguardare tematiche di interesse generale, con l’obiettivo di raccogliere rapidamente opinioni e percezioni della cittadinanza. Ogni sondaggio deve poter essere configurato con un numero variabile di domande a risposta chiusa o multipla, e deve prevedere la possibilità di impostare un periodo di validità (data di apertura e chiusura). Al termine del periodo stabilito, il sistema deve automaticamente chiudere la raccolta delle risposte e rendere disponibili i risultati agli operatori.
 
-	\item \textbf{Moderazione dei contenuti generati dagli utenti}: Il sistema deve consentire agli operatori di monitorare e moderare le proposte e i contenuti pubblicati dai cittadini sulla piattaforma. In particolare, gli operatori devono poter eliminare o segnalare contenuti che violano le linee guida della community o che contengono linguaggio offensivo, materiale inappropriato o non conforme alle politiche del Comune. Le azioni di moderazione devono essere tracciate (operatore, data, motivo) per garantire trasparenza e auditabilità.
+	\item \textbf{Moderazione dei contenuti generati dagli utenti}: Il sistema deve consentire agli operatori di monitorare e moderare le proposte e i contenuti pubblicati dai cittadini sulla piattaforma. In particolare, gli operatori devono poter eliminare, specificando una motivazione, i contenuti che violano le linee guida della community o che contengono linguaggio offensivo, materiale inappropriato o non conforme alle politiche del Comune. Le azioni di moderazione devono essere tracciate (operatore, data, motivo) per garantire trasparenza e auditabilità.
 \end{enumerate}
 
 \subsection{Requisiti funzionali solo per cittadini}
 \begin{enumerate}[label=\textbf{RFC\arabic*}]
 	\item \textbf{Gestione delle iniziative dei cittadini}: I cittadini possono proporre nuove iniziative nella bacheca pubblica e votare quelle esistenti per aumentarne la visibilità. Ogni iniziativa deve riportare il titolo, una descrizione sintetica e il numero di voti ricevuti.
 
-	\item \textbf{Votazioni}: Il sistema deve garantire che ogni cittadino possa esprimere un solo voto per ciascun tema di votazione e un solo invio di risposte per ogni sondaggio. Le preferenze espresse devono essere registrate in forma anonima e non modificabile, assicurando al contempo la tracciabilità del voto a fini di controllo senza violare la privacy del cittadino. 
+	\item \textbf{Votazioni}: Il sistema deve garantire che ogni cittadino possa esprimere un solo voto per ciascun tema di votazione e un solo invio di risposte per ogni sondaggio. Le preferenze espresse devono essere registrate in forma anonima e non modificabile, assicurando al contempo la tracciabilità del voto a fini di controllo senza violare la privacy del cittadino.
 
-	\item \textbf{Visualizzazione votazioni e sondaggi}: Il sistema deve garantire ai cittadini di poter visualizzare sia votazioni che sondaggi attive nella propria dashboard.
+	\item \textbf{Visualizzazione votazioni e sondaggi}: Il sistema deve garantire ai cittadini di poter visualizzare sia votazioni che sondaggi attive nella propria dashboard; permette inoltre di consultare quelle concluse dal menu dedicato della dashboard.
 \end{enumerate}
 
 \subsection{Requisiti funzionali per account root}
 \begin{itemize}
-    \item \textbf{RF14 - Creazione account operatore}: Il sistema deve consentire a qualsiasi operatore autenticato di creare nuovi account operatore (\texttt{POST /operatore/register}), inserendo username, password, nome e cognome. Al primo avvio il sistema crea automaticamente un account root predefinito (\textit{seedRoot}) con credenziali iniziali note, non eliminabile.
-    \item \textbf{RF15 - Promozione a root}: Il sistema deve consentire all’account root di promuovere un operatore esistente al ruolo root tramite l’endpoint \texttt{PATCH /operatore/:id/promote}. Solo un operatore con flag \texttt{isRoot: true} può eseguire questa operazione.
-    \item \textbf{RF16 - Disattivazione account amministratore} \textit{(requisito futuro)}: In una versione futura il sistema dovrà consentire all’account root di disattivare account operatore esistenti senza eliminarne i dati, registrando data e ora dell’operazione per finalità di audit.
+    \item \textbf{RF14 - Creazione account operatore}: Il sistema deve consentire a qualsiasi operatore autenticato di creare nuovi account operatore, inserendo username, password, nome e cognome. Al primo avvio il sistema crea automaticamente un account root predefinito (\textit{seedRoot}) con credenziali iniziali note, non eliminabile.
+    \item \textbf{RF15 - Promozione a root}: Il sistema deve consentire all’account root di promuovere un operatore esistente al ruolo root. Solo un operatore con flag \texttt{isRoot: true} può eseguire questa operazione.
+    \item \textbf{RF16 - Disattivazione account amministratore}: In una versione futura il sistema dovrà consentire all’account root di disattivare account operatore esistenti senza eliminarne i dati, registrando data e ora dell’operazione per finalità di audit.
+	\item \textbf{RF16 - Visualizzazione lista amministratore}: Il sistema deve consentire  all'account root di disattivare uno o piu' account amministrativi esistenti. La lista deve includere almeno:
+		\begin{itemize}
+			\item nome utente dell'operatore
+			\item stato dell'account
+			\item data di creazione dell'account
+			\item eventuale data di disattivazione
+		\end{itemize}
 \end{itemize}
 
 \section{Requisiti non funzionali}  
