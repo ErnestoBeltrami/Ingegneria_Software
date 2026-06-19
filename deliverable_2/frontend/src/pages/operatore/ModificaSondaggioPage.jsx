@@ -53,7 +53,7 @@ export default function ModificaSondaggioPage() {
   useEffect(() => {
     apiFetch(`/sondaggio/${id}`)
       .then((data) => {
-        const s = data.sondaggio ?? data;
+        const s = data.consultazione ?? data.sondaggio ?? data;
         setTitolo(s.titolo ?? '');
         setDescrizione(s.descrizione ?? '');
         setDataApertura(isoToDate(s.data_inizio));
