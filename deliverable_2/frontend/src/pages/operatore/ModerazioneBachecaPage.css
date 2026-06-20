@@ -332,3 +332,62 @@
 .dashboard-search__input::placeholder {
   color: var(--text-faint);
 }
+
+/* Tema chiaro */
+[data-theme="light"] .mb-counter--attesa .mb-counter__num {
+  color: #b45309;
+}
+
+[data-theme="light"] .mb-counter--approvata .mb-counter__num {
+  color: #007a52;
+}
+
+[data-theme="light"] .mb-counter--rifiutata .mb-counter__num {
+  color: #dc2626;
+}
+
+[data-theme="light"] .mb-error {
+  color: #dc2626;
+}
+
+[data-theme="light"] .mb-filter-btn--active {
+  background: rgba(245, 158, 11, 0.12);
+  color: #b45309;
+  border-color: rgba(245, 158, 11, 0.40);
+}
+
+[data-theme="light"] .mb-badge--in_attesa {
+  background: rgba(245, 158, 11, 0.12);
+  color: #b45309;
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+[data-theme="light"] .mb-badge--approvata {
+  background: rgba(0, 122, 82, 0.10);
+  color: #007a52;
+  border-color: rgba(0, 122, 82, 0.30);
+}
+
+[data-theme="light"] .mb-badge--rifiutata {
+  background: rgba(220, 38, 38, 0.10);
+  color: #dc2626;
+  border-color: rgba(220, 38, 38, 0.30);
+}
+
+[data-theme="light"] .mb-card__motivazione {
+  background: rgba(220, 38, 38, 0.06);
+  color: #dc2626;
+  border-color: rgba(220, 38, 38, 0.20);
+}
+
+[data-theme="light"] .mb-action--esamina {
+  color: #b45309;
+}
+
+[data-theme="light"] .mb-action--motivazione {
+  color: #dc2626;
+}
+
+[data-theme="light"] .modal-required-mark {
+  color: #dc2626;
+}

@@ -387,3 +387,24 @@
 .crea-btn--salva:hover:not(:disabled) {
   opacity: 0.88;
 }
+
+/* Tema chiaro */
+[data-theme="light"] .crea-field__required {
+  color: #dc2626;
+}
+
+[data-theme="light"] .crea-error {
+  color: #dc2626;
+}
+
+[data-theme="light"] .crea-add-opzione {
+  color: #1f3a89;
+}
+
+[data-theme="light"] .crea-opzione__delete:hover:not(:disabled) {
+  color: #dc2626;
+}
+
+[data-theme="light"] .crea-btn--annulla {
+  color: #dc2626;
+}
