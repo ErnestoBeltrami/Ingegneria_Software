@@ -227,6 +227,16 @@
   transform: translateX(20px);
 }
 
+.crea-domanda__tipo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 14px;
+  margin-top: 2px;
+  border-top: 1px solid var(--border);
+}
+
 /* =====================
    Bottoni azione
    ===================== */
