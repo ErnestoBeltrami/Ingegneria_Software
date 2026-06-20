@@ -136,7 +136,7 @@ export default function VotaSondaggio() {
 
     return (
         <div className="cd-layout">
-            {renderTopbar()}
+            <TopBarCittadino nome={nome} cognome={cognome} />
             <div className="cd-page">
                 <button className="back-btn" onClick={() => navigate(-1)}>
                     <ArrowLeft size={20} />
