@@ -167,6 +167,20 @@ export const publishConsultazione = async (req, res) => {
             });
         }
 
+        const ora = new Date();
+
+        if (new Date(consultazione.data_fine) <= ora) {
+          return res.status(400).json({
+            message: 'Non è possibile pubblicare una consultazione con data di fine già passata.'
+          });
+        }
+
+        if (new Date(consultazione.data_inizio) <= ora) {
+          return res.status(400).json({
+            message: 'Non è possibile pubblicare una consultazione con data di inizio già passata.'
+          });
+        }
+
         consultazione.stato = 'attivo';
         await consultazione.save();
 
