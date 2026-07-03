@@ -6,6 +6,13 @@ import { VotoIniziativa } from '../models/voto_iniziativa.js';
 import { Iniziativa } from '../models/iniziativa.js';
 import { Consultazione } from '../models/consultazione.js';
 
+function getFase(c) {
+    const ora = new Date();
+    if(ora < new Date(c.data_inizio)) return 'in_arrivo';
+    if(ora > new Date(c.data_fine)) return 'conclusa';
+    return 'in_corso';
+}
+
 export const logout = async (req, res) => {
     try {
         const userFromMiddleware = req.user;
@@ -118,11 +125,22 @@ export const answerVote = async (req,res) => {
         }
 
         const votazioneDoc = await Consultazione.findOne({ _id: votazione, tipo: 'votazione' }).populate('ID_domanda');
+        
         if (!votazioneDoc || votazioneDoc.stato !== 'attivo') {
             return res.status(403).json({
                 message: 'La votazione non è attiva.'
             });
         }
+
+        const fase = getFase(votazioneDoc);
+
+        if(fase == 'in_arrivo') return res.status(403).json({
+            message: 'La votazione non è ancora iniziata.'
+        });
+        if(fase == 'conclusa') return res.status(403).json({
+            message : 'La votazione è conclusa.'
+        });
+
 
         const domanda = votazioneDoc.ID_domanda;
         if (!domanda) {
@@ -213,12 +231,21 @@ export const answerSondaggio = async (req, res) => {
         }
 
         const sondaggio = await Consultazione.findById(sondaggioId).populate('ID_domande');
-
+        
         if (!sondaggio || sondaggio.tipo !== 'sondaggio' || sondaggio.stato !== 'attivo') {
             return res.status(403).json({
                 message: "Il sondaggio selezionato non è valido o non è attivo."
             });
         }
+        
+        const fase = getFase(sondaggio);
+
+        if(fase == 'in_arrivo') return res.status(403).json({
+            message: 'Il sondaggio non è ancora iniziato.'
+        });
+        if(fase == 'conclusa') return res.status(403).json({
+            message : 'Il sondaggio è concluso.'
+        });
 
         const domandeDelSondaggio = sondaggio.ID_domande;
 
