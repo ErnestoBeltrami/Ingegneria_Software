@@ -156,3 +156,139 @@ Estensioni
         ◦ Condizione: Stato = "concluso".
         ◦ Azione: Il sistema richiede conferma. Se data, lo stato cambia in "archiviato" (conservazione storica permanente).
     4. Transizione Automatica a Concluso: Nota: Questa non è un'azione dell'Operatore. Al raggiungimento della data e ora di chiusura (data definita in RF7), il sistema cambia automaticamente lo stato del sondaggio da "attivo" a "concluso" e rende i risultati disponibili.
+
+Use Case RF9: Moderazione delle iniziative
+Riassunto
+L'Operatore Comunale visualizza le iniziative pubblicate dai cittadini e ne modera il contenuto. 
+Per ciascuna iniziativa in attesa può approvarla, rendendola visibile sulla bacheca pubblica, oppure rifiutarla specificando una motivazione.
+Descrizione
+L'Operatore Comunale accede alla sezione "Moderazione bacheca" dalla dashboard.
+Il sistema mostra l'elenco di tutte le iniziative pubblicate dai cittadini, suddivise per stato (in attesa, approvate, rifiutate).
+L'Operatore Comunale seleziona un'iniziativa in stato "In attesa".
+Il sistema mostra tutti i dettagli dell'iniziativa.
+L'Operatore Comunale valuta il contenuto in base alle linee guida della community e alle politiche del Comune.
+Se il contenuto è conforme, l'Operatore approva l'iniziativa.
+Il sistema aggiorna lo stato dell'iniziativa in "Approvata" e la rende visibile nella bacheca pubblica
+altrimenti, se la rifiuta, deve specificare un motivo di rifiuto e diventa ‘rifiutata’. 
+
+Estensioni
+Eliminare Contenuto:
+6a. Rifiuto dell'iniziativa
+L'Operatore Comunale decide di rifiutare l'iniziativa.
+Il sistema richiede l'inserimento di una motivazione del rifiuto.
+L'Operatore inserisce la motivazione.
+Il sistema aggiorna lo stato dell'iniziativa in "Rifiutata" e memorizza la motivazione.
+
+
+RF10 Publicazione iniziative
+Riassunto
+Il sistema deve consentire ai Cittadini autenticati di proporre nuove iniziative nella bacheca pubblica. 
+L'iniziativa deve riportare il nome utente dell'autore, un titolo e una descrizione sintetica.
+
+Descrizione
+Il Cittadino seleziona l'opzione "Proponi Nuova Iniziativa".
+Il sistema presenta un form di creazione.
+Il Cittadino inserisce il titolo e la descrizione sintetica dell'iniziativa.
+Il sistema registra automaticamente il nome utente del Cittadino proponente.
+Il Cittadino conferma la pubblicazione.
+Il sistema salva l'iniziativa nel database in stato di attesa di essere approvata, impostando il conteggio dei voti a zero.
+Eccezioni
+Campi Obbligatori Mancanti: Se il titolo o la descrizione sono assenti, il sistema impedisce la pubblicazione e richiede la compilazione.
+
+
+RF11 Votazone Iniziativa
+Il sistema deve consentire ai Cittadini autenticati di votare le iniziative esistenti per aumentarne la visibilità. 
+Il sistema deve assicurare che un singolo Cittadino possa votare una singola iniziativa una sola volta.
+
+Descrizione
+Il Cittadino visualizza la bacheca delle iniziative, dove è presente il conteggio dei voti ricevuti.
+Il Cittadino seleziona il pulsante "Vota" accanto all'iniziativa desiderata.
+Il sistema verifica l'identità del Cittadino per assicurarsi che non abbia precedentemente votato per quell'iniziativa.
+Se il voto è valido (non duplicato), il sistema incrementa di uno il contatore dei voti ricevuti.
+Il sistema disabilita la possibilità per il Cittadino di votare nuovamente quell'iniziativa.
+
+Eccezioni
+Voto Duplicato: Se il sistema rileva che il Cittadino ha già votato per l'iniziativa, nega l'azione. 
+
+RF12 Votazione
+Riassunto
+Il sistema deve garantire che ogni Cittadino possa esprimere un solo invio (voto o risposta) per ciascun tema di votazione e per ogni sondaggio.
+ Le preferenze espresse devono essere registrate in forma anonima e non modificabile, assicurando la tracciabilità del dato a fini di controllo senza violare la privacy.
+
+Descrizione
+
+Il cittadino seleziona una votazione/sondaggio tra quelli attivi.
+Il Cittadino completa la sua selezione (votazione o sondaggio) e conferma l'invio.
+Controllo di Univocità: Il sistema verifica l'identità del Cittadino e la Cronologia degli invii precedenti per assicurarsi che non esista già un invio valido per quello specifico tema o sondaggio.
+Se l'invio è valido (univoco):
+Anonimizzazione: Le preferenze espresse vengono separate dall'identità immediata del Cittadino e registrate in forma anonima.
+Tracciabilità e Immutabilità: Il dato di voto/risposta è registrato in modo non modificabile e viene salvato con un riferimento (es. un hash) che garantisce la tracciabilità a fini di controllo e audit, pur mantenendo l'anonimato.
+Il sistema registra l'azione di invio come completata e disabilita la possibilità di inviare risposte/voti per quel tema/sondaggio per quel Cittadino.
+
+Eccezioni
+Invio Duplicato: Se il sistema rileva un invio precedente, nega la registrazione del voto/risposta e mostra un avviso.
+
+RF13 Creazione Account Amministrativo
+
+Riassunto
+
+Il sistema deve consentire all'Account Root di creare nuovi account amministrativi, che saranno utilizzati dagli Operatori del Comune per le attività operative quotidiane.
+Descrizione
+L'Account Root esegue l'accesso al sistema (unica funzionalità consentita oltre alla gestione degli amministratori).
+L'Account Root accede alla sezione di creazione account.
+Il sistema presenta un form per l'inserimento dei dati del nuovo account amministratore (nome utente, password temporanea/iniziale).
+L'Account Root inserisce i dettagli e conferma la creazione.
+Il sistema convalida i dati, crea l'account nello stato "attivo" e registra la data di creazione.
+Il sistema notifica il successo della creazione.
+
+Eccezioni
+Dati Incompleti: Se i campi obbligatori per il nuovo account sono assenti, il sistema nega la creazione.
+Unicità: Se il nome utente esiste già, il sistema nega la creazione.
+
+RF14,15
+Use case Visualizzazione lista amministratori
+Riassunto
+Il sistema deve consentire all'Account Root di visualizzare l'elenco completo degli account amministrativi, includendo tutti i dati di stato e audit richiesti.
+Descrizione
+L'Account Root accede alla sezione "Gestione Amministratori".
+Il sistema recupera l'elenco completo degli account amministrativi registrati 
+Il sistema presenta la lista all'Account Root, assicurando che per ogni amministratore siano visibili:
+nome utente dell’amministratore;
+stato dell’account (attivo / disattivato);
+data di creazione dell’account;
+eventuale data di disattivazione (se presente).
+
+Use Case Disattivazione account amministratore
+Riassunto
+Il sistema deve consentire all'Account Root di disattivare uno o più account amministrativi esistenti, garantendo l'immutabilità dell'account Root e la registrazione per l'audit.
+Descrizione
+L'Account Root visualizza la lista degli account amministrativi (come descritto in RF15).
+L'Account Root seleziona uno o più account nello stato "attivo" da disattivare.
+L'Account Root seleziona l'opzione "Disattiva".
+Il sistema richiede una conferma esplicita dell'azione.
+Se confermata, il sistema cambia lo stato dell'account in "disattivato" 
+Il sistema registra la data e l’ora della disattivazione nel database per finalità di audit (senza eliminare l'account o i dati associati).
+Il sistema notifica all'Account Root che la disattivazione è avvenuta con successo.
+Eccezioni
+Disattivazione Fallita: Se l'account selezionato è già disattivato, il sistema mostra un messaggio e non esegue l'azione.
+
+
+Use Case RF15 – Promozione a Root
+Riassunto
+
+L'account Root promuove un operatore comunale esistente al ruolo di Root, 
+assegnandogli i privilegi amministrativi necessari per gestire le funzionalità riservate agli account Root.
+
+L'account Root accede alla sezione "Gestione operatori" dalla dashboard.
+Il sistema mostra l'elenco degli operatori registrati.
+L'account Root seleziona un operatore.
+Il sistema mostra i dettagli dell'operatore e l'opzione "Promuovi a Root".
+L'account Root conferma la promozione.
+Il sistema aggiorna il valore del campo isRoot dell'operatore a true.
+Il sistema conferma l'avvenuta promozione.
+Estensioni
+
+3a. L'operatore selezionato è già Root
+
+Il sistema informa che l'operatore possiede già il ruolo Root.
+Il caso d'uso termina.
