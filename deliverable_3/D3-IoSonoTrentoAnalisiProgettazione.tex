@@ -129,11 +129,6 @@ backend e frontend dell'applicazione.
 % ════════════════════════════════════════════════════════════════════════════
 \section{Analisi dei Componenti}
 
-Nel presente capitolo viene presentata l'architettura in termini di componenti (CMP) interni al
-sistema, definiti sulla base dei requisiti analizzati in precedenza. Viene poi adottato il diagramma
-dei componenti per rappresentare l'interconnessione tra i vari moduli, identificando le interfacce
-tra questi e verso sistemi esterni.
-
 % ────────────────────────────────────────────────────────────────────────────
 \subsection{Definizione dei componenti}
 
@@ -172,7 +167,7 @@ header \texttt{Authorization: Bearer <token>}.
 
 \interfacciarichiesta{completamento profilo cittadino}\\
 Al primo accesso Google, se \texttt{profiloCompleto = false}, il cittadino deve fornire data di
-nascita, comune di residenza e circoscrizione (se residente a Trento) tramite
+nascita, comune di residenza, circoscrizione (se residente a Trento), categoria lavorativa e genere tramite
 \texttt{POST /auth/complete-profile}.
 
 \interfacciafornita{autenticazione}\\
@@ -225,9 +220,9 @@ Conferma delle operazioni di creazione, aggiornamento o eliminazione dei documen
 \textbf{Descrizione:}\\
 Il componente si occupa del ciclo di vita delle consultazioni pubbliche, che comprendono sia le
 \textit{votazioni} (con una singola domanda a risposta singola o multipla) sia i \textit{sondaggi}
-(con più domande). Gli operatori creano le consultazioni in stato \texttt{bozza} e le pubblicano;
-lo scheduler interno le porta automaticamente allo stato \texttt{attivo} alla \texttt{data\_inizio}
-e a \texttt{concluso} alla \texttt{data\_fine}. I cittadini possono rispondere alle consultazioni
+(con più domande). Gli operatori creano le consultazioni in stato \texttt{bozza} e le pubblicano, una volta publicate
+diventano votabili a partire dalla data d'inizio;
+lo scheduler porta le consultazioni a \texttt{concluso} alla \texttt{data\_fine}. I cittadini possono rispondere alle consultazioni
 attive.
 
 \interfacciarichiesta{autenticazione}\\
@@ -299,7 +294,7 @@ password e promozione a \textit{root}.
 JWT valido per garantire che ogni utente acceda solo al proprio profilo.
 
 \interfacciarichiesta{dati completamento profilo}\\
-Data di nascita, comune di residenza e circoscrizione (se residente a Trento), forniti dal
+Data di nascita, comune di residenza, circoscrizione (se residente a Trento), categoria occupazione e genere forniti dal
 cittadino tramite \texttt{POST /auth/complete-profile}.
 
 \interfacciarichiesta{dati aggiornamento anagrafica}\\
@@ -324,18 +319,17 @@ Aggiornamento del flag \texttt{loggedIn} a \texttt{false} e risposta di conferma
 Il componente aggrega i dati di partecipazione alle consultazioni per produrre statistiche
 visualizzabili dagli operatori. In particolare, per ogni votazione conclusa, calcola la
 distribuzione dei voti per opzione e per fascia d'età (derivata dalla data di nascita del
-cittadino). Espone queste aggregazioni tramite le API di reportistica.
+cittadino), genere, circoscrizione e occupazione. Espone queste aggregazioni tramite le API di reportistica.
 
 \interfacciarichiesta{dati risposte}\\
 Insieme delle \textit{RispostaConsultazione} associate a una consultazione, con gli identificativi
 dei cittadini rispondenti.
 
 \interfacciarichiesta{dati anagrafici cittadini}\\
-Data di nascita dei cittadini per il calcolo della fascia d'età al momento del voto.
+Dati dei cittadini per il calcolo delle aggregazioni al momento del voto.
 
 \interfacciafornita{statistiche aggregate}\\
-JSON con il conteggio voti per opzione e la distribuzione per fasce d'età
-(\texttt{18-30}, \texttt{31-50}, \texttt{51-70}, \texttt{71+}).
+JSON con il conteggio voti per opzione e le distribuzioni per aggregazioni.
 
 % ····················································
 \subsubsection*{CMP7: Scheduler consultazioni}
@@ -345,11 +339,10 @@ JSON con il conteggio voti per opzione e la distribuzione per fasce d'età
 Il componente implementa un job schedulato (via \texttt{node-cron}, esecuzione oraria) che
 gestisce le transizioni automatiche di stato delle consultazioni. All'avvio dell'applicazione
 esegue immediatamente un ciclo di controllo. Le transizioni gestite sono:
-$\texttt{bozza} \to \texttt{attivo}$ quando \texttt{data\_inizio} è trascorsa e
 $\texttt{attivo} \to \texttt{concluso}$ quando \texttt{data\_fine} è trascorsa.
 
 \interfacciarichiesta{lista consultazioni attive/in bozza}\\
-Interrogazione periodica al database per recuperare le consultazioni in stato \texttt{bozza} o
+Interrogazione periodica al database per recuperare le consultazioni in stato
 \texttt{attivo} che soddisfano i criteri di transizione.
 
 \interfacciafornita{aggiornamento stato consultazione}\\
