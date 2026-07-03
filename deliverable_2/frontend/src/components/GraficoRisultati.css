@@ -60,7 +60,7 @@
 .gr-row__track {
     width: 100%;
     height: 14px;
-    background: #e5e7eb;
+    background: var(--surface-raised, #e5e7eb);
     border-radius: 99px;
     overflow: hidden;
 }
