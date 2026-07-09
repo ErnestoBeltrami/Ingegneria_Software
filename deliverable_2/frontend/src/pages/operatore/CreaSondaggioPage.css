@@ -227,6 +227,16 @@
   transform: translateX(20px);
 }
 
+.crea-domanda__tipo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 14px;
+  margin-top: 2px;
+  border-top: 1px solid var(--border);
+}
+
 /* =====================
    Bottoni azione
    ===================== */
@@ -457,4 +467,29 @@
 .crea-add-domanda:disabled {
   opacity: 0.35;
   cursor: not-allowed;
+}
+
+/* Tema chiaro */
+[data-theme="light"] .crea-error {
+  color: #dc2626;
+}
+
+[data-theme="light"] .crea-btn--annulla {
+  color: #dc2626;
+}
+
+[data-theme="light"] .crea-domanda__remove:hover {
+  color: #dc2626;
+}
+
+[data-theme="light"] .crea-opzione__delete:hover {
+  color: #dc2626;
+}
+
+[data-theme="light"] .crea-add-opzione {
+  color: #007a52;
+}
+
+[data-theme="light"] .crea-add-domanda:hover:not(:disabled) {
+  color: #007a52;
 }

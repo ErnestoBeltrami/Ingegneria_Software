@@ -291,3 +291,30 @@
   .po-layout { grid-template-columns: 1fr; }
   .po-shell { padding: 20px; }
 }
+
+/* Tema chiaro */
+[data-theme="light"] .po-back:hover {
+  color: #1f3a89;
+}
+
+[data-theme="light"] .po-badge--root {
+  background: rgba(31, 58, 137, 0.10);
+  color: #1f3a89;
+  border-color: rgba(31, 58, 137, 0.30);
+}
+
+[data-theme="light"] .po-field__required {
+  color: #dc2626;
+}
+
+[data-theme="light"] .po-msg--error {
+  color: #dc2626;
+}
+
+[data-theme="light"] .po-msg--success {
+  color: #007a52;
+}
+
+[data-theme="light"] .po-btn--secondary {
+  color: #dc2626;
+}
