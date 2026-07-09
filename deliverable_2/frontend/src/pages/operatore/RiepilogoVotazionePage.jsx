@@ -7,6 +7,7 @@ import {
   BarChart, Bar,
 } from 'recharts';
 import TopBar from '@/components/TopBar';
+import { useTheme } from '@/contexts/ThemeContext';
 import './RiepilogoVotazionePage.css';
 
 const COL = {
@@ -15,17 +16,26 @@ const COL = {
   astenuto:   '#8899aa',
 };
 
-const CHART_GRID = 'rgba(255,255,255,0.08)';
-const CHART_TICK = { fontSize: 11, fill: 'rgba(255,255,255,0.5)' };
-const TOOLTIP_STYLE = {
-  background: 'rgba(14,14,14,0.96)',
-  border: '1px solid rgba(255,255,255,0.14)',
-  borderRadius: '12px',
-  color: '#fff',
-  fontSize: 12,
-};
-const TOOLTIP_LABEL_STYLE = { color: 'rgba(255,255,255,0.85)', fontWeight: 600 };
-const TOOLTIP_ITEM_STYLE  = { color: 'rgba(255,255,255,0.7)' };
+function chartTheme(dark) {
+  const line = dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.12)';
+  const tick = dark ? 'rgba(255,255,255,0.5)'  : 'rgba(0,0,0,0.55)';
+  const strong = dark ? 'rgba(255,255,255,0.85)' : 'rgba(0,0,0,0.85)';
+  const soft = dark ? 'rgba(255,255,255,0.7)'  : 'rgba(0,0,0,0.7)';
+  return {
+    grid: line,
+    tick: { fontSize: 11, fill: tick },
+    legendColor: soft,
+    tooltip: {
+      background: dark ? 'rgba(14,14,14,0.96)' : 'rgba(255,255,255,0.98)',
+      border: `1px solid ${dark ? 'rgba(255,255,255,0.14)' : 'rgba(0,0,0,0.12)'}`,
+      borderRadius: '12px',
+      color: dark ? '#fff' : '#1a1a1a',
+      fontSize: 12,
+    },
+    tooltipLabel: { color: strong, fontWeight: 600 },
+    tooltipItem:  { color: soft },
+  };
+}
 
 const FASCE_ORDER = ['18-25', '26-35', '36-50', '51-65', '66+'];
 
@@ -66,6 +76,8 @@ function keyForTesto(testo = '') {
 export default function RiepilogoVotazionePage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { theme } = useTheme();
+  const CHART = chartTheme(theme === 'dark');
   const nome = localStorage.getItem('nome') || '';
   const cognome = localStorage.getItem('cognome') || '';
 
@@ -243,8 +255,8 @@ export default function RiepilogoVotazionePage() {
                   <Pie data={donutData} cx="50%" cy="50%" innerRadius={55} outerRadius={85} dataKey="value" paddingAngle={2}>
                     {donutData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
                   </Pie>
-                  <Tooltip formatter={(v, n) => [`${v} voti`, n]} contentStyle={TOOLTIP_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE} />
-                  <Legend iconType="circle" iconSize={10} formatter={(value) => <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11 }}>{value}</span>} />
+                  <Tooltip formatter={(v, n) => [`${v} voti`, n]} contentStyle={CHART.tooltip} labelStyle={CHART.tooltipLabel} itemStyle={CHART.tooltipItem} />
+                  <Legend iconType="circle" iconSize={10} formatter={(value) => <span style={{ color: CHART.legendColor, fontSize: 11 }}>{value}</span>} />
                 </PieChart>
               </ResponsiveContainer>
             )
@@ -260,10 +272,10 @@ export default function RiepilogoVotazionePage() {
               : (
                 <ResponsiveContainer width="100%" height={220}>
                   <LineChart data={lineData} margin={{ top: 8, right: 16, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} />
-                    <XAxis dataKey="data" tick={CHART_TICK} axisLine={{ stroke: CHART_GRID }} tickLine={false} />
-                    <YAxis tick={CHART_TICK} allowDecimals={false} axisLine={false} tickLine={false} />
-                    <Tooltip contentStyle={TOOLTIP_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE} />
+                    <CartesianGrid strokeDasharray="3 3" stroke={CHART.grid} />
+                    <XAxis dataKey="data" tick={CHART.tick} axisLine={{ stroke: CHART.grid }} tickLine={false} />
+                    <YAxis tick={CHART.tick} allowDecimals={false} axisLine={false} tickLine={false} />
+                    <Tooltip contentStyle={CHART.tooltip} labelStyle={CHART.tooltipLabel} itemStyle={CHART.tooltipItem} />
                     <Line type="monotone" dataKey="voti" stroke="#829aff" strokeWidth={2} dot={{ r: 3, fill: '#829aff' }} activeDot={{ r: 5 }} />
                   </LineChart>
                 </ResponsiveContainer>
@@ -282,10 +294,10 @@ export default function RiepilogoVotazionePage() {
                 <>
                   <ResponsiveContainer width="100%" height={220}>
                     <BarChart data={fasciaData} margin={{ top: 8, right: 16, left: -20, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} vertical={false} />
-                      <XAxis dataKey="fascia" tick={CHART_TICK} axisLine={{ stroke: CHART_GRID }} tickLine={false} />
-                      <YAxis tick={CHART_TICK} allowDecimals={false} axisLine={false} tickLine={false} />
-                      <Tooltip contentStyle={TOOLTIP_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE} />
+                      <CartesianGrid strokeDasharray="3 3" stroke={CHART.grid} vertical={false} />
+                      <XAxis dataKey="fascia" tick={CHART.tick} axisLine={{ stroke: CHART.grid }} tickLine={false} />
+                      <YAxis tick={CHART.tick} allowDecimals={false} axisLine={false} tickLine={false} />
+                      <Tooltip contentStyle={CHART.tooltip} labelStyle={CHART.tooltipLabel} itemStyle={CHART.tooltipItem} />
                       <Bar dataKey="favorevole" name="Favorevoli" fill={COL.favorevole} radius={[3,3,0,0]} maxBarSize={28} />
                       <Bar dataKey="contrario"  name="Contrari"   fill={COL.contrario}  radius={[3,3,0,0]} maxBarSize={28} />
                       <Bar dataKey="astenuto"   name="Astenuti"   fill={COL.astenuto}   radius={[3,3,0,0]} maxBarSize={28} />
@@ -312,10 +324,10 @@ export default function RiepilogoVotazionePage() {
                 <>
                   <ResponsiveContainer width="100%" height={200}>
                     <BarChart data={genereData} layout="vertical" margin={{ top: 8, right: 16, left: 10, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} horizontal={false} />
-                      <XAxis type="number" tick={CHART_TICK} allowDecimals={false} axisLine={{ stroke: CHART_GRID }} tickLine={false} />
-                      <YAxis type="category" dataKey="genere" tick={CHART_TICK} width={45} axisLine={false} tickLine={false} />
-                      <Tooltip contentStyle={TOOLTIP_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE} />
+                      <CartesianGrid strokeDasharray="3 3" stroke={CHART.grid} horizontal={false} />
+                      <XAxis type="number" tick={CHART.tick} allowDecimals={false} axisLine={{ stroke: CHART.grid }} tickLine={false} />
+                      <YAxis type="category" dataKey="genere" tick={CHART.tick} width={45} axisLine={false} tickLine={false} />
+                      <Tooltip contentStyle={CHART.tooltip} labelStyle={CHART.tooltipLabel} itemStyle={CHART.tooltipItem} />
                       <Bar dataKey="favorevole" name="Favorevoli" fill={COL.favorevole} radius={[0,3,3,0]} maxBarSize={20} />
                       <Bar dataKey="contrario"  name="Contrari"   fill={COL.contrario}  radius={[0,3,3,0]} maxBarSize={20} />
                       <Bar dataKey="astenuto"   name="Astenuti"   fill={COL.astenuto}   radius={[0,3,3,0]} maxBarSize={20} />
