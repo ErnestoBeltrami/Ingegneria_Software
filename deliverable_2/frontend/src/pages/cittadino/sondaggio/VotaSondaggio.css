@@ -37,6 +37,25 @@
     color: #007a52;
 }
 
+.badge-stato.concluso {
+    background: rgba(107, 114, 128, 0.15);
+    color: var(--text-secondary);
+}
+
+.badge-stato.in-arrivo {
+    background: rgba(107, 114, 128, 0.15);
+    color: var(--text-secondary);
+}
+
+.conclusa-banner {
+    padding: 16px 20px;
+    background: var(--surface-raised);
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    font-size: 15px;
+    color: var(--text-secondary);
+}
+
 .sondaggio-title {
     font-size: 32px;
     font-weight: 700;

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Clock, CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
 import './VotaSondaggio.css';
 import { fetchSondaggioCittadino, submitSondaggio, fetchProfile } from '../../../services/api';
+import { getFase } from '../../../lib/fase';
 import TopBarCittadino from '../../../components/TopBarCittadino';
 
 export default function VotaSondaggio() {
@@ -134,6 +135,17 @@ export default function VotaSondaggio() {
     const currentQuestion = sondaggio.ID_domande[currentQuestionIndex];
     const isLastQuestion = currentQuestionIndex === sondaggio.ID_domande.length - 1;
 
+    const fase = getFase(sondaggio);
+    const isConcluso = fase === 'conclusa' || sondaggio.stato === 'concluso';
+    const isInArrivo = fase === 'in_arrivo';
+
+    const badgeStato = isConcluso ? 'concluso' : isInArrivo ? 'in-arrivo' : 'attivo';
+    const badgeTesto = isConcluso
+        ? 'Sondaggio concluso'
+        : isInArrivo
+            ? 'Sondaggio non ancora iniziato'
+            : 'Sondaggio in corso';
+
     return (
         <div className="cd-layout">
             <TopBarCittadino nome={nome} cognome={cognome} />
@@ -145,7 +157,7 @@ export default function VotaSondaggio() {
 
                 <div className="sondaggio-header">
                     <div className="badge-container">
-                        <span className="badge-stato attivo">Sondaggio in corso</span>
+                        <span className={`badge-stato ${badgeStato}`}>{badgeTesto}</span>
                     </div>
                     <h1 className="sondaggio-title">{sondaggio.titolo}</h1>
                     <div className="sondaggio-meta">
@@ -173,6 +185,14 @@ export default function VotaSondaggio() {
                                 <h3>Sondaggio completato!</h3>
                                 <p>Le tue risposte sono state registrate con successo. Grazie per il tuo contributo!</p>
                             </div>
+                        </div>
+                    ) : isInArrivo ? (
+                        <div className="conclusa-banner">
+                            Il sondaggio non è ancora iniziato. Apre il {formatDate(sondaggio.data_inizio)} e da quel momento potrai inviare le tue risposte.
+                        </div>
+                    ) : isConcluso ? (
+                        <div className="conclusa-banner">
+                            Il sondaggio è terminato e non accetta più risposte.
                         </div>
                     ) : (
                         <div className="domanda-wizard">
