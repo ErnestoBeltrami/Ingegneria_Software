@@ -42,6 +42,11 @@
     color: var(--text-secondary);
 }
 
+.badge-stato.in-arrivo {
+    background: rgba(107, 114, 128, 0.15);
+    color: var(--text-secondary);
+}
+
 .conclusa-banner {
     padding: 16px 20px;
     background: var(--surface-raised);
