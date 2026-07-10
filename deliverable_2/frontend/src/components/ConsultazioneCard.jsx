@@ -1,4 +1,5 @@
 import { CheckCircle } from 'lucide-react';
+import { getFase } from '../lib/fase';
 import './ConsultazioneCard.css';
 
 const BUTTON_LABELS = {
@@ -16,14 +17,17 @@ function formatDate(isoString) {
 }
 
 export function ConsultazioneCard({ activity, onAction, mode = 'operatore', voted = false }) {
-  const { _id, tipo, titolo, data_fine, stato } = activity;
+  const { _id, tipo, titolo, data_inizio, data_fine, stato } = activity;
   const showVoted = mode === 'cittadino' && voted;
+  const isInArrivo = mode === 'cittadino' && getFase(activity) === 'in_arrivo';
 
   const buttonLabel = mode === 'operatore'
     ? 'Riepilogo'
     : voted
       ? 'Partecipato'
-      : (BUTTON_LABELS[tipo] ?? 'Partecipa');
+      : isInArrivo
+        ? 'Scopri'
+        : (BUTTON_LABELS[tipo] ?? 'Partecipa');
 
   return (
     <div className={`activity-card${showVoted ? ' activity-card--voted' : ''}`}>
@@ -31,8 +35,8 @@ export function ConsultazioneCard({ activity, onAction, mode = 'operatore', vote
         <span className={`badge badge--tipo badge--${tipo}`}>
           {tipo === 'votazione' ? 'Votazione' : 'Sondaggio'}
         </span>
-        <span className="badge badge--stato">
-          {stato === 'attivo' ? 'In corso' : stato}
+        <span className={`badge badge--stato${isInArrivo ? ' badge--arrivo' : ''}`}>
+          {isInArrivo ? 'In arrivo' : stato === 'attivo' ? 'In corso' : stato}
         </span>
       </div>
       <p className="activity-card__titolo">{titolo}</p>
@@ -42,6 +46,8 @@ export function ConsultazioneCard({ activity, onAction, mode = 'operatore', vote
             <CheckCircle size={13} />
             Già partecipato
           </span>
+        ) : isInArrivo ? (
+          <span className="activity-card__termine">Apertura: {formatDate(data_inizio)}</span>
         ) : (
           <span className="activity-card__termine">Termine: {formatDate(data_fine)}</span>
         )}

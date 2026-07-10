@@ -52,6 +52,7 @@ export const fetchAllActivities = async () => {
         tipo: a.tipo,
         titolo: a.titolo,
         descrizione: a.descrizione,
+        data_inizio: a.data_inizio,
         data_fine: a.data_fine,
         data_discussione: a.data_discussione,
         stato: a.stato,
