@@ -10,11 +10,7 @@ import TopBar from '@/components/TopBar';
 import { useTheme } from '@/contexts/ThemeContext';
 import './RiepilogoVotazionePage.css';
 
-const COL = {
-  favorevole: '#5b8aff',
-  contrario:  '#ff5252',
-  astenuto:   '#8899aa',
-};
+const PALETTE = ['#5b8aff', '#00c47a', '#f5c842', '#ff5252', '#a78bfa'];
 
 function chartTheme(dark) {
   const line = dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.12)';
@@ -59,18 +55,14 @@ async function apiFetch(url) {
   return data;
 }
 
-function colorForTesto(testo = '') {
+function isFavor(testo = '') {
   const t = testo.toLowerCase().trim();
-  if (t.includes('favor') || t === 'si' || t === 'sì' || t === 'yes') return COL.favorevole;
-  if (t.includes('contra') || t === 'no') return COL.contrario;
-  return COL.astenuto;
+  return t.includes('favor') || t === 'si' || t === 'sì' || t === 'yes';
 }
 
-function keyForTesto(testo = '') {
+function isContra(testo = '') {
   const t = testo.toLowerCase().trim();
-  if (t.includes('favor') || t === 'si' || t === 'sì' || t === 'yes') return 'favorevole';
-  if (t.includes('contra') || t === 'no') return 'contrario';
-  return 'astenuto';
+  return t.includes('contra') || t === 'no';
 }
 
 export default function RiepilogoVotazionePage() {
@@ -121,18 +113,28 @@ export default function RiepilogoVotazionePage() {
 
   // --- dati base ---
   const { votazione: titolo, totaleVoti, risultati = [] } = base;
-  const { stato, data_inizio, data_fine, opzioniMap = {}, perGenere = [], perFasciaEta = [], partecipazioneGiornaliera = [] } = demo;
+  const { stato, data_inizio, data_fine, perGenere = [], perFasciaEta = [], partecipazioneGiornaliera = [] } = demo;
+
+  // Opzioni indicizzate: colore stabile per ordine, mai per testo
+  const opzioni = risultati.map((r, i) => ({
+    id: r.opzioneId?.toString(),
+    testo: r.testoOpzione,
+    color: PALETTE[i % PALETTE.length],
+  }));
+  const colorById = Object.fromEntries(opzioni.map(o => [o.id, o.color]));
 
   // Opzione vincente
   const best = risultati.reduce((a, b) => (b.percentuale > a.percentuale ? b : a), risultati[0] || {});
-  const approvata = best?.percentuale > 50 && keyForTesto(best?.testoOpzione) === 'favorevole';
+  const votoBinario = risultati.some(r => isFavor(r.testoOpzione)) && risultati.some(r => isContra(r.testoOpzione));
+  const approvata = votoBinario && best?.percentuale > 50 && isFavor(best?.testoOpzione);
+  const bestColor = colorById[best?.opzioneId?.toString()] || PALETTE[0];
   const hasBanner = totaleVoti > 0;
 
   // --- donut data ---
-  const donutData = risultati.map(r => ({
-    name: r.testoOpzione,
-    value: r.voti,
-    color: colorForTesto(r.testoOpzione),
+  const donutData = opzioni.map((o, i) => ({
+    name: o.testo,
+    value: risultati[i].voti,
+    color: o.color,
   }));
 
   // --- line chart data ---
@@ -142,12 +144,10 @@ export default function RiepilogoVotazionePage() {
   }));
 
   // --- grouped bar per fascia ---
-  const opzioniList = risultati.map(r => ({ id: r.opzioneId?.toString(), testo: r.testoOpzione }));
   const fasciaMap = {};
   perFasciaEta.forEach(({ fascia, opzioneId, voti }) => {
     if (!fasciaMap[fascia]) fasciaMap[fascia] = { fascia };
-    const testo = opzioniMap[opzioneId] || opzioneId;
-    fasciaMap[fascia][keyForTesto(testo)] = voti;
+    fasciaMap[fascia][opzioneId?.toString()] = voti;
   });
   const fasciaData = FASCE_ORDER.map(f => fasciaMap[f] || { fascia: f });
 
@@ -156,12 +156,9 @@ export default function RiepilogoVotazionePage() {
   const genereMap = {};
   perGenere.forEach(({ genere, opzioneId, voti }) => {
     if (!genereMap[genere]) genereMap[genere] = { genere };
-    const testo = opzioniMap[opzioneId] || opzioneId;
-    genereMap[genere][keyForTesto(testo)] = voti;
+    genereMap[genere][opzioneId?.toString()] = voti;
   });
   const genereData = generiList.map(g => genereMap[g] || { genere: g });
-
-  const LEGEND_ITEMS = opzioniList.map(o => ({ testo: o.testo, color: colorForTesto(o.testo) }));
 
   return (
     <div className="rv-layout">
@@ -189,8 +186,8 @@ export default function RiepilogoVotazionePage() {
             <p className="rv-stat__label">Totale votanti</p>
           </div>
           {risultati.map(r => (
-            <div key={r.opzioneId} className="rv-stat" style={{ borderTop: `3px solid ${colorForTesto(r.testoOpzione)}` }}>
-              <p className="rv-stat__num" style={{ color: colorForTesto(r.testoOpzione) }}>
+            <div key={r.opzioneId} className="rv-stat" style={{ borderTop: `3px solid ${colorById[r.opzioneId?.toString()]}` }}>
+              <p className="rv-stat__num" style={{ color: colorById[r.opzioneId?.toString()] }}>
                 {r.percentuale.toFixed(0)}%
               </p>
               <p className="rv-stat__label">{r.testoOpzione}</p>
@@ -200,7 +197,7 @@ export default function RiepilogoVotazionePage() {
         </div>
 
         {/* Banner risultato */}
-        {hasBanner && (
+        {hasBanner && (votoBinario ? (
           <div className={`rv-banner ${approvata ? 'rv-banner--ok' : 'rv-banner--ko'}`}>
             {approvata
               ? <CheckCircle size={20} />
@@ -215,7 +212,19 @@ export default function RiepilogoVotazionePage() {
               </p>
             </div>
           </div>
-        )}
+        ) : (
+          <div className="rv-banner" style={{ background: `${bestColor}1f`, borderColor: `${bestColor}55`, color: bestColor }}>
+            <CheckCircle size={20} />
+            <div>
+              <p className="rv-banner__title">
+                Opzione più votata: {best?.testoOpzione} ({best?.percentuale?.toFixed(0)}%)
+              </p>
+              <p className="rv-banner__sub">
+                {risultati.map(r => `${r.percentuale.toFixed(0)}% ${r.testoOpzione}`).join(' · ')}
+              </p>
+            </div>
+          </div>
+        ))}
 
         {/* Filtri demografici */}
         <div className="rv-filters-bar">
@@ -298,15 +307,15 @@ export default function RiepilogoVotazionePage() {
                       <XAxis dataKey="fascia" tick={CHART.tick} axisLine={{ stroke: CHART.grid }} tickLine={false} />
                       <YAxis tick={CHART.tick} allowDecimals={false} axisLine={false} tickLine={false} />
                       <Tooltip contentStyle={CHART.tooltip} labelStyle={CHART.tooltipLabel} itemStyle={CHART.tooltipItem} />
-                      <Bar dataKey="favorevole" name="Favorevoli" fill={COL.favorevole} radius={[3,3,0,0]} maxBarSize={28} />
-                      <Bar dataKey="contrario"  name="Contrari"   fill={COL.contrario}  radius={[3,3,0,0]} maxBarSize={28} />
-                      <Bar dataKey="astenuto"   name="Astenuti"   fill={COL.astenuto}   radius={[3,3,0,0]} maxBarSize={28} />
+                      {opzioni.map(o => (
+                        <Bar key={o.id} dataKey={o.id} name={o.testo} fill={o.color} radius={[3,3,0,0]} maxBarSize={28} />
+                      ))}
                     </BarChart>
                   </ResponsiveContainer>
                   <div className="rv-legend">
-                    <span className="rv-legend__item"><span className="rv-legend__dot" style={{ background: COL.favorevole }} />Favorevoli</span>
-                    <span className="rv-legend__item"><span className="rv-legend__dot" style={{ background: COL.contrario }} />Contrari</span>
-                    <span className="rv-legend__item"><span className="rv-legend__dot" style={{ background: COL.astenuto }} />Astenuti</span>
+                    {opzioni.map(o => (
+                      <span key={o.id} className="rv-legend__item"><span className="rv-legend__dot" style={{ background: o.color }} />{o.testo}</span>
+                    ))}
                   </div>
                 </>
               )
@@ -328,15 +337,15 @@ export default function RiepilogoVotazionePage() {
                       <XAxis type="number" tick={CHART.tick} allowDecimals={false} axisLine={{ stroke: CHART.grid }} tickLine={false} />
                       <YAxis type="category" dataKey="genere" tick={CHART.tick} width={45} axisLine={false} tickLine={false} />
                       <Tooltip contentStyle={CHART.tooltip} labelStyle={CHART.tooltipLabel} itemStyle={CHART.tooltipItem} />
-                      <Bar dataKey="favorevole" name="Favorevoli" fill={COL.favorevole} radius={[0,3,3,0]} maxBarSize={20} />
-                      <Bar dataKey="contrario"  name="Contrari"   fill={COL.contrario}  radius={[0,3,3,0]} maxBarSize={20} />
-                      <Bar dataKey="astenuto"   name="Astenuti"   fill={COL.astenuto}   radius={[0,3,3,0]} maxBarSize={20} />
+                      {opzioni.map(o => (
+                        <Bar key={o.id} dataKey={o.id} name={o.testo} fill={o.color} radius={[0,3,3,0]} maxBarSize={20} />
+                      ))}
                     </BarChart>
                   </ResponsiveContainer>
                   <div className="rv-legend">
-                    <span className="rv-legend__item"><span className="rv-legend__dot" style={{ background: COL.favorevole }} />Favorevoli</span>
-                    <span className="rv-legend__item"><span className="rv-legend__dot" style={{ background: COL.contrario }} />Contrari</span>
-                    <span className="rv-legend__item"><span className="rv-legend__dot" style={{ background: COL.astenuto }} />Astenuti</span>
+                    {opzioni.map(o => (
+                      <span key={o.id} className="rv-legend__item"><span className="rv-legend__dot" style={{ background: o.color }} />{o.testo}</span>
+                    ))}
                   </div>
                 </>
               )
