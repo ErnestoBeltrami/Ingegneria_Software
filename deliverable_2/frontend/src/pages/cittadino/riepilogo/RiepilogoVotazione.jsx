@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { useParams, useLocation } from 'react-router-dom';
 import TopBarCittadino from '../../../components/TopBarCittadino';
+import BackButton from '../../../components/BackButton';
 import { fetchProfile, fetchRiepilogoVotazione } from '../../../services/api';
 import GraficoRisultati from '../../../components/GraficoRisultati';
 import '../dashboard/DashboardCittadinePage.css';
@@ -13,7 +13,6 @@ const colore = (i) => COLORI[i % COLORI.length];
 
 export default function RiepilogoVotazione() {
     const { id } = useParams();
-    const navigate = useNavigate();
     const { state } = useLocation();
     const [profilo, setProfilo] = useState(state?.profilo ?? null);
     const [riepilogo, setRiepilogo] = useState(null);
@@ -69,10 +68,7 @@ export default function RiepilogoVotazione() {
 
             <div className="crv-page">
                 <header className="crv-header">
-                    <button className="crv-back" onClick={() => navigate('/cittadino/archivio')}>
-                        <ArrowLeft size={16} />
-                        Torna all'archivio
-                    </button>
+                    <BackButton variant="subtle" label="Torna all'archivio" to="/cittadino/archivio" />
                     <h1 className="crv-title">{titolo}</h1>
                     <div className="crv-participants">
                         <span className="crv-participants__num">{totaleVoti}</span>

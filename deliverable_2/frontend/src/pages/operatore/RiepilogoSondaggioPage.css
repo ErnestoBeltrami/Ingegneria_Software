@@ -36,26 +36,6 @@
 }
 
 /* Header */
-.rs-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: none;
-  border: none;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-faint);
-  cursor: pointer;
-  padding: 0;
-  margin-bottom: 8px;
-  transition: color 0.15s;
-}
-
-.rs-back:hover {
-  color: #00c47a;
-}
-
 .rs-header {
   display: flex;
   flex-direction: column;
@@ -257,9 +237,6 @@
   color: #dc2626;
 }
 
-[data-theme="light"] .rs-back:hover {
-  color: #007a52;
-}
 
 [data-theme="light"] .rs-badge--bozza {
   background: rgba(217, 159, 12, 0.12);

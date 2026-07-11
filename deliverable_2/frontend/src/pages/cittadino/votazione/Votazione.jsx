@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Clock, CalendarDays } from 'lucide-react';
+import { Clock, CalendarDays } from 'lucide-react';
 import './Votazione.css';
 import { fetchVotazioneCittadino, submitVotazione, fetchProfile } from '../../../services/api';
 import TopBarCittadino from '../../../components/TopBarCittadino';
+import BackButton from '../../../components/BackButton';
 
 export default function Votazione() {
     const { id } = useParams();
@@ -79,10 +80,7 @@ export default function Votazione() {
             <div className="cd-layout">
                 <TopBarCittadino nome={nome} cognome={cognome} />
                 <div className="cd-page">
-                    <button className="back-btn" onClick={() => navigate(-1)}>
-                        <ArrowLeft size={20} />
-                        <span>Torna indietro</span>
-                    </button>
+                    <BackButton to="/cittadino/dashboard" />
                     <div className="cd-status cd-status--error">
                         {error || 'Votazione non trovata.'}
                     </div>
@@ -111,10 +109,7 @@ export default function Votazione() {
         <div className="cd-layout">
             <TopBarCittadino nome={nome} cognome={cognome} />
             <div className="cd-page">
-                <button className="back-btn" onClick={() => navigate(-1)}>
-                    <ArrowLeft size={20} />
-                    <span>Torna indietro</span>
-                </button>
+                <BackButton to="/cittadino/dashboard" />
 
                 <div className="votazione-header">
                     <div className="badge-container">

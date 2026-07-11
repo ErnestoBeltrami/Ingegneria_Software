@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Trash2, Pencil, ChevronRight, Search } from 'lucide-react';
 import TopBar from '@/components/TopBar';
+import BackButton from '@/components/BackButton';
 import './GestioneSondaggiPage.css';
 
 function formatDate(iso) {
@@ -103,6 +104,7 @@ export default function GestioneSondaggiPage() {
       <TopBar nome={nome} cognome={cognome} />
 
       <div className="gs-page">
+        <BackButton variant="subtle" label="Torna alla dashboard" to="/dashboard" />
         {/* Header */}
         <header className="gs-header">
           <div>

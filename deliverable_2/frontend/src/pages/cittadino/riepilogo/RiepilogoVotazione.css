@@ -12,25 +12,6 @@
     flex: 1;
 }
 
-.crv-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: none;
-    border: none;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-faint);
-    cursor: pointer;
-    padding: 0;
-    transition: color 0.15s;
-}
-
-.crv-back:hover {
-    color: #009966;
-}
-
 .crv-header {
     display: flex;
     flex-direction: column;

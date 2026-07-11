@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, X } from 'lucide-react';
 import TopBar from '@/components/TopBar';
+import BackButton from '@/components/BackButton';
 import './ModerazioneBachecaPage.css';
 import './DashboardOperatorePage.css';
 
@@ -133,6 +134,7 @@ export default function ModerazioneBachecaPage() {
         <TopBar nome={nome} cognome={cognome} />
 
         <div className="mb-page">
+          <BackButton variant="subtle" label="Torna alla dashboard" to="/dashboard" />
           <header className="mb-header">
             <div>
               <h1 className="mb-header__title">Moderazione bacheca</h1>

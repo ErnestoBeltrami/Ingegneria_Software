@@ -5,6 +5,7 @@ import {
     Search, Vote, ClipboardList
 } from 'lucide-react';
 import TopBarCittadino from '../../components/TopBarCittadino';
+import BackButton from '../../components/BackButton';
 import { fetchProfile, fetchAllActivities } from '../../services/api';
 import './dashboard/DashboardCittadinePage.css';
 import './ArchivioPage.css';
@@ -111,6 +112,7 @@ export default function Archivio() {
             <TopBarCittadino nome={nome} cognome={cognome} />
 
             <div className="cd-page">
+                <BackButton variant="subtle" label="Torna alla dashboard" to="/cittadino/dashboard" />
                 <header className="cd-header">
                     <h1 className="cd-header__title">
                         <Archive size={24} style={{ marginRight: 10, verticalAlign: 'middle' }} />

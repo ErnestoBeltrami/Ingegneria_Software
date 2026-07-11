@@ -1,21 +1,3 @@
-.back-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-secondary);
-    transition: color 0.2s;
-}
-
-.back-btn:hover {
-    color: #007a52;
-}
-
 .votazione-header {
     margin-bottom: 8px;
 }

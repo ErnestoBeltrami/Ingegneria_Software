@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { useParams } from 'react-router-dom';
 import TopBar from '@/components/TopBar';
+import BackButton from '@/components/BackButton';
 import './RiepilogoSondaggioPage.css';
 
 const PALETTE = ['#5b8aff', '#00c47a', '#f5c842', '#ff5252', '#a78bfa'];
@@ -22,7 +22,6 @@ async function apiFetch(url) {
 
 export default function RiepilogoSondaggioPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const nome = localStorage.getItem('nome') || '';
   const cognome = localStorage.getItem('cognome') || '';
 
@@ -75,10 +74,7 @@ export default function RiepilogoSondaggioPage() {
 
         {/* Header */}
         <header className="rs-header">
-          <button className="rs-back" onClick={() => navigate('/sondaggi')}>
-            <ArrowLeft size={16} />
-            Riepilogo sondaggio
-          </button>
+          <BackButton variant="subtle" label="Riepilogo sondaggio" to="/sondaggi" />
           <h1 className="rs-header__title">{titolo}</h1>
           <p className="rs-header__meta">
             <span className={`rs-badge rs-badge--${stato}`}>{stato}</span>
