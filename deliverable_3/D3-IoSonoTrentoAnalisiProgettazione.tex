@@ -466,6 +466,7 @@ iniziale) può promuovere altri operatori.
   \item \texttt{changePassword(vecchiaPassword, nuovaPassword)}: aggiorna l'hash bcrypt
   \item \texttt{promote(operatoreId)}: promuove un operatore (solo per isRoot)
   \item \texttt{register(username, password)}: crea un nuovo account operatore
+  \item \texttt{getProfile()}: restituisce le informazioni dell'operatore.
 \end{itemize}
 
 % ────────────────────────────────────────────────────────────────────────────
@@ -476,6 +477,8 @@ La \textit{Consultazione} rappresenta il fulcro della partecipazione civica. Uti
 discriminato di Mongoose: se il tipo è \texttt{votazione}, ha una singola domanda
 (\texttt{ID\_domanda}); se è \texttt{sondaggio}, ha un array di domande
 (\texttt{ID\_domande[]}). Questi due campi sono mutuamente esclusivi.
+Lo stato \texttt{concluso} viene impostato automaticamente dal sistema 
+allo scadere di \texttt{data\_fine}, senza intervento dell'operatore.
 
 \begin{figure}[H]
   \centering
@@ -499,6 +502,7 @@ discriminato di Mongoose: se il tipo è \texttt{votazione}, ha una singola doman
 
 \noindent\textbf{Metodi principali:}
 \begin{itemize}
+  \item  \texttt{update(modifiche)}: se in stato di bozza, permette di modificarne i campi ammessi. 
   \item \texttt{publish()}: porta lo stato da \texttt{bozza} ad \texttt{attivo}
   \item \texttt{conclude()}: porta lo stato da \texttt{attivo} a \texttt{concluso}
   \item \texttt{archive()}: porta lo stato da \texttt{concluso} ad \texttt{archiviato}
@@ -576,6 +580,11 @@ a cui il cittadino ha risposto.
   \item \texttt{dataRisposta}: timestamp della risposta
 \end{itemize}
 
+\noindent\textbf{Metodi principali:}
+\begin{itemize}
+  \item \texttt{esiste(cittadinoId,consultazioneId)}: controlla un eventuale risposta già presente 
+\end{itemize}
+
 % ────────────────────────────────────────────────────────────────────────────
 \subsection*{7. VotoIniziativa}
 \addcontentsline{toc}{subsection}{7. VotoIniziativa}
@@ -595,6 +604,11 @@ proprio voto (\texttt{DELETE /cittadino/vote/iniziativa/:id}).
   \item \texttt{ID\_cittadino}: riferimento al cittadino votante
   \item \texttt{ID\_iniziativa}: riferimento all'iniziativa supportata
   \item \texttt{dataVoto}: timestamp del voto
+\end{itemize}
+
+\noindent\textbf{Metodi principali:}
+\begin{itemize}
+  \item \texttt{esiste(cittadinoId,iniziativaId)}: controlla un eventuale risposta già presente 
 \end{itemize}
 
 % ────────────────────────────────────────────────────────────────────────────
@@ -638,6 +652,12 @@ informare il proponente dell'esito (\texttt{approvata} o \texttt{rifiutata}).
   \item \texttt{ID\_iniziativa}: riferimento all'iniziativa a cui si riferisce la notifica
   \item \texttt{letta}: booleano, \texttt{false} alla creazione; portato a \texttt{true}
         quando il cittadino apre il pannello notifiche
+\end{itemize}
+
+\noindent\textbf{Metodi principali:}
+\begin{itemize}
+  \item \texttt{marcaLetta()}: imposta letta a true 
+  \item \texttt{marcaTutteLette()}: marca come lette tutte le notifiche del destinatario che invoca il metodo. 
 \end{itemize}
 
 % ────────────────────────────────────────────────────────────────────────────
@@ -698,6 +718,7 @@ endpoint. Di seguito viene riportata la mappatura tra classi/metodi e route HTTP
   Consultazione.update() (votazione) & PATCH & /votazioni/:id \\
   Consultazione.delete() (votazione) & DELETE & /votazioni/:id \\
   Consultazione.getStatistiche() & GET & /votazioni/:id/statistiche \\
+  Consultazione.conclude() & — & (automatico alla scadenza di data\_fine) \\
   RispostaConsultazione.create() & POST & /cittadino/vote/votazione \textsuperscript{‡} \\
   \addlinespace
   % Sondaggi
@@ -707,6 +728,7 @@ endpoint. Di seguito viene riportata la mappatura tra classi/metodi e route HTTP
   Consultazione.getById() (sondaggio) & GET & /sondaggio/:id \\
   Consultazione.update() (sondaggio) & PATCH & /sondaggio/:id \\
   Consultazione.delete() (sondaggio) & DELETE & /sondaggio/:id \\
+  Consultazione.conclude() & — & (automatico alla scadenza di data\_fine) \\
   RispostaConsultazione.create() & POST & /cittadino/vote/sondaggio \\
   \addlinespace
   % Iniziative
