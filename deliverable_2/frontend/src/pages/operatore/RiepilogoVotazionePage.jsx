@@ -77,7 +77,7 @@ export default function RiepilogoVotazionePage() {
   const [demo, setDemo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [filtroAttivo, setFiltroAttivo] = useState(null);
+  const [filtroAttivo, setFiltroAttivo] = useState('panoramica');
 
   useEffect(() => {
     const load = async () => {
@@ -113,7 +113,7 @@ export default function RiepilogoVotazionePage() {
 
   // --- dati base ---
   const { votazione: titolo, totaleVoti, risultati = [] } = base;
-  const { stato, data_inizio, data_fine, perGenere = [], perFasciaEta = [], partecipazioneGiornaliera = [] } = demo;
+  const { stato, data_inizio, data_fine, perGenere = [], perFasciaEta = [], perCategoria = [], partecipazioneGiornaliera = [] } = demo;
 
   // Opzioni indicizzate: colore stabile per ordine, mai per testo
   const opzioni = risultati.map((r, i) => ({
@@ -159,6 +159,15 @@ export default function RiepilogoVotazionePage() {
     genereMap[genere][opzioneId?.toString()] = voti;
   });
   const genereData = generiList.map(g => genereMap[g] || { genere: g });
+
+  // --- horizontal bar per categoria ---
+  const categorieList = ['Lavoratore', 'Disoccupato', 'Pensionato', 'Studente', 'Altro'];
+  const categoriaMap = {};
+  perCategoria.forEach(({ categoria, opzioneId, voti }) => {
+    if (!categoriaMap[categoria]) categoriaMap[categoria] = { categoria };
+    categoriaMap[categoria][opzioneId?.toString()] = voti;
+  });
+  const categoriaData = categorieList.map(c => categoriaMap[c] || { categoria: c });
 
   return (
     <div className="rv-layout">
@@ -236,41 +245,45 @@ export default function RiepilogoVotazionePage() {
         </div>
         <div className="rv-filter-pills">
           {[
+            { key: 'panoramica',     label: 'Panoramica' },
             { key: 'partecipazione', label: 'Partecipazione' },
             { key: 'eta',            label: 'Per età' },
             { key: 'genere',         label: 'Per genere' },
+            { key: 'categoria',      label: 'Per occupazione' },
           ].map(f => (
             <button
               key={f.key}
               className={`rv-pill ${filtroAttivo === f.key ? 'rv-pill--active' : ''}`}
-              onClick={() => setFiltroAttivo(prev => prev === f.key ? null : f.key)}
+              onClick={() => setFiltroAttivo(f.key)}
             >
               {f.label}
             </button>
           ))}
         </div>
 
-        {/* Donut — sempre visibile */}
-        <div className="rv-chart-card">
-          <h3 className="rv-chart-card__title">Distribuzione voti</h3>
-          {totaleVoti === 0
-            ? <p className="rv-status">Nessun voto registrato.</p>
-            : (
-              <ResponsiveContainer width="100%" height={220}>
-                <PieChart>
-                  <Pie data={donutData} cx="50%" cy="50%" innerRadius={55} outerRadius={85} dataKey="value" paddingAngle={2}>
-                    {donutData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
-                  </Pie>
-                  <Tooltip formatter={(v, n) => [`${v} voti`, n]} contentStyle={CHART.tooltip} labelStyle={CHART.tooltipLabel} itemStyle={CHART.tooltipItem} />
-                  <Legend iconType="circle" iconSize={10} formatter={(value) => <span style={{ color: CHART.legendColor, fontSize: 11 }}>{value}</span>} />
-                </PieChart>
-              </ResponsiveContainer>
-            )
-          }
-        </div>
+        {/* Distribuzione voti */}
+        {filtroAttivo === 'panoramica' && (
+          <div className="rv-chart-card">
+            <h3 className="rv-chart-card__title">Distribuzione voti</h3>
+            {totaleVoti === 0
+              ? <p className="rv-status">Nessun voto registrato.</p>
+              : (
+                <ResponsiveContainer width="100%" height={220}>
+                  <PieChart>
+                    <Pie data={donutData} cx="50%" cy="50%" innerRadius={55} outerRadius={85} dataKey="value" paddingAngle={2}>
+                      {donutData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
+                    </Pie>
+                    <Tooltip formatter={(v, n) => [`${v} voti`, n]} contentStyle={CHART.tooltip} labelStyle={CHART.tooltipLabel} itemStyle={CHART.tooltipItem} />
+                    <Legend iconType="circle" iconSize={10} formatter={(value) => <span style={{ color: CHART.legendColor, fontSize: 11 }}>{value}</span>} />
+                  </PieChart>
+                </ResponsiveContainer>
+              )
+            }
+          </div>
+        )}
 
         {/* Partecipazione giornaliera */}
-        {(!filtroAttivo || filtroAttivo === 'partecipazione') && (
+        {(filtroAttivo === 'panoramica' || filtroAttivo === 'partecipazione') && (
           <div className="rv-chart-card">
             <h3 className="rv-chart-card__title">Partecipazione giornaliera</h3>
             {lineData.length === 0
@@ -291,7 +304,7 @@ export default function RiepilogoVotazionePage() {
         )}
 
         {/* Distribuzione per fascia d'età */}
-        {(!filtroAttivo || filtroAttivo === 'eta') && (
+        {(filtroAttivo === 'panoramica' || filtroAttivo === 'eta') && (
           <div className="rv-chart-card">
             <h3 className="rv-chart-card__title">Distribuzione per fascia d'età</h3>
             {perFasciaEta.length === 0
@@ -321,7 +334,7 @@ export default function RiepilogoVotazionePage() {
         )}
 
         {/* Confronto per genere */}
-        {(!filtroAttivo || filtroAttivo === 'genere') && (
+        {(filtroAttivo === 'panoramica' || filtroAttivo === 'genere') && (
           <div className="rv-chart-card">
             <h3 className="rv-chart-card__title">Confronto per genere</h3>
             {perGenere.length === 0
@@ -350,11 +363,33 @@ export default function RiepilogoVotazionePage() {
           </div>
         )}
 
-        {/* Placeholder quartiere — solo quando nessun filtro attivo */}
-        {!filtroAttivo && (
-          <div className="rv-chart-card rv-chart-card--disabled">
-            <h3 className="rv-chart-card__title">Distribuzione per quartiere</h3>
-            <p className="rv-status">Dato non disponibile — il profilo cittadino non include il quartiere di residenza.</p>
+        {/* Confronto per occupazione */}
+        {(filtroAttivo === 'panoramica' || filtroAttivo === 'categoria') && (
+          <div className="rv-chart-card">
+            <h3 className="rv-chart-card__title">Confronto per occupazione</h3>
+            {perCategoria.length === 0
+              ? <p className="rv-status">Nessun dato demografico disponibile.</p>
+              : (
+                <>
+                  <ResponsiveContainer width="100%" height={200}>
+                    <BarChart data={categoriaData} layout="vertical" margin={{ top: 8, right: 16, left: 10, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke={CHART.grid} horizontal={false} />
+                      <XAxis type="number" tick={CHART.tick} allowDecimals={false} axisLine={{ stroke: CHART.grid }} tickLine={false} />
+                      <YAxis type="category" dataKey="categoria" tick={CHART.tick} width={90} axisLine={false} tickLine={false} />
+                      <Tooltip contentStyle={CHART.tooltip} labelStyle={CHART.tooltipLabel} itemStyle={CHART.tooltipItem} />
+                      {opzioni.map(o => (
+                        <Bar key={o.id} dataKey={o.id} name={o.testo} fill={o.color} radius={[0,3,3,0]} maxBarSize={20} />
+                      ))}
+                    </BarChart>
+                  </ResponsiveContainer>
+                  <div className="rv-legend">
+                    {opzioni.map(o => (
+                      <span key={o.id} className="rv-legend__item"><span className="rv-legend__dot" style={{ background: o.color }} />{o.testo}</span>
+                    ))}
+                  </div>
+                </>
+              )
+            }
           </div>
         )}
 
