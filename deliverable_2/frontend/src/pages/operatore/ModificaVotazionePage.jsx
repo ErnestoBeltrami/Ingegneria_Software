@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, X, Plus } from 'lucide-react';
+import { X, Plus } from 'lucide-react';
 import TopBar from '@/components/TopBar';
+import BackButton from '@/components/BackButton';
 import './CreaVotazionePage.css';
 
 function isoToDate(iso) {
@@ -117,9 +118,7 @@ export default function ModificaVotazionePage() {
       <div className="crea-page">
 
         <header className="crea-header">
-          <button className="crea-header__back" onClick={() => navigate('/votazioni')}>
-            <ArrowLeft size={16} />
-          </button>
+          <BackButton variant="icon" label="Torna alle votazioni" to="/votazioni" />
           <div>
             <h1 className="crea-header__title">Modifica votazione</h1>
             <p className="crea-header__subtitle">Solo le bozze possono essere modificate</p>

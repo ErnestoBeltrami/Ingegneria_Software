@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TopBarCittadino from '../../components/TopBarCittadino';
-import { ArrowLeft, LogOut, AlertTriangle, Pencil, X, Check } from 'lucide-react';
+import BackButton from '../../components/BackButton';
+import { LogOut, AlertTriangle, Pencil, X, Check } from 'lucide-react';
 import './ProfiloCittadinePage.css';
 
 const CIRCOSCRIZIONI = [
@@ -177,9 +178,7 @@ export default function ProfiloCittadinePage() {
       <TopBarCittadino nome={nome} cognome={cognome} />
 
       <div className="cp-shell">
-        <button type="button" className="cp-back" onClick={() => navigate(-1)}>
-          <ArrowLeft size={14} /> Indietro
-        </button>
+        <BackButton variant="subtle" label="Indietro" to="/cittadino/dashboard" />
 
         <header className="cp-header">
           <h1>Il tuo profilo</h1>

@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import TopBar from '@/components/TopBar';
+import BackButton from '@/components/BackButton';
 import DomandaCard from '@/components/DomandaCard';
 import './CreaSondaggioPage.css';
 
@@ -161,9 +162,7 @@ export default function ModificaSondaggioPage() {
       <div className="crea-page">
 
         <header className="crea-header">
-          <button className="crea-header__back" onClick={() => navigate('/sondaggi')}>
-            <ArrowLeft size={16} />
-          </button>
+          <BackButton variant="icon" label="Torna ai sondaggi" to="/sondaggi" />
           <div>
             <h1 className="crea-header__title">Modifica sondaggio</h1>
             <p className="crea-header__subtitle">Solo le bozze possono essere modificate</p>

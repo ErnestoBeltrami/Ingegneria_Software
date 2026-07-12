@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, SlidersHorizontal, Users, TrendingUp, Check, CalendarDays, X } from 'lucide-react';
 import TopBarCittadino from '../../../components/TopBarCittadino';
+import BackButton from '../../../components/BackButton';
 import IniziativaCard from './IniziativaCard';
 import { sosteniIniziativa } from '../../../services/api';
 import './BachecaPage.css';
@@ -106,6 +107,7 @@ export default function BachecaPage() {
             <TopBarCittadino nome={profilo?.nome || ''} cognome={profilo?.cognome || ''} />
 
             <div className="bac-page">
+                <BackButton variant="subtle" label="Torna alla dashboard" to="/cittadino/dashboard" />
                 <header className="bac-header">
                     <div className="bac-header__left">
                         <h1 className="bac-header__title">Bacheca iniziative</h1>

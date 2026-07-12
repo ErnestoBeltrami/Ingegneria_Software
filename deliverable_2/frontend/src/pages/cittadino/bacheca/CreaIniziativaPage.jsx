@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Lightbulb } from 'lucide-react';
+import { Lightbulb } from 'lucide-react';
 import TopBarCittadino from '../../../components/TopBarCittadino';
+import BackButton from '../../../components/BackButton';
 import './CreaIniziativaPage.css';
 
 export default function CreaIniziativaPage() {
@@ -75,9 +76,7 @@ export default function CreaIniziativaPage() {
       <TopBarCittadino nome={nome} cognome={cognome} />
 
       <div className="ci-shell">
-        <button type="button" className="ci-back" onClick={() => navigate(-1)}>
-          <ArrowLeft size={14} /> Indietro
-        </button>
+        <BackButton variant="subtle" label="Indietro" to="/cittadino/bacheca" />
 
         <header className="ci-header">
           <h1 className="ci-header__title">Crea iniziativa</h1>

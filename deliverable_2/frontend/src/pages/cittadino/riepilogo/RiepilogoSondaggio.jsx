@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useParams, useLocation } from 'react-router-dom';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { fetchProfile, fetchRiepilogoSondaggio, fetchSondaggioById } from '../../../services/api';
 import TopBarCittadino from '../../../components/TopBarCittadino';
+import BackButton from '../../../components/BackButton';
 import GraficoRisultati from '../../../components/GraficoRisultati';
 import '../dashboard/DashboardCittadinePage.css';
 import './RiepilogoSondaggio.css';
@@ -12,7 +13,6 @@ const colore = (i) => COLORI[i % COLORI.length];
 
 export default function RiepilogoSondaggio() {
     const { id } = useParams();
-    const navigate = useNavigate();
     const { state } = useLocation();
 
 
@@ -108,10 +108,7 @@ export default function RiepilogoSondaggio() {
 
             <div className="crs-page">
                 <header className="crs-header">
-                    <button className="crs-back" onClick={() => navigate('/cittadino/archivio?tipo=sondaggi')}>
-                        <ArrowLeft size={16} />
-                        Torna all'archivio
-                    </button>
+                    <BackButton variant="subtle" label="Torna all'archivio" to="/cittadino/archivio?tipo=sondaggi" />
                     <h1 className="crs-title">{titolo}</h1>
                     {dettaglio?.descrizione && (
                         <p className="crs-descrizione">{dettaglio.descrizione}</p>

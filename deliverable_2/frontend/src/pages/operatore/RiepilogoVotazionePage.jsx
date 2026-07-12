@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Filter, Download, CheckCircle, XCircle } from 'lucide-react';
+import { useParams } from 'react-router-dom';
+import { Filter, Download, CheckCircle, XCircle } from 'lucide-react';
 import {
   PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer,
   LineChart, Line, XAxis, YAxis, CartesianGrid,
   BarChart, Bar,
 } from 'recharts';
 import TopBar from '@/components/TopBar';
+import BackButton from '@/components/BackButton';
 import { useTheme } from '@/contexts/ThemeContext';
 import './RiepilogoVotazionePage.css';
 
@@ -67,7 +68,6 @@ function isContra(testo = '') {
 
 export default function RiepilogoVotazionePage() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const { theme } = useTheme();
   const CHART = chartTheme(theme === 'dark');
   const nome = localStorage.getItem('nome') || '';
@@ -167,10 +167,7 @@ export default function RiepilogoVotazionePage() {
 
         {/* Header */}
         <header className="rv-header">
-          <button className="rv-back" onClick={() => navigate('/votazioni')}>
-            <ArrowLeft size={16} />
-            Riepilogo votazione
-          </button>
+          <BackButton variant="subtle" label="Riepilogo votazione" to="/votazioni" />
           <h1 className="rv-header__title">{titolo}</h1>
           <p className="rv-header__meta">
             <span className={`rv-badge rv-badge--${stato}`}>{stato}</span>

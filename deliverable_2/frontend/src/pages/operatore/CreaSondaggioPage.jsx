@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const MAX_DOMANDE = 8;
-import { ArrowLeft, Save, Plus } from 'lucide-react';
+import { Save, Plus } from 'lucide-react';
 import TopBar from '@/components/TopBar';
+import BackButton from '@/components/BackButton';
 import DomandaCard from '@/components/DomandaCard';
 import './CreaSondaggioPage.css';
 
@@ -146,14 +147,7 @@ export default function CreaSondaggioPage() {
       <div className="crea-page">
         {/* Header */}
         <header className="crea-header">
-          <button
-            type="button"
-            className="crea-header__back"
-            onClick={() => navigate('/dashboard')}
-            aria-label="Torna alla dashboard"
-          >
-            <ArrowLeft size={16} color="#4a5565" />
-          </button>
+          <BackButton variant="icon" label="Torna alla dashboard" to="/dashboard" />
           <div>
             <h1 className="crea-header__title">Crea un nuovo sondaggio</h1>
             <p className="crea-header__subtitle">Compila i campi per creare il sondaggio</p>

@@ -102,22 +102,6 @@
 /* =====================
    Back button
    ===================== */
-.ci-back {
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-faint);
-  padding: 0;
-  transition: color 0.15s ease;
-}
-.ci-back:hover { color: #00c47a; }
 
 /* =====================
    Header

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Clock, CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useParams } from 'react-router-dom';
+import { Clock, CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
 import './VotaSondaggio.css';
 import { fetchSondaggioCittadino, submitSondaggio, fetchProfile } from '../../../services/api';
 import TopBarCittadino from '../../../components/TopBarCittadino';
+import BackButton from '../../../components/BackButton';
 
 export default function VotaSondaggio() {
     const { id } = useParams();
-    const navigate = useNavigate();
     const [profilo, setProfilo] = useState(null);
 
     const [sondaggio, setSondaggio] = useState(null);
@@ -119,10 +119,7 @@ export default function VotaSondaggio() {
             <div className="cd-layout">
                 <TopBarCittadino nome={nome} cognome={cognome} />
                 <div className="cd-page">
-                    <button className="back-btn" onClick={() => navigate(-1)}>
-                        <ArrowLeft size={20} />
-                        <span>Torna indietro</span>
-                    </button>
+                    <BackButton to="/cittadino/dashboard" />
                     <div className="cd-status cd-status--error">
                         {error || "Sondaggio non trovato."}
                     </div>
@@ -138,10 +135,7 @@ export default function VotaSondaggio() {
         <div className="cd-layout">
             <TopBarCittadino nome={nome} cognome={cognome} />
             <div className="cd-page">
-                <button className="back-btn" onClick={() => navigate(-1)}>
-                    <ArrowLeft size={20} />
-                    <span>Torna indietro</span>
-                </button>
+                <BackButton to="/cittadino/dashboard" />
 
                 <div className="sondaggio-header">
                     <div className="badge-container">
