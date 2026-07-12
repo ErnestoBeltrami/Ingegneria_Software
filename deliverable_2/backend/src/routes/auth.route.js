@@ -52,13 +52,15 @@ router.get(
 );
 
 router.post('/complete-profile', completeProfileLimiter, protect, restrictTo(['cittadino']), async (req, res) => {
-  const { dataNascita, comuneResidenza, circoscrizione } = req.body;
+  const { dataNascita, circoscrizione, genere, categoria } = req.body;
   const cittadinoId = req.user._id;
 
-  if (!dataNascita || !comuneResidenza) {
+  // Validazione campi obbligatori
+  if (!dataNascita || !circoscrizione || !genere || !categoria) {
     return res.status(400).json({ message: 'Tutti i campi del profilo sono obbligatori.' });
   }
 
+  // Validazione dataNascita
   const nascita = new Date(dataNascita);
   const oggi = new Date();
   const eta =
@@ -70,14 +72,30 @@ router.post('/complete-profile', completeProfileLimiter, protect, restrictTo(['c
     return res.status(400).json({ message: 'Data di nascita non valida.' });
   }
 
-  if (comuneResidenza === 'Trento' && !circoscrizione) {
-    return res.status(400).json({ message: 'Seleziona la tua circoscrizione.' });
+  // Validazione genere
+  const generiValidi = ['Uomo','Donna'];
+  if (!generiValidi.includes(genere)) {
+    return res.status(400).json({ message: `Genere non valido. Valori ammessi: ${generiValidi.join(', ')}.` });
+  }
+
+  // Validazione categoria
+  const categorieValide = ['Lavoratore', 'Disoccupato', 'Pensionato', 'Studente', 'Altro'];
+  if (!categorieValide.includes(categoria)) {
+    return res.status(400).json({ message: `Categoria non valida. Valori ammessi: ${categorieValide.join(', ')}.` });
   }
 
   try {
     const cittadino = await Cittadino.findByIdAndUpdate(
       cittadinoId,
-      { $set: { dataNascita: nascita, comuneResidenza, circoscrizione: circoscrizione || null, profiloCompleto: true } },
+      {
+        $set: {
+          dataNascita: nascita,
+          circoscrizione,
+          genere,
+          categoria,
+          profiloCompleto: true
+        }
+      },
       { new: true, runValidators: false }
     );
 
@@ -90,8 +108,7 @@ router.post('/complete-profile', completeProfileLimiter, protect, restrictTo(['c
 
     res.status(200).json({ message: 'Profilo completato!', token });
   } catch (error) {
-    res.status(400).json({ message: 'Errore di validazione o server.' });
+    res.status(500).json({ message: 'Errore interno del server.' });
   }
 });
-
 export default router;
