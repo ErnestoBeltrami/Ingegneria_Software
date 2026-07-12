@@ -3,26 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import TopBarCittadino from '../../components/TopBarCittadino';
 import BackButton from '../../components/BackButton';
 import { LogOut, AlertTriangle, Pencil, X, Check } from 'lucide-react';
+import { CIRCOSCRIZIONI_TRENTO } from '../../constants/circoscrizioni';
 import './ProfiloCittadinePage.css';
 
-const CIRCOSCRIZIONI = [
-  'Centro storico - Piedicastello',
-  'Argentario',
-  'Bondone',
-  'Gardolo',
-  'Meano',
-  'Nomi',
-  'Povo',
-  'Ravina - Romagnano',
-  'Sardagna',
-  'Villazzano',
-  'Oltrefersina',
-  'San Giuseppe - Maddalene',
-  'Mattarello',
-  'Cognola',
-  'Civezzano',
-  'Aldeno e Mattarello',
-];
+const GENERI = ['Uomo', 'Donna'];
+
+const CATEGORIE = ['Lavoratore', 'Disoccupato', 'Pensionato', 'Studente', 'Altro'];
 
 function formatData(iso) {
   if (!iso) return '—';
@@ -52,7 +38,7 @@ export default function ProfiloCittadinePage() {
   const [loggingOut, setLoggingOut] = useState(false);
 
   const [editing, setEditing] = useState(false);
-  const [editData, setEditData] = useState({ nome: '', cognome: '', dataNascita: '', comuneResidenza: '', circoscrizione: '' });
+  const [editData, setEditData] = useState({ nome: '', cognome: '', dataNascita: '', circoscrizione: '', genere: '', categoria: '' });
   const [saving, setSaving] = useState(false);
   const [editError, setEditError] = useState('');
 
@@ -94,8 +80,9 @@ export default function ProfiloCittadinePage() {
       nome: profilo.nome || '',
       cognome: profilo.cognome || '',
       dataNascita: toInputDate(profilo.dataNascita),
-      comuneResidenza: profilo.comuneResidenza || '',
       circoscrizione: profilo.circoscrizione || '',
+      genere: profilo.genere || '',
+      categoria: profilo.categoria || '',
     });
     setEditError('');
     setEditing(true);
@@ -111,10 +98,9 @@ export default function ProfiloCittadinePage() {
     if (!editData.nome.trim()) return setEditError('Il nome è obbligatorio');
     if (!editData.cognome.trim()) return setEditError('Il cognome è obbligatorio');
     if (!editData.dataNascita) return setEditError('La data di nascita è obbligatoria');
-    if (!editData.comuneResidenza.trim()) return setEditError('Il comune di residenza è obbligatorio');
-    if (editData.comuneResidenza === 'Trento' && !editData.circoscrizione) {
-      return setEditError('Seleziona la circoscrizione per il comune di Trento');
-    }
+    if (!editData.circoscrizione) return setEditError('La circoscrizione è obbligatoria');
+    if (!editData.genere) return setEditError('Il genere è obbligatorio');
+    if (!editData.categoria) return setEditError("L'occupazione è obbligatoria");
 
     setSaving(true);
     try {
@@ -131,8 +117,9 @@ export default function ProfiloCittadinePage() {
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
           body: JSON.stringify({
             dataNascita: editData.dataNascita,
-            comuneResidenza: editData.comuneResidenza.trim(),
-            circoscrizione: editData.circoscrizione || null,
+            circoscrizione: editData.circoscrizione,
+            genere: editData.genere,
+            categoria: editData.categoria,
           }),
         }),
       ]);
@@ -154,8 +141,9 @@ export default function ProfiloCittadinePage() {
         nome: editData.nome.trim(),
         cognome: editData.cognome.trim(),
         dataNascita: new Date(editData.dataNascita).toISOString(),
-        comuneResidenza: editData.comuneResidenza.trim(),
-        circoscrizione: editData.circoscrizione || null,
+        circoscrizione: editData.circoscrizione,
+        genere: editData.genere,
+        categoria: editData.categoria,
         profiloCompleto: true,
       }));
       setEditing(false);
@@ -171,7 +159,7 @@ export default function ProfiloCittadinePage() {
   const email = profilo?.email || '';
   const initials = `${nome.charAt(0)}${cognome.charAt(0)}`.toUpperCase() || '?';
   const fullName = [nome, cognome].filter(Boolean).join(' ') || 'Cittadino';
-  const profiloIncompleto = profilo && (!profilo.dataNascita || !profilo.comuneResidenza);
+  const profiloIncompleto = profilo && (!profilo.dataNascita || !profilo.circoscrizione || !profilo.genere || !profilo.categoria);
 
   return (
     <div className="cp-page">
@@ -239,17 +227,14 @@ export default function ProfiloCittadinePage() {
                     <InfoRow label="Cognome" value={cognome} />
                     <InfoRow label="Email" value={email} />
                     <InfoRow label="Data di nascita" value={formatData(profilo.dataNascita)} missing={!profilo.dataNascita} />
-                    <InfoRow label="Comune di residenza" value={profilo.comuneResidenza} missing={!profilo.comuneResidenza} />
-                    <InfoRow label="Circoscrizione" value={profilo.circoscrizione} missing={profilo.comuneResidenza === 'Trento' && !profilo.circoscrizione} />
-                    <InfoRow label="Genere" value={profilo.genere} />
-                    <InfoRow label="Categoria" value={profilo.categoria} />
+                    <InfoRow label="Circoscrizione" value={profilo.circoscrizione} missing={!profilo.circoscrizione} />
+                    <InfoRow label="Genere" value={profilo.genere} missing={!profilo.genere} />
+                    <InfoRow label="Occupazione" value={profilo.categoria} missing={!profilo.categoria} />
                   </div>
                 ) : (
                   <div className="cp-edit-form">
                     <div className="cp-rows">
                       <InfoRow label="Email" value={email} />
-                      <InfoRow label="Genere" value={profilo.genere} />
-                      <InfoRow label="Categoria" value={profilo.categoria} />
                     </div>
 
                     <div className="cp-edit-fields">
@@ -294,38 +279,55 @@ export default function ProfiloCittadinePage() {
                       </div>
 
                       <div className="cp-field">
-                        <label className="cp-field__label" htmlFor="comune">
-                          Comune di residenza <span className="cp-field__req">*</span>
+                        <label className="cp-field__label" htmlFor="circoscrizione">
+                          Circoscrizione <span className="cp-field__req">*</span>
                         </label>
-                        <input
-                          id="comune"
-                          type="text"
-                          className="cp-field__input"
-                          value={editData.comuneResidenza}
-                          onChange={(e) => setEditData((d) => ({ ...d, comuneResidenza: e.target.value, circoscrizione: '' }))}
-                          placeholder="es. Trento"
-                          autoComplete="off"
-                        />
+                        <select
+                          id="circoscrizione"
+                          className="cp-field__input cp-field__select"
+                          value={editData.circoscrizione}
+                          onChange={(e) => setEditData((d) => ({ ...d, circoscrizione: e.target.value }))}
+                        >
+                          <option value="">Seleziona circoscrizione…</option>
+                          {CIRCOSCRIZIONI_TRENTO.map((c) => (
+                            <option key={c} value={c}>{c}</option>
+                          ))}
+                        </select>
                       </div>
 
-                      {editData.comuneResidenza === 'Trento' && (
-                        <div className="cp-field">
-                          <label className="cp-field__label" htmlFor="circoscrizione">
-                            Circoscrizione <span className="cp-field__req">*</span>
-                          </label>
-                          <select
-                            id="circoscrizione"
-                            className="cp-field__input cp-field__select"
-                            value={editData.circoscrizione}
-                            onChange={(e) => setEditData((d) => ({ ...d, circoscrizione: e.target.value }))}
-                          >
-                            <option value="">Seleziona circoscrizione…</option>
-                            {CIRCOSCRIZIONI.map((c) => (
-                              <option key={c} value={c}>{c}</option>
-                            ))}
-                          </select>
-                        </div>
-                      )}
+                      <div className="cp-field">
+                        <label className="cp-field__label" htmlFor="genere">
+                          Genere <span className="cp-field__req">*</span>
+                        </label>
+                        <select
+                          id="genere"
+                          className="cp-field__input cp-field__select"
+                          value={editData.genere}
+                          onChange={(e) => setEditData((d) => ({ ...d, genere: e.target.value }))}
+                        >
+                          <option value="">Seleziona…</option>
+                          {GENERI.map((g) => (
+                            <option key={g} value={g}>{g}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="cp-field">
+                        <label className="cp-field__label" htmlFor="categoria">
+                          Occupazione <span className="cp-field__req">*</span>
+                        </label>
+                        <select
+                          id="categoria"
+                          className="cp-field__input cp-field__select"
+                          value={editData.categoria}
+                          onChange={(e) => setEditData((d) => ({ ...d, categoria: e.target.value }))}
+                        >
+                          <option value="">Seleziona…</option>
+                          {CATEGORIE.map((c) => (
+                            <option key={c} value={c}>{c}</option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
 
                     {editError && <p className="cp-edit-error">{editError}</p>}
