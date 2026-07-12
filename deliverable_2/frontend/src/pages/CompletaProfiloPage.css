@@ -15,10 +15,10 @@
   font-family: 'Montserrat', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 
-  /* soft blue glow in the top-right, like the landing */
+  /* soft green glow in the top-right, like the landing */
   background-image:
-    radial-gradient(800px 500px at 85% -10%, rgba(31,58,137,0.30), transparent 70%),
-    radial-gradient(600px 400px at 0% 110%, rgba(0,122,82,0.18),  transparent 70%);
+    radial-gradient(800px 500px at 85% -10%, rgba(0,122,82,0.30), transparent 70%),
+    radial-gradient(600px 400px at 0% 110%, rgba(0,196,122,0.16), transparent 70%);
 }
 
 .cp-shell {
@@ -44,7 +44,7 @@
 .cp-header__eyebrow {
   font-size: 11px; font-weight: 600;
   letter-spacing: 1px; text-transform: uppercase;
-  color: #829aff;
+  color: #00d48a;
   margin: 0;
 }
 .cp-header__title {
@@ -55,7 +55,7 @@
 }
 .cp-header__title-em {
   font-style: italic;
-  color: #829aff;
+  color: #00d48a;
 }
 .cp-header__subtitle {
   font-size: 15px; line-height: 22px;
@@ -63,6 +63,9 @@
   margin: 4px 0 0;
   max-width: 56ch;
 }
+
+[data-theme="light"] .cp-header__eyebrow,
+[data-theme="light"] .cp-header__title-em { color: #007a52; }
 
 /* ── Google identity card ── */
 .cp-google {
@@ -221,14 +224,14 @@
 .cp-submit {
   height: 52px;
   border-radius: 14px;
-  border: 1px solid rgba(100,130,255,0.25);
-  background: #1f3a89;
+  border: 1px solid rgba(0,196,122,0.25);
+  background: #007a52;
   color: white;
   font-family: inherit;
   font-size: 15px; font-weight: 600;
   cursor: pointer;
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-  box-shadow: 0 4px 16px rgba(31,58,137,0.45);
+  box-shadow: 0 4px 16px rgba(0,122,82,0.45);
   transition: opacity 0.15s ease, transform 0.15s ease;
 }
 .cp-submit:hover:not(:disabled) { opacity: 0.9; }
