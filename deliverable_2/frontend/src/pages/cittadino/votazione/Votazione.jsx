@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Clock, CalendarDays } from 'lucide-react';
 import './Votazione.css';
 import { fetchVotazioneCittadino, submitVotazione, fetchProfile } from '../../../services/api';
@@ -8,7 +8,6 @@ import BackButton from '../../../components/BackButton';
 
 export default function Votazione() {
     const { id } = useParams();
-    const navigate = useNavigate();
     const [profilo, setProfilo] = useState(null);
     const [votazione, setVotazione] = useState(null);
     const [loading, setLoading] = useState(true);
