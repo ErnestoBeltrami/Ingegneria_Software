@@ -268,34 +268,38 @@ export const getRiepilogoSintetico = async (req, res) => {
 
 export const getRiepilogoDemografico = async (req, res) => {
     const votazioneId = req.params.id;
-
+    const t0 = Date.now();
+ 
     try {
         const objectIdVotazione = new mongoose.Types.ObjectId(votazioneId);
-
+ 
         const votazione = await Consultazione.findOne({
             _id: objectIdVotazione,
             tipo: 'votazione'
         }).populate('ID_domanda');
-
+        logger.debug({ ms: Date.now() - t0, votazioneId }, 'riepilogoDemografico: findOne+populate');
+ 
         if (!votazione || !votazione.ID_domanda) {
             return res.status(404).json({ message: 'Votazione non trovata o domanda collegata mancante.' });
         }
-
+ 
         const domanda = votazione.ID_domanda;
         const opzioniMap = Object.fromEntries(
             domanda.opzioni.map(o => [o._id.toString(), o.testo])
         );
-
-        const baseMatch = { $match: { ID_consultazione: objectIdVotazione, tipo_consultazione: 'votazione' } };
-        // Espande le opzioni: un voto multiplo conta su ogni opzione scelta
-        const unwindOpzioni = { $unwind: '$ID_opzioni' };
+ 
+        const baseMatch = {
+            $match: { ID_consultazione: objectIdVotazione, tipo_consultazione: 'votazione' }
+        };
+        const unwindOpzioni    = { $unwind: '$ID_opzioni' };
         const projectOpzioneStr = { $project: { ID_opzione_str: { $toString: '$ID_opzioni' }, ID_cittadino: 1, createdAt: 1 } };
-        const lookupCittadino = {
+        const lookupCittadino  = {
             $lookup: { from: 'cittadinos', localField: 'ID_cittadino', foreignField: '_id', as: 'cittadino' }
         };
-        const unwindCittadino = { $unwind: { path: '$cittadino', preserveNullAndEmptyArrays: false } };
-
-        const [perGenere, perFasciaEta, partecipazioneGiornaliera] = await Promise.all([
+        const unwindCittadino  = { $unwind: { path: '$cittadino', preserveNullAndEmptyArrays: false } };
+ 
+        const [perGenere, perFasciaEta, perCategoria, partecipazioneGiornaliera] = await Promise.all([
+ 
             // A) Per genere
             RispostaConsultazione.aggregate([
                 baseMatch,
@@ -306,7 +310,7 @@ export const getRiepilogoDemografico = async (req, res) => {
                 { $group: { _id: { genere: '$cittadino.genere', opzione: '$ID_opzione_str' }, voti: { $sum: 1 } } },
                 { $project: { _id: 0, genere: '$_id.genere', opzioneId: '$_id.opzione', voti: 1 } }
             ]),
-
+ 
             // B) Per fascia d'età
             RispostaConsultazione.aggregate([
                 baseMatch,
@@ -344,8 +348,19 @@ export const getRiepilogoDemografico = async (req, res) => {
                 { $group: { _id: { fascia: '$fascia', opzione: '$ID_opzione_str' }, voti: { $sum: 1 } } },
                 { $project: { _id: 0, fascia: '$_id.fascia', opzioneId: '$_id.opzione', voti: 1 } }
             ]),
-
-            // C) Partecipazione giornaliera
+ 
+            // C) Per categoria
+            RispostaConsultazione.aggregate([
+                baseMatch,
+                unwindOpzioni,
+                projectOpzioneStr,
+                lookupCittadino,
+                unwindCittadino,
+                { $group: { _id: { categoria: '$cittadino.categoria', opzione: '$ID_opzione_str' }, voti: { $sum: 1 } } },
+                { $project: { _id: 0, categoria: '$_id.categoria', opzioneId: '$_id.opzione', voti: 1 } }
+            ]),
+ 
+            // D) Partecipazione giornaliera
             RispostaConsultazione.aggregate([
                 baseMatch,
                 {
@@ -358,7 +373,9 @@ export const getRiepilogoDemografico = async (req, res) => {
                 { $project: { _id: 0, data: '$_id', voti: 1 } }
             ])
         ]);
-
+ 
+        logger.info({ ms: Date.now() - t0, votazioneId }, 'riepilogoDemografico: completato');
+ 
         return res.status(200).json({
             message: 'Riepilogo demografico recuperato.',
             votazione: votazione.titolo,
@@ -368,9 +385,10 @@ export const getRiepilogoDemografico = async (req, res) => {
             opzioniMap,
             perGenere,
             perFasciaEta,
+            perCategoria,
             partecipazioneGiornaliera
         });
-
+ 
     } catch (error) {
         if (error.name === 'BSONTypeError' || error.name === 'CastError') {
             return res.status(400).json({ message: 'ID Votazione non valido.' });
