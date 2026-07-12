@@ -12,13 +12,14 @@ import {
 import {
   protect,
   restrictTo,
-  validateObjectId
+  validateObjectId,
+  requireProfiloCompleto
 } from "../middleware/auth_middleware.js";
 
 const router = Router();
 
 // POST: Crea iniziativa se sei cittadino
-router.post("/", protect, restrictTo(['cittadino']), createIniziativa);
+router.post("/", protect, restrictTo(['cittadino']),requireProfiloCompleto, createIniziativa);
 
 //GET: Ritorna tutte le iniziative filtrate per data e numero di voti
 router.get("/", protect, getIniziative);
