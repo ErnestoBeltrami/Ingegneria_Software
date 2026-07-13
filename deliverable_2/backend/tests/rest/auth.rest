@@ -1,12 +1,11 @@
 ### Completa profilo cittadino
 POST http://localhost:3000/auth/complete-profile
 Content-Type: application/json
+Authorization: Bearer {{TOKEN_CITTADINO}}
 
 {
-    "cittadinoId" : "69341b68fa01c0233f64f56d",
-    "nome" : "SubZero",
-    "cognome" : "LDAOKWODA",
-    "eta": 67,
+    "dataNascita": "1995-06-15",
+    "circoscrizione": "Centro storico - Piedicastello",
     "genere": "Uomo",
     "categoria" : "Studente"
 }
