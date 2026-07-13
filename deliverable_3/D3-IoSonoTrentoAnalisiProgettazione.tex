@@ -167,8 +167,9 @@ header \texttt{Authorization: Bearer <token>}.
 
 \interfacciarichiesta{completamento profilo cittadino}\\
 Al primo accesso Google, se \texttt{profiloCompleto = false}, il cittadino deve fornire data di
-nascita, comune di residenza, circoscrizione (se residente a Trento), categoria lavorativa e genere tramite
-\texttt{POST /auth/complete-profile}.
+nascita, circoscrizione di residenza, categoria occupazionale e genere tramite
+\texttt{POST /auth/complete-profile}. Nome ed e-mail sono invece importati automaticamente dal
+profilo Google.
 
 \interfacciafornita{autenticazione}\\
 Permette all'utente autenticato di accedere a tutte le funzionalità a lui riservate, garantendo
@@ -187,16 +188,18 @@ MongoDB e mette a disposizione degli altri componenti le operazioni CRUD sulle e
 Applica la validazione degli schemi Mongoose prima di ogni scrittura.
 
 \interfacciarichiesta{dati di registrazione operatore}\\
-Username, password in chiaro e flag \texttt{isRoot}. Il componente salva la password come hash
-bcrypt.
+Username, password in chiaro, nome e cognome. Il componente salva la password come hash bcrypt e
+imposta \texttt{isRoot} a \texttt{false}: l'unico operatore \textit{root} è quello creato dal seed
+iniziale.
 
 \interfacciarichiesta{dati profilo cittadino}\\
-Dati anagrafici del cittadino (nome, cognome, data di nascita, comune di residenza, circoscrizione)
-necessari per portare \texttt{profiloCompleto} a \texttt{true} o per aggiornare il profilo.
+Dati del cittadino (data di nascita, circoscrizione, genere, categoria occupazionale) necessari per
+portare \texttt{profiloCompleto} a \texttt{true}; nome e cognome, importati da Google, sono
+aggiornabili separatamente.
 
 \interfacciarichiesta{dati consultazione}\\
-Tipo (\texttt{votazione} | \texttt{sondaggio}), titolo, date di inizio, fine e discussione,
-domande associate, stato iniziale (\texttt{bozza}).
+Tipo (\texttt{votazione} | \texttt{sondaggio}), titolo, descrizione, date di inizio, fine e
+discussione, domande associate, stato iniziale (\texttt{bozza}).
 
 \interfacciarichiesta{risposta a consultazione}\\
 Identificativo cittadino, identificativo consultazione, opzioni selezionate o testo libero. Viene
@@ -220,10 +223,11 @@ Conferma delle operazioni di creazione, aggiornamento o eliminazione dei documen
 \textbf{Descrizione:}\\
 Il componente si occupa del ciclo di vita delle consultazioni pubbliche, che comprendono sia le
 \textit{votazioni} (con una singola domanda a risposta singola o multipla) sia i \textit{sondaggi}
-(con più domande). Gli operatori creano le consultazioni in stato \texttt{bozza} e le pubblicano, una volta publicate
-diventano votabili a partire dalla data d'inizio;
-lo scheduler porta le consultazioni a \texttt{concluso} alla \texttt{data\_fine}. I cittadini possono rispondere alle consultazioni
-attive.
+(con più domande). Gli operatori creano le consultazioni in stato \texttt{bozza} e le pubblicano;
+una volta pubblicate diventano votabili a partire dalla \texttt{data\_inizio}. Lo scheduler
+(\textit{CMP7}) attiva automaticamente le bozze la cui \texttt{data\_inizio} è trascorsa e porta a
+\texttt{concluso} le consultazioni alla \texttt{data\_fine}. I cittadini possono rispondere alle
+consultazioni attive; l'operatore può infine archiviare quelle concluse.
 
 \interfacciarichiesta{autenticazione}\\
 JWT valido per distinguere il ruolo: solo gli operatori possono creare/modificare consultazioni;
@@ -245,8 +249,9 @@ Singolo documento con le domande associate e i metadati (stato, date, autore).
 Esito positivo o negativo della registrazione della risposta del cittadino.
 
 \interfacciafornita{statistiche votazione}\\
-Aggregazione del numero di voti per opzione, suddivisi fasce d'età dei votanti, fornita agli
-operatori al termine della consultazione.
+Aggregazione del numero di voti per opzione, con le relative percentuali, disponibile a qualunque
+utente autenticato. Le aggregazioni demografiche dei votanti sono invece riservate agli operatori
+(si veda \textit{CMP6}).
 
 % ····················································
 \subsubsection*{CMP4: Gestione iniziative}
@@ -294,8 +299,8 @@ password e promozione a \textit{root}.
 JWT valido per garantire che ogni utente acceda solo al proprio profilo.
 
 \interfacciarichiesta{dati completamento profilo}\\
-Data di nascita, comune di residenza, circoscrizione (se residente a Trento), categoria occupazione e genere forniti dal
-cittadino tramite \texttt{POST /auth/complete-profile}.
+Data di nascita, circoscrizione, categoria occupazionale e genere forniti dal cittadino tramite
+\texttt{POST /auth/complete-profile}.
 
 \interfacciarichiesta{dati aggiornamento anagrafica}\\
 Nome e cognome aggiornati, inviati dal cittadino tramite \texttt{PATCH /cittadino/me}.
@@ -317,16 +322,20 @@ Aggiornamento del flag \texttt{loggedIn} a \texttt{false} e risposta di conferma
 
 \textbf{Descrizione:}\\
 Il componente aggrega i dati di partecipazione alle consultazioni per produrre statistiche
-visualizzabili dagli operatori. In particolare, per ogni votazione conclusa, calcola la
-distribuzione dei voti per opzione e per fascia d'età (derivata dalla data di nascita del
-cittadino), genere, circoscrizione e occupazione. Espone queste aggregazioni tramite le API di reportistica.
+visualizzabili dagli operatori. Il \textit{riepilogo sintetico} calcola, per ogni opzione, il numero
+di voti ricevuti e la percentuale sul totale dei votanti. Il \textit{riepilogo demografico} incrocia
+i voti con i dati del cittadino votante e produce la distribuzione per genere, per fascia d'età
+(derivata dalla \texttt{dataNascita}: 18--25, 26--35, 36--50, oltre 50), per categoria occupazionale
+e l'andamento giornaliero della partecipazione. Espone queste aggregazioni tramite le API di
+reportistica.
 
 \interfacciarichiesta{dati risposte}\\
 Insieme delle \textit{RispostaConsultazione} associate a una consultazione, con gli identificativi
 dei cittadini rispondenti.
 
 \interfacciarichiesta{dati anagrafici cittadini}\\
-Dati dei cittadini per il calcolo delle aggregazioni al momento del voto.
+Dati dei cittadini, recuperati tramite \textit{join} sulla collezione \textit{Cittadino} nel momento
+in cui la statistica viene richiesta.
 
 \interfacciafornita{statistiche aggregate}\\
 JSON con il conteggio voti per opzione e le distribuzioni per aggregazioni.
@@ -339,10 +348,13 @@ JSON con il conteggio voti per opzione e le distribuzioni per aggregazioni.
 Il componente implementa un job schedulato (via \texttt{node-cron}, esecuzione oraria) che
 gestisce le transizioni automatiche di stato delle consultazioni. All'avvio dell'applicazione
 esegue immediatamente un ciclo di controllo. Le transizioni gestite sono:
-$\texttt{attivo} \to \texttt{concluso}$ quando \texttt{data\_fine} è trascorsa.
+$\texttt{bozza} \to \texttt{attivo}$ quando \texttt{data\_inizio} è trascorsa e
+$\texttt{attivo} \to \texttt{concluso}$ quando \texttt{data\_fine} è trascorsa. Le sole transizioni
+non automatiche sono l'archiviazione ($\texttt{concluso} \to \texttt{archiviato}$) e la
+pubblicazione anticipata di una bozza, entrambe a carico dell'operatore.
 
 \interfacciarichiesta{lista consultazioni attive/in bozza}\\
-Interrogazione periodica al database per recuperare le consultazioni in stato
+Interrogazione periodica al database per recuperare le consultazioni in stato \texttt{bozza} o
 \texttt{attivo} che soddisfano i criteri di transizione.
 
 \interfacciafornita{aggiornamento stato consultazione}\\
@@ -423,16 +435,18 @@ incompleto (\texttt{profiloCompleto = false}) e deve essere completato prima di 
   \item \texttt{email}: indirizzo e-mail Google
   \item \texttt{ID\_univoco\_esterno}: Google ID (sub claim del token OAuth)
   \item \texttt{dataNascita}: data di nascita (usata per le statistiche per fascia d'età)
-  \item \texttt{comuneResidenza}: comune di residenza del cittadino
-  \item \texttt{circoscrizione}: circoscrizione di Trento (valorizzata solo se residente a Trento)
+  \item \texttt{circoscrizione}: circoscrizione di residenza
+  \item \texttt{genere}: \texttt{Uomo} | \texttt{Donna} (usato per le statistiche demografiche)
+  \item \texttt{categoria}: categoria occupazionale (\texttt{Lavoratore}, \texttt{Disoccupato},
+        \texttt{Pensionato}, \texttt{Studente}, \texttt{Altro})
   \item \texttt{profiloCompleto}: booleano, \texttt{false} al primo accesso
   \item \texttt{loggedIn}: booleano, aggiornato a ogni login/logout
 \end{itemize}
 
 \noindent\textbf{Metodi principali:}
 \begin{itemize}
-  \item \texttt{completeProfile(dati)}: imposta \texttt{dataNascita}, \texttt{comuneResidenza} e
-        \texttt{circoscrizione}; porta \texttt{profiloCompleto} a \texttt{true}
+  \item \texttt{completeProfile(dati)}: imposta \texttt{dataNascita}, \texttt{circoscrizione},
+        \texttt{genere} e \texttt{categoria}; porta \texttt{profiloCompleto} a \texttt{true}
   \item \texttt{updateProfile(dati)}: aggiorna \texttt{nome} e \texttt{cognome}
   \item \texttt{logout()}: aggiorna \texttt{loggedIn} a \texttt{false}
   \item \texttt{getProfile()}: restituisce i dati del profilo
@@ -457,6 +471,7 @@ iniziale) può promuovere altri operatori.
   \item \texttt{\_id}: ObjectId univoco MongoDB
   \item \texttt{username}: identificativo di accesso univoco
   \item \texttt{password}: hash bcrypt della password
+  \item \texttt{nome}, \texttt{cognome}: dati anagrafici del dipendente comunale
   \item \texttt{isRoot}: booleano, consente la gestione degli altri operatori
 \end{itemize}
 
@@ -465,7 +480,8 @@ iniziale) può promuovere altri operatori.
   \item \texttt{login(username, password)}: verifica le credenziali e rilascia un JWT
   \item \texttt{changePassword(vecchiaPassword, nuovaPassword)}: aggiorna l'hash bcrypt
   \item \texttt{promote(operatoreId)}: promuove un operatore (solo per isRoot)
-  \item \texttt{register(username, password)}: crea un nuovo account operatore
+  \item \texttt{register(username, password, nome, cognome)}: crea un nuovo account operatore
+        (solo per isRoot); il nuovo account ha sempre \texttt{isRoot = false}
   \item \texttt{getProfile()}: restituisce le informazioni dell'operatore.
 \end{itemize}
 
@@ -490,7 +506,8 @@ allo scadere di \texttt{data\_fine}, senza intervento dell'operatore.
 \noindent\textbf{Attributi principali:}
 \begin{itemize}
   \item \texttt{tipo}: \texttt{votazione} | \texttt{sondaggio}
-  \item \texttt{titolo}: titolo della consultazione
+  \item \texttt{titolo}: titolo della consultazione (univoco)
+  \item \texttt{descrizione}: testo descrittivo della consultazione
   \item \texttt{stato}: \texttt{bozza} $\to$ \texttt{attivo} $\to$ \texttt{concluso}
         $\to$ \texttt{archiviato}
   \item \texttt{data\_inizio}, \texttt{data\_fine}: intervallo temporale di attivazione
@@ -525,7 +542,9 @@ modalità: risposta singola (radio) e risposta multipla (checkbox).
 \noindent\textbf{Attributi principali:}
 \begin{itemize}
   \item \texttt{titolo}: testo del quesito
-  \item \texttt{opzioni}: array di stringhe con le risposte possibili
+  \item \texttt{opzioni}: array di sotto-documenti \texttt{Opzione}, ciascuno con un proprio
+        \texttt{\_id} e il campo \texttt{testo}; ne servono almeno due. È l'\texttt{\_id}
+        dell'opzione a essere referenziato dalle risposte dei cittadini
   \item \texttt{tipo}: \texttt{risposta\_singola} | \texttt{risposta\_multipla}
 \end{itemize}
 
@@ -576,9 +595,17 @@ a cui il cittadino ha risposto.
 \begin{itemize}
   \item \texttt{ID\_cittadino}: riferimento al cittadino rispondente
   \item \texttt{ID\_consultazione}: riferimento alla consultazione
-  \item \texttt{risposte}: mappa domanda $\to$ opzioni selezionate
-  \item \texttt{dataRisposta}: timestamp della risposta
+  \item \texttt{tipo\_consultazione}: \texttt{votazione} | \texttt{sondaggio}; determina quale dei
+        due campi seguenti è valorizzato
+  \item \texttt{ID\_opzioni}: array degli \texttt{\_id} delle opzioni scelte (solo votazione: un
+        elemento per la risposta singola, più di uno per quella multipla)
+  \item \texttt{dettagliRisposte}: array di coppie \texttt{ID\_domanda} $\to$
+        \texttt{opzioniScelte[]} (solo sondaggio)
+  \item \texttt{createdAt}, \texttt{updatedAt}: timestamp gestiti da Mongoose
 \end{itemize}
+
+\noindent Un indice univoco sulla coppia (\texttt{ID\_cittadino}, \texttt{ID\_consultazione})
+garantisce a livello di database che un cittadino risponda una sola volta a una consultazione.
 
 \noindent\textbf{Metodi principali:}
 \begin{itemize}
@@ -603,8 +630,11 @@ proprio voto (\texttt{DELETE /cittadino/vote/iniziativa/:id}).
 \begin{itemize}
   \item \texttt{ID\_cittadino}: riferimento al cittadino votante
   \item \texttt{ID\_iniziativa}: riferimento all'iniziativa supportata
-  \item \texttt{dataVoto}: timestamp del voto
+  \item \texttt{createdAt}, \texttt{updatedAt}: timestamp gestiti da Mongoose
 \end{itemize}
+
+\noindent Un indice univoco sulla coppia (\texttt{ID\_cittadino}, \texttt{ID\_iniziativa}) impedisce
+a un cittadino di votare due volte la stessa iniziativa.
 
 \noindent\textbf{Metodi principali:}
 \begin{itemize}
@@ -626,8 +656,7 @@ La \textit{Categoria Iniziativa} è una tassonomia tematica usata per classifica
 
 \noindent\textbf{Attributi principali:}
 \begin{itemize}
-  \item \texttt{nome}: nome della categoria
-  \item \texttt{descrizione}: breve descrizione della tematica
+  \item \texttt{nome}: nome della categoria (univoco)
 \end{itemize}
 
 % ────────────────────────────────────────────────────────────────────────────
@@ -696,10 +725,10 @@ endpoint. Di seguito viene riportata la mappatura tra classi/metodi e route HTTP
 
   % Autenticazione
   Operatore.login() & POST & /operatore/login \\
-  Operatore.register() & POST & /operatore/register \\
+  Operatore.register() & POST & /operatore/register \textsuperscript{*} \\
   Operatore.getProfile() & GET & /operatore/profile \\
   Operatore.changePassword() & PATCH & /operatore/me/password \\
-  Operatore.promote() & PATCH & /operatore/:id/promote \\
+  Operatore.promote() & PATCH & /operatore/:operatoreId/promote \textsuperscript{*} \\
   \addlinespace
   % OAuth Cittadino
   Cittadino.loginGoogle() & GET & /auth/google \\
@@ -713,11 +742,13 @@ endpoint. Di seguito viene riportata la mappatura tra classi/metodi e route HTTP
   Consultazione.create() (votazione) & POST & /votazioni \\
   Consultazione.list() (votazione, op.) & GET & /votazioni \\
   Consultazione.list() (votazione, cit.) & GET & /votazioni/cittadino \textsuperscript{§} \\
-  Consultazione.getById() (votazione, op.) & GET & /votazioni/:id \\
-  Consultazione.getById() (votazione, cit.) & GET & /votazioni/:id \textsuperscript{†} \\
+  Consultazione.getById() (votazione) & GET & /votazioni/:id \textsuperscript{†} \\
   Consultazione.update() (votazione) & PATCH & /votazioni/:id \\
   Consultazione.delete() (votazione) & DELETE & /votazioni/:id \\
-  Consultazione.getStatistiche() & GET & /votazioni/:id/statistiche \\
+  Consultazione.publish() (votazione) & PATCH & /votazioni/:id/publish \\
+  Consultazione.archive() (votazione) & PATCH & /votazioni/:id/archive \\
+  Consultazione.getStatistiche() & GET & /votazioni/:id/riepilogo \\
+  Consultazione.getStatistiche() (demogr.) & GET & /votazioni/:id/riepilogo/demografico \\
   Consultazione.conclude() & — & (automatico alla scadenza di data\_fine) \\
   RispostaConsultazione.create() & POST & /cittadino/vote/votazione \textsuperscript{‡} \\
   \addlinespace
@@ -728,12 +759,17 @@ endpoint. Di seguito viene riportata la mappatura tra classi/metodi e route HTTP
   Consultazione.getById() (sondaggio) & GET & /sondaggio/:id \\
   Consultazione.update() (sondaggio) & PATCH & /sondaggio/:id \\
   Consultazione.delete() (sondaggio) & DELETE & /sondaggio/:id \\
+  Consultazione.publish() (sondaggio) & PATCH & /sondaggio/:id/publish \\
+  Consultazione.archive() (sondaggio) & PATCH & /sondaggio/:id/archive \\
+  Consultazione.getStatistiche() & GET & /sondaggio/:id/riepilogo \\
+  Consultazione.getStatistiche() (filtri) & POST & /sondaggio/:id/riepilogo/aggregato \textsuperscript{¶} \\
   Consultazione.conclude() & — & (automatico alla scadenza di data\_fine) \\
   RispostaConsultazione.create() & POST & /cittadino/vote/sondaggio \\
   \addlinespace
   % Iniziative
   Iniziativa.create() & POST & /iniziative \\
   Iniziativa.list() & GET & /iniziative \\
+  Iniziativa.ricerca() & POST & /iniziative/ricerca \\
   Iniziativa.getById() & GET & /iniziative/:id \\
   Iniziativa.update() & PATCH & /iniziative/:id \\
   Iniziativa.delete() & DELETE & /iniziative/:id \\
@@ -742,8 +778,11 @@ endpoint. Di seguito viene riportata la mappatura tra classi/metodi e route HTTP
   VotoIniziativa.delete() & DELETE & /cittadino/vote/iniziativa/:id \\
   \addlinespace
   % Categorie
-  Categoria.list() & GET & /categorie \\
   Categoria.create() & POST & /categorie \\
+  Categoria.list() & GET & /categorie \\
+  Categoria.getById() & GET & /categorie/:id \\
+  Categoria.update() & PATCH & /categorie/:id \\
+  Categoria.delete() & DELETE & /categorie/:id \\
   \addlinespace
   % Notifiche
   Notifica.list() & GET & /notifiche \\
@@ -770,11 +809,26 @@ restituiscono solo consultazioni in stato \texttt{attivo} o \texttt{concluso}. O
 il campo booleano \texttt{voted} che indica se il cittadino autenticato ha già partecipato a quella
 consultazione (calcolato con una singola query batch su \texttt{RispostaConsultazione}).
 
+\noindent\textsuperscript{*} \texttt{POST /operatore/register} e
+\texttt{PATCH /operatore/:operatoreId/promote} sono riservati agli operatori con flag
+\texttt{isRoot}; gli altri operatori ricevono \texttt{403}.
+
+\noindent\textsuperscript{¶} \texttt{POST /sondaggio/:id/riepilogo/aggregato} è riservato
+all'operatore e accetta nel corpo della richiesta i filtri demografici da applicare
+all'aggregazione; per questo motivo usa il metodo \texttt{POST} anziché \texttt{GET}.
+Analogamente, \texttt{GET /votazioni/:id/riepilogo/demografico} è riservato all'operatore, mentre
+i due riepiloghi sintetici (\texttt{/votazioni/:id/riepilogo} e \texttt{/sondaggio/:id/riepilogo})
+sono accessibili a qualunque utente autenticato.
+
 \vspace{0.5cm}
 
 \noindent La protezione degli endpoint è garantita dal middleware \texttt{protect} (verifica JWT)
 e da \texttt{restrictTo(['ruolo'])} che limita l'accesso in base al ruolo. Il middleware
-\texttt{validateObjectId} previene \texttt{CastError} di Mongoose sui parametri \texttt{/:id}.
+\texttt{requireProfiloCompleto} blocca le operazioni di voto e la creazione di iniziative finché il
+cittadino non ha completato il proprio profilo, mentre \texttt{validateObjectId} previene
+\texttt{CastError} di Mongoose sui parametri \texttt{/:id}. Le route \texttt{POST /operatore/login}
+e \texttt{POST /auth/complete-profile} sono inoltre protette da rate limiting
+(\texttt{express-rate-limit}).
 La documentazione completa degli endpoint è disponibile tramite Swagger UI all'indirizzo
 \texttt{http://localhost:8000/docs}.
 
