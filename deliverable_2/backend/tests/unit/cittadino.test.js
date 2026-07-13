@@ -70,9 +70,23 @@ function makeRes() {
   return res;
 }
 
-const CITTADINO_ID = '507f1f77bcf86cd799439011';
-const VOTAZIONE_ID = '507f1f77bcf86cd799439022';
-const SONDAGGIO_ID = '507f1f77bcf86cd799439033';
+// Helper: restituisce una votazione attiva con domanda valida
+function makeVotazioneAttiva(opzioneId, overrides = {}) {
+  return {
+    stato: 'attivo',
+    data_inizio: new Date(Date.now() - 86400000), // ieri
+    data_fine: new Date(Date.now() + 86400000),   // domani
+    ID_domanda: {
+      tipo: 'risposta_singola',
+      opzioni: [{ _id: { toString: () => opzioneId } }],
+    },
+    ...overrides,
+  };
+}
+
+const CITTADINO_ID  = '507f1f77bcf86cd799439011';
+const VOTAZIONE_ID  = '507f1f77bcf86cd799439022';
+const SONDAGGIO_ID  = '507f1f77bcf86cd799439033';
 const INIZIATIVA_ID = '507f1f77bcf86cd799439044';
 const DOMANDA_ID    = '507f1f77bcf86cd799439055';
 const OPZIONE_ID    = '507f1f77bcf86cd799439066';
@@ -142,10 +156,9 @@ describe('cittadino controller', () => {
         cognome: 'Rossi',
         email: 'mario@test.it',
         dataNascita: '1990-01-01',
-        comuneResidenza: 'Milano',
         circoscrizione: '1',
         genere: 'M',
-        categoria: 'standard',
+        categoria: 'Studente',
         profiloCompleto: true,
       };
       mockCittadinoFindById.mockReturnValueOnce({
@@ -239,16 +252,23 @@ describe('cittadino controller', () => {
       expect(res.status).toHaveBeenCalledWith(400);
     });
 
+    // FIX: findOne ora chiama .populate('ID_domanda') — il mock deve essere una chain
     it('restituisce 403 se la votazione non è attiva', async () => {
-      mockConsultazioneFindOne.mockResolvedValueOnce({ stato: 'bozza' });
+      mockConsultazioneFindOne.mockReturnValueOnce({
+        populate: jest.fn().mockResolvedValueOnce({ stato: 'bozza' }),
+      });
       const req = { user: { _id: CITTADINO_ID }, body: { opzioneId: OPZIONE_ID, votazioneId: VOTAZIONE_ID } };
       const res = makeRes();
       await answerVote(req, res);
       expect(res.status).toHaveBeenCalledWith(403);
     });
 
-    it('restituisce 403 se il cittadino ha gia votato', async () => {
-      mockConsultazioneFindOne.mockResolvedValueOnce({ stato: 'attivo' });
+    // FIX: il mock deve includere stato, date e ID_domanda validi perché
+    // il controller controlla getFase e la domanda prima del duplicato
+    it('restituisce 403 se il cittadino ha già votato', async () => {
+      mockConsultazioneFindOne.mockReturnValueOnce({
+        populate: jest.fn().mockResolvedValueOnce(makeVotazioneAttiva(OPZIONE_ID)),
+      });
       mockRispostaFindOne.mockResolvedValueOnce({ _id: 'esistente' });
       const req = { user: { _id: CITTADINO_ID }, body: { opzioneId: OPZIONE_ID, votazioneId: VOTAZIONE_ID } };
       const res = makeRes();
@@ -259,15 +279,18 @@ describe('cittadino controller', () => {
       );
     });
 
+    // FIX: mock chain + ID_opzioni (array) invece di ID_opzione
     it('restituisce 201 se il voto va a buon fine', async () => {
-      mockConsultazioneFindOne.mockResolvedValueOnce({ stato: 'attivo' });
+      mockConsultazioneFindOne.mockReturnValueOnce({
+        populate: jest.fn().mockResolvedValueOnce(makeVotazioneAttiva(OPZIONE_ID)),
+      });
       mockRispostaFindOne.mockResolvedValueOnce(null);
       mockRispostaCreate.mockResolvedValueOnce({});
       const req = { user: { _id: CITTADINO_ID }, body: { opzioneId: OPZIONE_ID, votazioneId: VOTAZIONE_ID } };
       const res = makeRes();
       await answerVote(req, res);
       expect(mockRispostaCreate).toHaveBeenCalledWith(
-        expect.objectContaining({ tipo_consultazione: 'votazione', ID_opzione: OPZIONE_ID })
+        expect.objectContaining({ tipo_consultazione: 'votazione', ID_opzioni: [OPZIONE_ID] })
       );
       expect(res.status).toHaveBeenCalledWith(201);
     });
@@ -279,15 +302,17 @@ describe('cittadino controller', () => {
     const fakeDomanda = {
       _id: { equals: (id) => id.toString() === DOMANDA_ID, toString: () => DOMANDA_ID },
       tipo: 'risposta_singola',
-      opzioni: [
-        { _id: { toString: () => OPZIONE_ID } },
-      ],
+      opzioni: [{ _id: { toString: () => OPZIONE_ID } }],
     };
 
+    // FIX: aggiunge data_inizio e data_fine così getFase() ritorna 'in_corso'
+    // e non interferisce con i controlli successivi
     const fakeSondaggio = {
       _id: SONDAGGIO_ID,
       tipo: 'sondaggio',
       stato: 'attivo',
+      data_inizio: new Date(Date.now() - 86400000), // ieri
+      data_fine: new Date(Date.now() + 86400000),   // domani
       ID_domande: [fakeDomanda],
     };
 
@@ -328,6 +353,8 @@ describe('cittadino controller', () => {
       expect(res.status).toHaveBeenCalledWith(403);
     });
 
+    // FIX: fakeSondaggio ora ha date valide, getFase ritorna 'in_corso'
+    // e il controllo sulla lunghezza delle risposte ritorna correttamente 400
     it('restituisce 400 se il numero di risposte non corrisponde alle domande', async () => {
       mockRispostaFindOne.mockResolvedValueOnce(null);
       mockConsultazioneFindById.mockReturnValueOnce({
@@ -339,7 +366,7 @@ describe('cittadino controller', () => {
           sondaggioId: SONDAGGIO_ID,
           dettagliRisposte: [
             { ID_domanda: DOMANDA_ID, opzioniScelte: [OPZIONE_ID] },
-            { ID_domanda: 'altro_id', opzioniScelte: [OPZIONE_ID] }, // domanda in più
+            { ID_domanda: 'altro_id', opzioniScelte: [OPZIONE_ID] },
           ],
         },
       };
@@ -367,7 +394,7 @@ describe('cittadino controller', () => {
   // ── votaIniziativa ─────────────────────────────────────────────────────────
 
   describe('votaIniziativa', () => {
-    it('restituisce 404 se l\'iniziativa non esiste', async () => {
+    it("restituisce 404 se l'iniziativa non esiste", async () => {
       mockIniziativaFindById.mockResolvedValueOnce(null);
       const req = { user: { _id: CITTADINO_ID }, body: { iniziativaID: INIZIATIVA_ID } };
       const res = makeRes();
@@ -375,7 +402,7 @@ describe('cittadino controller', () => {
       expect(res.status).toHaveBeenCalledWith(404);
     });
 
-    it('restituisce 403 se il cittadino ha gia votato', async () => {
+    it('restituisce 403 se il cittadino ha già votato', async () => {
       mockIniziativaFindById.mockResolvedValueOnce({ _id: INIZIATIVA_ID });
       mockVotoFindOne.mockResolvedValueOnce({ _id: 'esistente' });
       const req = { user: { _id: CITTADINO_ID }, body: { iniziativaID: INIZIATIVA_ID } };
