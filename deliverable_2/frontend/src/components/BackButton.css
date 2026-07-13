@@ -1,0 +1,50 @@
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: inherit;
+    transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.back-button--link {
+    align-self: flex-start;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.back-button--link:hover {
+    color: var(--text);
+}
+
+.back-button--subtle {
+    align-self: flex-start;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-faint);
+}
+
+.back-button--subtle:hover {
+    color: var(--text);
+}
+
+.back-button--icon {
+    width: 36px;
+    height: 36px;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+}
+
+.back-button--icon:hover {
+    background: var(--surface-hover);
+    border-color: var(--border-strong);
+}

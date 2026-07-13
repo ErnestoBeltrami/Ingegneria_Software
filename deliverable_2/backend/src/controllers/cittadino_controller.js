@@ -6,6 +6,13 @@ import { VotoIniziativa } from '../models/voto_iniziativa.js';
 import { Iniziativa } from '../models/iniziativa.js';
 import { Consultazione } from '../models/consultazione.js';
 
+function getFase(c) {
+    const ora = new Date();
+    if(ora < new Date(c.data_inizio)) return 'in_arrivo';
+    if(ora > new Date(c.data_fine)) return 'conclusa';
+    return 'in_corso';
+}
+
 export const logout = async (req, res) => {
     try {
         const userFromMiddleware = req.user;
@@ -103,19 +110,59 @@ export const answerVote = async (req,res) => {
             });
         } 
 
-        const opzione_scelta = req.body.opzioneId;
+        // Accetta sia un array (opzioniId, voto multiplo) sia un singolo id (opzioneId, retrocompatibile)
+        const opzioniRaw = req.body.opzioniId ?? req.body.opzioneId;
         const votazione = req.body.votazioneId;
 
-        if(!opzione_scelta){
+        const opzioniScelte = Array.isArray(opzioniRaw)
+            ? opzioniRaw
+            : (opzioniRaw != null ? [opzioniRaw] : []);
+
+        if (opzioniScelte.length === 0) {
             return res.status(400).json({
-                message: "Scegliere almeno un opzione."
+                message: "Scegliere almeno un'opzione."
             });
         }
 
-        const votazioneDoc = await Consultazione.findOne({ _id: votazione, tipo: 'votazione' });
+        const votazioneDoc = await Consultazione.findOne({ _id: votazione, tipo: 'votazione' }).populate('ID_domanda');
+        
         if (!votazioneDoc || votazioneDoc.stato !== 'attivo') {
             return res.status(403).json({
                 message: 'La votazione non è attiva.'
+            });
+        }
+
+        const fase = getFase(votazioneDoc);
+
+        if(fase == 'in_arrivo') return res.status(403).json({
+            message: 'La votazione non è ancora iniziata.'
+        });
+        if(fase == 'conclusa') return res.status(403).json({
+            message : 'La votazione è conclusa.'
+        });
+
+
+        const domanda = votazioneDoc.ID_domanda;
+        if (!domanda) {
+            return res.status(404).json({
+                message: 'Domanda collegata alla votazione mancante.'
+            });
+        }
+
+        // Una sola scelta ammessa se la domanda è a risposta singola
+        if (domanda.tipo === 'risposta_singola' && opzioniScelte.length !== 1) {
+            return res.status(400).json({
+                message: 'La votazione richiede esattamente una risposta.'
+            });
+        }
+
+        // Tutte le opzioni devono appartenere alla domanda
+        const opzioniValide = domanda.opzioni.map(o => o._id.toString());
+        const opzioniUniche = [...new Set(opzioniScelte.map(String))];
+        const opzioniNonValide = opzioniUniche.filter(opId => !opzioniValide.includes(opId));
+        if (opzioniNonValide.length > 0) {
+            return res.status(400).json({
+                message: `Le risposte contengono opzioni non valide: ${opzioniNonValide.join(', ')}`
             });
         }
 
@@ -135,7 +182,7 @@ export const answerVote = async (req,res) => {
             tipo_consultazione: 'votazione',
             ID_consultazione: votazione,
             ID_cittadino: userFromMiddleware._id,
-            ID_opzione: opzione_scelta
+            ID_opzioni: opzioniUniche
         });
 
         return res.status(201).json({
@@ -184,12 +231,21 @@ export const answerSondaggio = async (req, res) => {
         }
 
         const sondaggio = await Consultazione.findById(sondaggioId).populate('ID_domande');
-
+        
         if (!sondaggio || sondaggio.tipo !== 'sondaggio' || sondaggio.stato !== 'attivo') {
             return res.status(403).json({
                 message: "Il sondaggio selezionato non è valido o non è attivo."
             });
         }
+        
+        const fase = getFase(sondaggio);
+
+        if(fase == 'in_arrivo') return res.status(403).json({
+            message: 'Il sondaggio non è ancora iniziato.'
+        });
+        if(fase == 'conclusa') return res.status(403).json({
+            message : 'Il sondaggio è concluso.'
+        });
 
         const domandeDelSondaggio = sondaggio.ID_domande;
 

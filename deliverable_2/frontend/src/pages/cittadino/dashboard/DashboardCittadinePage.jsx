@@ -7,16 +7,6 @@ import { fetchAllActivities, fetchProfile } from '../../../services/api';
 import TopBarCittadino from '../../../components/TopBarCittadino';
 import './DashboardCittadinePage.css';
 
-function formatRelativeTime(isoString) {
-    const diff = Date.now() - new Date(isoString).getTime();
-    const mins = Math.floor(diff / 60000);
-    if (mins < 1) return 'Adesso';
-    if (mins < 60) return `${mins}m fa`;
-    const hours = Math.floor(mins / 60);
-    if (hours < 24) return `${hours}h fa`;
-    return `${Math.floor(hours / 24)}g fa`;
-}
-
 const FILTER_MAP = {
     All: () => true,
     Votazione: (a) => a.tipo === 'votazione',

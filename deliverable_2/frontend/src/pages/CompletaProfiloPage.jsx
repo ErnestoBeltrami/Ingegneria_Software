@@ -6,7 +6,7 @@
  *
  * Props:
  *   googleUser  { nome, email, picture }   (read-only, from Google identity)
- *   onSubmit    ({ dataNascita, comuneResidenza, circoscrizione }) => Promise<void>
+ *   onSubmit    ({ dataNascita, circoscrizione, genere, categoria }) => Promise<void>
  *
  * Importa il CSS a fianco:
  *   import './CompletaProfiloPage.css';
@@ -14,52 +14,12 @@
 
 import React, { useState } from 'react';
 import { Check, Lock } from 'lucide-react';
+import { CIRCOSCRIZIONI_TRENTO } from '../constants/circoscrizioni';
 import './CompletaProfiloPage.css';
 
-/* ── Comuni del Trentino (autonoma di Trento). Lista canonica 2024. ── */
-const COMUNI_TRENTINO = [
-  'Ala','Albiano','Aldeno','Altavalle','Altopiano della Vigolana','Amblar-Don','Andalo',
-  'Arco','Avio','Baselga di Pinè','Bedollo','Bersone','Besenello','Bieno','Bleggio Superiore',
-  'Bocenago','Bondone','Borgo Chiese','Borgo Lares','Borgo d\u2019Anaunia','Borgo Valsugana',
-  'Brentonico','Bresimo','Caderzone Terme','Cagnò','Calceranica al Lago','Caldes','Caldonazzo',
-  'Calliano','Campitello di Fassa','Campodenno','Canal San Bovo','Canazei','Capriana',
-  'Carisolo','Carzano','Castel Condino','Castel Ivano','Castello Tesino','Castello-Molina di Fiemme',
-  'Castelnuovo','Cavalese','Cavareno','Cavedago','Cavedine','Cavizzana','Cembra Lisignago',
-  'Cimone','Cinte Tesino','Cis','Civezzano','Cles','Comano Terme','Commezzadura','Contà',
-  'Croviana','Daiano','Dambel','Denno','Dimaro Folgarida','Drena','Dro','Fai della Paganella',
-  'Faver','Fiavé','Fierozzo','Folgaria','Fondo','Fornace','Frassilongo','Garniga Terme',
-  'Giovo','Giustino','Grigno','Imer','Isera','Lavarone','Lavis','Levico Terme','Livo',
-  'Lona-Lases','Luserna','Madruzzo','Malé','Malosco','Massimeno','Mazzin','Mezzana',
-  'Mezzano','Mezzocorona','Mezzolombardo','Moena','Molveno','Mori','Nago-Torbole','Nogaredo',
-  'Nomi','Novaledo','Ospedaletto','Ossana','Padergnone','Palù del Fersina','Panchià','Peio',
-  'Pellizzano','Pelugo','Pergine Valsugana','Pieve Tesino','Pieve di Bono-Prezzo',
-  'Pinzolo','Pomarolo','Porte di Rendena','Predaia','Predazzo','Primiero San Martino di Castrozza',
-  'Rabbi','Riva del Garda','Romeno','Roncegno Terme','Ronchi Valsugana','Ronzo-Chienis',
-  'Ronzone','Roverè della Luna','Rovereto','Ruffré-Mendola','Rumo','Sagron Mis',
-  'Samone','San Giovanni di Fassa','San Lorenzo Dorsino','San Michele all\u2019Adige','Sant\u2019Orsola Terme',
-  'Sanzeno','Sarnonico','Scurelle','Sella Giudicarie','Sfruz','Sover','Soraga di Fassa',
-  'Spiazzo','Spormaggiore','Sporminore','Stenico','Storo','Strembo','Taio','Telve',
-  'Telve di Sopra','Tenna','Tenno','Terragnolo','Terre d\u2019Adige','Terzolas','Tesero',
-  'Tione di Trento','Ton','Torcegno','Trambileno','Trento','Tre Ville','Valbondione',
-  'Valdaone','Valfloriana','Vallarsa','Vallelaghi','Vermiglio','Vignola-Falesina','Villa Lagarina',
-  'Villa di Tirano','Vipiteno','Volano','Ziano di Fiemme'
-];
+const GENERI = ['Uomo', 'Donna'];
 
-/* ── Circoscrizioni del Comune di Trento. ── */
-const CIRCOSCRIZIONI_TRENTO = [
-  'Gardolo',
-  'Meano',
-  'Bondone',
-  'Sardagna',
-  'Ravina-Romagnano',
-  'Argentario',
-  'Povo',
-  'Mattarello',
-  'Villazzano',
-  'Oltrefersina',
-  'San Giuseppe-Santa Chiara',
-  'Centro Storico-Piedicastello',
-];
+const CATEGORIE = ['Lavoratore', 'Disoccupato', 'Pensionato', 'Studente', 'Altro'];
 
 const DEFAULT_GOOGLE_USER = {
   nome: 'Giulia Bianchi',
@@ -71,13 +31,12 @@ export default function CompletaProfiloPage({
   googleUser = DEFAULT_GOOGLE_USER,
   onSubmit,
 }) {
-  const [dataNascita,     setDataNascita]     = useState('');
-  const [comuneResidenza, setComuneResidenza] = useState('');
-  const [circoscrizione,  setCircoscrizione]  = useState('');
+  const [dataNascita,    setDataNascita]    = useState('');
+  const [circoscrizione, setCircoscrizione] = useState('');
+  const [genere,         setGenere]         = useState('');
+  const [categoria,      setCategoria]      = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error,      setError]      = useState('');
-
-  const isTrento = comuneResidenza === 'Trento';
 
   const initials = (googleUser.nome || googleUser.email || '?')
     .split(/\s+/).map((s) => s.charAt(0)).join('').slice(0, 2).toUpperCase();
@@ -89,8 +48,9 @@ export default function CompletaProfiloPage({
     const age = (Date.now() - d.getTime()) / (365.25 * 24 * 3600 * 1000);
     if (age < 16)  return 'Devi avere almeno 16 anni per partecipare';
     if (age > 120) return 'Data di nascita non valida';
-    if (!comuneResidenza) return 'Seleziona il tuo comune di residenza';
-    if (isTrento && !circoscrizione) return 'Seleziona la tua circoscrizione';
+    if (!circoscrizione) return 'Seleziona la tua circoscrizione';
+    if (!genere)         return 'Seleziona il tuo genere';
+    if (!categoria)      return 'Seleziona la tua occupazione';
     return '';
   };
 
@@ -104,8 +64,9 @@ export default function CompletaProfiloPage({
       setSubmitting(true);
       const payload = {
         dataNascita,
-        comuneResidenza,
-        circoscrizione: isTrento ? circoscrizione : null,
+        circoscrizione,
+        genere,
+        categoria,
       };
       if (onSubmit) await onSubmit(payload);
       else await new Promise((r) => setTimeout(r, 700));
@@ -124,12 +85,11 @@ export default function CompletaProfiloPage({
         <header className="cp-header">
           <p className="cp-header__eyebrow">Ultimo passo</p>
           <h1 className="cp-header__title">
-            Benvenuto a Trento,<br/>
-            <span className="cp-header__title-em">{(googleUser.nome || '').split(' ')[0] || 'cittadino'}.</span>
+            Ehi {(googleUser.nome || '').split(' ')[0] || 'ciao'}, ci siamo quasi.
           </h1>
           <p className="cp-header__subtitle">
-            Per partecipare alle votazioni e ai sondaggi della tua città abbiamo bisogno di
-            qualche informazione in più. Ti chiediamo solo l’essenziale.
+            Ancora un attimo e potrai dire la tua sulle scelte della città. Completa il tuo
+            profilo con qualche informazione: bastano pochi secondi.
           </p>
         </header>
 
@@ -168,51 +128,64 @@ export default function CompletaProfiloPage({
           </div>
 
           <div className="cp-field">
-            <label className="cp-field__label" htmlFor="cp-comune">
-              Comune di residenza <span className="cp-field__required">*</span>
+            <label className="cp-field__label" htmlFor="cp-circ">
+              Circoscrizione <span className="cp-field__required">*</span>
             </label>
             <div className="cp-field__select-wrap">
               <select
-                id="cp-comune"
+                id="cp-circ"
                 className="cp-field__select"
-                value={comuneResidenza}
-                onChange={(e) => {
-                  setComuneResidenza(e.target.value);
-                  if (e.target.value !== 'Trento') setCircoscrizione('');
-                }}
+                value={circoscrizione}
+                onChange={(e) => setCircoscrizione(e.target.value)}
               >
-                <option value="">Seleziona un comune…</option>
-                {COMUNI_TRENTINO.map((c) => (
+                <option value="">Seleziona la tua circoscrizione…</option>
+                {CIRCOSCRIZIONI_TRENTO.map((c) => (
                   <option key={c} value={c}>{c}</option>
                 ))}
               </select>
             </div>
-            <p className="cp-field__hint">Solo i comuni della Provincia Autonoma di Trento.</p>
+            <p className="cp-field__hint">
+              Le 12 circoscrizioni del Comune di Trento. Servono per le consultazioni di quartiere.
+            </p>
           </div>
 
-          {isTrento && (
-            <div className="cp-field">
-              <label className="cp-field__label" htmlFor="cp-circ">
-                Circoscrizione <span className="cp-field__required">*</span>
-              </label>
-              <div className="cp-field__select-wrap">
-                <select
-                  id="cp-circ"
-                  className="cp-field__select"
-                  value={circoscrizione}
-                  onChange={(e) => setCircoscrizione(e.target.value)}
-                >
-                  <option value="">Seleziona la tua circoscrizione…</option>
-                  {CIRCOSCRIZIONI_TRENTO.map((c) => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                </select>
-              </div>
-              <p className="cp-field__hint">
-                Le 12 circoscrizioni del Comune di Trento. Servono per le consultazioni di quartiere.
-              </p>
+          <div className="cp-field">
+            <label className="cp-field__label" htmlFor="cp-genere">
+              Genere <span className="cp-field__required">*</span>
+            </label>
+            <div className="cp-field__select-wrap">
+              <select
+                id="cp-genere"
+                className="cp-field__select"
+                value={genere}
+                onChange={(e) => setGenere(e.target.value)}
+              >
+                <option value="">Seleziona…</option>
+                {GENERI.map((g) => (
+                  <option key={g} value={g}>{g}</option>
+                ))}
+              </select>
             </div>
-          )}
+          </div>
+
+          <div className="cp-field">
+            <label className="cp-field__label" htmlFor="cp-categoria">
+              Occupazione <span className="cp-field__required">*</span>
+            </label>
+            <div className="cp-field__select-wrap">
+              <select
+                id="cp-categoria"
+                className="cp-field__select"
+                value={categoria}
+                onChange={(e) => setCategoria(e.target.value)}
+              >
+                <option value="">Seleziona…</option>
+                {CATEGORIE.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+            </div>
+          </div>
 
           {error && <p className="cp-msg cp-msg--error">{error}</p>}
 

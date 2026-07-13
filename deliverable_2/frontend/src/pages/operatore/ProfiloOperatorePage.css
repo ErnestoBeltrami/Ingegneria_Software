@@ -20,23 +20,6 @@
 }
 
 /* back link */
-.po-back {
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-faint);
-  padding: 0;
-  transition: color 0.15s ease;
-}
-.po-back:hover { color: #829aff; }
-
 /* header */
 .po-header {
   padding-bottom: 28px;
@@ -290,4 +273,60 @@
 @media (max-width: 720px) {
   .po-layout { grid-template-columns: 1fr; }
   .po-shell { padding: 20px; }
+}
+
+
+[data-theme="light"] .po-badge--root {
+  background: rgba(31, 58, 137, 0.10);
+  color: #1f3a89;
+  border-color: rgba(31, 58, 137, 0.30);
+}
+
+[data-theme="light"] .po-field__required {
+  color: #dc2626;
+}
+
+[data-theme="light"] .po-msg--error {
+  color: #dc2626;
+}
+
+[data-theme="light"] .po-msg--success {
+  color: #007a52;
+}
+
+[data-theme="light"] .po-btn--secondary {
+  color: #dc2626;
+}
+
+/* logout */
+.po-logout-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.po-btn-logout {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(231, 0, 11, 0.30);
+  background: rgba(231, 0, 11, 0.08);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ff6b6b;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.po-btn-logout:hover:not(:disabled) { opacity: 0.80; }
+.po-btn-logout:disabled { opacity: 0.40; cursor: not-allowed; }
+
+[data-theme="light"] .po-btn-logout {
+  color: #dc2626;
 }

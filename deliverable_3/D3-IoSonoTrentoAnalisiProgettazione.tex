@@ -129,11 +129,6 @@ backend e frontend dell'applicazione.
 % ════════════════════════════════════════════════════════════════════════════
 \section{Analisi dei Componenti}
 
-Nel presente capitolo viene presentata l'architettura in termini di componenti (CMP) interni al
-sistema, definiti sulla base dei requisiti analizzati in precedenza. Viene poi adottato il diagramma
-dei componenti per rappresentare l'interconnessione tra i vari moduli, identificando le interfacce
-tra questi e verso sistemi esterni.
-
 % ────────────────────────────────────────────────────────────────────────────
 \subsection{Definizione dei componenti}
 
@@ -172,7 +167,7 @@ header \texttt{Authorization: Bearer <token>}.
 
 \interfacciarichiesta{completamento profilo cittadino}\\
 Al primo accesso Google, se \texttt{profiloCompleto = false}, il cittadino deve fornire data di
-nascita, comune di residenza e circoscrizione (se residente a Trento) tramite
+nascita, comune di residenza, circoscrizione (se residente a Trento), categoria lavorativa e genere tramite
 \texttt{POST /auth/complete-profile}.
 
 \interfacciafornita{autenticazione}\\
@@ -225,9 +220,9 @@ Conferma delle operazioni di creazione, aggiornamento o eliminazione dei documen
 \textbf{Descrizione:}\\
 Il componente si occupa del ciclo di vita delle consultazioni pubbliche, che comprendono sia le
 \textit{votazioni} (con una singola domanda a risposta singola o multipla) sia i \textit{sondaggi}
-(con più domande). Gli operatori creano le consultazioni in stato \texttt{bozza} e le pubblicano;
-lo scheduler interno le porta automaticamente allo stato \texttt{attivo} alla \texttt{data\_inizio}
-e a \texttt{concluso} alla \texttt{data\_fine}. I cittadini possono rispondere alle consultazioni
+(con più domande). Gli operatori creano le consultazioni in stato \texttt{bozza} e le pubblicano, una volta publicate
+diventano votabili a partire dalla data d'inizio;
+lo scheduler porta le consultazioni a \texttt{concluso} alla \texttt{data\_fine}. I cittadini possono rispondere alle consultazioni
 attive.
 
 \interfacciarichiesta{autenticazione}\\
@@ -278,7 +273,9 @@ dall'operatore tramite \texttt{PATCH /iniziative/:id/modera}.
 Elenco delle iniziative, filtrabile per stato e categoria, con il numero di voti ricevuti.
 
 \interfacciafornita{dettaglio iniziativa}\\
-Documento con tutti i metadati, la descrizione e la motivazione di moderazione se presente.
+Documento con tutti i metadati e la descrizione completa, arricchito come la lista con il nome
+della categoria, il nominativo del cittadino proponente e il numero di voti ricevuti; per i
+cittadini include il flag \texttt{ha\_votato}.
 
 \interfacciafornita{esito voto iniziativa}\\
 Conferma dell'aggiunta o rimozione del voto di supporto di un cittadino a un'iniziativa.
@@ -297,7 +294,7 @@ password e promozione a \textit{root}.
 JWT valido per garantire che ogni utente acceda solo al proprio profilo.
 
 \interfacciarichiesta{dati completamento profilo}\\
-Data di nascita, comune di residenza e circoscrizione (se residente a Trento), forniti dal
+Data di nascita, comune di residenza, circoscrizione (se residente a Trento), categoria occupazione e genere forniti dal
 cittadino tramite \texttt{POST /auth/complete-profile}.
 
 \interfacciarichiesta{dati aggiornamento anagrafica}\\
@@ -322,18 +319,17 @@ Aggiornamento del flag \texttt{loggedIn} a \texttt{false} e risposta di conferma
 Il componente aggrega i dati di partecipazione alle consultazioni per produrre statistiche
 visualizzabili dagli operatori. In particolare, per ogni votazione conclusa, calcola la
 distribuzione dei voti per opzione e per fascia d'età (derivata dalla data di nascita del
-cittadino). Espone queste aggregazioni tramite le API di reportistica.
+cittadino), genere, circoscrizione e occupazione. Espone queste aggregazioni tramite le API di reportistica.
 
 \interfacciarichiesta{dati risposte}\\
 Insieme delle \textit{RispostaConsultazione} associate a una consultazione, con gli identificativi
 dei cittadini rispondenti.
 
 \interfacciarichiesta{dati anagrafici cittadini}\\
-Data di nascita dei cittadini per il calcolo della fascia d'età al momento del voto.
+Dati dei cittadini per il calcolo delle aggregazioni al momento del voto.
 
 \interfacciafornita{statistiche aggregate}\\
-JSON con il conteggio voti per opzione e la distribuzione per fasce d'età
-(\texttt{18-30}, \texttt{31-50}, \texttt{51-70}, \texttt{71+}).
+JSON con il conteggio voti per opzione e le distribuzioni per aggregazioni.
 
 % ····················································
 \subsubsection*{CMP7: Scheduler consultazioni}
@@ -343,11 +339,10 @@ JSON con il conteggio voti per opzione e la distribuzione per fasce d'età
 Il componente implementa un job schedulato (via \texttt{node-cron}, esecuzione oraria) che
 gestisce le transizioni automatiche di stato delle consultazioni. All'avvio dell'applicazione
 esegue immediatamente un ciclo di controllo. Le transizioni gestite sono:
-$\texttt{bozza} \to \texttt{attivo}$ quando \texttt{data\_inizio} è trascorsa e
 $\texttt{attivo} \to \texttt{concluso}$ quando \texttt{data\_fine} è trascorsa.
 
 \interfacciarichiesta{lista consultazioni attive/in bozza}\\
-Interrogazione periodica al database per recuperare le consultazioni in stato \texttt{bozza} o
+Interrogazione periodica al database per recuperare le consultazioni in stato
 \texttt{attivo} che soddisfano i criteri di transizione.
 
 \interfacciafornita{aggiornamento stato consultazione}\\
@@ -471,6 +466,7 @@ iniziale) può promuovere altri operatori.
   \item \texttt{changePassword(vecchiaPassword, nuovaPassword)}: aggiorna l'hash bcrypt
   \item \texttt{promote(operatoreId)}: promuove un operatore (solo per isRoot)
   \item \texttt{register(username, password)}: crea un nuovo account operatore
+  \item \texttt{getProfile()}: restituisce le informazioni dell'operatore.
 \end{itemize}
 
 % ────────────────────────────────────────────────────────────────────────────
@@ -481,6 +477,8 @@ La \textit{Consultazione} rappresenta il fulcro della partecipazione civica. Uti
 discriminato di Mongoose: se il tipo è \texttt{votazione}, ha una singola domanda
 (\texttt{ID\_domanda}); se è \texttt{sondaggio}, ha un array di domande
 (\texttt{ID\_domande[]}). Questi due campi sono mutuamente esclusivi.
+Lo stato \texttt{concluso} viene impostato automaticamente dal sistema 
+allo scadere di \texttt{data\_fine}, senza intervento dell'operatore.
 
 \begin{figure}[H]
   \centering
@@ -504,6 +502,7 @@ discriminato di Mongoose: se il tipo è \texttt{votazione}, ha una singola doman
 
 \noindent\textbf{Metodi principali:}
 \begin{itemize}
+  \item  \texttt{update(modifiche)}: se in stato di bozza, permette di modificarne i campi ammessi. 
   \item \texttt{publish()}: porta lo stato da \texttt{bozza} ad \texttt{attivo}
   \item \texttt{conclude()}: porta lo stato da \texttt{attivo} a \texttt{concluso}
   \item \texttt{archive()}: porta lo stato da \texttt{concluso} ad \texttt{archiviato}
@@ -581,6 +580,11 @@ a cui il cittadino ha risposto.
   \item \texttt{dataRisposta}: timestamp della risposta
 \end{itemize}
 
+\noindent\textbf{Metodi principali:}
+\begin{itemize}
+  \item \texttt{esiste(cittadinoId,consultazioneId)}: controlla un eventuale risposta già presente 
+\end{itemize}
+
 % ────────────────────────────────────────────────────────────────────────────
 \subsection*{7. VotoIniziativa}
 \addcontentsline{toc}{subsection}{7. VotoIniziativa}
@@ -600,6 +604,11 @@ proprio voto (\texttt{DELETE /cittadino/vote/iniziativa/:id}).
   \item \texttt{ID\_cittadino}: riferimento al cittadino votante
   \item \texttt{ID\_iniziativa}: riferimento all'iniziativa supportata
   \item \texttt{dataVoto}: timestamp del voto
+\end{itemize}
+
+\noindent\textbf{Metodi principali:}
+\begin{itemize}
+  \item \texttt{esiste(cittadinoId,iniziativaId)}: controlla un eventuale risposta già presente 
 \end{itemize}
 
 % ────────────────────────────────────────────────────────────────────────────
@@ -643,6 +652,12 @@ informare il proponente dell'esito (\texttt{approvata} o \texttt{rifiutata}).
   \item \texttt{ID\_iniziativa}: riferimento all'iniziativa a cui si riferisce la notifica
   \item \texttt{letta}: booleano, \texttt{false} alla creazione; portato a \texttt{true}
         quando il cittadino apre il pannello notifiche
+\end{itemize}
+
+\noindent\textbf{Metodi principali:}
+\begin{itemize}
+  \item \texttt{marcaLetta()}: imposta letta a true 
+  \item \texttt{marcaTutteLette()}: marca come lette tutte le notifiche del destinatario che invoca il metodo. 
 \end{itemize}
 
 % ────────────────────────────────────────────────────────────────────────────
@@ -703,6 +718,7 @@ endpoint. Di seguito viene riportata la mappatura tra classi/metodi e route HTTP
   Consultazione.update() (votazione) & PATCH & /votazioni/:id \\
   Consultazione.delete() (votazione) & DELETE & /votazioni/:id \\
   Consultazione.getStatistiche() & GET & /votazioni/:id/statistiche \\
+  Consultazione.conclude() & — & (automatico alla scadenza di data\_fine) \\
   RispostaConsultazione.create() & POST & /cittadino/vote/votazione \textsuperscript{‡} \\
   \addlinespace
   % Sondaggi
@@ -712,6 +728,7 @@ endpoint. Di seguito viene riportata la mappatura tra classi/metodi e route HTTP
   Consultazione.getById() (sondaggio) & GET & /sondaggio/:id \\
   Consultazione.update() (sondaggio) & PATCH & /sondaggio/:id \\
   Consultazione.delete() (sondaggio) & DELETE & /sondaggio/:id \\
+  Consultazione.conclude() & — & (automatico alla scadenza di data\_fine) \\
   RispostaConsultazione.create() & POST & /cittadino/vote/sondaggio \\
   \addlinespace
   % Iniziative
@@ -742,9 +759,11 @@ L'operatore riceve la votazione in qualsiasi stato; il cittadino vede solo votaz
 \texttt{attivo} o \texttt{concluso} e la risposta include il campo booleano \texttt{voted} che
 indica se il cittadino ha già espresso il proprio voto.
 
-\noindent\textsuperscript{‡} \texttt{POST /cittadino/vote/votazione} verifica che la votazione sia
-in stato \texttt{attivo} prima di accettare il voto; restituisce \texttt{403} se lo stato non è
-\texttt{attivo} o se il cittadino ha già votato.
+\noindent\textsuperscript{‡} \texttt{POST /cittadino/vote/votazione} accetta in \texttt{opzioniId}
+una o più opzioni: per le domande a risposta singola ne è ammessa esattamente una, per quelle a
+risposta multipla anche più di una. Verifica che la votazione sia in stato \texttt{attivo} prima di
+accettare il voto e che le opzioni appartengano alla domanda; restituisce \texttt{403} se lo stato
+non è \texttt{attivo} o se il cittadino ha già votato.
 
 \noindent\textsuperscript{§} \texttt{GET /votazioni/cittadino} e \texttt{GET /sondaggio/cittadino}
 restituiscono solo consultazioni in stato \texttt{attivo} o \texttt{concluso}. Ogni elemento include

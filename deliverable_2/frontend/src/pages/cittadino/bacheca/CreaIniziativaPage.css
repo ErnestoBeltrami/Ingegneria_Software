@@ -1,0 +1,274 @@
+.ci-page {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Montserrat', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+}
+
+/* =====================
+   Topbar
+   ===================== */
+.ci-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #007a52;
+  padding: 0 24px;
+  height: 60px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.ci-topbar__logo {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 0;
+}
+
+.ci-topbar__right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ci-topbar__theme {
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  opacity: 0.85;
+  transition: opacity 0.15s ease;
+  flex-shrink: 0;
+}
+.ci-topbar__theme:hover { opacity: 1; }
+
+.ci-topbar__user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 14px;
+  padding: 0 13px;
+  height: 36px;
+  text-decoration: none;
+}
+
+.ci-topbar__avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.30);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: white;
+}
+
+.ci-topbar__name {
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+}
+
+/* =====================
+   Shell
+   ===================== */
+.ci-shell {
+  max-width: 680px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1;
+}
+
+/* =====================
+   Back button
+   ===================== */
+
+/* =====================
+   Header
+   ===================== */
+.ci-header__title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+  letter-spacing: -0.3px;
+  margin: 0;
+}
+.ci-header__subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 20px;
+  margin: 4px 0 0;
+}
+
+/* =====================
+   Info banner
+   ===================== */
+.ci-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: rgba(0, 122, 82, 0.12);
+  border: 1px solid rgba(0, 196, 122, 0.25);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+.ci-banner__icon {
+  color: #00c47a;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.ci-banner__text {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* =====================
+   Form card
+   ===================== */
+.ci-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* =====================
+   Fields
+   ===================== */
+.ci-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ci-field__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  line-height: 20px;
+}
+.ci-field__required { color: #ff6b6b; }
+
+.ci-field__input,
+.ci-field__textarea {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  box-sizing: border-box;
+}
+.ci-field__input::placeholder,
+.ci-field__textarea::placeholder { color: var(--text-faint); }
+.ci-field__input:focus,
+.ci-field__textarea:focus {
+  border-color: var(--border-strong);
+  background: var(--surface-raised);
+}
+.ci-field__textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.6;
+}
+
+.ci-field__counter {
+  font-size: 12px;
+  color: var(--text-faint);
+  text-align: right;
+  line-height: 1;
+}
+.ci-field__counter--full { color: #ff6b6b; }
+
+/* =====================
+   Category pills
+   ===================== */
+.ci-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ci-pill {
+  height: 34px;
+  padding: 0 16px;
+  border-radius: 9999px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+}
+.ci-pill:hover:not(.ci-pill--active) {
+  background: var(--surface-raised);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+.ci-pill--active {
+  background: #007a52;
+  border-color: rgba(0, 196, 122, 0.4);
+  color: white;
+  box-shadow: 0 2px 10px rgba(0, 122, 82, 0.4);
+}
+
+/* =====================
+   Messages
+   ===================== */
+.ci-msg { font-size: 13px; font-weight: 500; margin: 0; }
+.ci-msg--error { color: #ff6b6b; }
+
+/* =====================
+   Submit button
+   ===================== */
+.ci-submit {
+  height: 48px;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 196, 122, 0.3);
+  background: #007a52;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 122, 82, 0.45);
+  transition: opacity 0.15s ease;
+  margin-top: 4px;
+}
+.ci-submit:hover:not(:disabled) { opacity: 0.88; }
+.ci-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+@media (max-width: 720px) {
+  .ci-shell { padding: 20px; }
+}

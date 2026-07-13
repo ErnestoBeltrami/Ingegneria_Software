@@ -68,16 +68,17 @@ export const getSondaggiAvaiable = async (req, res) => {
             });
         }
 
-        const sondaggi = await Consultazione.find({
-            stato: { $in: ["attivo", "concluso"] },
-            tipo: 'sondaggio'
-        }).populate('ID_domande').sort({ data_inizio: -1 });
+        const { page, limit } = req.query;
+        const pageNum = Math.max(1, parseInt(page) || 1);
+        const limitNum = Math.min(100, Math.max(1, parseInt(limit) || 10));
+        const skip = (pageNum - 1) * limitNum;
 
-        if(!sondaggi){
-            return res.status(200).json({
-                message : 'Nessun sondaggio disponibile al momento'
-            });
-        }
+        const filtro = { stato: { $in: ['attivo', 'concluso'] }, tipo: 'sondaggio' };
+
+        const [sondaggi, totale] = await Promise.all([
+            Consultazione.find(filtro).populate('ID_domande').sort({ data_inizio: -1 }).skip(skip).limit(limitNum),
+            Consultazione.countDocuments(filtro)
+        ]);
 
         const risposte = await RispostaConsultazione.find({
             ID_cittadino: userFromMiddleware._id,
@@ -92,7 +93,13 @@ export const getSondaggiAvaiable = async (req, res) => {
 
         return res.status(200).json({
             message: 'Sondaggi recuperati con successo.',
-            sondaggi: sondaggiWithVoted
+            sondaggi: sondaggiWithVoted,
+            paginazione: {
+                totale,
+                pagina: pageNum,
+                limite: limitNum,
+                pagine: Math.ceil(totale / limitNum)
+            }
         });
     } catch (error) {
         logger.error('Errore nel recupero dei sondaggi:', error);
@@ -255,121 +262,198 @@ export const getRiepilogoSintetico = async (req, res) => {
     }
 };
 
+// ── SONDAGGIO ────────────────────────────────────────────────────────────────
+ 
 export const getRiepilogoConFiltri = async (req, res) => {
     const sondaggioId = req.params.id;
-    const { filters = {} } = req.body;
     const t0 = Date.now();
-
+ 
     try {
         if (!mongoose.Types.ObjectId.isValid(sondaggioId)) {
             return res.status(400).json({ message: "ID Sondaggio non valido." });
         }
-
+ 
         const objectIdSondaggio = new mongoose.Types.ObjectId(sondaggioId);
-
+ 
         const sondaggio = await Consultazione.findOne({
             _id: objectIdSondaggio,
             tipo: 'sondaggio'
         }).populate('ID_domande');
-        logger.debug({ ms: Date.now() - t0, sondaggioId }, 'riepilogoConFiltri: findOne+populate');
-
+        logger.debug({ ms: Date.now() - t0, sondaggioId }, 'riepilogoDemograficoSondaggio: findOne+populate');
+ 
         if (!sondaggio || sondaggio.ID_domande.length === 0) {
             return res.status(404).json({
                 message: 'Sondaggio non trovato o domande mancanti.'
             });
         }
-
-        const matchCittadino = {};
-
-        if (filters.genere) {
-            matchCittadino['cittadino.genere'] = filters.genere;
-        }
-
-        if (filters.categoria) {
-            matchCittadino['cittadino.categoria'] = filters.categoria;
-        }
-
-        if (filters.age) {
-            matchCittadino['cittadino.age'] = {
-                $gte: filters.age[0],
-                $lte: filters.age[1]
-            };
-        }
-
-        const tAgg0 = Date.now();
-        const totalVotiResult = await RispostaConsultazione.aggregate([
-            { $match: { ID_consultazione: objectIdSondaggio, tipo_consultazione: 'sondaggio' } },
-
-            {
-                $lookup: {
-                    from: 'cittadinos',
-                    localField: 'ID_cittadino',
-                    foreignField: '_id',
-                    as: 'cittadino'
+ 
+        const baseMatch = {
+            $match: { ID_consultazione: objectIdSondaggio, tipo_consultazione: 'sondaggio' }
+        };
+        const lookupCittadino = {
+            $lookup: { from: 'cittadinos', localField: 'ID_cittadino', foreignField: '_id', as: 'cittadino' }
+        };
+        const unwindCittadino = {
+            $unwind: { path: '$cittadino', preserveNullAndEmptyArrays: false }
+        };
+        const unwindRisposte = { $unwind: '$dettagliRisposte' };
+        const unwindOpzioni  = { $unwind: '$dettagliRisposte.opzioniScelte' };
+ 
+        const [perGenere, perFasciaEta, perCategoria, partecipazioneGiornaliera] = await Promise.all([
+ 
+            // A) Per genere
+            RispostaConsultazione.aggregate([
+                baseMatch,
+                lookupCittadino,
+                unwindCittadino,
+                unwindRisposte,
+                unwindOpzioni,
+                {
+                    $group: {
+                        _id: {
+                            genere: '$cittadino.genere',
+                            domanda: '$dettagliRisposte.ID_domanda',
+                            opzione: '$dettagliRisposte.opzioniScelte'
+                        },
+                        voti: { $sum: 1 }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        genere: '$_id.genere',
+                        domandaId: '$_id.domanda',
+                        opzioneId: '$_id.opzione',
+                        voti: 1
+                    }
                 }
-            },
-            { $unwind: '$cittadino' },
-
-            ...(Object.keys(matchCittadino).length > 0 ? [{ $match: matchCittadino }] : []),
-
-            { $count: 'totale' }
+            ]),
+ 
+            // B) Per fascia d'età
+            RispostaConsultazione.aggregate([
+                baseMatch,
+                lookupCittadino,
+                unwindCittadino,
+                unwindRisposte,
+                unwindOpzioni,
+                {
+                    $addFields: {
+                        _eta: {
+                            $floor: {
+                                $divide: [
+                                    { $dateDiff: { startDate: '$cittadino.dataNascita', endDate: '$$NOW', unit: 'day' } },
+                                    365.25
+                                ]
+                            }
+                        }
+                    }
+                },
+                {
+                    $addFields: {
+                        fascia: {
+                            $switch: {
+                                branches: [
+                                    { case: { $lte: ['$_eta', 25] }, then: '18-25' },
+                                    { case: { $lte: ['$_eta', 35] }, then: '26-35' },
+                                    { case: { $lte: ['$_eta', 50] }, then: '36-50' },
+                                    { case: { $lte: ['$_eta', 65] }, then: '51-65' },
+                                ],
+                                default: '66+'
+                            }
+                        }
+                    }
+                },
+                {
+                    $group: {
+                        _id: {
+                            fascia: '$fascia',
+                            domanda: '$dettagliRisposte.ID_domanda',
+                            opzione: '$dettagliRisposte.opzioniScelte'
+                        },
+                        voti: { $sum: 1 }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        fascia: '$_id.fascia',
+                        domandaId: '$_id.domanda',
+                        opzioneId: '$_id.opzione',
+                        voti: 1
+                    }
+                }
+            ]),
+ 
+            // C) Per categoria
+            RispostaConsultazione.aggregate([
+                baseMatch,
+                lookupCittadino,
+                unwindCittadino,
+                unwindRisposte,
+                unwindOpzioni,
+                {
+                    $group: {
+                        _id: {
+                            categoria: '$cittadino.categoria',
+                            domanda: '$dettagliRisposte.ID_domanda',
+                            opzione: '$dettagliRisposte.opzioniScelte'
+                        },
+                        voti: { $sum: 1 }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        categoria: '$_id.categoria',
+                        domandaId: '$_id.domanda',
+                        opzioneId: '$_id.opzione',
+                        voti: 1
+                    }
+                }
+            ]),
+ 
+            // D) Partecipazione giornaliera
+            RispostaConsultazione.aggregate([
+                baseMatch,
+                {
+                    $group: {
+                        _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+                        voti: { $sum: 1 }
+                    }
+                },
+                { $sort: { '_id': 1 } },
+                { $project: { _id: 0, data: '$_id', voti: 1 } }
+            ])
         ]);
-
-        const totaleVotiUnici = totalVotiResult.length > 0 ? totalVotiResult[0].totale : 0;
-
-        const riepilogoRisultati = [];
-
-        const risultatiTotali = await RispostaConsultazione.aggregate([
-            { $match: { ID_consultazione: objectIdSondaggio, tipo_consultazione: 'sondaggio' } },
-            { $lookup: { from: 'cittadinos', localField: 'ID_cittadino', foreignField: '_id', as: 'cittadino' } },
-            { $unwind: '$cittadino' },
-            ...(Object.keys(matchCittadino).length > 0 ? [{ $match: matchCittadino }] : []),
-            { $unwind: '$dettagliRisposte' },
-            { $unwind: '$dettagliRisposte.opzioniScelte' },
-            { $group: { _id: { domanda: '$dettagliRisposte.ID_domanda', opzione: '$dettagliRisposte.opzioniScelte' }, voti: { $sum: 1 } } }
-        ]);
-        logger.debug({ ms: Date.now() - tAgg0, nDomande: sondaggio.ID_domande.length, filtri: Object.keys(filters) }, 'riepilogoConFiltri: aggregazioni (2 query fisse)');
-
-        const votiPerDomanda = new Map();
-        for (const entry of risultatiTotali) {
-            const key = entry._id.domanda.toString();
-            if (!votiPerDomanda.has(key)) votiPerDomanda.set(key, []);
-            votiPerDomanda.get(key).push({ opzioneId: entry._id.opzione, voti: entry.voti });
-        }
-
-        for (const domanda of sondaggio.ID_domande) {
-            const voti = votiPerDomanda.get(domanda._id.toString()) || [];
-            const risultatiFormattati = voti.map(({ opzioneId, voti: v }) => {
-                const opzioneCorrispondente = domanda.opzioni.find(op => op._id.equals(opzioneId));
-                const testoOpzione = opzioneCorrispondente ? opzioneCorrispondente.testo : 'Opzione Sconosciuta';
-                return {
-                    opzioneId,
-                    testoOpzione,
-                    voti: v,
-                    percentuale: totaleVotiUnici > 0
-                        ? parseFloat(((v / totaleVotiUnici) * 100).toFixed(2))
-                        : 0
-                };
-            });
-            riepilogoRisultati.push({
-                domandaId: domanda._id,
-                titoloDomanda: domanda.titolo,
-                risultati: risultatiFormattati
-            });
-        }
-
-        logger.info({ ms: Date.now() - t0, sondaggioId, nDomande: sondaggio.ID_domande.length, filtri: Object.keys(filters) }, 'riepilogoConFiltri: completato');
+ 
+        logger.info({ ms: Date.now() - t0, sondaggioId, nDomande: sondaggio.ID_domande.length }, 'riepilogoDemograficoSondaggio: completato');
+ 
+        // Mappa domandaId → titolo per comodità del frontend
+        const domandeMap = Object.fromEntries(
+            sondaggio.ID_domande.map(d => [d._id.toString(), d.titolo])
+        );
+ 
         return res.status(200).json({
-            message: "Riepilogo filtrato recuperato con successo.",
+            message: 'Riepilogo demografico recuperato.',
             sondaggio: sondaggio.titolo,
-            totaleVotiUnici,
-            riepilogoPerDomanda: riepilogoRisultati
+            stato: sondaggio.stato,
+            data_inizio: sondaggio.data_inizio,
+            data_fine: sondaggio.data_fine,
+            domandeMap,
+            perGenere,
+            perFasciaEta,
+            perCategoria,
+            partecipazioneGiornaliera
         });
-
+ 
     } catch (error) {
-        logger.error('Errore:', error);
-        return res.status(500).json({
-            message: 'Errore interno del server.'
-        });
+        if (error.name === 'BSONTypeError' || error.name === 'CastError') {
+            return res.status(400).json({ message: 'ID Sondaggio non valido.' });
+        }
+        logger.error('Errore nel riepilogo demografico sondaggio:', error);
+        return res.status(500).json({ message: 'Errore interno del server.' });
     }
 };
+ 
+ 
+ 

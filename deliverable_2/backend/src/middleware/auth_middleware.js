@@ -11,6 +11,15 @@ export const validateObjectId = (req, res, next) => {
     next();
 };
 
+export const requireProfiloCompleto = (req, res, next) => {
+  if (!req.user.profiloCompleto) {
+    return res.status(403).json({ 
+      message: 'Completa il profilo prima di poter operare.' 
+    });
+  }
+  next();
+};
+
 export const restrictTo = (allowed_roles) => { //Controlla se l'utente è effettivamente un operatore.
     return(req,res,next) => {
         const ruolo = req.ruolo;

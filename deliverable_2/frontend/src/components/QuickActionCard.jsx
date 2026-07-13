@@ -11,7 +11,7 @@ const CARDS = [
         variant: 'light',
         iconBg: '#E8EDF5',
         iconColor: '#3949AB',
-        to: null,
+        to: '/cittadino/archivio?tipo=votazioni',
     },
     {
         id: 'sondaggi-conclusi',
@@ -21,7 +21,7 @@ const CARDS = [
         variant: 'light',
         iconBg: '#E8EDF5',
         iconColor: '#3949AB',
-        to: null,
+        to: '/cittadino/archivio?tipo=sondaggi',
     },
     {
         id: 'bacheca-iniziative',
@@ -31,7 +31,7 @@ const CARDS = [
         variant: 'light',
         iconBg: '#D1E7DD',
         iconColor: '#007D54',
-        to: null,
+        to: '/cittadino/bacheca',
     },
 ];
 

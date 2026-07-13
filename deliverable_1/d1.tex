@@ -13,7 +13,19 @@
 \usepackage{graphicx}
 \usepackage{marginnote}
 \usepackage{enumitem}
+\usepackage{caption}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+% Inserisce lo screenshot se presente in figure/<file>.png (o .jpg),
+% altrimenti mostra un segnaposto. #1 = numero, #2 = nome, #3 = nome file (senza estensione)
+\newcommand{\schermata}[3]{%
+  \begin{figure}[h]\centering
+    \IfFileExists{figure/#3.png}{\includegraphics[width=0.85\linewidth,height=0.42\textheight,keepaspectratio]{figure/#3.png}}{%
+    \IfFileExists{figure/#3.jpg}{\includegraphics[width=0.85\linewidth,height=0.42\textheight,keepaspectratio]{figure/#3.jpg}}{%
+      \fbox{\parbox[c][2.2cm][c]{0.85\linewidth}{\centering\itshape [INSERIRE FIGURA #1 (file: figure/#3.png)]}}}}%
+    \caption*{Figura #1: #2}
+  \end{figure}%
+}
 
 \title{Deliverable 1 v1.0}
 \author{Riccardo Sandru, Ernesto Beltrami, Taufge Songne}
@@ -103,35 +115,33 @@ L’obiettivo finale quindi sarebbe quello di fornire uno strumento che possa av
 \end{enumerate}
 
 \subsection{Requisiti funzionali solo per operatore}
-
-\begin{enumerate}[label=\textbf{RFO\arabic*}]
-	\item \textbf{Creazione e gestione delle votazioni}: Il sistema deve consentire agli operatori del Comune di creare, configurare e gestire le votazioni relative agli argomenti discussi in sede comunale. Ogni votazione potrà comprendere uno o più temi, ciascuno corredato da una breve descrizione e da eventuali materiali informativi allegati. Il sistema deve consentire all’operatore di inserire un numero fisso di risposte per ogni tema ed altre opzioni come votazione a risposta singola o multipla.  L’operatore deve avere la possibilità di impostare un limite di tempo per la durata della votazione, definendo una data e un’ora di chiusura oltre le quali non sarà più possibile esprimere voti. Inoltre, l’interfaccia dovrà permettere di modificare o eliminare votazioni già create, garantendo al contempo la tracciabilità delle operazioni effettuate per motivi di trasparenza e controllo.
-	\item \textbf{Creazione e gestione dei sondaggi}: L’applicazione deve permettere agli operatori di creare, pubblicare e gestire mini-sondaggi anonimi rivolti agli utenti registrati. Tali sondaggi possono essere collegati a specifiche votazioni o riguardare tematiche di interesse generale, con l’obiettivo di raccogliere rapidamente opinioni e percezioni della cittadinanza. Ogni sondaggio deve poter essere configurato con un numero variabile di domande a risposta chiusa o multipla, e deve prevedere la possibilità di impostare un periodo di validità (data di apertura e chiusura). Al termine del periodo stabilito, il sistema deve automaticamente chiudere la raccolta delle risposte e rendere disponibili i risultati agli operatori.
-
-	\item \textbf{Moderazione dei contenuti generati dagli utenti}: Il sistema deve consentire agli operatori di monitorare e moderare le proposte e i contenuti pubblicati dai cittadini sulla piattaforma. In particolare, gli operatori devono poter eliminare, specificando una motivazione, i contenuti che violano le linee guida della community o che contengono linguaggio offensivo, materiale inappropriato o non conforme alle politiche del Comune. Le azioni di moderazione devono essere tracciate (operatore, data, motivo) per garantire trasparenza e auditabilità.
-\end{enumerate}
+\begin{itemize}
+	\item \textbf{RF5 - Creazione delle votazioni}: Il sistema deve consentire agli operatori del Comune di creare votazioni consultive, finalizzate a raccogliere l'opinione dei cittadini riguardo argomenti effettivamente discussi negli organi comunali. Le votazioni non hanno valore ufficiale o deliberativo. Ogni votazione deve contenere: titolo identificativo, descrizione sintetica dell'argomento, un numero fisso di opzioni di risposta definite dall'operatore, tipologia di risposta (singola o multipla) e data di apertura e chiusura.
+	\item \textbf{RF6 - Gestione dello stato delle votazioni}: Il sistema deve consentire agli operatori di gestire le votazioni create, ognuna delle quali può trovarsi in uno degli stati bozza, attiva, conclusa o archiviata. Le votazioni in bozza possono essere modificate o eliminate prima della pubblicazione; una volta attive diventano visibili ai cittadini e non più modificabili né eliminabili; al raggiungimento della data di chiusura passano automaticamente allo stato conclusa; le votazioni archiviate sono conservate per trasparenza e consultazione storica e non sono modificabili né eliminabili.
+	\item \textbf{RF7 - Creazione dei sondaggi}: Il sistema deve consentire agli operatori di creare sondaggi anonimi rivolti ai cittadini registrati, utilizzati per raccogliere dati, opinioni o preferenze non necessariamente legate a temi trattati in sede comunale. Ogni sondaggio deve contenere: un titolo e una descrizione sintetica, un insieme variabile di domande a risposta chiusa o multipla, un periodo di validità (data di apertura e chiusura) e la possibilità di essere salvato come bozza prima della pubblicazione.
+	\item \textbf{RF8 - Gestione dei sondaggi}: Il sistema deve consentire agli operatori di monitorare e gestire i sondaggi attivi o conclusi: visualizzare l'elenco dei sondaggi con il relativo stato, chiudere manualmente un sondaggio prima della scadenza, visualizzare e analizzare i risultati dei sondaggi conclusi e archiviare i sondaggi terminati per conservarne i dati in modo permanente. Al termine del periodo di validità il sistema deve chiudere automaticamente la raccolta delle risposte e rendere i risultati disponibili nella dashboard amministrativa.
+	\item \textbf{RF9 - Moderazione dei contenuti generati dagli utenti}: Il sistema deve consentire agli operatori di monitorare e moderare le proposte e i contenuti pubblicati dai cittadini sulla piattaforma. In particolare, gli operatori devono poter eliminare, specificando una motivazione, i contenuti che violano le linee guida della community o che contengono linguaggio offensivo, materiale inappropriato o non conforme alle politiche del Comune.
+\end{itemize}
 
 \subsection{Requisiti funzionali solo per cittadini}
-\begin{enumerate}[label=\textbf{RFC\arabic*}]
-	\item \textbf{Gestione delle iniziative dei cittadini}: I cittadini possono proporre nuove iniziative nella bacheca pubblica e votare quelle esistenti per aumentarne la visibilità. Ogni iniziativa deve riportare il titolo, una descrizione sintetica e il numero di voti ricevuti.
-
-	\item \textbf{Votazioni}: Il sistema deve garantire che ogni cittadino possa esprimere un solo voto per ciascun tema di votazione e un solo invio di risposte per ogni sondaggio. Le preferenze espresse devono essere registrate in forma anonima e non modificabile, assicurando al contempo la tracciabilità del voto a fini di controllo senza violare la privacy del cittadino.
-
-	\item \textbf{Visualizzazione votazioni e sondaggi}: Il sistema deve garantire ai cittadini di poter visualizzare sia votazioni che sondaggi attive nella propria dashboard; permette inoltre di consultare quelle concluse dal menu dedicato della dashboard.
-\end{enumerate}
+\begin{itemize}
+	\item \textbf{RF10 - Creazione iniziative}: Il sistema deve consentire ai cittadini autenticati di proporre nuove iniziative nella bacheca pubblica. Ogni iniziativa deve contenere il nome utente del proponente (registrato automaticamente dal sistema), un titolo, una descrizione sintetica e il contatore dei voti inizializzato a zero.
+	\item \textbf{RF11 - Votazione iniziativa}: Il sistema deve consentire ai cittadini di votare le iniziative presenti nella bacheca per aumentarne la visibilità, garantendo che ogni cittadino possa votare una singola iniziativa una sola volta.
+	\item \textbf{RF12 - Votazioni}: Il sistema deve garantire che ogni cittadino possa esprimere un solo voto per ciascun tema di votazione e un solo invio di risposte per ogni sondaggio. Le preferenze espresse devono essere registrate in forma anonima e non modificabile, assicurando al contempo la tracciabilità del voto a fini di controllo senza violare la privacy del cittadino.
+	\item \textbf{RF13 - Visualizzazione votazioni e sondaggi}: Il sistema deve garantire ai cittadini di poter visualizzare sia votazioni che sondaggi attivi nella propria dashboard; permette inoltre di consultare quelli conclusi dal menù dedicato della dashboard.
+\end{itemize}
 
 \subsection{Requisiti funzionali per account root}
 \begin{itemize}
-    \item \textbf{RF14 - Creazione account operatore}: Il sistema deve consentire a qualsiasi operatore autenticato di creare nuovi account operatore, inserendo username, password, nome e cognome. Al primo avvio il sistema crea automaticamente un account root predefinito (\textit{seedRoot}) con credenziali iniziali note, non eliminabile.
-    \item \textbf{RF15 - Promozione a root}: Il sistema deve consentire all’account root di promuovere un operatore esistente al ruolo root. Solo un operatore con flag \texttt{isRoot: true} può eseguire questa operazione.
-    \item \textbf{RF16 - Disattivazione account amministratore}: In una versione futura il sistema dovrà consentire all’account root di disattivare account operatore esistenti senza eliminarne i dati, registrando data e ora dell’operazione per finalità di audit.
-	\item \textbf{RF16 - Visualizzazione lista amministratore}: Il sistema deve consentire  all'account root di disattivare uno o piu' account amministrativi esistenti. La lista deve includere almeno:
+    \item \textbf{RF14 - Creazione account amministrativo}: Il sistema deve prevedere un account root preconfigurato e non eliminabile, utilizzato esclusivamente per la creazione e l'amministrazione degli account amministratori destinati agli operatori del Comune. L'account root deve poter creare nuovi account amministratori specificandone nome, cognome, username e password; al primo avvio l'account root è generato automaticamente con credenziali iniziali note.
+    \item \textbf{RF15 - Visualizzazione lista amministratori}: Il sistema deve consentire all'account root di visualizzare l'elenco completo degli account amministrativi registrati. La lista deve includere almeno:
 		\begin{itemize}
-			\item nome utente dell'operatore
-			\item stato dell'account
-			\item data di creazione dell'account
-			\item eventuale data di disattivazione
+			\item nome utente dell'amministratore;
+			\item stato dell'account (attivo / disattivato);
+			\item data di creazione dell'account;
+			\item eventuale data di disattivazione (se presente).
 		\end{itemize}
+    \item \textbf{RF16 - Disattivazione account amministratore}: Il sistema deve consentire all'account root di disattivare uno o più account amministrativi esistenti, senza eliminarne i dati e registrando data e ora della disattivazione per finalità di audit. Non deve essere possibile disattivare l'account root stesso.
 \end{itemize}
 
 \section{Requisiti non funzionali}  
@@ -237,11 +247,13 @@ I requisiti non funzionali descrivono le caratteristiche qualitative del sistema
     \item RF2 -- Accesso alla Dashboard operatore
     \item RF3 -- Riepilogo risultati (dettaglio esteso)
     \item RF4 -- Ricerca contenuti
-    \item RFO1 -- Creazione e gestione votazioni
-    \item RFO2 -- Creazione e gestione sondaggi
-    \item RFO3 -- Moderazione contenuti
-    \item RF14 -- Creazione account operatore
-    \item RF15 -- Promozione a root
+    \item RF5 -- Creazione votazioni
+    \item RF6 -- Gestione votazioni
+    \item RF7 -- Creazione sondaggi
+    \item RF8 -- Gestione sondaggi
+    \item RF9 -- Moderazione contenuti
+    \item RF14 -- Creazione account amministrativo
+    \item RF15--16 -- Gestione amministratori (lista, disattivazione)
 \end{itemize}
 
 \textbf{Cittadino autenticato}
@@ -249,312 +261,541 @@ I requisiti non funzionali descrivono le caratteristiche qualitative del sistema
     \item RF2 -- Accesso alla Dashboard cittadino
     \item RF3 -- Riepilogo risultati (sintetico)
     \item RF4 -- Ricerca contenuti
-    \item RFC1 -- Gestione iniziative
-    \item RFC2 -- Votazioni e sondaggi (invio univoco)
-    \item RFC3 -- Visualizzazione attività attive
+    \item RF10 -- Creazione iniziative
+    \item RF11 -- Votazione iniziativa
+    \item RF12 -- Votazioni e sondaggi (invio univoco)
+    \item RF13 -- Visualizzazione votazioni e sondaggi attivi
 \end{itemize}
 
 \subsection{RF1: Gestione Accessi}
 
-\textbf{Riassunto}: Descrive come i Cittadini e gli Operatori Comunali accedono alla piattaforma tramite due modalità distinte di autenticazione: Google OAuth 2.0 per i cittadini e credenziali interne (username/password) per gli operatori.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{Use_case_diagrams/RF1.png}
+    \caption{Use Case Diagram --- RF1: Gestione Accessi}
+\end{figure}
 
-\subsubsection*{Flusso A: Accesso Cittadino (Google OAuth 2.0)}
+\subsubsection*{Use Case: Login Utente (Cittadino)}
+
+\textbf{Riassunto}: Descrive come gli utenti esterni (Cittadini) e gli Operatori Comunali accedono alla piattaforma, gestendo le due modalità di autenticazione separate: tramite SPID/CIE ID per i cittadini e tramite credenziali interne per gli operatori.
+
+\textbf{Descrizione}
 \begin{enumerate}
-    \item Il Cittadino visualizza la schermata di login e seleziona \textit{``Accedi con Google’’}.
-    \item Il sistema reindirizza il browser verso il servizio di autenticazione Google OAuth 2.0.
-    \item Il Cittadino inserisce le proprie credenziali Google e autorizza l’accesso.
-    \item Google restituisce al sistema il profilo dell’utente (ID univoco e indirizzo email).
-    \item Il sistema consulta il database usando l’ID univoco Google.
-    \item Se l’ID è presente e il profilo è completo (\texttt{profiloCompleto: true}), l’accesso è autorizzato e viene emesso un JWT; altrimenti viene attivata l’Estensione appropriata.
+    \item L'utente (Cittadino) visualizza la schermata di login e seleziona l'opzione ``Accedi con SPID/CIE ID''.
+    \item \textbf{Delega di Autenticazione}: il sistema gestisce il protocollo di autenticazione delegata (SAML): reindirizza l'utente all'Identity Provider (IdP), riceve la Risposta SAML e verifica la firma digitale e la validità dell'asserzione.
+    \item Il sistema estrae l'ID univoco e gli attributi dell'utente dall'asserzione SAML.
+    \item Il sistema interroga il database utilizzando l'ID univoco ottenuto.
+    \item Se l'ID è presente nel database (utente già registrato), l'accesso è autorizzato e l'utente viene reindirizzato alla schermata principale.
+    \item Se l'ID non è presente nel database (primo accesso), il sistema attiva l'Estensione 1 (Registrazione ID univoco).
 \end{enumerate}
-
-\textbf{Estensione 1 — Primo accesso: registrazione ID univoco} \\
-\textit{Condizione}: nessun record con quell’ID Google esiste nel database. \\
-\textit{Azione}: il sistema crea un nuovo profilo cittadino con \texttt{profiloCompleto: false} e attiva l’Estensione 2.
-
-\textbf{Estensione 2 — Completamento profilo} \\
-\textit{Condizione}: \texttt{profiloCompleto: false} (primo accesso o profilo incompleto). \\
-\textit{Azione}: il cittadino viene reindirizzato alla schermata di completamento profilo (\texttt{POST /auth/complete-profile}); solo dopo aver fornito i dati mancanti riceve il JWT e accede alla dashboard.
 
 \textbf{Eccezioni}
 \begin{itemize}
-    \item Autenticazione Google fallita o accesso negato → messaggio di errore e accesso negato.
+    \item \textbf{Autenticazione SPID/CIE ID Fallita}: se la verifica della firma digitale della risposta SAML fallisce, l'asserzione è scaduta, o l'IdP nega l'autenticazione, l'accesso viene interrotto e viene mostrato un messaggio di errore.
 \end{itemize}
 
-\subsubsection*{Flusso B: Accesso Operatore}
+\textbf{Estensioni}
+\begin{itemize}
+    \item \textbf{Registrazione ID univoco}:
+    \begin{itemize}
+        \item \textit{Punto di Estensione}: Flusso A, dopo lo Step 4.
+        \item \textit{Condizione}: l'ID univoco ricevuto dall'IdP non è presente nel database del sistema (primo accesso).
+        \item \textit{Azione}: il sistema memorizza l'ID univoco e le informazioni essenziali dell'utente nel database; l'utente inserisce tramite un form altre informazioni necessarie per l'analisi dei dati per categorie demografiche. L'accesso è quindi autorizzato.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Use Case: Login Operatore Comunale}
+
+\textbf{Riassunto}: Descrive come gli operatori comunali accedono alla piattaforma tramite credenziali interne.
+
+\textbf{Descrizione}
 \begin{enumerate}
-    \item L’Operatore inserisce nome utente e password nel form di login.
-    \item Preme \textit{``Accedi''}.
-    \item Il sistema verifica le credenziali nel database.
-    \item Se valide, l'Operatore accede alla dashboard amministrativa.
+    \item L'Operatore Comune inserisce il nome utente e la password predefiniti nel form di login.
+    \item L'Operatore preme il pulsante ``Accedi''.
+    \item Il sistema verifica le credenziali rispetto ai dati predefiniti nel database interno.
+    \item Se le credenziali sono corrette, l'accesso è autorizzato e l'Operatore viene reindirizzato alla dashboard amministrativa.
 \end{enumerate}
 
 \textbf{Eccezioni}
 \begin{itemize}
-    \item Credenziali errate → messaggio di errore e nuovo tentativo.
+    \item \textbf{Credenziali Operatore Sbagliate}: se il nome utente o la password inseriti dall'Operatore non sono validi o non corrispondono, l'applicazione restituisce un messaggio di errore e richiede un nuovo tentativo.
 \end{itemize}
 
 % ------------------------------------------------------
 
-\subsection{RF2: Accesso alla Dashboard}
+\subsection{RF2: Accesso alla dashboard}
 
-\textbf{Riassunto}: Descrive come gli utenti autenticati accedono alla propria dashboard con funzionalità differenti a seconda del ruolo.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{Use_case_diagrams/RF2.png}
+    \caption{Use Case Diagram --- RF2: Accesso alla dashboard}
+\end{figure}
 
-\subsubsection*{Flusso A: Dashboard Cittadino}
+\subsubsection*{Use Case: Accesso alla dashboard cittadino}
+
+\textbf{Riassunto}: Descrive come i cittadini autenticati accedono alla propria dashboard.
+
+\textbf{Descrizione}
 \begin{enumerate}
-    \item Il cittadino autenticato viene reindirizzato alla dashboard.
-    \item Il sistema verifica il ruolo.
-    \item Il sistema mostra votazioni attive, risultati conclusi, sondaggi disponibili e iniziative cittadine.
+    \item L'utente (Cittadino), dopo l'autenticazione, viene reindirizzato alla Dashboard principale.
+    \item Il sistema verifica il ruolo del cittadino.
+    \item Il sistema carica e mostra la Dashboard Cittadino, includendo: votazioni e sondaggi attivi, barra di ricerca per votazioni e sondaggi, menù per accedere a votazioni concluse, sondaggi conclusi, bacheca iniziative e un pulsante per creare una nuova iniziativa.
 \end{enumerate}
 
-\subsubsection*{Flusso B: Dashboard Operatore}
+\subsubsection*{Use Case: Accesso alla dashboard operatore}
+
+\textbf{Riassunto}: Descrive come gli operatori comunali accedono alla propria dashboard amministrativa.
+
+\textbf{Descrizione}
 \begin{enumerate}
-    \item L’Operatore autenticato viene reindirizzato alla dashboard.
-    \item Il sistema verifica il ruolo.
-    \item Il sistema mostra tutte le funzionalità del cittadino.
-    \item Il sistema aggiunge funzionalità amministrative: pubblicazione votazioni/sondaggi, gestione contenuti, monitoraggio risultati.
+    \item L'Operatore Comune, dopo l'autenticazione, viene reindirizzato alla Dashboard.
+    \item Il sistema verifica il ruolo dell'operatore.
+    \item In aggiunta, il sistema carica e mostra le funzionalità amministrative riservate agli Operatori, come: creazione e gestione di votazioni/sondaggi, moderazione bacheca iniziative; mostra inoltre votazioni e sondaggi attivi analogamente alla dashboard cittadino.
 \end{enumerate}
 
 % ------------------------------------------------------
 
 \subsection{RF3: Riepilogo}
 
-\textbf{Riassunto}: Permette la visualizzazione dei risultati delle votazioni concluse con diversi livelli di dettaglio.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{Use_case_diagrams/RF3.png}
+    \caption{Use Case Diagram --- RF3: Riepilogo}
+\end{figure}
 
-\subsubsection*{Flusso A: Riepilogo Sintetico}
+\subsubsection*{Use Case: Riepilogo sintetico cittadino}
+
+\textbf{Riassunto}: Permette ai cittadini di accedere al riepilogo dei risultati delle votazioni concluse, mostrando una sintesi dei risultati.
+
+\textbf{Descrizione}
 \begin{enumerate}
-    \item L’utente richiede i risultati di una votazione conclusa.
-    \item Il sistema recupera i dati dal database.
-    \item Il sistema calcola percentuali e conteggi assoluti.
-    \item Il sistema presenta un riepilogo sintetico e anonimizzato.
+    \item Il cittadino richiede di visualizzare i risultati di una votazione conclusa.
+    \item Il sistema recupera i risultati complessivi dal database.
+    \item Il sistema aggrega i dati per calcolare la percentuale e il numero assoluto di voti per ciascuna scelta.
+    \item Il sistema presenta all'utente il riepilogo sintetico e anonimizzato.
 \end{enumerate}
 
-\subsubsection*{Flusso B: Analisi Demografica (Operatore)}
+\subsubsection*{Use Case: Riepilogo specializzato operatore}
+
+\textbf{Riassunto}: Permette agli operatori del comune di accedere al riepilogo dei risultati delle votazioni concluse, mostrando un livello di dettaglio maggiore.
+
+\textbf{Descrizione}
 \begin{enumerate}
-    \item Include tutti i passi del caso base.
-    \item L’Operatore applica eventuali filtri demografici.
-    \item Il sistema elabora e presenta risultati aggregati per categoria.
-\end{enumerate}
-
-\textbf{Estensione: Applicazione filtri}\\
-L’utente può applicare filtri demografici o tematici per analizzare i dati aggregati.
-
-% ------------------------------------------------------
-
-\subsection{RF4: Ricerca}
-
-\textbf{Riassunto}: Permette la ricerca di iniziative e contenuti tramite parole chiave, con filtri e ordinamenti opzionali.
-
-\begin{enumerate}
-    \item L’utente inserisce parole chiave nella barra di ricerca.
-    \item Avvia la ricerca.
-    \item Il sistema interroga il database.
-    \item Il sistema mostra i risultati in ordine predefinito.
+    \item Il flusso è ereditato dal caso d'uso \textit{Riepilogo sintetico cittadino} e include i suoi passi.
+    \item Il sistema elabora i risultati con lo scopo di visualizzarli nel modo definito dall'estensione ``Applicazione Filtri'' e, in caso non ci siano richieste particolari, presenta il riepilogo sintetico.
+    \item Il sistema elabora i risultati per mostrare la distribuzione del voto all'interno di tali categorie demografiche se l'estensione ``Applicazione Filtri'' è stata eseguita, altrimenti il sistema presenta il riepilogo sintetico.
+    \item Il sistema presenta all'Operatore la vista estesa, garantendo che non sia possibile risalire all'identità dei singoli partecipanti.
 \end{enumerate}
 
 \textbf{Estensioni}
 \begin{itemize}
-    \item \textbf{Filtri}: per argomento, data, tipologia.
-    \item \textbf{Ordinamento}: per data crescente/decrescente o popolarità.
+    \item \textbf{Applicazione filtri}: l'operatore può scegliere dei filtri da applicare sui dati relativi a una votazione per poter analizzare le votazioni in base ad aggregazioni basate su categorie demografiche.
 \end{itemize}
 
-\textbf{Eccezione}: Nessun risultato trovato.
-
 % ------------------------------------------------------
 
-\subsection{RF5: Creazione Votazioni}
+\subsection{RF4: Ricerca iniziativa}
 
-\textbf{Riassunto}: L’Operatore crea una nuova votazione inserendo tutti i campi obbligatori.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{Use_case_diagrams/RF4.png}
+    \caption{Use Case Diagram --- RF4: Ricerca iniziativa}
+\end{figure}
 
+\subsubsection*{Use Case: Ricerca iniziative}
+
+\textbf{Riassunto}: Permette a tutti gli utenti (Cittadini e Operatori) di trovare iniziative e contenuti pubblicati tramite una barra di ricerca. Il flusso principale fornisce i risultati, mentre le estensioni consentono l'applicazione opzionale di filtri e criteri di ordinamento.
+
+\textbf{Descrizione}
 \begin{enumerate}
-    \item L’Operatore seleziona \textit{Crea nuova votazione}.
-    \item Il sistema richiede:
-    \begin{itemize}
-        \item Titolo
-        \item Breve descrizione
-        \item Opzioni di risposta
-        \item Tipologia (singola/multipla)
-        \item Data apertura e chiusura
-    \end{itemize}
-    \item Il sistema valida i dati.
-    \item Salva la votazione in stato \textit{bozza}.
-\end{enumerate}
-
-\textbf{Eccezione}: Campi mancanti o illogici.
-
-% ------------------------------------------------------
-
-\subsection{RF6: Gestione Votazioni}
-
-\textbf{Riassunto}: L’Operatore può modificare, pubblicare, eliminare e archiviare votazioni.
-
-\begin{enumerate}
-    \item L’Operatore accede a \textit{Gestione Votazioni}.
-    \item Il sistema mostra tutte le votazioni con stato.
-    \item L’Operatore seleziona una votazione.
-    \item Il sistema richiede conferma per l’azione scelta.
-\end{enumerate}
-
-\textbf{Estensioni}
-\begin{itemize}
-    \item Modifica (solo se in bozza)
-    \item Eliminazione (solo bozza)
-    \item Pubblicazione → stato ``attiva''
-    \item Archiviazione → stato ``archiviata''
-\end{itemize}
-
-\textbf{Transizione automatica}: alla scadenza → ``conclusa''.
-
-% ------------------------------------------------------
-
-\subsection{RF7: Creazione Sondaggi}
-
-\textbf{Riassunto}: L’Operatore crea un sondaggio anonimo in stato iniziale ``bozza''.
-
-\begin{enumerate}
-    \item L’Operatore seleziona \textit{Crea nuovo sondaggio}.
-    \item Inserisce:
-    \begin{itemize}
-        \item Titolo e descrizione
-        \item Domande chiuse/multiple
-        \item Data e ora di apertura/chiusura
-    \end{itemize}
-    \item Il sistema valida e salva in bozza.
-\end{enumerate}
-
-\textbf{Eccezioni}: Campi mancanti o inconsistenza date.
-
-% ------------------------------------------------------
-
-\subsection{RF8: Gestione Sondaggi}
-
-\begin{enumerate}
-    \item L’Operatore accede alla sezione dedicata.
-    \item Il sistema mostra sondaggi e stato.
-    \item L’Operatore seleziona l’azione.
-\end{enumerate}
-
-\textbf{Estensioni}
-\begin{itemize}
-    \item Pubblicazione (da bozza)
-    \item Chiusura manuale (da attivo)
-    \item Analisi risultati (concluso/archiviato)
-    \item Archiviazione (da concluso)
-\end{itemize}
-
-\textbf{Transizione automatica}: alla scadenza → ``concluso''.
-
-% ------------------------------------------------------
-
-\subsection{RF9: Moderazione Contenuti}
-
-\textbf{Riassunto}: L’Operatore può rivedere, approvare o eliminare contenuti generati dai cittadini.
-
-\begin{enumerate}
-    \item L’Operatore accede alla sezione Moderazione.
-    \item Il sistema mostra i contenuti in revisione.
-    \item L’Operatore visualizza il contenuto e valuta.
-\end{enumerate}
-
-\textbf{Estensione}: Eliminazione contenuto su conferma.
-
-% ------------------------------------------------------
-
-\subsection{RF10: Gestione Iniziative dei Cittadini}
-
-\begin{enumerate}
-    \item Il cittadino seleziona \textit{Proponi iniziativa}.
-    \item Inserisce titolo e descrizione.
-    \item Il sistema associa automaticamente nome utente.
-    \item Il cittadino conferma e il sistema pubblica l’iniziativa.
-\end{enumerate}
-
-\textbf{Eccezione}: Campi obbligatori mancanti.
-
-% ------------------------------------------------------
-
-\subsection{RF11: Votazione Iniziative}
-
-\begin{enumerate}
-    \item Il cittadino visualizza la bacheca iniziative.
-    \item Seleziona \textit{Vota}.
-    \item Il sistema verifica che non abbia già votato.
-    \item Se valido, incrementa il contatore e blocca ulteriori voti.
-\end{enumerate}
-
-\textbf{Eccezione}: Voto duplicato.
-
-% ------------------------------------------------------
-
-\subsection{RF12: Votazioni e Sondaggi (Invio Univoco)}
-
-\begin{enumerate}
-    \item Il cittadino invia il proprio voto/risposta.
-    \item Il sistema verifica se esiste già un invio precedente.
-    \item Se valido:
-    \begin{itemize}
-        \item Anonimizza il voto
-        \item Registra hash di tracciabilità
-        \item Impedisce ulteriori invii
-    \end{itemize}
-\end{enumerate}
-
-\textbf{Eccezione}: Invio duplicato.
-
-% ------------------------------------------------------
-\subsection{RF13: Accesso alla dashboard per cittadini attivi}
-\begin{enumerate}
-    \item Il cittadino accede alla sua dashboard (RF2) o alla sezione dedicata alle attivita' in corso.
-    \item Il sistema recupera votazioni e sondaggi.
-    \item Il sistema filtra per stato \textbf{attivo}.
-    \item Il sistema presenta al cittadino l'elenco degli elementi attivi, separati per tipologia, con i dettagli essenziali per l'interazione (es: titolo, periodo di validità).
-\end{enumerate}
-
-\textbf{Eccezione}: Nessun elemento attivo: se il sistema non trova ne votazioni ne sondaggi \textbf{attivi}, mostra un messaggio informativo (es: "Al momento non ci sono attivita in corso").
-
-% --------------------------------------------------------
-
-\subsection{RF14: Creazione account operatore}
-
-\textbf{Riassunto}: Qualsiasi operatore autenticato può creare un nuovo account operatore.
-
-\begin{enumerate}
-    \item L'operatore autenticato invia una richiesta \texttt{POST /operatore/register} con username, password, nome e cognome.
-    \item Il sistema valida i dati: verifica che l'username non sia già in uso e che tutti i campi obbligatori siano presenti.
-    \item Se valido, il sistema crea il nuovo account operatore (flag \texttt{isRoot: false}).
+    \item L'utente (Cittadino o Operatore Comune) inserisce una o più parole chiave nella barra di ricerca.
+    \item L'utente avvia la ricerca (es. premendo Invio o cliccando sull'icona di ricerca).
+    \item Il sistema interroga il database per identificare le iniziative e i contenuti corrispondenti alle parole chiave.
+    \item Il sistema presenta i risultati della ricerca in un ordine predefinito (es. per pertinenza o per data decrescente).
 \end{enumerate}
 
 \textbf{Eccezioni}
 \begin{itemize}
-    \item Dati incompleti: il sistema nega la creazione con errore 400.
-    \item Username già esistente: il sistema nega la creazione con errore 409.
+    \item \textbf{Nessun Risultato Trovato}: se la ricerca non produce risultati, il sistema mostra un messaggio informativo (``Nessun contenuto trovato per la ricerca X'') e l'operazione termina.
 \end{itemize}
 
-% --------------------------------------------------------
+\textbf{Estensioni}
+\begin{itemize}
+    \item \textbf{Applicare Filtri Ricerca}:
+    \begin{itemize}
+        \item \textit{Punto di Estensione}: dopo lo Step 3 (identificazione dei risultati) o lo Step 4 (presentazione dei risultati).
+        \item \textit{Condizione}: l'utente interagisce con il pannello dei filtri disponibile (ad esempio, seleziona ``Filtra per argomento'' o ``Filtra per data'').
+        \item \textit{Azione}: il sistema rielabora la lista dei risultati applicando i criteri di filtro selezionati e presenta la nuova lista all'utente.
+    \end{itemize}
+    \item \textbf{Ordinare Risultati}:
+    \begin{itemize}
+        \item \textit{Punto di Estensione}: dopo lo Step 4 (presentazione dei risultati).
+        \item \textit{Condizione}: l'utente seleziona un criterio di ordinamento alternativo a quello predefinito (ad esempio, ``Ordina per data crescente'' o ``Ordina per popolarità'', cioè per numero di voti).
+        \item \textit{Azione}: il sistema riordina la lista dei risultati in base al criterio selezionato e presenta la lista aggiornata all'utente.
+    \end{itemize}
+\end{itemize}
 
-\subsection{RF15: Promozione a root}
+% ------------------------------------------------------
 
-\textbf{Riassunto}: L'account root può promuovere un operatore esistente al ruolo root.
+\subsection{RF5: Creazione votazione}
 
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{Use_case_diagrams/RF5.png}
+    \caption{Use Case Diagram --- RF5: Creazione votazione}
+\end{figure}
+
+\subsubsection*{Use Case: Creazione di una votazione}
+
+\textbf{Riassunto}: Descrive come l'Operatore del Comune avvia la creazione di una nuova votazione, definendo tutti gli attributi obbligatori e salvandola nello stato iniziale di ``bozza''.
+
+\textbf{Descrizione}
 \begin{enumerate}
-    \item L'account root invia una richiesta \texttt{PATCH /operatore/:id/promote}.
-    \item Il sistema verifica che il richiedente abbia \texttt{isRoot: true}.
-    \item Il sistema imposta \texttt{isRoot: true} sull'operatore target.
+    \item L'Operatore Comune, dalla sua dashboard amministrativa, seleziona l'opzione ``Crea Nuova Votazione''.
+    \item Il sistema presenta un form di creazione e richiede l'inserimento degli attributi obbligatori, che corrispondono ai seguenti passi:
+    \begin{itemize}
+        \item \textit{Inserimento titolo}: richiede e convalida l'inserimento del titolo identificativo per la votazione.
+        \item \textit{Inserimento breve descrizione}: richiede e convalida l'inserimento della descrizione sintetica dell'argomento.
+        \item \textit{Inserimento opzioni di risposta}: richiede e convalida l'inserimento del numero fisso e del contenuto delle opzioni di risposta.
+        \item \textit{Specifica tipologia di risposta}: richiede e convalida la selezione della tipologia di risposta (singola o multipla).
+        \item \textit{Inserimento data apertura e chiusura}: richiede e convalida l'inserimento delle date di apertura e chiusura, assicurando che la data di apertura preceda quella di chiusura.
+    \end{itemize}
+    \item Una volta che tutti gli attributi sono stati inseriti e convalidati con successo, il sistema salva la nuova votazione nel database.
+    \item Il sistema imposta lo stato iniziale della votazione su ``bozza''.
+    \item Il sistema notifica all'Operatore che la votazione è stata creata con successo.
 \end{enumerate}
 
 \textbf{Eccezioni}
 \begin{itemize}
-    \item Operatore target non trovato: il sistema restituisce errore 404.
-    \item Richiedente non root: il sistema nega l'operazione con errore 403.
+    \item \textbf{Campi Obbligatori Mancanti/Illogici}: se uno qualsiasi dei passi di inserimento fallisce la convalida (es. un campo obbligatorio è vuoto o le date sono illogiche), il sistema impedisce il salvataggio della votazione e richiede la correzione all'Operatore.
 \end{itemize}
 
-% --------------------------------------------------------
+% ------------------------------------------------------
 
-\subsection{RF16: Disattivazione account amministratore \textit{(requisito futuro)}}
+\subsection{RF6: Gestione votazione}
 
-\textbf{Nota}: questo requisito non è ancora implementato nella versione corrente del sistema. In una versione futura, l'account root potrà disattivare account operatore esistenti senza eliminarne i dati, registrando data e ora dell'operazione per finalità di audit.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{Use_case_diagrams/RF6.png}
+    \caption{Use Case Diagram --- RF6: Gestione votazione}
+\end{figure}
 
-% --------------------------------------------------------
+\subsubsection*{Use Case: Gestione votazione}
+
+\textbf{Riassunto}: Permette all'Operatore Comune di visualizzare e agire sulle votazioni, consentendo la modifica/eliminazione se in stato ``bozza'', la transizione a ``attiva'' (pubblicazione) e la transizione a ``archiviata''.
+
+\textbf{Descrizione}
+\begin{enumerate}
+    \item L'Operatore Comune accede alla sezione ``Gestione Votazioni'' dalla dashboard.
+    \item Il sistema mostra la lista di tutte le votazioni create, con il relativo stato (bozza, attiva, conclusa, archiviata).
+    \item L'Operatore seleziona una votazione specifica per eseguirvi un'azione.
+    \item L'Operatore fornisce una conferma esplicita per procedere con l'azione selezionata.
+\end{enumerate}
+
+\textbf{Eccezioni}
+\begin{itemize}
+    \item \textbf{Azione non Consentita}: se l'Operatore tenta di eseguire una Modifica o Eliminazione su una votazione il cui stato non è ``bozza'', il sistema nega l'azione e mostra un messaggio di errore.
+\end{itemize}
+
+\textbf{Estensioni}
+\begin{itemize}
+    \item \textbf{Modificare Votazione}: si attiva quando l'Operatore seleziona una votazione nello stato ``bozza'' per modificarne gli attributi.
+    \item \textbf{Eliminare Votazione}: si attiva quando l'Operatore seleziona una votazione nello stato ``bozza'' per eliminarla definitivamente.
+    \item \textbf{Pubblicare Votazione}: si attiva quando l'Operatore seleziona una votazione nello stato ``bozza'' per pubblicarla, cambiando il suo stato in ``attiva'', rendendola visibile ai Cittadini.
+    \item \textbf{Archiviare Votazione}: si attiva quando l'Operatore seleziona una votazione nello stato ``conclusa'' per archiviarla, cambiando il suo stato in ``archiviata''.
+    \item \textbf{[Sistema] Transizione Automatica a Conclusa}: al raggiungimento della data e ora di chiusura, il sistema cambia automaticamente lo stato della votazione da ``attiva'' a ``conclusa''.
+\end{itemize}
+
+% ------------------------------------------------------
+
+\subsection{RF7: Creazione sondaggio}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{Use_case_diagrams/RF7.png}
+    \caption{Use Case Diagram --- RF7: Creazione sondaggio}
+\end{figure}
+
+\subsubsection*{Use Case: Creazione di un sondaggio}
+
+\textbf{Riassunto}: Descrive come l'Operatore del Comune crea e configura un nuovo sondaggio anonimo definendo tutti gli attributi obbligatori e salvandolo nello stato iniziale di ``bozza''.
+
+\textbf{Descrizione}
+\begin{enumerate}
+    \item L'Operatore Comune, dalla sua dashboard, seleziona l'opzione ``Crea Nuovo Sondaggio''.
+    \item Il sistema presenta un form di creazione e richiede l'inserimento degli attributi obbligatori, che includono:
+    \begin{itemize}
+        \item \textit{Titolo e Descrizione}: l'Operatore inserisce il titolo e la descrizione sintetica.
+        \item \textit{Domande}: l'Operatore scrive un insieme variabile di domande a risposta chiusa o multipla.
+        \item \textit{Periodo di Validità}: l'Operatore indica data di apertura e chiusura del sondaggio, assicurando la consistenza logica.
+    \end{itemize}
+    \item L'Operatore seleziona l'opzione ``Salva Bozza''.
+    \item Il sistema controlla che tutti gli attributi obbligatori siano presenti.
+    \item Il sistema salva il nuovo sondaggio nel database impostando lo stato su ``bozza''.
+    \item Il sistema notifica all'Operatore il salvataggio avvenuto con successo.
+\end{enumerate}
+
+\textbf{Eccezioni}
+\begin{itemize}
+    \item \textbf{Campi Obbligatori Mancanti/Illogici}: se l'Operatore non completa tutti gli attributi richiesti (es. una domanda non ha opzioni, o le date sono illogiche), il sistema impedisce il salvataggio e richiede la correzione.
+\end{itemize}
+
+% ------------------------------------------------------
+
+\subsection{RF8: Gestione sondaggi}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{Use_case_diagrams/RF8.png}
+    \caption{Use Case Diagram --- RF8: Gestione sondaggi}
+\end{figure}
+
+\subsubsection*{Use Case: Gestione Sondaggi}
+
+\textbf{Descrizione}
+\begin{enumerate}
+    \item L'Operatore Comune accede alla sezione ``Gestione Sondaggi'' dalla dashboard.
+    \item Il sistema mostra la lista di tutti i sondaggi, con il relativo stato (bozza, attivo, concluso, archiviato).
+    \item L'Operatore seleziona un sondaggio specifico e sceglie l'azione da eseguire.
+    \item L'Operatore conferma la volontà di procedere con l'azione selezionata.
+\end{enumerate}
+
+\textbf{Eccezioni}
+\begin{itemize}
+    \item \textbf{Azione non Consentita}: se l'Operatore tenta di eseguire un'azione che non è permessa dallo stato attuale del sondaggio (es. pubblicare un sondaggio già concluso), il sistema nega l'azione e mostra un messaggio di errore.
+\end{itemize}
+
+\textbf{Estensioni}
+\begin{itemize}
+    \item \textbf{Pubblicare Sondaggio (da Bozza)}: \textit{Condizione}: Stato = ``bozza''. \textit{Azione}: il sistema richiede conferma. Se data, lo stato cambia in ``attivo'' (rendendolo visibile ai Cittadini) e il sondaggio non è più modificabile.
+    \item \textbf{Analizzare Risultati Sondaggio}: \textit{Condizione}: Stato = ``concluso'' o ``archiviato''. \textit{Azione}: il sistema recupera e mostra i risultati aggregati e anonimi del sondaggio (come descritto in RF3, ma applicato ai sondaggi).
+    \item \textbf{Archiviare Sondaggio}: \textit{Condizione}: Stato = ``concluso''. \textit{Azione}: il sistema richiede conferma. Se data, lo stato cambia in ``archiviato'' (conservazione storica permanente).
+    \item \textbf{Transizione Automatica a Concluso}: al raggiungimento della data e ora di chiusura (definita in RF7), il sistema cambia automaticamente lo stato del sondaggio da ``attivo'' a ``concluso'' e rende i risultati disponibili.
+\end{itemize}
+
+% ------------------------------------------------------
+
+\subsection{RF9: Moderazione delle iniziative}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{Use_case_diagrams/RF9.png}
+    \caption{Use Case Diagram --- RF9: Moderazione delle iniziative}
+\end{figure}
+
+\subsubsection*{Use Case: Moderazione delle iniziative}
+
+\textbf{Riassunto}: L'Operatore Comunale visualizza le iniziative pubblicate dai cittadini e ne modera il contenuto. Per ciascuna iniziativa in attesa può approvarla, rendendola visibile sulla bacheca pubblica, oppure rifiutarla specificando una motivazione.
+
+\textbf{Descrizione}
+\begin{enumerate}
+    \item L'Operatore Comunale accede alla sezione ``Moderazione bacheca'' dalla dashboard.
+    \item Il sistema mostra l'elenco di tutte le iniziative pubblicate dai cittadini, suddivise per stato (in attesa, approvate, rifiutate).
+    \item L'Operatore Comunale seleziona un'iniziativa in stato ``In attesa''.
+    \item Il sistema mostra tutti i dettagli dell'iniziativa.
+    \item L'Operatore Comunale valuta il contenuto in base alle linee guida della community e alle politiche del Comune.
+    \item Se il contenuto è conforme, l'Operatore approva l'iniziativa e il sistema aggiorna lo stato in ``Approvata'', rendendola visibile nella bacheca pubblica; altrimenti, se la rifiuta, deve specificare un motivo di rifiuto e l'iniziativa diventa ``rifiutata''.
+\end{enumerate}
+
+\textbf{Estensioni}
+\begin{itemize}
+    \item \textbf{Rifiuto dell'iniziativa} (Step 6a):
+    \begin{itemize}
+        \item L'Operatore Comunale decide di rifiutare l'iniziativa.
+        \item Il sistema richiede l'inserimento di una motivazione del rifiuto.
+        \item L'Operatore inserisce la motivazione.
+        \item Il sistema aggiorna lo stato dell'iniziativa in ``Rifiutata'' e memorizza la motivazione.
+    \end{itemize}
+\end{itemize}
+
+% ------------------------------------------------------
+
+\subsection{RF10: Pubblicazione iniziative}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{Use_case_diagrams/RF10.png}
+    \caption{Use Case Diagram --- RF10: Pubblicazione iniziative}
+\end{figure}
+
+\subsubsection*{Use Case: Pubblicazione iniziative}
+
+\textbf{Riassunto}: Il sistema deve consentire ai Cittadini autenticati di proporre nuove iniziative nella bacheca pubblica. L'iniziativa deve riportare il nome utente dell'autore, un titolo e una descrizione sintetica.
+
+\textbf{Descrizione}
+\begin{enumerate}
+    \item Il Cittadino seleziona l'opzione ``Proponi Nuova Iniziativa''.
+    \item Il sistema presenta un form di creazione.
+    \item Il Cittadino inserisce il titolo e la descrizione sintetica dell'iniziativa.
+    \item Il sistema registra automaticamente il nome utente del Cittadino proponente.
+    \item Il Cittadino conferma la pubblicazione.
+    \item Il sistema salva l'iniziativa nel database in stato di attesa di essere approvata, impostando il conteggio dei voti a zero.
+\end{enumerate}
+
+\textbf{Eccezioni}
+\begin{itemize}
+    \item \textbf{Campi Obbligatori Mancanti}: se il titolo o la descrizione sono assenti, il sistema impedisce la pubblicazione e richiede la compilazione.
+\end{itemize}
+
+% ------------------------------------------------------
+
+\subsection{RF11: Votazione iniziativa}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{Use_case_diagrams/RF11.png}
+    \caption{Use Case Diagram --- RF11: Votazione iniziativa}
+\end{figure}
+
+\subsubsection*{Use Case: Votazione iniziativa}
+
+\textbf{Riassunto}: Il sistema deve consentire ai Cittadini autenticati di votare le iniziative esistenti per aumentarne la visibilità. Il sistema deve assicurare che un singolo Cittadino possa votare una singola iniziativa una sola volta.
+
+\textbf{Descrizione}
+\begin{enumerate}
+    \item Il Cittadino visualizza la bacheca delle iniziative, dove è presente il conteggio dei voti ricevuti.
+    \item Il Cittadino seleziona il pulsante ``Vota'' accanto all'iniziativa desiderata.
+    \item Il sistema verifica l'identità del Cittadino per assicurarsi che non abbia precedentemente votato per quell'iniziativa.
+    \item Se il voto è valido (non duplicato), il sistema incrementa di uno il contatore dei voti ricevuti.
+    \item Il sistema disabilita la possibilità per il Cittadino di votare nuovamente quell'iniziativa.
+\end{enumerate}
+
+\textbf{Eccezioni}
+\begin{itemize}
+    \item \textbf{Voto Duplicato}: se il sistema rileva che il Cittadino ha già votato per l'iniziativa, nega l'azione.
+\end{itemize}
+
+% ------------------------------------------------------
+
+\subsection{RF12: Votazione}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{Use_case_diagrams/RF12.png}
+    \caption{Use Case Diagram --- RF12: Votazione}
+\end{figure}
+
+\subsubsection*{Use Case: Votazione}
+
+\textbf{Riassunto}: Il sistema deve garantire che ogni Cittadino possa esprimere un solo invio (voto o risposta) per ciascun tema di votazione e per ogni sondaggio. Le preferenze espresse devono essere registrate in forma anonima e non modificabile, assicurando la tracciabilità del dato a fini di controllo senza violare la privacy.
+
+\textbf{Descrizione}
+\begin{enumerate}
+    \item Il cittadino seleziona una votazione/sondaggio tra quelli attivi.
+    \item Il Cittadino completa la sua selezione (votazione o sondaggio) e conferma l'invio.
+    \item \textbf{Controllo di Univocità}: il sistema verifica l'identità del Cittadino e la cronologia degli invii precedenti per assicurarsi che non esista già un invio valido per quello specifico tema o sondaggio.
+    \item Se l'invio è valido (univoco):
+    \begin{itemize}
+        \item \textit{Anonimizzazione}: le preferenze espresse vengono separate dall'identità immediata del Cittadino e registrate in forma anonima.
+        \item \textit{Tracciabilità e Immutabilità}: il dato di voto/risposta è registrato in modo non modificabile e viene salvato con un riferimento (es. un hash) che garantisce la tracciabilità a fini di controllo e audit, pur mantenendo l'anonimato.
+    \end{itemize}
+    \item Il sistema registra l'azione di invio come completata e disabilita la possibilità di inviare risposte/voti per quel tema/sondaggio per quel Cittadino.
+\end{enumerate}
+
+\textbf{Eccezioni}
+\begin{itemize}
+    \item \textbf{Invio Duplicato}: se il sistema rileva un invio precedente, nega la registrazione del voto/risposta e mostra un avviso.
+\end{itemize}
+
+% ------------------------------------------------------
+
+\subsection{RF13: Visualizzazione votazioni e sondaggi}
+
+\subsubsection*{Use Case: Visualizzazione votazioni e sondaggi attivi}
+
+\textbf{Riassunto}: Descrive come il Cittadino consulta l'elenco delle votazioni e dei sondaggi attualmente attivi ai quali può partecipare.
+
+\textbf{Descrizione}
+\begin{enumerate}
+    \item Il cittadino accede alla propria dashboard (RF2) o alla sezione dedicata alle attività in corso.
+    \item Il sistema recupera votazioni e sondaggi dal database.
+    \item Il sistema filtra gli elementi per stato \textbf{attivo}.
+    \item Il sistema presenta al cittadino l'elenco degli elementi attivi, separati per tipologia, con i dettagli essenziali per l'interazione (es. titolo e periodo di validità).
+\end{enumerate}
+
+\textbf{Eccezioni}
+\begin{itemize}
+    \item \textbf{Nessun elemento attivo}: se il sistema non trova né votazioni né sondaggi attivi, mostra un messaggio informativo (es. ``Al momento non ci sono attività in corso'').
+\end{itemize}
+
+% ------------------------------------------------------
+
+\subsection{RF14: Creazione Account Amministrativo}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{Use_case_diagrams/RF14.png}
+    \caption{Use Case Diagram --- RF14: Creazione Account Amministrativo}
+\end{figure}
+
+\subsubsection*{Use Case: Creazione Account Amministrativo}
+
+\textbf{Riassunto}: Il sistema deve consentire all'Account Root di creare nuovi account amministrativi, che saranno utilizzati dagli Operatori del Comune per le attività operative quotidiane.
+
+\textbf{Descrizione}
+\begin{enumerate}
+    \item L'Account Root esegue l'accesso al sistema (unica funzionalità consentita oltre alla gestione degli amministratori).
+    \item L'Account Root accede alla sezione di creazione account.
+    \item Il sistema presenta un form per l'inserimento dei dati del nuovo account amministratore (nome utente, password temporanea/iniziale).
+    \item L'Account Root inserisce i dettagli e conferma la creazione.
+    \item Il sistema convalida i dati, crea l'account nello stato ``attivo'' e registra la data di creazione.
+    \item Il sistema notifica il successo della creazione.
+\end{enumerate}
+
+\textbf{Eccezioni}
+\begin{itemize}
+    \item \textbf{Dati Incompleti}: se i campi obbligatori per il nuovo account sono assenti, il sistema nega la creazione.
+    \item \textbf{Unicità}: se il nome utente esiste già, il sistema nega la creazione.
+\end{itemize}
+
+% ------------------------------------------------------
+
+\subsection{RF15--16: Gestione Amministratori}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{Use_case_diagrams/RF15-16.png}
+    \caption{Use Case Diagram --- RF15--16: Gestione Amministratori}
+\end{figure}
+
+\subsubsection*{Use Case: Visualizzazione lista amministratori}
+
+\textbf{Riassunto}: Il sistema deve consentire all'Account Root di visualizzare l'elenco completo degli account amministrativi, includendo tutti i dati di stato e audit richiesti.
+
+\textbf{Descrizione}
+\begin{enumerate}
+    \item L'Account Root accede alla sezione ``Gestione Amministratori''.
+    \item Il sistema recupera l'elenco completo degli account amministrativi registrati.
+    \item Il sistema presenta la lista all'Account Root, assicurando che per ogni amministratore siano visibili:
+    \begin{itemize}
+        \item nome utente dell'amministratore;
+        \item stato dell'account (attivo / disattivato);
+        \item data di creazione dell'account;
+        \item eventuale data di disattivazione (se presente).
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection*{Use Case: Disattivazione account amministratore}
+
+\textbf{Riassunto}: Il sistema deve consentire all'Account Root di disattivare uno o più account amministrativi esistenti, garantendo l'immutabilità dell'account Root e la registrazione per l'audit.
+
+\textbf{Descrizione}
+\begin{enumerate}
+    \item L'Account Root visualizza la lista degli account amministrativi.
+    \item L'Account Root seleziona uno o più account nello stato ``attivo'' da disattivare.
+    \item L'Account Root seleziona l'opzione ``Disattiva''.
+    \item Il sistema richiede una conferma esplicita dell'azione.
+    \item Se confermata, il sistema cambia lo stato dell'account in ``disattivato''.
+    \item Il sistema registra la data e l'ora della disattivazione nel database per finalità di audit (senza eliminare l'account o i dati associati).
+    \item Il sistema notifica all'Account Root che la disattivazione è avvenuta con successo.
+\end{enumerate}
+
+\textbf{Eccezioni}
+\begin{itemize}
+    \item \textbf{Disattivazione Fallita}: se l'account selezionato è già disattivato, il sistema mostra un messaggio e non esegue l'azione.
+\end{itemize}
+
+% ------------------------------------------------------
 
 \section{User Stories}
 
@@ -1040,80 +1281,349 @@ L’utente può applicare filtri demografici o tematici per analizzare i dati ag
 \end{enumerate}
 
 
-\section{Design Front-end}
+\textbf{Eccezione}: Nessuna attività attiva.
 
-In questa sezione vengono presentate le schermate principali dell'applicazione IoSonoTrento, con riferimenti espliciti ai requisiti funzionali e non funzionali definiti nei capitoli precedenti.
+
+\section{Design del Front-End}
+
+In questo capitolo presentiamo i mockup delle principali schermate di \textit{IoSonoTrento}, la web app di partecipazione civica del Comune di Trento. Per ogni schermata indichiamo i requisiti funzionali e non funzionali a cui l'interfaccia risponde, motivando di volta in volta quale elemento concreto del layout li soddisfa. Le immagini riproducono l'aspetto che l'applicazione avr\`a per l'utente finale; dove l'immagine da sola non basta, accompagniamo il mockup con una breve descrizione testuale. Le schermate sono presentate seguendo i due percorsi d'uso, quello del cittadino e quello dell'operatore comunale, preceduti dalle pagine di accesso comuni a entrambi.
+
+% =========================================================
+%  ACCESSO
+% =========================================================
+
+\subsection*{Landing page}
+
+\schermata{1}{Landing page}{01-landing}
+
+La Figura 1 mostra la pagina pubblica con cui l'applicazione si presenta a chi non ha ancora effettuato l'accesso. Di seguito una descrizione in relazione ai requisiti funzionali e non funzionali.
+
+\begin{itemize}
+    \item \textbf{RNF1: Interfaccia intuitiva}: la sezione \textit{hero}, con il messaggio ``La tua voce per la tua citt\`a'' e un pulsante d'accesso ben evidente, comunica in pochi secondi a cosa serve il servizio e porta subito all'azione, senza testi superflui o passaggi intermedi.
+    \item \textbf{RNF3: Consistenza visiva}: l'anteprima grafica delle attivit\`a partecipative, i colori istituzionali e il marchio ``IoSonoTrento'' riprendono gli stessi componenti usati nel resto dell'app, cos\`i che il passaggio dalla vetrina alle pagine interne risulti naturale.
+    \item \textbf{RNF4: Multilingua}: pur essendo la pagina presentata in italiano, l'interfaccia \`e predisposta per la traduzione, con i testi gestiti come contenuti localizzabili e non cablati nel layout, cos\`i da poter affiancare altre lingue senza rifare le schermate; la barra superiore lascia spazio a un eventuale selettore di lingua.
+    \item \textbf{RNF19: Dispositivi}: il layout \`e responsive; l'anteprima affiancata al testo si ridispone in colonna sugli schermi pi\`u stretti, mantenendo leggibili contenuti e pulsanti anche da smartphone.
+    \item \textbf{RNF20: Browser supportati}: essendo una pagina web basata su componenti standard, la landing si visualizza correttamente sulle versioni recenti di Chrome, Firefox, Safari ed Edge.
+\end{itemize}
+
+La landing page svolge cos\`i una funzione di soglia: orienta il visitatore e lo accompagna verso l'accesso vero e proprio mantenendo coerenza grafica e piena fruibilit\`a da qualsiasi dispositivo.
 
 % -------------------------------------------------------
 
-\subsection*{Schermata 1: Landing Page e Login}
+\subsection*{Accesso cittadino}
 
-\textit{[Figura 1: schermata di login con pulsante Google OAuth per i cittadini e form username/password per gli operatori]}
+\schermata{2}{Accesso cittadino}{02-accesso-cittadino}
 
-La schermata di accesso unifica i due flussi di autenticazione:
+La Figura 2 mostra la schermata con cui il cittadino sceglie come autenticarsi. Di seguito si descrivono i requisiti funzionali e non funzionali a cui risponde.
+
 \begin{itemize}
-    \item \textbf{RF1 (Flusso A)}: il pulsante ``Accedi con Google'' avvia il flusso OAuth 2.0 per i cittadini.
-    \item \textbf{RF1 (Flusso B)}: il form con campi username e password è riservato agli operatori comunali.
-    \item \textbf{RNF -- Interfaccia intuitiva}: i due percorsi sono visivamente distinti e comprensibili senza documentazione.
-    \item \textbf{RNF -- Accessibilità}: contrasto adeguato e label semantiche per screen reader (WCAG 2.1 livello AA).
+    \item \textbf{RF1: Gestione accessi}: dalla card di benvenuto il pulsante ``Accedi come cittadino'' apre il flusso di autenticazione delegata a un Identity Provider esterno. Nello scenario di produzione l'IdP di riferimento \`e SPID o CIE, mentre nel prototipo la stessa modalit\`a \`e realizzata tramite Google OAuth 2.0, adottato come sostituto per i vincoli di accreditamento del contesto didattico; al primo ritorno il sistema registra l'identificativo univoco dell'utente, che verr\`a riconosciuto in tutti gli accessi successivi.
+    \item \textbf{RNF7: Autenticazione sicura}: l'accesso non richiede la creazione di password locali ma delega la verifica dell'identit\`a a un provider esterno (Google OAuth 2.0 nel prototipo, SPID o CIE nello scenario di produzione per una verifica ufficiale dell'identit\`a).
+    \item \textbf{RNF8: Gestione sicura delle sessioni}: una volta completato l'accesso, la sessione \`e soggetta a scadenza automatica dopo un periodo di inattivit\`a, riducendo i rischi legati all'uso di dispositivi condivisi.
+    \item \textbf{RNF5: Protezione dei dati personali}: delegare l'autenticazione a un provider conforme limita i dati personali trattati direttamente dalla piattaforma, in linea con i principi del GDPR.
+    \item \textbf{RNF2: Accessibilit\`a}: l'unico controllo realmente necessario, ovvero il pulsante d'accesso, ha dimensioni generose, contrasto adeguato ed etichette testuali, requisiti utili anche a chi naviga con tecnologie assistive.
+\end{itemize}
+
+La schermata privilegia la semplicit\`a: un solo gesto separa il cittadino dalla propria dashboard, demandando a un provider affidabile gli aspetti pi\`u delicati della sicurezza.
+
+% -------------------------------------------------------
+
+\subsection*{Accesso operatore}
+
+\schermata{3}{Accesso operatore}{03-accesso-operatore}
+
+La Figura 3 mostra il modulo riservato agli operatori del Comune, raggiungibile dalla scelta ``Accedi come operatore''. Di seguito una descrizione in relazione ai requisiti funzionali e non funzionali.
+
+\begin{itemize}
+    \item \textbf{RF1: Gestione accessi}: il form a credenziali locali, con i campi ``Username'' e ``Password'' e il pulsante di conferma, realizza la modalit\`a d'accesso prevista per il personale comunale, distinta da quella dei cittadini e collegata alla dashboard amministrativa.
+    \item \textbf{RNF7: Autenticazione sicura}: le credenziali sono verificate lato server e gli operatori non possono auto-registrarsi; gli account sono creati a monte, riducendo la superficie di accessi non autorizzati.
+    \item \textbf{RNF8: Gestione sicura delle sessioni}: anche la sessione dell'operatore decade dopo un intervallo di inattivit\`a, evitando che una postazione comunale lasciata aperta resti utilizzabile da terzi.
+    \item \textbf{RNF14: Gestione degli errori}: in caso di credenziali errate l'interfaccia mostra un messaggio chiaro e non tecnico nell'area dedicata, senza disperdere i dati gi\`a inseriti n\'e esporre dettagli interni del sistema.
+\end{itemize}
+
+L'accesso operatore mantiene quindi lo stesso impianto grafico della pagina cittadino, ma adotta un meccanismo di autenticazione coerente con un'utenza professionale e con i privilegi di gestione che ne derivano.
+
+% -------------------------------------------------------
+
+\subsection*{Completamento del profilo}
+
+\schermata{4}{Completamento del profilo}{04-completa-profilo}
+
+La Figura 4 mostra la schermata proposta al cittadino al primo accesso, quando il sistema ha gi\`a i dati dell'account ma deve raccogliere le informazioni necessarie per poter avere i dati necessari per realizzare funzionalità all'interno della piattaforma. Di seguito una descrizione in relazione ai requisiti funzionali e non funzionali.
+
+\begin{itemize}
+    \item \textbf{RF1: Gestione accessi}: Il passaggio completa la registrazione avviata con il login; i dati raccolti vengono associati all'identificativo univoco dell'utente e abilitano l'accesso alle consultazioni.
+    \item \textbf{RNF1: Interfaccia intuitiva}: i campi sono pochi, raggruppati sotto l'etichetta ``Le tue informazioni'' e accompagnati da brevi note esplicative, cos\`i che la compilazione si esaurisca in un unico schermo.
+    \item \textbf{RNF2: Accessibilit\`a}: ogni campo ha un'etichetta esplicita, i campi obbligatori sono segnalati e i menu a tendina per circoscrizione, genere e occupazione riducono gli errori di inserimento anche per chi usa la tastiera o tecnologie assistive.
+    \item \textbf{RNF14: Gestione degli errori}: le note sotto i campi (ad esempio la precisazione che le circoscrizioni selezionabili sono le 12 del Comune di Trento, utili per le consultazioni di quartiere, o il controllo di validit\`a della data di nascita) prevengono gli errori prima dell'invio, anticipando i vincoli all'utente con un linguaggio semplice.
+\end{itemize}
+
+Concentrando in un solo passaggio la raccolta dei dati indispensabili, la schermata rende immediato l'ingresso del nuovo cittadino senza appesantire i login successivi.
+
+% =========================================================
+%  CITTADINO
+% =========================================================
+
+\subsection*{Dashboard cittadino}
+
+\schermata{5}{Dashboard cittadino}{05-dashboard-cittadino}
+
+La Figura 5 mostra la pagina iniziale del cittadino autenticato, pensata come punto di partenza verso tutte le attivit\`a partecipative. Vengono richiamati di seguito i requisiti funzionali e non funzionali coinvolti.
+
+\begin{itemize}
+    \item \textbf{RF2: Accesso alla Dashboard}: la pagina raccoglie in un'unica vista le votazioni attive, i sondaggi disponibili, il richiamo ``Proponi un'idea'' e i collegamenti alla bacheca e ai risultati, riproducendo per il cittadino la dashboard descritta nei requisiti.
+    \item \textbf{RF13: Visualizzazione votazioni e sondaggi}: le attivit\`a aperte sono presentate come card cliccabili che conducono direttamente alla votazione o al sondaggio corrispondente, mentre un messaggio dedicato avvisa quando non c'\`e nulla di attivo.
+    \item \textbf{RNF1: Interfaccia intuitiva}: la gerarchia visiva guida lo sguardo dalle azioni principali alle attivit\`a in corso; la barra di ricerca permette di filtrare votazioni e sondaggi digitandone il nome, riducendo i tempi di navigazione.
+    \item \textbf{RNF3: Consistenza visiva}: le card delle attivit\`a e i pulsanti riutilizzano gli stessi stili presenti in bacheca e nelle pagine di voto, dando all'insieme un aspetto omogeneo.
+    \item \textbf{RNF19: Dispositivi}: la griglia delle card si adatta alla larghezza dello schermo, passando da pi\`u colonne su desktop a una colonna su mobile senza perdere informazioni.
+\end{itemize}
+
+La dashboard funge da centro di smistamento: da qui il cittadino raggiunge in un solo passaggio ci\`o su cui pu\`o esprimersi, mantenendo coerenza grafica e piena leggibilit\`a su ogni dispositivo.
+
+% -------------------------------------------------------
+
+\subsection*{Bacheca delle iniziative}
+
+\schermata{6}{Bacheca delle iniziative}{06-bacheca}
+
+La schermata mostra la bacheca delle iniziative cittadine. Di seguito descriviamo tramite i requisiti funzionali e non funzionali che abbiamo descritto nei capitolo precedenti.
+\begin{itemize}
+    \item \textbf{RF10: Creazione iniziative}: il pulsante per proporre una nuova idea apre il modulo di creazione di un initiziativa, dando seguito al requisito che consente ai cittadini di pubblicare iniziative sulla bacheca.
+    \item \textbf{RF11: Votazione iniziativa}: su ciascuna card \`e presente il bottone  "sostieni"  per sostenere un iniziativa. Ogni volta che viene sostenuto un iniziativa, il conteggio dei voti per essa viene incrementato. Viene poi aumentato la visibilit\`a. Nel caso in cui la descrizione fosse lunga, viene mostrato un popup per leggere la descrizione completa.
+    \item \textbf{RF4: Ricerca iniziativa}: la barra di ricerca consente di filtrare le proposte per parola chiave, rendendo rapido il reperimento dei contenuti anche quando la bacheca \`e popolata.
+    \item \textbf{RNF1: Interfaccia intuitiva}: il formato a card uniformi rende immediato confrontare le proposte, mentre il sostegno richiede un solo gesto e non impone all'utente cittadino  alcuna procedura da apprendere.
+    \item \textbf{RNF3: Consistenza visiva}: le card delle iniziative condividono impaginazione e palette con le altre sezioni dell'app, cos\`i che la bacheca non appaia come un corpo estraneo rispetto a dashboard e votazioni.
+\end{itemize}
+
+La bacheca \`e il cuore della partecipazione dal basso: in una sola pagina il cittadino propone, cerca e sostiene le idee, con un'interazione leggera e coerente con il resto della piattaforma.
+
+% -------------------------------------------------------
+
+\subsection*{Creazione di un'iniziativa}
+
+\schermata{7}{Creazione di un'iniziativa}{07-crea-iniziativa}
+
+La Figura 7 mostra il modulo ``Crea iniziativa'', che può essere raggiunto dalla  dashboard o altrimenti nella bacheca stessa. Di seguito, ne segue una descrizione in relazione ai requsiti funzionali e non funzionali . Il modulo \`e volutamente essenziale.
+ (\textbf{RF10}), mentre autore e contatore dei voti sono aggiunti automaticamente dal sistema 
+ 
+ i messaggi di validazione segnalano in modo chiaro gli inserimenti mancanti senza perdere il testo gi\`a digitato (\textbf{RNF14}). 
+ Proporre un'iniziativa resta cos\`i un'operazione alla portata di chiunque.
+
+% -------------------------------------------------------
+
+\subsection*{Voto di una votazione}
+
+\schermata{8}{Voto di una votazione}{08-voto-votazione}
+
+La Figura 8 mostra la schermata con cui il cittadino esprime il proprio voto su una votazione. Di seguito una descrizione usando i riferimenti ai requisiti funzionali e non funzionali.
+\begin{itemize}
+    \item \textbf{RF12: Votazioni}: l'interfaccia consente di selezionare la propria preferenza e inviarla una sola volta; dopo la conferma il voto non \`e pi\`u modificabile, coerentemente con il vincolo di un solo voto per tema. 
+    \item \textbf{RNF6: Anonimato dei voti}: la schermata non espone alcun dato identificativo accanto alla scelta; la preferenza viene registrata in forma anonima e non riconducibile al cittadino che l'ha espressa nella fase di smistamento dei voti. 
+    \item \textbf{RNF1: Interfaccia intuitiva}: le opzioni di voto sono degli  elementi ben distanziati e ben posizionate a livello U,  rendendo evidente cosa fare. A fine voto, cliccando il pulsante invia voto, viene reso noto  quando esso \`e stato effettivamente acquisito. 
+\end{itemize}
+
+La schermata rappresenta chiaramente come attuare il voto di una votazione , tutelando al tempo stesso l'anonimato e l'unicit\`a della preferenza espressa.
+
+% -------------------------------------------------------
+
+\subsection*{Compilazione di un sondaggio}
+
+\schermata{9}{Compilazione di un sondaggio}{09-compila-sondaggio}
+
+La Figura 9 mostra la schermata con cui il cittadino risponde a un sondaggio. Vengono richiamati di seguito i requisiti funzionali e non funzionali coinvolti.
+
+\begin{itemize}
+    \item \textbf{RF12: Votazioni}: la schermata presenta il titolo e la descrizione del sondaggio seguiti dalla sequenza di domande; il sistema accetta un solo invio di risposte per cittadino e, una volta confermato con il messaggio ``Sondaggio completato!'', l'insieme delle risposte non \`e pi\`u modificabile.
+    \item \textbf{RNF6: Anonimato dei voti}: le risposte sono raccolte in forma anonima e non collegate al profilo del rispondente, in coerenza con la natura anonima dei sondaggi.
+    \item \textbf{RNF1: Interfaccia intuitiva}: le domande, a risposta chiusa o multipla, sono presentate una di seguito all'altra con gli stessi controlli usati nella votazione, cos\`i che il cittadino non debba imparare un nuovo modo di rispondere.
+\end{itemize}
+
+La struttura riprende quella della votazione, garantendo un'esperienza familiare anche in presenza di pi\`u domande.
+
+% -------------------------------------------------------
+
+\subsection*{Archivio di votazioni e sondaggi conclusi}
+
+\schermata{10}{Archivio di votazioni e sondaggi conclusi}{10-archivio}
+
+La Figura 10 mostra la pagina d'archivio, che raccoglie consultazioni e sondaggi ormai conclusi. Di seguito una descrizione in relazione ai requisiti funzionali e non funzionali.
+
+\begin{itemize}
+    \item \textbf{RF13: Visualizzazione votazioni e sondaggi}: la pagina d\`a continuit\`a alla dashboard mostrando, in un unico luogo, ci\`o che si \`e concluso, cos\`i che il cittadino possa ritrovare e consultare le attivit\`a passate.
+    \item \textbf{RF3: Riepilogo}: da ciascun elemento archiviato si accede al relativo riepilogo dei risultati, collegando l'archivio alle pagine di sintesi descritte pi\`u avanti.
+    \item \textbf{RNF1: Interfaccia intuitiva}: il selettore tra le due viste evita di moltiplicare le pagine e tiene insieme contenuti analoghi, mentre la ricerca rende rapido raggiungere una specifica consultazione.
+    \item \textbf{RNF3: Consistenza visiva}: gli elementi conclusi sono rappresentati con le stesse card della dashboard, semplicemente in stato chiuso, mantenendo riconoscibile la natura di ciascun contenuto.
 \end{itemize}
 
 % -------------------------------------------------------
 
-\subsection*{Schermata 2: Dashboard Operatore}
+\subsection*{Risultato di una votazione (vista cittadino)}
 
-\textit{[Figura 2: dashboard operatore con sezioni Votazioni, Sondaggi, Iniziative e Profilo]}
+\schermata{11}{Risultato di una votazione (vista cittadino)}{11-risultato-votazione-cittadino}
 
-La dashboard amministrativa espone tutte le funzionalità riservate agli operatori:
+La Figura 11 mostra il riepilogo che il cittadino vede al termine di una votazione: per ciascuna opzione sono indicati la percentuale e il numero di voti, insieme al totale dei voti espressi. La schermata presenta il riepilogo sintetico previsto per i cittadini, con percentuale e valore assoluto per ogni scelta e senza il dettaglio demografico riservato agli operatori (\textbf{RF3}); i risultati sono mostrati solo in forma aggregata, senza alcun modo di risalire a come abbia votato il singolo (\textbf{RNF6}), e le barre proporzionali rendono il confronto tra le opzioni leggibile a colpo d'occhio (\textbf{RNF1}). Il cittadino ottiene cos\`i una lettura chiara e immediata dell'esito, nel rispetto della riservatezza delle singole preferenze.
+
+% -------------------------------------------------------
+
+\subsection*{Risultato di un sondaggio (vista cittadino)}
+
+\schermata{12}{Risultato di un sondaggio (vista cittadino)}{12-risultato-sondaggio-cittadino}
+
+La Figura 12 mostra il riepilogo di un sondaggio dal punto di vista del cittadino, con la distribuzione delle risposte domanda per domanda e l'indicazione dei partecipanti totali. Come per le votazioni, il cittadino accede a una sintesi aggregata articolata per le diverse domande (\textbf{RF3}); le risposte restano anonime e la vista mostra solo dati complessivi (\textbf{RNF6}), riprendendo la stessa logica di lettura del risultato di votazione perch\'e l'utente non debba adattarsi a una nuova presentazione (\textbf{RNF1}). Anche per i sondaggi, dunque, la restituzione dei risultati privilegia chiarezza e riservatezza.
+
+% =========================================================
+%  OPERATORE
+% =========================================================
+
+\subsection*{Dashboard operatore}
+
+\schermata{13}{Dashboard operatore}{13-dashboard-operatore}
+
+La Figura 13 mostra la dashboard riservata all'operatore comunale, da cui si avviano e si controllano le attivit\`a di consultazione. Di seguito una descrizione in relazione ai requisiti funzionali e non funzionali.
+
 \begin{itemize}
-    \item \textbf{RFO1}: pulsante ``Crea Votazione'' e lista votazioni con stati (bozza / attivo / concluso / archiviato).
-    \item \textbf{RFO2}: pulsante ``Crea Sondaggio'' e lista sondaggi con relativi stati.
-    \item \textbf{RFO3}: sezione ``Moderazione'' per approvare o rifiutare le iniziative dei cittadini.
-    \item \textbf{RF3}: riepilogo risultati con dettaglio demografico accessibile dagli operatori.
-    \item \textbf{RNF -- Consistenza visiva}: layout coerente con colori istituzionali e componenti riusabili.
-    \item \textbf{RNF -- Prestazioni}: il caricamento della dashboard avviene entro 3 secondi in condizioni normali di rete.
+    \item \textbf{RF2: Accesso alla Dashboard}: la pagina realizza la dashboard estesa prevista per gli operatori; dai comandi ``Crea una nuova votazione'' e ``Crea un nuovo sondaggio'' si avviano le consultazioni, mentre l'elenco delle attivit\`a in corso e le proposte in attesa di moderazione ne permettono il monitoraggio e la gestione da un'unica vista.
+    \item \textbf{RNF1: Interfaccia intuitiva}: le azioni principali sono presentate come riquadri descrittivi che ne anticipano l'effetto, mentre lo stato delle attivit\`a e le proposte da esaminare sono raccolti in elenchi ordinati.
+    \item \textbf{RNF3: Consistenza visiva}: l'impaginazione riprende quella della dashboard cittadino, adattata a un'utenza che gestisce contenuti; un operatore riconosce subito i componenti, pur disponendo di pi\`u strumenti.
+\end{itemize}
+
+La dashboard operatore concentra in un solo schermo le leve di gestione, fungendo da plancia di comando per l'intero ciclo di vita delle consultazioni.
+
+% -------------------------------------------------------
+
+\subsection*{Creazione di una votazione}
+
+\schermata{14}{Creazione di una votazione}{14-crea-votazione}
+
+La Figura 14 mostra il modulo con cui l'operatore crea una votazione consultiva. Di seguito una descrizione in relazione ai requisiti funzionali e non funzionali.
+
+\begin{itemize}
+    \item \textbf{RF5: Creazione delle votazioni}: i campi del modulo coprono tutti gli elementi previsti per una votazione, ovvero titolo, descrizione, opzioni a numero fisso, tipologia singola o multipla e date di apertura e chiusura, consentendone la definizione completa prima della pubblicazione.
+    \item \textbf{RNF1: Interfaccia intuitiva}: il modulo \`e organizzato per blocchi (informazioni, periodo, opzioni), accompagnando l'operatore lungo una sequenza logica di compilazione.
+    \item \textbf{RNF14: Gestione degli errori}: la validazione dei campi e delle date segnala in modo comprensibile eventuali incongruenze (campi mancanti o intervalli non validi) prima che la votazione venga creata.
 \end{itemize}
 
 % -------------------------------------------------------
 
-\subsection*{Schermata 3: Dashboard Cittadino}
+\subsection*{Creazione di un sondaggio}
 
-\textit{[Figura 3: dashboard cittadino con votazioni attive, sondaggi e bacheca iniziative]}
+\schermata{15}{Creazione di un sondaggio}{15-crea-sondaggio}
 
-La dashboard cittadino mostra le attività partecipative disponibili:
+La Figura 15 mostra il modulo di creazione di un sondaggio. Di seguito una descrizione in relazione ai requisiti funzionali e non funzionali.
+
 \begin{itemize}
-    \item \textbf{RFC3}: lista delle votazioni e dei sondaggi in stato ``attivo'', separati per tipologia con titolo e periodo di validità.
-    \item \textbf{RFC1}: bacheca iniziative con possibilità di proporre una nuova iniziativa e votare quelle esistenti.
-    \item \textbf{RF3}: riepilogo sintetico e anonimizzato dei risultati delle votazioni concluse.
-    \item \textbf{RNF -- Multilingua}: interfaccia predisposta per l'estensione a ulteriori lingue tramite file di localizzazione.
-    \item \textbf{RNF -- Dispositivi}: layout responsive fruibile da desktop e da dispositivi mobili.
+    \item \textbf{RF7: Creazione dei sondaggi}: il modulo permette di comporre titolo, descrizione, periodo e un insieme di domande a risposta chiusa o multipla in numero variabile, oltre al salvataggio come bozza, in linea con quanto previsto per i sondaggi.
+    \item \textbf{RNF1: Interfaccia intuitiva}: l'aggiunta delle domande avviene in modo incrementale e con controlli analoghi a quelli della votazione, mantenendo gestibile anche un sondaggio articolato.
+    \item \textbf{RNF14: Gestione degli errori}: i controlli sui campi obbligatori e sulle date prevengono la pubblicazione di un sondaggio incompleto, con segnalazioni chiare all'operatore.
 \end{itemize}
 
 % -------------------------------------------------------
 
-\subsection*{Schermata 4: Creazione Votazione / Sondaggio}
+\subsection*{Gestione delle votazioni}
 
-\textit{[Figura 4: form di creazione votazione con campi titolo, descrizione, opzioni di risposta, date apertura/chiusura]}
+\schermata{16}{Gestione delle votazioni}{16-gestione-votazioni}
 
-Il form guidato permette all'operatore di configurare votazioni e sondaggi:
+La Figura 16 mostra la pagina di gestione delle votazioni. Di seguito una descrizione in relazione ai requisiti funzionali e non funzionali.
+
 \begin{itemize}
-    \item \textbf{RFO1 / RFO2}: campi per titolo, descrizione, opzioni di risposta, tipologia (singola/multipla) e date apertura/chiusura.
-    \item La votazione viene salvata in stato ``bozza'' fino alla pubblicazione esplicita.
-    \item \textbf{RNF -- Gestione degli errori}: messaggi di validazione chiari per campi mancanti o date incoerenti.
+    \item \textbf{RF6: Gestione dello stato delle votazioni}: le schede ``Bozze'', ``Attive'' e ``Concluse'' rispecchiano il ciclo di vita previsto (bozza, attiva, conclusa, archiviata); le bozze possono essere modificate o eliminate, le votazioni attive risultano bloccate e le concluse rendono disponibili i risultati. La modifica di una bozza avviene in una schermata dedicata (\textit{Modifica votazione}), raggiungibile dall'elenco, che ripropone lo stesso form della creazione precompilato.
+    \item \textbf{RNF1: Interfaccia intuitiva}: il raggruppamento per stato e la ricerca per titolo permettono all'operatore di individuare rapidamente la votazione su cui intervenire, con azioni contestuali coerenti con lo stato di ciascun elemento.
 \end{itemize}
 
 % -------------------------------------------------------
 
-\subsection*{Schermata 5: Riepilogo Risultati}
+\subsection*{Gestione dei sondaggi}
 
-\textit{[Figura 5: schermata riepilogo con grafici percentuali per votazioni concluse]}
+\schermata{17}{Gestione dei sondaggi}{17-gestione-sondaggi}
 
-La schermata di riepilogo mostra i risultati in forma aggregata e anonimizzata:
+La Figura 17 mostra la gestione dei sondaggi, organizzata come quella delle votazioni: schede ``Bozze'', ``Attive'' e ``Concluse'', ricerca per titolo ed elenco con le azioni di gestione. Dall'elenco l'operatore visualizza i sondaggi con il relativo stato, pu\`o modificarne le bozze tramite una schermata dedicata (\textit{Modifica sondaggio}), chiuderli anticipatamente, consultarne i risultati una volta conclusi e archiviarli per conservarne i dati (\textbf{RF8}); riproporre la stessa struttura della gestione votazioni evita di apprendere due modelli diversi per attivit\`a affini (\textbf{RNF1}). Anche per i sondaggi, dunque, monitoraggio e intervento si svolgono in un ambiente familiare e coerente.
+
+% -------------------------------------------------------
+
+\subsection*{Riepilogo di una votazione (vista operatore)}
+
+\schermata{18}{Riepilogo di una votazione (vista operatore)}{18-riepilogo-votazione-operatore}
+
+La Figura 18 mostra l'analisi dei risultati riservata all'operatore. Di seguito una descrizione in relazione ai requisiti funzionali e non funzionali.
+
 \begin{itemize}
-    \item \textbf{RF3}: percentuali e conteggi assoluti per ciascuna opzione di risposta.
-    \item Per gli operatori è disponibile un livello di dettaglio esteso con analisi per categorie demografiche.
-    \item \textbf{RNF -- Anonimato dei voti}: nessun dato individuale è esposto nelle visualizzazioni pubbliche.
+    \item \textbf{RF3: Riepilogo}: la vista offre il livello di dettaglio riservato agli operatori; accanto al totale dei votanti e alla distribuzione complessiva, i risultati sono analizzabili in forma aggregata per categorie demografiche, cos\`i da valutare come il voto si distribuisce nella popolazione.
+    \item \textbf{RNF6: Anonimato dei voti}: le aggregazioni demografiche non scendono mai al singolo individuo; i grafici mostrano insiemi di voti per categoria, senza alcuna possibilit\`a di risalire all'identit\`a dei partecipanti.
+    \item \textbf{RNF1: Interfaccia intuitiva}: i filtri demografici e i grafici (distribuzione dei voti, partecipazione nel tempo, confronto per fascia d'et\`a, genere e occupazione) traducono dati complessi in rappresentazioni leggibili, utili a sostenere le valutazioni dell'amministrazione.
 \end{itemize}
+
+Questa schermata \`e lo strumento di lettura politica del voto: fornisce all'operatore un quadro analitico ricco, mantenendo invariata la garanzia di anonimato dovuta ai cittadini.
+
+% -------------------------------------------------------
+
+\subsection*{Riepilogo di un sondaggio (vista operatore)}
+
+\schermata{19}{Riepilogo di un sondaggio (vista operatore)}{19-riepilogo-sondaggio-operatore}
+
+La Figura 19 mostra l'analisi dei risultati di un sondaggio dal lato operatore. Di seguito si descrivono i requisiti funzionali e non funzionali soddisfatti.
+
+\begin{itemize}
+    \item \textbf{RF3: Riepilogo}: accanto al totale dei rispondenti, l'operatore accede al dettaglio dei risultati domanda per domanda, secondo lo stesso principio applicato alle votazioni ma adattato alla struttura del sondaggio.
+    \item \textbf{RF8: Gestione dei sondaggi}: la pagina completa la gestione dei sondaggi, rendendo consultabili e analizzabili i risultati delle rilevazioni concluse direttamente dall'area amministrativa.
+    \item \textbf{RNF6: Anonimato dei voti}: anche qui i dati sono mostrati solo in forma aggregata, senza collegamento alle identit\`a dei rispondenti.
+    \item \textbf{RNF1: Interfaccia intuitiva}: la coerenza con il riepilogo delle votazioni consente all'operatore di leggere i risultati senza adattarsi a una nuova logica di presentazione.
+\end{itemize}
+
+Il riepilogo dei sondaggi chiude il ciclo di gestione lato operatore, restituendo in forma chiara e anonima il valore informativo della consultazione.
+
+% -------------------------------------------------------
+
+\subsection*{Moderazione della bacheca}
+
+\schermata{20}{Moderazione della bacheca}{20-moderazione-bacheca}
+
+La Figura 20 mostra la schermata con cui l'operatore modera le iniziative proposte dai cittadini. Di seguito una descrizione in relazione ai requisiti funzionali e non funzionali.
+
+\begin{itemize}
+    \item \textbf{RF9: Moderazione dei contenuti}: la pagina consente di esaminare le proposte dei cittadini prima della loro pubblicazione e di approvarle o respingerle; ogni iniziativa resta infatti in stato ``in attesa'' finch\'e un operatore non la approva, realizzando una revisione preventiva dei contenuti generati dagli utenti.
+    \item \textbf{RNF1: Interfaccia intuitiva}: la suddivisione per stato (``In attesa'', ``Approvate'' e ``Rifiutate'') e la ricerca per titolo rendono evidente cosa resta da valutare e cosa \`e gi\`a stato deciso, riducendo il rischio di trascurare proposte in attesa.
+    \item \textbf{RNF14: Gestione degli errori}: il campo per spiegare al cittadino perch\'e una proposta non pu\`o essere pubblicata trasforma un'azione potenzialmente opaca in una comunicazione chiara e tracciabile, riducendo fraintendimenti e contestazioni.
+\end{itemize}
+
+La moderazione coniuga cos\`i controllo e trasparenza: l'operatore presidia la qualit\`a della bacheca, ma ogni rifiuto resta motivato e comprensibile per il cittadino.
+
+% =========================================================
+%  PROFILO / IMPOSTAZIONI
+% =========================================================
+
+\subsection*{Profilo cittadino}
+
+\schermata{21}{Profilo cittadino}{21-profilo-cittadino}
+
+La Figura 21 mostra la pagina ``Il tuo profilo'' del cittadino, da cui gestisce i propri dati e la sessione. Di seguito una descrizione in relazione ai requisiti funzionali e non funzionali.
+
+\begin{itemize}
+    \item \textbf{RF1: Gestione accessi}: la sezione ``Sessione'' ricorda che l'accesso avviene tramite provider esterno (``Accedi con Google'') e mette a disposizione il pulsante ``Esci dall'account'' per terminare esplicitamente la sessione; l'account resta legato all'identificativo univoco associato al primo accesso.
+    \item \textbf{RNF8: Gestione sicura delle sessioni}: il logout esplicito consente al cittadino di chiudere la sessione in qualsiasi momento, riducendo i rischi legati all'uso di dispositivi condivisi, in aggiunta alla scadenza automatica del token.
+    \item \textbf{RNF5: Protezione dei dati personali}: dalla scheda ``Informazioni personali'' l'utente consulta e aggiorna i propri dati (data di nascita, circoscrizione, genere, occupazione), mantenendo il controllo sulle informazioni trattate dalla piattaforma in linea con il GDPR.
+    \item \textbf{RNF1: Interfaccia intuitiva}: la modifica avviene in linea tramite il pulsante ``Modifica'', e un avviso ``Profilo incompleto'' segnala in modo evidente eventuali dati mancanti, guidando l'utente al completamento.
+    \item \textbf{RNF2: Accessibilit\`a}: ogni campo ha un'etichetta esplicita e i menu a tendina (circoscrizione, genere, occupazione) riducono gli errori di inserimento anche per chi usa tecnologie assistive.
+\end{itemize}
+
+La pagina d\`a al cittadino un punto unico per tenere aggiornato il proprio profilo e governare la propria sessione, con la stessa coerenza grafica del resto dell'app.
+
+% -------------------------------------------------------
+
+\subsection*{Profilo operatore}
+
+\schermata{22}{Profilo operatore}{22-profilo-operatore}
+
+La Figura 22 mostra la pagina ``Il tuo profilo'' dell'operatore comunale, incentrata sulla gestione delle credenziali. Di seguito una descrizione in relazione ai requisiti funzionali e non funzionali.
+
+\begin{itemize}
+    \item \textbf{RF1: Gestione accessi}: la pagina riporta lo username dell'operatore e un \textit{badge} che ne distingue il ruolo (``Operatore'' oppure ``Root''), coerentemente con l'accesso a credenziali interne previsto per il personale comunale.
+    \item \textbf{RNF7: Autenticazione sicura}: il modulo di cambio password richiede la password attuale, la nuova e la sua conferma, con verifica lato server della vecchia password e vincolo di lunghezza minima (almeno 8 caratteri), rafforzando la sicurezza dell'account.
+    \item \textbf{RNF8: Gestione sicura delle sessioni}: anche l'operatore pu\`o effettuare il logout esplicito, evitando che una postazione comunale lasciata aperta resti utilizzabile da terzi.
+    \item \textbf{RNF14: Gestione degli errori}: la validazione del form comunica in modo chiaro eventuali problemi (``Le password non coincidono'', requisito di lunghezza minima) prima dell'invio, senza esporre dettagli tecnici.
+    \item \textbf{RNF2: Accessibilit\`a}: i campi password dispongono di un controllo per mostrare/nascondere il testo con etichetta accessibile, agevolando l'inserimento corretto delle credenziali.
+\end{itemize}
+
+La schermata concentra in un unico punto la gestione dell'identit\`a operativa dell'operatore, con particolare attenzione alla sicurezza delle credenziali.
 
 \bibliographystyle{alpha}
 \bibliography{sample}

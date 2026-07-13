@@ -24,8 +24,8 @@ export const getVotazioni = async (req, res) => {
             });
         }
 
-        const pageNum = Math.max(1, parseInt(page));
-        const limitNum = Math.min(100, Math.max(1, parseInt(limit)));
+        const pageNum = Math.max(1, parseInt(page) || 1);
+        const limitNum = Math.min(100, Math.max(1, parseInt(limit) || 10));
         const skip = (pageNum - 1) * limitNum;
 
         const filtro = { creatoDa: userFromMiddleware._id, tipo: 'votazione' };
@@ -59,7 +59,7 @@ export const getVotazioni = async (req, res) => {
 };
 
 //GET: Ritorna le votazioni attive e concluse visibili ai cittadini
- export const getVotazioniAvailable = async (req, res) => {
+export const getVotazioniAvailable = async (req, res) => {
     try {
         const userFromMiddleware = req.user;
 
@@ -69,16 +69,17 @@ export const getVotazioni = async (req, res) => {
             });
         }
 
-        const votazioni = await Consultazione.find({
-            stato: { $in: ["attivo", "concluso"] },
-            tipo: 'votazione'
-        }).sort({ data_inizio: -1 });
+        const { page, limit } = req.query;
+        const pageNum = Math.max(1, parseInt(page) || 1);
+        const limitNum = Math.min(100, Math.max(1, parseInt(limit) || 10));
+        const skip = (pageNum - 1) * limitNum;
 
-        if(!votazioni){
-            return res.status(200).json({
-                message : 'Nessuna votazione disponibile al momento'
-            });
-        }
+        const filtro = { stato: { $in: ['attivo', 'concluso'] }, tipo: 'votazione' };
+
+        const [votazioni, totale] = await Promise.all([
+            Consultazione.find(filtro).sort({ data_inizio: -1 }).skip(skip).limit(limitNum),
+            Consultazione.countDocuments(filtro)
+        ]);
 
         const risposte = await RispostaConsultazione.find({
             ID_cittadino: userFromMiddleware._id,
@@ -93,7 +94,13 @@ export const getVotazioni = async (req, res) => {
 
         return res.status(200).json({
             message: 'Votazioni recuperate con successo.',
-            votazioni: votazioniWithVoted
+            votazioni: votazioniWithVoted,
+            paginazione: {
+                totale,
+                pagina: pageNum,
+                limite: limitNum,
+                pagine: Math.ceil(totale / limitNum)
+            }
         });
     } catch (error) {
         logger.error('Errore nel recupero delle votazioni:', error);
@@ -189,29 +196,35 @@ export const getRiepilogoSintetico = async (req, res) => {
         
         // 2. Pipeline di Aggregazione: Conversione esplicita e Conteggio
         const risultatiVoto = await RispostaConsultazione.aggregate([
-            { $match: { ID_consultazione: objectIdVotazione, tipo_consultazione: 'votazione' } }, 
-            
-            // FILTRO DI ROBUSTEZZA: Esclude ID nulli
-            { $match: { ID_opzione: { $ne: null, $exists: true } } }, 
-            
-            // 🚨 CONVERSIONE AGGREGATION: Proietta l'ID Opzione come Stringa
+            { $match: { ID_consultazione: objectIdVotazione, tipo_consultazione: 'votazione' } },
+
+            // Un documento risposta può contenere più opzioni (voto multiplo): le espande
+            { $unwind: "$ID_opzioni" },
+
+            // CONVERSIONE AGGREGATION: Proietta l'ID Opzione come Stringa
             {
                 $project: {
-                    ID_opzione_str: { $toString: "$ID_opzione" },
-                    _id: 0, // Rimuove l'ID originale del documento RispostaVotazione
+                    ID_opzione_str: { $toString: "$ID_opzioni" },
+                    _id: 0,
                 }
             },
-            
-            // Raggruppa i documenti (voti) per l'ID dell'opzione convertito
+
+            // Raggruppa per l'ID dell'opzione convertito
             {
                 $group: {
-                    _id: "$ID_opzione_str", // Ora il raggruppamento avviene sulla STRINGA
-                    conteggio: { $sum: 1 } 
+                    _id: "$ID_opzione_str",
+                    conteggio: { $sum: 1 }
                 }
             }
         ]);
-        
-        const totaleVoti = risultatiVoto.reduce((sum, result) => sum + result.conteggio, 0);
+
+        // Numero di votanti (documenti risposta): denominatore delle percentuali.
+        // Per la risposta singola coincide con la somma dei conteggi; per la multipla no,
+        // quindi le percentuali sono calcolate sui votanti e possono sommare oltre il 100%.
+        const totaleVoti = await RispostaConsultazione.countDocuments({
+            ID_consultazione: objectIdVotazione,
+            tipo_consultazione: 'votazione'
+        });
 
         // 4. Mappa, Unisce e Calcola le Percentuali
         const riepilogoFinale = domanda.opzioni.map(opzione => {
@@ -255,45 +268,53 @@ export const getRiepilogoSintetico = async (req, res) => {
 
 export const getRiepilogoDemografico = async (req, res) => {
     const votazioneId = req.params.id;
-
+    const t0 = Date.now();
+ 
     try {
         const objectIdVotazione = new mongoose.Types.ObjectId(votazioneId);
-
+ 
         const votazione = await Consultazione.findOne({
             _id: objectIdVotazione,
             tipo: 'votazione'
         }).populate('ID_domanda');
-
+        logger.debug({ ms: Date.now() - t0, votazioneId }, 'riepilogoDemografico: findOne+populate');
+ 
         if (!votazione || !votazione.ID_domanda) {
             return res.status(404).json({ message: 'Votazione non trovata o domanda collegata mancante.' });
         }
-
+ 
         const domanda = votazione.ID_domanda;
         const opzioniMap = Object.fromEntries(
             domanda.opzioni.map(o => [o._id.toString(), o.testo])
         );
-
-        const baseMatch = { $match: { ID_consultazione: objectIdVotazione, tipo_consultazione: 'votazione', ID_opzione: { $ne: null, $exists: true } } };
-        const projectOpzioneStr = { $project: { ID_opzione_str: { $toString: '$ID_opzione' }, ID_cittadino: 1, createdAt: 1 } };
-        const lookupCittadino = {
+ 
+        const baseMatch = {
+            $match: { ID_consultazione: objectIdVotazione, tipo_consultazione: 'votazione' }
+        };
+        const unwindOpzioni    = { $unwind: '$ID_opzioni' };
+        const projectOpzioneStr = { $project: { ID_opzione_str: { $toString: '$ID_opzioni' }, ID_cittadino: 1, createdAt: 1 } };
+        const lookupCittadino  = {
             $lookup: { from: 'cittadinos', localField: 'ID_cittadino', foreignField: '_id', as: 'cittadino' }
         };
-        const unwindCittadino = { $unwind: { path: '$cittadino', preserveNullAndEmptyArrays: false } };
-
-        const [perGenere, perFasciaEta, partecipazioneGiornaliera] = await Promise.all([
+        const unwindCittadino  = { $unwind: { path: '$cittadino', preserveNullAndEmptyArrays: false } };
+ 
+        const [perGenere, perFasciaEta, perCategoria, partecipazioneGiornaliera] = await Promise.all([
+ 
             // A) Per genere
             RispostaConsultazione.aggregate([
                 baseMatch,
+                unwindOpzioni,
                 projectOpzioneStr,
                 lookupCittadino,
                 unwindCittadino,
                 { $group: { _id: { genere: '$cittadino.genere', opzione: '$ID_opzione_str' }, voti: { $sum: 1 } } },
                 { $project: { _id: 0, genere: '$_id.genere', opzioneId: '$_id.opzione', voti: 1 } }
             ]),
-
+ 
             // B) Per fascia d'età
             RispostaConsultazione.aggregate([
                 baseMatch,
+                unwindOpzioni,
                 projectOpzioneStr,
                 lookupCittadino,
                 unwindCittadino,
@@ -327,8 +348,19 @@ export const getRiepilogoDemografico = async (req, res) => {
                 { $group: { _id: { fascia: '$fascia', opzione: '$ID_opzione_str' }, voti: { $sum: 1 } } },
                 { $project: { _id: 0, fascia: '$_id.fascia', opzioneId: '$_id.opzione', voti: 1 } }
             ]),
-
-            // C) Partecipazione giornaliera
+ 
+            // C) Per categoria
+            RispostaConsultazione.aggregate([
+                baseMatch,
+                unwindOpzioni,
+                projectOpzioneStr,
+                lookupCittadino,
+                unwindCittadino,
+                { $group: { _id: { categoria: '$cittadino.categoria', opzione: '$ID_opzione_str' }, voti: { $sum: 1 } } },
+                { $project: { _id: 0, categoria: '$_id.categoria', opzioneId: '$_id.opzione', voti: 1 } }
+            ]),
+ 
+            // D) Partecipazione giornaliera
             RispostaConsultazione.aggregate([
                 baseMatch,
                 {
@@ -341,7 +373,9 @@ export const getRiepilogoDemografico = async (req, res) => {
                 { $project: { _id: 0, data: '$_id', voti: 1 } }
             ])
         ]);
-
+ 
+        logger.info({ ms: Date.now() - t0, votazioneId }, 'riepilogoDemografico: completato');
+ 
         return res.status(200).json({
             message: 'Riepilogo demografico recuperato.',
             votazione: votazione.titolo,
@@ -351,9 +385,10 @@ export const getRiepilogoDemografico = async (req, res) => {
             opzioniMap,
             perGenere,
             perFasciaEta,
+            perCategoria,
             partecipazioneGiornaliera
         });
-
+ 
     } catch (error) {
         if (error.name === 'BSONTypeError' || error.name === 'CastError') {
             return res.status(400).json({ message: 'ID Votazione non valido.' });

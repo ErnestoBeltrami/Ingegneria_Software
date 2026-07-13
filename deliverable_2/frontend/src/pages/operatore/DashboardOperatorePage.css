@@ -435,6 +435,10 @@
   padding: 16px;
   margin: 0;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  max-height: 240px;
+  overflow-y: auto;
 }
 
 [data-theme="light"] .modal-descrizione {
@@ -551,4 +555,13 @@
   font-size: 13px;
   color: #f87171;
   font-weight: 500;
+}
+
+/* Tema chiaro */
+[data-theme="light"] .activity-status--error {
+  color: #dc2626;
+}
+
+[data-theme="light"] .modal-error {
+  color: #dc2626;
 }

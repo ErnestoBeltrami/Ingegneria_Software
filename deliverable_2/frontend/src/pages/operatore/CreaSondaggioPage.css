@@ -37,26 +37,6 @@
   border-bottom: 1px solid var(--border);
 }
 
-.crea-header__back {
-  width: 36px;
-  height: 36px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: background 0.15s ease, border-color 0.15s ease;
-  color: var(--text-secondary);
-}
-
-.crea-header__back:hover {
-  background: var(--surface-hover);
-  border-color: var(--border-strong);
-}
-
 .crea-header__title {
   font-family: 'Playfair Display', serif;
   font-size: 24px;
@@ -225,6 +205,16 @@
 
 .toggle-switch--on::after {
   transform: translateX(20px);
+}
+
+.crea-domanda__tipo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 14px;
+  margin-top: 2px;
+  border-top: 1px solid var(--border);
 }
 
 /* =====================
@@ -457,4 +447,29 @@
 .crea-add-domanda:disabled {
   opacity: 0.35;
   cursor: not-allowed;
+}
+
+/* Tema chiaro */
+[data-theme="light"] .crea-error {
+  color: #dc2626;
+}
+
+[data-theme="light"] .crea-btn--annulla {
+  color: #dc2626;
+}
+
+[data-theme="light"] .crea-domanda__remove:hover {
+  color: #dc2626;
+}
+
+[data-theme="light"] .crea-opzione__delete:hover {
+  color: #dc2626;
+}
+
+[data-theme="light"] .crea-add-opzione {
+  color: #007a52;
+}
+
+[data-theme="light"] .crea-add-domanda:hover:not(:disabled) {
+  color: #007a52;
 }

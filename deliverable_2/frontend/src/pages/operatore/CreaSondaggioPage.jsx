@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const MAX_DOMANDE = 8;
-import { ArrowLeft, Save, Plus, X } from 'lucide-react';
+import { Save, Plus } from 'lucide-react';
 import TopBar from '@/components/TopBar';
+import BackButton from '@/components/BackButton';
+import DomandaCard from '@/components/DomandaCard';
 import './CreaSondaggioPage.css';
 
 function buildIso(dateString) {
@@ -26,15 +28,14 @@ export default function CreaSondaggioPage() {
   const [descrizione, setDescrizione] = useState('');
   const [dataApertura, setDataApertura] = useState('');
   const [dataChiusura, setDataChiusura] = useState('');
-  const [risposteMultiple, setRisposteMultiple] = useState(false);
-  const [domande, setDomande] = useState([{ titolo: '', opzioni: ['', ''] }]);
+  const [domande, setDomande] = useState([{ titolo: '', tipo: 'risposta_singola', opzioni: ['', ''] }]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   /* ---- domande helpers ---- */
   const addDomanda = () => {
     if (domande.length >= MAX_DOMANDE) return;
-    setDomande((prev) => [...prev, { titolo: '', opzioni: ['', ''] }]);
+    setDomande((prev) => [...prev, { titolo: '', tipo: 'risposta_singola', opzioni: ['', ''] }]);
   };
 
   const removeDomanda = (i) => {
@@ -45,6 +46,15 @@ export default function CreaSondaggioPage() {
   const updateDomandaTitolo = (i, val) =>
     setDomande((prev) =>
       prev.map((d, idx) => (idx === i ? { ...d, titolo: val } : d))
+    );
+
+  const updateDomandaTipo = (i) =>
+    setDomande((prev) =>
+      prev.map((d, idx) =>
+        idx === i
+          ? { ...d, tipo: d.tipo === 'risposta_multipla' ? 'risposta_singola' : 'risposta_multipla' }
+          : d
+      )
     );
 
   const addOpzione = (i) =>
@@ -93,7 +103,6 @@ export default function CreaSondaggioPage() {
         return setError(`La domanda ${i + 1} deve avere almeno 2 opzioni compilate.`);
     }
 
-    const tipo = risposteMultiple ? 'risposta_multipla' : 'risposta_singola';
     const body = {
       tipo: 'sondaggio',
       titolo: titolo.trim(),
@@ -103,7 +112,7 @@ export default function CreaSondaggioPage() {
       data_discussione: buildDiscussione(dataApertura),
       domande: domande.map((d) => ({
         titolo: d.titolo.trim(),
-        tipo,
+        tipo: d.tipo,
         opzioni: d.opzioni
           .filter((o) => o.trim() !== '')
           .map((o) => ({ testo: o.trim() })),
@@ -138,14 +147,7 @@ export default function CreaSondaggioPage() {
       <div className="crea-page">
         {/* Header */}
         <header className="crea-header">
-          <button
-            type="button"
-            className="crea-header__back"
-            onClick={() => navigate('/dashboard')}
-            aria-label="Torna alla dashboard"
-          >
-            <ArrowLeft size={16} color="#4a5565" />
-          </button>
+          <BackButton variant="icon" label="Torna alla dashboard" to="/dashboard" />
           <div>
             <h1 className="crea-header__title">Crea un nuovo sondaggio</h1>
             <p className="crea-header__subtitle">Compila i campi per creare il sondaggio</p>
@@ -206,23 +208,6 @@ export default function CreaSondaggioPage() {
               </div>
             </div>
 
-            {/* Card toggle risposte multiple */}
-            <div className="crea-card crea-card--toggle">
-              <div className="crea-toggle">
-                <div>
-                  <p className="crea-toggle__label">Risposte multiple</p>
-                  <p className="crea-toggle__desc">Gli utenti possono selezionare più opzioni</p>
-                </div>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={risposteMultiple}
-                  className={`toggle-switch ${risposteMultiple ? 'toggle-switch--on' : ''}`}
-                  onClick={() => setRisposteMultiple((v) => !v)}
-                />
-              </div>
-            </div>
-
             {/* Card azioni */}
             <div className="crea-card crea-card--actions">
               {error && <p className="crea-error" role="alert">{error}</p>}
@@ -250,66 +235,18 @@ export default function CreaSondaggioPage() {
           {/* ===== Colonna destra ===== */}
           <div className="crea-main">
             {domande.map((domanda, i) => (
-              <div key={i} className="crea-card crea-domanda">
-                <div className="crea-domanda__header">
-                  <span className="crea-domanda__num">Domanda {i + 1}</span>
-                  {domande.length > 1 && (
-                    <button
-                      type="button"
-                      className="crea-domanda__remove"
-                      onClick={() => removeDomanda(i)}
-                      aria-label={`Rimuovi domanda ${i + 1}`}
-                    >
-                      <X size={14} />
-                    </button>
-                  )}
-                </div>
-
-                <div className="crea-field">
-                  <label className="crea-field__label">Testo della domanda</label>
-                  <input
-                    type="text"
-                    className="crea-field__input"
-                    placeholder="Inserisci la domanda"
-                    value={domanda.titolo}
-                    onChange={(e) => updateDomandaTitolo(i, e.target.value)}
-                  />
-                </div>
-
-                <div className="crea-opzioni">
-                  {domanda.opzioni.map((opzione, j) => (
-                    <div key={j} className="crea-opzione">
-                      <div className={`crea-opzione__indicator ${risposteMultiple ? 'crea-opzione__indicator--check' : ''}`} />
-                      <input
-                        type="text"
-                        className="crea-field__input crea-opzione__input"
-                        placeholder={`Opzione ${j + 1}`}
-                        value={opzione}
-                        onChange={(e) => updateOpzione(i, j, e.target.value)}
-                      />
-                      {domanda.opzioni.length > 2 && (
-                        <button
-                          type="button"
-                          className="crea-opzione__delete"
-                          onClick={() => removeOpzione(i, j)}
-                          aria-label={`Rimuovi opzione ${j + 1}`}
-                        >
-                          <X size={12} />
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                </div>
-
-                <button
-                  type="button"
-                  className="crea-add-opzione"
-                  onClick={() => addOpzione(i)}
-                >
-                  <Plus size={13} />
-                  Aggiungi un'altra opzione
-                </button>
-              </div>
+              <DomandaCard
+                key={i}
+                domanda={domanda}
+                index={i}
+                totaleDomande={domande.length}
+                onTitoloChange={updateDomandaTitolo}
+                onTipoChange={updateDomandaTipo}
+                onAddOpzione={addOpzione}
+                onUpdateOpzione={updateOpzione}
+                onRemoveOpzione={removeOpzione}
+                onRemoveDomanda={removeDomanda}
+              />
             ))}
 
             <button

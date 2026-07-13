@@ -12,10 +12,6 @@ const cittadinoSchema = new mongoose.Schema({
     dataNascita : {
         type : Date,
     },
-    comuneResidenza : {
-        type : String,
-        trim : true,
-    },
     circoscrizione : {
         type : String,
         trim : true,

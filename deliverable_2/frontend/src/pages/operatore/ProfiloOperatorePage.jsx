@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Eye, EyeOff, Shield } from 'lucide-react';
+import { Eye, EyeOff, Shield, LogOut } from 'lucide-react';
 import TopBar from '@/components/TopBar';
+import BackButton from '@/components/BackButton';
 import './ProfiloOperatorePage.css';
 
 function RoleBadge({ ruolo }) {
@@ -57,6 +58,13 @@ export default function ProfiloOperatorePage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const handleLogout = () => {
+    setLoggingOut(true);
+    localStorage.clear();
+    navigate('/', { replace: true });
+  };
 
   const reset = () => {
     setPasswordAttuale('');
@@ -103,9 +111,7 @@ export default function ProfiloOperatorePage() {
       <TopBar nome={nome} cognome={cognome} />
       <div className="po-shell">
 
-        <button type="button" className="po-back" onClick={() => navigate(-1)}>
-          <ArrowLeft size={14} /> Indietro
-        </button>
+        <BackButton variant="subtle" label="Indietro" to="/dashboard" />
 
         <header className="po-header">
           <h1>Il tuo profilo</h1>
@@ -196,6 +202,22 @@ export default function ProfiloOperatorePage() {
                 </button>
               </div>
             </form>
+
+            <section className="po-card">
+              <span className="po-section-label">Sessione</span>
+              <p className="po-logout-desc">
+                Esci dal tuo account per terminare la sessione su questo dispositivo.
+              </p>
+              <button
+                type="button"
+                className="po-btn-logout"
+                onClick={handleLogout}
+                disabled={loggingOut}
+              >
+                <LogOut size={15} />
+                {loggingOut ? 'Uscita…' : "Esci dall'account"}
+              </button>
+            </section>
 
           </div>
         </div>

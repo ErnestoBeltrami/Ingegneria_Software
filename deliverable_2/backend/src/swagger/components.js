@@ -105,12 +105,17 @@
  *     VoteVotazioneInput:
  *       type: object
  *       required:
- *         - opzioneId
  *         - votazioneId
  *       properties:
+ *         opzioniId:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: ID delle opzioni scelte. Per domande a risposta singola deve contenere un solo elemento; per la risposta multipla può contenerne più di uno.
+ *           example: ["507f1f77bcf86cd799439011", "507f1f77bcf86cd799439013"]
  *         opzioneId:
  *           type: string
- *           description: ID dell'opzione scelta
+ *           description: "(Deprecato) ID di una singola opzione. Mantenuto per retrocompatibilità; preferire opzioniId."
  *           example: "507f1f77bcf86cd799439011"
  *         votazioneId:
  *           type: string

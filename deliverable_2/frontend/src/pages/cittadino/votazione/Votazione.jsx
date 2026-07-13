@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Clock, CalendarDays } from 'lucide-react';
+import { useParams } from 'react-router-dom';
+import { Clock, CalendarDays } from 'lucide-react';
 import './Votazione.css';
 import { fetchVotazioneCittadino, submitVotazione, fetchProfile } from '../../../services/api';
 import TopBarCittadino from '../../../components/TopBarCittadino';
+import BackButton from '../../../components/BackButton';
 
 export default function Votazione() {
     const { id } = useParams();
-    const navigate = useNavigate();
     const [profilo, setProfilo] = useState(null);
     const [votazione, setVotazione] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedOptions, setSelectedOptions] = useState([]);
     const [hasVoted, setHasVoted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -46,10 +46,10 @@ export default function Votazione() {
     const cognome = profilo?.cognome || '';
 
     const handleVote = async () => {
-        if (!selectedOption || isSubmitting) return;
+        if (!selectedOptions.length || isSubmitting) return;
         setIsSubmitting(true);
         try {
-            await submitVotazione(votazione._id, selectedOption);
+            await submitVotazione(votazione._id, selectedOptions);
             setHasVoted(true);
         } catch (err) {
             alert(err.message || "Errore durante l'invio del voto.");
@@ -79,10 +79,7 @@ export default function Votazione() {
             <div className="cd-layout">
                 <TopBarCittadino nome={nome} cognome={cognome} />
                 <div className="cd-page">
-                    <button className="back-btn" onClick={() => navigate(-1)}>
-                        <ArrowLeft size={20} />
-                        <span>Torna indietro</span>
-                    </button>
+                    <BackButton to="/cittadino/dashboard" />
                     <div className="cd-status cd-status--error">
                         {error || 'Votazione non trovata.'}
                     </div>
@@ -93,15 +90,25 @@ export default function Votazione() {
 
     const domanda = votazione.ID_domanda;
     const isConclusa = votazione.stato === 'concluso';
+    const isMultipla = domanda.tipo === 'risposta_multipla';
+
+    const toggleOption = (opzioneId) => {
+        if (isMultipla) {
+            setSelectedOptions(prev =>
+                prev.includes(opzioneId)
+                    ? prev.filter(id => id !== opzioneId)
+                    : [...prev, opzioneId]
+            );
+        } else {
+            setSelectedOptions([opzioneId]);
+        }
+    };
 
     return (
         <div className="cd-layout">
-            {renderTopbar()}
+            <TopBarCittadino nome={nome} cognome={cognome} />
             <div className="cd-page">
-                <button className="back-btn" onClick={() => navigate(-1)}>
-                    <ArrowLeft size={20} />
-                    <span>Torna indietro</span>
-                </button>
+                <BackButton to="/cittadino/dashboard" />
 
                 <div className="votazione-header">
                     <div className="badge-container">
@@ -131,7 +138,9 @@ export default function Votazione() {
                     <div className="domanda-card">
                         <h2>Esprimi il tuo voto</h2>
                         <h3 className="domanda-testo">{domanda.titolo}</h3>
-                        <p className="domanda-hint">(Scegli una singola opzione)</p>
+                        <p className="domanda-hint">
+                            {isMultipla ? '(Puoi scegliere una o più opzioni)' : '(Scegli una singola opzione)'}
+                        </p>
 
                         {hasVoted ? (
                             <div className="success-banner">
@@ -148,27 +157,30 @@ export default function Votazione() {
                         ) : (
                             <>
                                 <div className="options-container">
-                                    {domanda.opzioni.map(opzione => (
-                                        <label
-                                            key={opzione._id}
-                                            className={`option-label ${selectedOption === opzione._id ? 'selected' : ''}`}
-                                        >
-                                            <input
-                                                type="radio"
-                                                name="votazione_radio"
-                                                value={opzione._id}
-                                                checked={selectedOption === opzione._id}
-                                                onChange={() => setSelectedOption(opzione._id)}
-                                            />
-                                            <span className="radio-custom"></span>
-                                            <span className="option-text">{opzione.testo}</span>
-                                        </label>
-                                    ))}
+                                    {domanda.opzioni.map(opzione => {
+                                        const selezionata = selectedOptions.includes(opzione._id);
+                                        return (
+                                            <label
+                                                key={opzione._id}
+                                                className={`option-label ${selezionata ? 'selected' : ''}`}
+                                            >
+                                                <input
+                                                    type={isMultipla ? 'checkbox' : 'radio'}
+                                                    name="votazione_opzioni"
+                                                    value={opzione._id}
+                                                    checked={selezionata}
+                                                    onChange={() => toggleOption(opzione._id)}
+                                                />
+                                                <span className={isMultipla ? 'checkbox-custom' : 'radio-custom'}></span>
+                                                <span className="option-text">{opzione.testo}</span>
+                                            </label>
+                                        );
+                                    })}
                                 </div>
                                 <div className="navigation-buttons">
                                     <button
                                         className="nav-btn nav-btn-primary"
-                                        disabled={!selectedOption || isSubmitting}
+                                        disabled={!selectedOptions.length || isSubmitting}
                                         onClick={handleVote}
                                     >
                                         {isSubmitting ? 'Invio in corso...' : 'Conferma il voto'}
