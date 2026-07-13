@@ -312,15 +312,19 @@ crea automaticamente un account operatore \code{isRoot} con credenziali iniziali
 
 Il codice del backend è corredato di una test-suite che ne verifica il corretto
 funzionamento. I test unitari sono implementati con \textbf{Jest} (in modalità ESM) e sono
-organizzati nella cartella \code{backend/tests/unit/}, con un file per ciascun controller
-principale. Complessivamente sono definiti \textbf{44 casi di test} così distribuiti:
+organizzati nella cartella \code{backend/tests/unit/}, con un file per ciascun controller o
+modulo principale. Complessivamente sono definiti \textbf{114 casi di test} così distribuiti:
 
 \begin{itemize}
-	\item \code{consultazione.controller.test.js} --- 18 test;
-	\item \code{sondaggio.controller.test.js} --- 11 test;
-	\item \code{votazione.controller.test.js} --- 8 test;
+	\item \code{categoria.controller.test.js} --- 16 test;
+	\item \code{cittadino.test.js} --- 27 test;
+	\item \code{consultazione.controller.test.js} --- 10 test;
 	\item \code{iniziativa.controller.test.js} --- 4 test;
-	\item \code{seedRoot.test.js} --- 3 test.
+	\item \code{notifica.controller.test.js} --- 9 test;
+	\item \code{operatore.controller.test.js} --- 24 test;
+	\item \code{seedRoot.test.js} --- 3 test;
+	\item \code{sondaggio.controller.test.js} --- 13 test;
+	\item \code{votazione.controller.test.js} --- 8 test.
 \end{itemize}
 
 L'esecuzione avviene tramite \code{npm test} (oppure \code{npm run test:coverage} per il

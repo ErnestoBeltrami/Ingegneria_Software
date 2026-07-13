@@ -2,6 +2,15 @@ import { jest } from '@jest/globals';
 
 // ── Mocks ────────────────────────────────────────────────────────────────────
 
+jest.unstable_mockModule('../../src/config/logger.js', () => ({
+  default: {
+    error: jest.fn(),
+    warn: jest.fn(),
+    info: jest.fn(),
+    debug: jest.fn(),
+  },
+}));
+
 const mockPopulate = jest.fn();
 const mockSort = jest.fn();
 const mockConsultazioneFind = jest.fn();
@@ -63,9 +72,7 @@ describe('sondaggio controller – getSondaggiAvaiable', () => {
   it('restituisce 401 se manca req.user', async () => {
     const req = { user: null };
     const res = makeRes();
-
     await getSondaggiAvaiable(req, res);
-
     expect(res.status).toHaveBeenCalledWith(401);
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({ message: expect.any(String) })
@@ -128,10 +135,10 @@ describe('sondaggio controller – getSondaggiAvaiable', () => {
       populate: jest.fn().mockReturnValue({
         sort: jest.fn().mockReturnValue({
           skip: jest.fn().mockReturnValue({
-            limit: jest.fn().mockRejectedValueOnce(new Error('DB Error'))
-          })
-        })
-      })
+            limit: jest.fn().mockRejectedValueOnce(new Error('DB Error')),
+          }),
+        }),
+      }),
     });
     mockSondaggioCountDocuments.mockResolvedValueOnce(0);
 
@@ -164,6 +171,8 @@ describe('sondaggio controller – getSondaggiAvaiable', () => {
   });
 });
 
+// ── getRiepilogoSintetico ─────────────────────────────────────────────────────
+
 describe('sondaggio controller – getRiepilogoSintetico', () => {
   let getRiepilogoSintetico;
 
@@ -195,7 +204,7 @@ describe('sondaggio controller – getRiepilogoSintetico', () => {
 
   beforeEach(() => jest.clearAllMocks());
 
-  it('restituisce 400 se l\'ID non è valido', async () => {
+  it("restituisce 400 se l'ID non è valido", async () => {
     const req = { params: { id: 'id-non-valido' }, user: { _id: CITTADINO_ID } };
     const res = makeRes();
     await getRiepilogoSintetico(req, res);
@@ -214,7 +223,13 @@ describe('sondaggio controller – getRiepilogoSintetico', () => {
     mockConsultazioneFindOne.mockReturnValue({ populate: jest.fn().mockResolvedValue(fakeSondaggio) });
     mockRispostaAggregate
       .mockResolvedValueOnce([{ totale: 3 }])
-      .mockResolvedValueOnce([{ _id: { domanda: { toString: () => DOMANDA_ID }, opzione: { toString: () => OPZIONE_ID, equals: (id) => id.toString() === OPZIONE_ID } }, voti: 3 }]);
+      .mockResolvedValueOnce([{
+        _id: {
+          domanda: { toString: () => DOMANDA_ID },
+          opzione: { toString: () => OPZIONE_ID, equals: (id) => id.toString() === OPZIONE_ID },
+        },
+        voti: 3,
+      }]);
 
     const req = { params: { id: SONDAGGIO_ID }, user: { _id: CITTADINO_ID } };
     const res = makeRes();
@@ -240,6 +255,11 @@ describe('sondaggio controller – getRiepilogoSintetico', () => {
   });
 });
 
+// ── getRiepilogoConFiltri ─────────────────────────────────────────────────────
+// FIX: il controller ora fa 4 aggregate in Promise.all (perGenere, perFasciaEta,
+// perCategoria, partecipazioneGiornaliera) e la risposta non ha più
+// riepilogoPerDomanda ma domandeMap + le 4 aggregazioni demografiche.
+
 describe('sondaggio controller – getRiepilogoConFiltri', () => {
   let getRiepilogoConFiltri;
 
@@ -253,11 +273,20 @@ describe('sondaggio controller – getRiepilogoConFiltri', () => {
   };
 
   const fakeSondaggio = {
-    _id: SONDAGGIO_ID,
-    titolo: 'Sondaggio Filtrato',
+    _id: { toString: () => SONDAGGIO_ID },
+    titolo: 'Sondaggio Demografico',
     tipo: 'sondaggio',
+    stato: 'concluso',
+    data_inizio: new Date('2024-01-01'),
+    data_fine: new Date('2024-01-31'),
     ID_domande: [fakeDomanda],
   };
+
+  // Dati di ritorno fittizi per le 4 aggregate
+  const fakePerGenere            = [{ genere: 'M', domandaId: DOMANDA_ID, opzioneId: OPZIONE_ID, voti: 2 }];
+  const fakePerFasciaEta         = [{ fascia: '18-25', domandaId: DOMANDA_ID, opzioneId: OPZIONE_ID, voti: 1 }];
+  const fakePerCategoria         = [{ categoria: 'Studente', domandaId: DOMANDA_ID, opzioneId: OPZIONE_ID, voti: 1 }];
+  const fakePartecipazioneGiorn  = [{ data: '2024-01-10', voti: 3 }];
 
   beforeAll(async () => {
     const mod = await import('../../src/controllers/sondaggio.controller.js');
@@ -271,39 +300,51 @@ describe('sondaggio controller – getRiepilogoConFiltri', () => {
 
   beforeEach(() => jest.clearAllMocks());
 
-  it('restituisce 200 senza filtri e chiama aggregate esattamente 2 volte', async () => {
-    mockConsultazioneFindOne.mockReturnValue({ populate: jest.fn().mockResolvedValue(fakeSondaggio) });
-    mockRispostaAggregate
-      .mockResolvedValueOnce([{ totale: 2 }])
-      .mockResolvedValueOnce([{ _id: { domanda: { toString: () => DOMANDA_ID }, opzione: { toString: () => OPZIONE_ID, equals: (id) => id.toString() === OPZIONE_ID } }, voti: 2 }]);
-
-    const req = { params: { id: SONDAGGIO_ID }, body: {}, user: { _id: '507f1f77bcf86cd799439099' } };
+  it("restituisce 400 se l'ID non è valido", async () => {
+    const req = { params: { id: 'id-non-valido' }, user: { _id: CITTADINO_ID } };
     const res = makeRes();
     await getRiepilogoConFiltri(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(mockRispostaAggregate).toHaveBeenCalledTimes(2);
-
-    const body = res.json.mock.calls[0][0];
-    expect(body.totaleVotiUnici).toBe(2);
-    expect(body.riepilogoPerDomanda).toHaveLength(1);
+    expect(res.status).toHaveBeenCalledWith(400);
   });
 
-  it('restituisce 200 con filtri demografici presenti', async () => {
+  it('restituisce 404 se il sondaggio non esiste', async () => {
+    mockConsultazioneFindOne.mockReturnValue({ populate: jest.fn().mockResolvedValue(null) });
+    const req = { params: { id: SONDAGGIO_ID }, user: { _id: CITTADINO_ID } };
+    const res = makeRes();
+    await getRiepilogoConFiltri(req, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it('restituisce 200 e chiama aggregate esattamente 4 volte', async () => {
     mockConsultazioneFindOne.mockReturnValue({ populate: jest.fn().mockResolvedValue(fakeSondaggio) });
     mockRispostaAggregate
-      .mockResolvedValueOnce([{ totale: 1 }])
-      .mockResolvedValueOnce([{ _id: { domanda: { toString: () => DOMANDA_ID }, opzione: { toString: () => OPZIONE_ID, equals: (id) => id.toString() === OPZIONE_ID } }, voti: 1 }]);
+      .mockResolvedValueOnce(fakePerGenere)
+      .mockResolvedValueOnce(fakePerFasciaEta)
+      .mockResolvedValueOnce(fakePerCategoria)
+      .mockResolvedValueOnce(fakePartecipazioneGiorn);
 
-    const req = {
-      params: { id: SONDAGGIO_ID },
-      body: { filters: { genere: 'M', age: [18, 30] } },
-      user: { _id: '507f1f77bcf86cd799439099' },
-    };
+    const req = { params: { id: SONDAGGIO_ID }, user: { _id: CITTADINO_ID } };
     const res = makeRes();
     await getRiepilogoConFiltri(req, res);
 
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(mockRispostaAggregate).toHaveBeenCalledTimes(2);
+    expect(mockRispostaAggregate).toHaveBeenCalledTimes(4);
+
+    const body = res.json.mock.calls[0][0];
+    expect(body).toHaveProperty('perGenere');
+    expect(body).toHaveProperty('perFasciaEta');
+    expect(body).toHaveProperty('perCategoria');
+    expect(body).toHaveProperty('partecipazioneGiornaliera');
+    expect(body).toHaveProperty('domandeMap');
+    expect(body.perGenere).toEqual(fakePerGenere);
+    expect(body.partecipazioneGiornaliera).toEqual(fakePartecipazioneGiorn);
+  });
+
+  it('restituisce 500 in caso di errore del database', async () => {
+    mockConsultazioneFindOne.mockReturnValue({ populate: jest.fn().mockRejectedValue(new Error('DB error')) });
+    const req = { params: { id: SONDAGGIO_ID }, user: { _id: CITTADINO_ID } };
+    const res = makeRes();
+    await getRiepilogoConFiltri(req, res);
+    expect(res.status).toHaveBeenCalledWith(500);
   });
 });
