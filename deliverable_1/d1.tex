@@ -26,6 +26,7 @@
 \end{abstract}
 
 \setcounter{tocdepth}{2}  % includi section e subsection
+\setcounter{secnumdepth}{3}  % numera anche i subsubsection (Criteri/Tasks)
 \tableofcontents
 \newpage
 
@@ -557,14 +558,15 @@ L’utente può applicare filtri demografici o tematici per analizzare i dati ag
 
 \section{User Stories}
 
-\subsection{User Story 1a: Accesso Cittadino (UC RF1 -- Flusso A)}
-\textbf{Titolo}: Accesso tramite Google OAuth
+\subsection{User Story 1a -- Associata allo Use Case RF1: Accesso Cittadino}
 
-\textbf{Come} cittadino,
-\textbf{voglio} accedere alla piattaforma usando il mio account Google,
+\textbf{Accesso alla piattaforma tramite autenticazione Google}
+
+\textbf{Come} cittadino,\\
+\textbf{voglio} accedere alla piattaforma usando il mio account Google,\\
 \textbf{in modo da} autenticarmi senza dover creare credenziali separate.
 
-\textbf{Criteri di accettazione}:
+\subsubsection{Criteri di accettazione}
 \begin{itemize}
     \item Il cittadino vede il pulsante ``Accedi con Google'' nella schermata di login.
     \item Dopo l'autenticazione Google, il sistema reindirizza alla dashboard cittadino.
@@ -572,50 +574,99 @@ L’utente può applicare filtri demografici o tematici per analizzare i dati ag
     \item In caso di errore (es. accesso Google negato), viene mostrato un messaggio informativo.
 \end{itemize}
 
-\textbf{Tasks}:
+\subsubsection{Tasks -- User Story 1a}
 \begin{enumerate}
-    \item Integrare il pulsante Google OAuth nella pagina di login.
-    \item Implementare il flusso \texttt{GET /auth/google} e \texttt{GET /auth/google/callback}.
-    \item Gestire il redirect alla schermata di completamento profilo (\texttt{POST /auth/complete-profile}) al primo accesso.
-    \item Gestire il routing verso la dashboard cittadino dopo il login.
-    \item Testare il flusso completo incluso il caso di primo accesso.
+    \item \textbf{Integrare l'autenticazione Google nella pagina di login}
+    \begin{itemize}
+        \item Integrare il pulsante ``Accedi con Google'' nella UI di login.
+        \item Garantire chiarezza visiva e corretta disposizione degli elementi.
+    \end{itemize}
+
+    \item \textbf{Implementare il flusso di autenticazione OAuth}
+    \begin{itemize}
+        \item Implementare gli endpoint \texttt{GET /auth/google} e \texttt{GET /auth/google/callback}.
+        \item Gestire la richiesta di autenticazione verso il provider Google.
+    \end{itemize}
+
+    \item \textbf{Gestire il completamento del profilo al primo accesso}
+    \begin{itemize}
+        \item Reindirizzare a \texttt{POST /auth/complete-profile} se il profilo non è completo.
+        \item Emettere il JWT solo dopo il completamento del profilo.
+    \end{itemize}
+
+    \item \textbf{Gestire il reindirizzamento post-login}
+    \begin{itemize}
+        \item Identificare il ruolo dell'utente autenticato.
+        \item Reindirizzare automaticamente alla dashboard cittadino.
+    \end{itemize}
+
+    \item \textbf{Testare il flusso di accesso}
+    \begin{itemize}
+        \item Verificare il login con profilo già completo.
+        \item Testare il caso di primo accesso con completamento profilo.
+        \item Controllare la corretta gestione degli errori Google.
+    \end{itemize}
 \end{enumerate}
 
 % -------------------------------------------------------------
 
-\subsection{User Story 1b: Accesso Operatore (UC RF1 -- Flusso B)}
-\textbf{Titolo}: Accesso tramite username e password
+\subsection{User Story 1b -- Associata allo Use Case RF1: Accesso Operatore}
 
-\textbf{Come} operatore comunale,
-\textbf{voglio} accedere alla dashboard amministrativa inserendo username e password,
+\textbf{Accesso alla dashboard amministrativa tramite credenziali locali}
+
+\textbf{Come} operatore comunale,\\
+\textbf{voglio} accedere alla dashboard amministrativa inserendo username e password,\\
 \textbf{in modo da} gestire votazioni, sondaggi e contenuti della piattaforma.
 
-\textbf{Criteri di accettazione}:
+\subsubsection{Criteri di accettazione}
 \begin{itemize}
     \item L'operatore vede un form con campi username e password.
     \item In caso di credenziali corrette, il sistema emette un JWT e reindirizza alla dashboard operatore.
     \item In caso di credenziali errate, viene mostrato un messaggio di errore specifico.
 \end{itemize}
 
-\textbf{Tasks}:
+\subsubsection{Tasks -- User Story 1b}
 \begin{enumerate}
-    \item Implementare il form di login operatore nella UI.
-    \item Implementare l'endpoint \texttt{POST /operatore/login} con verifica bcrypt.
-    \item Gestire il routing verso la dashboard operatore dopo il login.
-    \item Implementare messaggi di errore per credenziali errate.
-    \item Testare login valido e scenari di errore.
+    \item \textbf{Implementare il form di login operatore}
+    \begin{itemize}
+        \item Creare il form con i campi username e password nella UI.
+        \item Garantire chiarezza visiva e corretta disposizione degli elementi.
+    \end{itemize}
+
+    \item \textbf{Implementare l'autenticazione con credenziali locali}
+    \begin{itemize}
+        \item Implementare l'endpoint \texttt{POST /operatore/login} con verifica bcrypt.
+        \item Emettere un JWT in caso di credenziali valide.
+    \end{itemize}
+
+    \item \textbf{Gestire il reindirizzamento post-login}
+    \begin{itemize}
+        \item Reindirizzare l'operatore alla dashboard amministrativa dopo il login.
+    \end{itemize}
+
+    \item \textbf{Implementare la gestione degli errori}
+    \begin{itemize}
+        \item Mostrare messaggi di errore specifici per credenziali errate.
+    \end{itemize}
+
+    \item \textbf{Testare l'accesso operatore}
+    \begin{itemize}
+        \item Verificare il login con credenziali valide.
+        \item Testare gli scenari di errore.
+    \end{itemize}
 \end{enumerate}
 
 % -------------------------------------------------------------
 
-\subsection{User Story 2: Ricerca (UC RF4)}
-\textbf{Titolo}: Ricerca iniziative tramite parole chiave
+\subsection{User Story 2 -- Associata allo Use Case RF4: Ricerca delle iniziative}
 
-\textbf{Come} cittadino,  
-\textbf{voglio} cercare iniziative tramite parole chiave,  
+\textbf{Ricerca delle iniziative tramite parole chiave}
+
+\textbf{Come} cittadino,\\
+\textbf{voglio} cercare iniziative tramite parole chiave,\\
 \textbf{in modo da} trovare rapidamente contenuti di mio interesse.
 
-\textbf{Criteri di accettazione}:
+\subsubsection{Criteri di accettazione}
 \begin{itemize}
     \item L’utente può inserire una o più parole chiave.
     \item Il sistema mostra i risultati ordinati per pertinenza.
@@ -623,209 +674,370 @@ L’utente può applicare filtri demografici o tematici per analizzare i dati ag
     \item Se non ci sono risultati, viene mostrato un messaggio dedicato.
 \end{itemize}
 
-\textbf{Tasks}:
+\subsubsection{Tasks -- User Story 2}
 \begin{enumerate}
-    \item Implementare la barra di ricerca nella dashboard.
-    \item Sviluppare la logica di ricerca nel backend.
-    \item Visualizzare i risultati con i metadati richiesti.
-    \item Gestire la mancanza di risultati.
-    \item Testare la ricerca su keyword differenti.
+    \item \textbf{Implementare la barra di ricerca nella UI}
+    \begin{itemize}
+        \item Integrare il campo di ricerca nella dashboard.
+        \item Consentire l'inserimento di una o più parole chiave.
+    \end{itemize}
+
+    \item \textbf{Sviluppare la logica di ricerca nel backend}
+    \begin{itemize}
+        \item Implementare la ricerca sui contenuti delle iniziative.
+        \item Ordinare i risultati per pertinenza.
+    \end{itemize}
+
+    \item \textbf{Visualizzare i risultati con i metadati richiesti}
+    \begin{itemize}
+        \item Mostrare titolo, autore, categoria e data per ogni risultato.
+    \end{itemize}
+
+    \item \textbf{Gestire il caso di assenza di risultati}
+    \begin{itemize}
+        \item Mostrare un messaggio dedicato quando la ricerca non produce risultati.
+    \end{itemize}
+
+    \item \textbf{Testare la funzionalità di ricerca}
+    \begin{itemize}
+        \item Verificare la correttezza dei risultati su keyword differenti.
+        \item Testare la gestione del caso senza risultati.
+    \end{itemize}
 \end{enumerate}
 
 % -------------------------------------------------------------
 
-\subsection{User Story 3: Ricerca (UC RF4)}
-\textbf{Titolo}: Applicazione filtri alla ricerca
+\subsection{User Story 3 -- Associata allo Use Case RF4: Filtri di ricerca}
 
-\textbf{Come} utente della piattaforma,
-\textbf{voglio} applicare filtri sulla ricerca (argomento, data, popolarità),  
+\textbf{Applicazione di filtri alla ricerca}
+
+\textbf{Come} utente della piattaforma,\\
+\textbf{voglio} applicare filtri sulla ricerca (argomento, data, popolarità),\\
 \textbf{in modo da} affinare i risultati.
 
-\textbf{Criteri di accettazione}:
+\subsubsection{Criteri di accettazione}
 \begin{itemize}
     \item L’utente può selezionare uno o più filtri.
     \item I risultati riflettono i filtri scelti.
     \item I filtri possono essere rimossi singolarmente.
 \end{itemize}
 
-\textbf{Tasks}:
+\subsubsection{Tasks -- User Story 3}
 \begin{enumerate}
-    \item Aggiungere un pannello filtri.
-    \item Implementare la logica di filtraggio nel backend.
-    \item Aggiornare dinamicamente la vista dei risultati.
-    \item Testare varie combinazioni di filtri.
+    \item \textbf{Realizzare il pannello dei filtri nella UI}
+    \begin{itemize}
+        \item Aggiungere un pannello con i criteri (argomento, data, popolarità).
+        \item Consentire la selezione multipla dei filtri.
+    \end{itemize}
+
+    \item \textbf{Implementare la logica di filtraggio nel backend}
+    \begin{itemize}
+        \item Filtrare i risultati in base ai criteri selezionati.
+    \end{itemize}
+
+    \item \textbf{Collegare dinamicamente filtri e risultati}
+    \begin{itemize}
+        \item Aggiornare la vista dei risultati al variare dei filtri.
+        \item Consentire la rimozione singola di ciascun filtro.
+    \end{itemize}
+
+    \item \textbf{Testare la funzionalità di filtraggio}
+    \begin{itemize}
+        \item Verificare varie combinazioni di filtri singoli e multipli.
+    \end{itemize}
 \end{enumerate}
 
 % -------------------------------------------------------------
 
-\subsection{User Story 4: Creazione Votazioni (UC RF5)}
-\textbf{Titolo}: Creare una nuova votazione
+\subsection{User Story 4 -- Associata allo Use Case RF5: Creazione di una votazione}
 
-\textbf{Come} operatore comunale,  
-\textbf{voglio} creare una nuova votazione compilando un form guidato,  
+\textbf{Creazione di una nuova votazione tramite form guidato}
+
+\textbf{Come} operatore comunale,\\
+\textbf{voglio} creare una nuova votazione compilando un form guidato,\\
 \textbf{in modo da} pubblicare contenuti strutturati e coerenti.
 
-\textbf{Criteri di accettazione}:
+\subsubsection{Criteri di accettazione}
 \begin{itemize}
     \item Il form richiede titolo, descrizione, opzioni e durata.
     \item Le date devono essere validate.
     \item Al salvataggio, lo stato iniziale è ``bozza’’.
 \end{itemize}
 
-\textbf{Tasks}:
+\subsubsection{Tasks -- User Story 4}
 \begin{enumerate}
-    \item Creare un form per i campi richiesti.
-    \item Implementare la validazione lato client e server.
-    \item Salvare la votazione nel database.
-    \item Testare vari scenari (campi mancanti, date non valide…).
+    \item \textbf{Implementare il form di creazione}
+    \begin{itemize}
+        \item Creare i campi per titolo, descrizione, opzioni e durata.
+    \end{itemize}
+
+    \item \textbf{Implementare la validazione dei dati}
+    \begin{itemize}
+        \item Validare i campi lato client e server.
+        \item Verificare la coerenza delle date.
+    \end{itemize}
+
+    \item \textbf{Registrare la votazione nel sistema}
+    \begin{itemize}
+        \item Salvare la votazione nel database.
+        \item Impostare lo stato iniziale a ``bozza’’.
+    \end{itemize}
+
+    \item \textbf{Testare la creazione della votazione}
+    \begin{itemize}
+        \item Testare vari scenari (campi mancanti, date non valide).
+    \end{itemize}
 \end{enumerate}
 
 % -------------------------------------------------------------
 
-\subsection{User Story 5: Gestione Votazioni (UC RF6)}
-\textbf{Titolo}: Pubblicare una votazione
+\subsection{User Story 5 -- Associata allo Use Case RF6: Pubblicazione di una votazione}
 
-\textbf{Come} operatore,  
-\textbf{voglio} pubblicare una votazione in bozza,  
+\textbf{Pubblicazione di una votazione in bozza}
+
+\textbf{Come} operatore,\\
+\textbf{voglio} pubblicare una votazione in bozza,\\
 \textbf{in modo da} renderla visibile ai cittadini.
 
-\textbf{Criteri di accettazione}:
+\subsubsection{Criteri di accettazione}
 \begin{itemize}
     \item La votazione può essere pubblicata solo se è in stato ``bozza’’.
     \item Il sistema chiede una conferma esplicita.
     \item Lo stato cambia in ``attiva’’.
 \end{itemize}
 
-\textbf{Tasks}:
+\subsubsection{Tasks -- User Story 5}
 \begin{enumerate}
-    \item Implementare il pulsante ``Pubblica’’.
-    \item Gestire la transizione dello stato.
-    \item Aggiornare la dashboard di utenti e operatori.
-    \item Testare la procedura.
+    \item \textbf{Implementare la funzione di pubblicazione}
+    \begin{itemize}
+        \item Implementare il pulsante ``Pubblica’’.
+        \item Rendere disponibile la funzione solo per votazioni in stato ``bozza’’.
+    \end{itemize}
+
+    \item \textbf{Gestire la transizione di stato}
+    \begin{itemize}
+        \item Richiedere una conferma esplicita.
+        \item Cambiare lo stato della votazione in ``attiva’’.
+    \end{itemize}
+
+    \item \textbf{Aggiornare le viste}
+    \begin{itemize}
+        \item Aggiornare la dashboard di cittadini e operatori.
+    \end{itemize}
+
+    \item \textbf{Testare la pubblicazione}
+    \begin{itemize}
+        \item Verificare la corretta procedura di pubblicazione.
+    \end{itemize}
 \end{enumerate}
 
 % -------------------------------------------------------------
 
-\subsection{User Story 6: Gestione Iniziative (UC RF10)}
-\textbf{Titolo}: Proporre una nuova iniziativa
+\subsection{User Story 6 -- Associata allo Use Case RF10: Proposta di un'iniziativa}
 
-\textbf{Come} cittadino,  
-\textbf{voglio} poter proporre una nuova iniziativa,  
+\textbf{Proposta di una nuova iniziativa da parte del cittadino}
+
+\textbf{Come} cittadino,\\
+\textbf{voglio} poter proporre una nuova iniziativa,\\
 \textbf{in modo da} condividere idee con la comunità.
 
-\textbf{Criteri di accettazione}:
+\subsubsection{Criteri di accettazione}
 \begin{itemize}
     \item Il form richiede titolo e descrizione.
     \item Il sistema associa automaticamente il nome utente.
     \item L’iniziativa appare subito in bacheca.
 \end{itemize}
 
-\textbf{Tasks}:
+\subsubsection{Tasks -- User Story 6}
 \begin{enumerate}
-    \item Creare il form per la proposta.
-    \item Validare i campi.
-    \item Salvare nel database e aggiornare la bacheca.
-    \item Testare i vari scenari.
+    \item \textbf{Implementare il form di proposta}
+    \begin{itemize}
+        \item Creare il form con i campi titolo e descrizione.
+    \end{itemize}
+
+    \item \textbf{Validare e associare i dati}
+    \begin{itemize}
+        \item Validare i campi obbligatori.
+        \item Associare automaticamente il nome utente all'iniziativa.
+    \end{itemize}
+
+    \item \textbf{Registrare e pubblicare l'iniziativa}
+    \begin{itemize}
+        \item Salvare l'iniziativa nel database.
+        \item Aggiornare la bacheca mostrando subito l'iniziativa.
+    \end{itemize}
+
+    \item \textbf{Testare la proposta di iniziativa}
+    \begin{itemize}
+        \item Testare i vari scenari, inclusi i casi di errore.
+    \end{itemize}
 \end{enumerate}
 
 % -------------------------------------------------------------
 
-\subsection{User Story 7: Votazione Iniziative (UC RF11)}
-\textbf{Titolo}: Votare un’iniziativa
+\subsection{User Story 7 -- Associata allo Use Case RF11: Votazione di un'iniziativa}
 
-\textbf{Come} cittadino,  
-\textbf{voglio} poter votare un’iniziativa una sola volta,  
+\textbf{Votazione di un'iniziativa da parte del cittadino}
+
+\textbf{Come} cittadino,\\
+\textbf{voglio} poter votare un’iniziativa una sola volta,\\
 \textbf{in modo da} contribuire alla sua visibilità.
 
-\textbf{Criteri di accettazione}:
+\subsubsection{Criteri di accettazione}
 \begin{itemize}
     \item L’utente può votare una singola iniziativa una sola volta.
     \item Il contatore viene incrementato.
     \item Il pulsante di voto viene disabilitato.
 \end{itemize}
 
-\textbf{Tasks}:
+\subsubsection{Tasks -- User Story 7}
 \begin{enumerate}
-    \item Implementare il pulsante di voto.
-    \item Implementare il controllo di voto duplicato.
-    \item Aggiornare il contatore in tempo reale.
-    \item Testare casi validi e duplicati.
+    \item \textbf{Implementare il pulsante di voto}
+    \begin{itemize}
+        \item Rendere disponibile il voto sull'iniziativa.
+    \end{itemize}
+
+    \item \textbf{Implementare il controllo di unicità del voto}
+    \begin{itemize}
+        \item Impedire il voto duplicato per la stessa iniziativa.
+        \item Disabilitare il pulsante di voto dopo l'invio.
+    \end{itemize}
+
+    \item \textbf{Aggiornare il contatore dei voti}
+    \begin{itemize}
+        \item Incrementare il contatore in tempo reale.
+    \end{itemize}
+
+    \item \textbf{Testare la votazione delle iniziative}
+    \begin{itemize}
+        \item Testare i casi validi e i tentativi di voto duplicato.
+    \end{itemize}
 \end{enumerate}
 
 % -------------------------------------------------------------
 
-\subsection{User Story 8: Votazioni (UC RF12)}
-\textbf{Titolo}: Inviare un voto anonimo
+\subsection{User Story 8 -- Associata allo Use Case RF12: Invio di un voto anonimo}
 
-\textbf{Come} cittadino,  
-\textbf{voglio} inviare il mio voto in forma anonima,  
+\textbf{Invio di un voto in forma anonima}
+
+\textbf{Come} cittadino,\\
+\textbf{voglio} inviare il mio voto in forma anonima,\\
 \textbf{in modo da} partecipare senza rivelare la mia identità.
 
-\textbf{Criteri di accettazione}:
+\subsubsection{Criteri di accettazione}
 \begin{itemize}
     \item Il sistema separa l’identità dal voto.
     \item Viene generato un hash di tracciabilità.
     \item L’utente non può votare una seconda volta.
 \end{itemize}
 
-\textbf{Tasks}:
+\subsubsection{Tasks -- User Story 8}
 \begin{enumerate}
-    \item Implementare la logica di anonimizzazione.
-    \item Registrare hash e voto in modo immutabile.
-    \item Bloccare ulteriori invii.
-    \item Testare la sicurezza del processo.
+    \item \textbf{Implementare la logica di anonimizzazione}
+    \begin{itemize}
+        \item Separare l'identità dell'utente dal voto.
+        \item Generare un hash di tracciabilità.
+    \end{itemize}
+
+    \item \textbf{Registrare il voto in modo immutabile}
+    \begin{itemize}
+        \item Salvare hash e voto in modo non modificabile.
+    \end{itemize}
+
+    \item \textbf{Impedire voti multipli}
+    \begin{itemize}
+        \item Bloccare ulteriori invii da parte dello stesso utente.
+    \end{itemize}
+
+    \item \textbf{Testare la sicurezza del processo}
+    \begin{itemize}
+        \item Verificare l'anonimato e l'immutabilità del voto.
+    \end{itemize}
 \end{enumerate}
 
 % -------------------------------------------------------------
 
-\subsection{User Story 9: Moderazione Contenuti (UC RF9)}
-\textbf{Titolo}: Moderare contenuti segnalati
+\subsection{User Story 9 -- Associata allo Use Case RF9: Moderazione dei contenuti}
 
-\textbf{Come} operatore comunale,  
-\textbf{voglio} visualizzare e moderare contenuti segnalati,  
+\textbf{Moderazione dei contenuti segnalati}
+
+\textbf{Come} operatore comunale,\\
+\textbf{voglio} visualizzare e moderare contenuti segnalati,\\
 \textbf{in modo da} mantenere la piattaforma sicura e rispettosa.
 
-\textbf{Criteri di accettazione}:
+\subsubsection{Criteri di accettazione}
 \begin{itemize}
     \item La dashboard mostra tutti i contenuti in revisione.
     \item L’operatore può approvare o eliminare contenuti.
     \item Le azioni richiedono conferma esplicita.
 \end{itemize}
 
-\textbf{Tasks}:
+\subsubsection{Tasks -- User Story 9}
 \begin{enumerate}
-    \item Mostrare elenco contenuti segnalati.
-    \item Implementare approvazione ed eliminazione.
-    \item Gestire conferme e messaggi.
-    \item Testare la moderazione.
+    \item \textbf{Implementare la visualizzazione dei contenuti segnalati}
+    \begin{itemize}
+        \item Mostrare l'elenco dei contenuti in revisione.
+    \end{itemize}
+
+    \item \textbf{Implementare le azioni di moderazione}
+    \begin{itemize}
+        \item Consentire l'approvazione e l'eliminazione dei contenuti.
+        \item Richiedere una conferma esplicita per ogni azione.
+    \end{itemize}
+
+    \item \textbf{Gestire il feedback all'operatore}
+    \begin{itemize}
+        \item Gestire conferme e messaggi di esito.
+    \end{itemize}
+
+    \item \textbf{Testare la moderazione}
+    \begin{itemize}
+        \item Verificare l'approvazione e l'eliminazione dei contenuti.
+    \end{itemize}
 \end{enumerate}
 
 % -------------------------------------------------------------
 
-\subsection{User Story 10: Dashboard attività attive (UC RF13)}
-\textbf{Titolo}: Visualizzare votazioni e sondaggi attivi
+\subsection{User Story 10 -- Associata allo Use Case RF13: Dashboard delle attività attive}
 
-\textbf{Come} cittadino,  
-\textbf{voglio} visualizzare tutte le votazioni e i sondaggi attivi,  
+\textbf{Visualizzazione delle votazioni e dei sondaggi attivi}
+
+\textbf{Come} cittadino,\\
+\textbf{voglio} visualizzare tutte le votazioni e i sondaggi attivi,\\
 \textbf{in modo da} sapere a quali attività posso partecipare.
 
-\textbf{Criteri di accettazione}:
+\subsubsection{Criteri di accettazione}
 \begin{itemize}
     \item Il sistema mostra solo elementi con stato ``attivo’’.
     \item I risultati sono divisi per tipologia (votazioni, sondaggi).
     \item Ogni elemento mostra titolo e periodo di validità.
+    \item In assenza di attività attive, viene mostrato un messaggio informativo.
 \end{itemize}
 
-\textbf{Tasks}:
+\subsubsection{Tasks -- User Story 10}
 \begin{enumerate}
-    \item Recuperare elementi attivi dal database.
-    \item Filtrarli per stato.
-    \item Visualizzarli ordinati per data di apertura.
-    \item Testare vari scenari inclusi casi vuoti.
+    \item \textbf{Recuperare le attività attive}
+    \begin{itemize}
+        \item Recuperare gli elementi dal database.
+        \item Filtrarli per stato ``attivo’’.
+    \end{itemize}
+
+    \item \textbf{Organizzare la visualizzazione}
+    \begin{itemize}
+        \item Dividere gli elementi per tipologia (votazioni, sondaggi).
+        \item Mostrare titolo e periodo di validità, ordinati per data di apertura.
+    \end{itemize}
+
+    \item \textbf{Gestire il caso di assenza di attività}
+    \begin{itemize}
+        \item Mostrare un messaggio informativo quando non ci sono attività attive.
+    \end{itemize}
+
+    \item \textbf{Testare la dashboard}
+    \begin{itemize}
+        \item Testare vari scenari, inclusi i casi vuoti.
+    \end{itemize}
 \end{enumerate}
-
-
-\textbf{Eccezione}: Nessuna attività attiva.
 
 
 \section{Design Front-end}
