@@ -61,13 +61,9 @@
  *           format: date
  *           description: Data di nascita del cittadino
  *           example: "1995-06-15"
- *         comuneResidenza:
- *           type: string
- *           description: Comune di residenza
- *           example: "Trento"
  *         circoscrizione:
  *           type: string
- *           description: Circoscrizione (solo per Trento)
+ *           description: Circoscrizione di residenza
  *           example: "Centro storico - Piedicastello"
  *         genere:
  *           type: string
@@ -84,24 +80,27 @@
  *     CompleteProfileInput:
  *       type: object
  *       required:
- *         - cittadinoId
  *         - dataNascita
- *         - comuneResidenza
+ *         - circoscrizione
+ *         - genere
+ *         - categoria
  *       properties:
- *         cittadinoId:
- *           type: string
- *           description: ID del cittadino
- *           example: "507f1f77bcf86cd799439011"
  *         dataNascita:
  *           type: string
  *           format: date
+ *           description: Data di nascita; l'età risultante deve essere compresa fra 16 e 120 anni
  *           example: "1995-06-15"
- *         comuneResidenza:
- *           type: string
- *           example: "Trento"
  *         circoscrizione:
  *           type: string
  *           example: "Centro storico - Piedicastello"
+ *         genere:
+ *           type: string
+ *           enum: ["Uomo", "Donna"]
+ *           example: "Uomo"
+ *         categoria:
+ *           type: string
+ *           enum: ["Lavoratore", "Disoccupato", "Pensionato", "Studente", "Altro"]
+ *           example: "Lavoratore"
  *     VoteVotazioneInput:
  *       type: object
  *       required:

@@ -37,13 +37,12 @@ Authorization: Bearer {{TOKEN_CITTADINO}}
 ###
 POST http://localhost:3000/auth/complete-profile
 Content-Type: application/json
+Authorization: Bearer {{TOKEN_CITTADINO}}
 
 {
-    "cittadinoId" : "6935aeb0d3569d751bd88c86",
-    "nome" : "sigma",
-    "cognome" : "male",
-    "eta" : "67",
-    "genere" : "Uomo",
+    "dataNascita": "1995-06-15",
+    "circoscrizione": "Centro storico - Piedicastello",
+    "genere": "Uomo",
     "categoria" : "Studente"
 }
 

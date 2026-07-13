@@ -16,7 +16,6 @@
   "main": "backend/src/index.js",
   "scripts": {
     "start": "node backend/src/index.js",
-    "seed:demo": "node backend/src/utils/seedDemo.js",
     "dev": "nodemon backend/src/index.js",
     "dev:all": "concurrently -n backend,frontend -c cyan,magenta \"nodemon backend/src/index.js\" \"npm run dev --prefix frontend\"",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
