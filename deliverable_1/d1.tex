@@ -14,16 +14,17 @@
 \usepackage{marginnote}
 \usepackage{enumitem}
 \usepackage{caption}
+\usepackage{float}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 
-% Inserisce lo screenshot se presente in figure/<file>.png (o .jpg),
-% altrimenti mostra un segnaposto. #1 = numero, #2 = nome, #3 = nome file (senza estensione)
-\newcommand{\schermata}[3]{%
-  \begin{figure}[h]\centering
-    \IfFileExists{figure/#3.png}{\includegraphics[width=0.85\linewidth,height=0.42\textheight,keepaspectratio]{figure/#3.png}}{%
-    \IfFileExists{figure/#3.jpg}{\includegraphics[width=0.85\linewidth,height=0.42\textheight,keepaspectratio]{figure/#3.jpg}}{%
-      \fbox{\parbox[c][2.2cm][c]{0.85\linewidth}{\centering\itshape [INSERIRE FIGURA #1 (file: figure/#3.png)]}}}}%
-    \caption*{Figura #1: #2}
+% Inserisce lo screenshot se presente in figure/<file>.png (o .jpg), altrimenti un segnaposto.
+% [#1] = posizionamento (opzionale, default H = esattamente qui); #2 = numero; #3 = nome; #4 = nome file (senza estensione)
+\newcommand{\schermata}[4][H]{%
+  \begin{figure}[#1]\centering
+    \IfFileExists{figure/#4.png}{\includegraphics[width=0.85\linewidth,height=0.42\textheight,keepaspectratio]{figure/#4.png}}{%
+    \IfFileExists{figure/#4.jpg}{\includegraphics[width=0.85\linewidth,height=0.42\textheight,keepaspectratio]{figure/#4.jpg}}{%
+      \fbox{\parbox[c][2.2cm][c]{0.85\linewidth}{\centering\itshape [INSERIRE FIGURA #2 (file: figure/#4.png)]}}}}%
+    \caption*{Figura #2: #3}
   \end{figure}%
 }
 
@@ -1286,7 +1287,7 @@ I requisiti non funzionali descrivono le caratteristiche qualitative del sistema
 
 \section{Design del Front-End}
 
-In questo capitolo presentiamo i mockup delle principali schermate di \textit{IoSonoTrento}, la web app di partecipazione civica del Comune di Trento. Per ogni schermata indichiamo i requisiti funzionali e non funzionali a cui l'interfaccia risponde, motivando di volta in volta quale elemento concreto del layout li soddisfa. Le immagini riproducono l'aspetto che l'applicazione avr\`a per l'utente finale; dove l'immagine da sola non basta, accompagniamo il mockup con una breve descrizione testuale. Le schermate sono presentate seguendo i due percorsi d'uso, quello del cittadino e quello dell'operatore comunale, preceduti dalle pagine di accesso comuni a entrambi.
+In questo capitolo presentiamo i mockup delle principali schermate di \textit{IoSonoTrento}. Per ogni schermata indichiamo i requisiti funzionali e non funzionali a cui l'interfaccia risponde.
 
 % =========================================================
 %  ACCESSO
@@ -1306,7 +1307,7 @@ La Figura 1 mostra la pagina pubblica con cui l'applicazione si presenta a chi n
     \item \textbf{RNF20: Browser supportati}: essendo una pagina web basata su componenti standard, la landing si visualizza correttamente sulle versioni recenti di Chrome, Firefox, Safari ed Edge.
 \end{itemize}
 
-La landing page svolge cos\`i una funzione di soglia: orienta il visitatore e lo accompagna verso l'accesso vero e proprio mantenendo coerenza grafica e piena fruibilit\`a da qualsiasi dispositivo.
+La landing page presenta il servizio e indirizza il visitatore verso l'accesso, mantenendo coerenza grafica e piena fruibilit\`a da qualsiasi dispositivo.
 
 % -------------------------------------------------------
 
@@ -1317,14 +1318,14 @@ La landing page svolge cos\`i una funzione di soglia: orienta il visitatore e lo
 La Figura 2 mostra la schermata con cui il cittadino sceglie come autenticarsi. Di seguito si descrivono i requisiti funzionali e non funzionali a cui risponde.
 
 \begin{itemize}
-    \item \textbf{RF1: Gestione accessi}: dalla card di benvenuto il pulsante ``Accedi come cittadino'' apre il flusso di autenticazione delegata a un Identity Provider esterno. Nello scenario di produzione l'IdP di riferimento \`e SPID o CIE, mentre nel prototipo la stessa modalit\`a \`e realizzata tramite Google OAuth 2.0, adottato come sostituto per i vincoli di accreditamento del contesto didattico; al primo ritorno il sistema registra l'identificativo univoco dell'utente, che verr\`a riconosciuto in tutti gli accessi successivi.
+    \item \textbf{RF1: Gestione accessi}: dalla card di benvenuto il pulsante ``Accedi come cittadino'' apre il flusso di autenticazione delegata a un Identity Provider esterno. Nello scenario di produzione l'IdP di riferimento \`e SPID o CIE, mentre nel prototipo la stessa modalit\`a \`e realizzata tramite Google OAuth 2.0, adottato come sostituto per i vincoli di accreditamento del contesto didattico; Dopo il primo accesso e avere completato il profilo, l'utente verr\`a riconosciuto in tutti gli accessi successivi.
     \item \textbf{RNF7: Autenticazione sicura}: l'accesso non richiede la creazione di password locali ma delega la verifica dell'identit\`a a un provider esterno (Google OAuth 2.0 nel prototipo, SPID o CIE nello scenario di produzione per una verifica ufficiale dell'identit\`a).
     \item \textbf{RNF8: Gestione sicura delle sessioni}: una volta completato l'accesso, la sessione \`e soggetta a scadenza automatica dopo un periodo di inattivit\`a, riducendo i rischi legati all'uso di dispositivi condivisi.
     \item \textbf{RNF5: Protezione dei dati personali}: delegare l'autenticazione a un provider conforme limita i dati personali trattati direttamente dalla piattaforma, in linea con i principi del GDPR.
     \item \textbf{RNF2: Accessibilit\`a}: l'unico controllo realmente necessario, ovvero il pulsante d'accesso, ha dimensioni generose, contrasto adeguato ed etichette testuali, requisiti utili anche a chi naviga con tecnologie assistive.
 \end{itemize}
 
-La schermata privilegia la semplicit\`a: un solo gesto separa il cittadino dalla propria dashboard, demandando a un provider affidabile gli aspetti pi\`u delicati della sicurezza.
+La schermata privilegia la semplicit\`a permette quindi al cittadino di accedere facilmente alla propria dashboard, delegando al provider gli aspetti pi\`u delicati della sicurezza.
 
 % -------------------------------------------------------
 
@@ -1358,7 +1359,7 @@ La Figura 4 mostra la schermata proposta al cittadino al primo accesso, quando i
     \item \textbf{RNF14: Gestione degli errori}: le note sotto i campi (ad esempio la precisazione che le circoscrizioni selezionabili sono le 12 del Comune di Trento, utili per le consultazioni di quartiere, o il controllo di validit\`a della data di nascita) prevengono gli errori prima dell'invio, anticipando i vincoli all'utente con un linguaggio semplice.
 \end{itemize}
 
-Concentrando in un solo passaggio la raccolta dei dati indispensabili, la schermata rende immediato l'ingresso del nuovo cittadino senza appesantire i login successivi.
+La raccolta dei dati necessari avviene in un unico passaggio, cos\`i i login successivi non richiedono ulteriori inserimenti.
 
 % =========================================================
 %  CITTADINO
@@ -1371,14 +1372,18 @@ Concentrando in un solo passaggio la raccolta dei dati indispensabili, la scherm
 La Figura 5 mostra la pagina iniziale del cittadino autenticato, pensata come punto di partenza verso tutte le attivit\`a partecipative. Vengono richiamati di seguito i requisiti funzionali e non funzionali coinvolti.
 
 \begin{itemize}
-    \item \textbf{RF2: Accesso alla Dashboard}: la pagina raccoglie in un'unica vista le votazioni attive, i sondaggi disponibili, il richiamo ``Proponi un'idea'' e i collegamenti alla bacheca e ai risultati, riproducendo per il cittadino la dashboard descritta nei requisiti.
-    \item \textbf{RF13: Visualizzazione votazioni e sondaggi}: le attivit\`a aperte sono presentate come card cliccabili che conducono direttamente alla votazione o al sondaggio corrispondente, mentre un messaggio dedicato avvisa quando non c'\`e nulla di attivo.
-    \item \textbf{RNF1: Interfaccia intuitiva}: la gerarchia visiva guida lo sguardo dalle azioni principali alle attivit\`a in corso; la barra di ricerca permette di filtrare votazioni e sondaggi digitandone il nome, riducendo i tempi di navigazione.
-    \item \textbf{RNF3: Consistenza visiva}: le card delle attivit\`a e i pulsanti riutilizzano gli stessi stili presenti in bacheca e nelle pagine di voto, dando all'insieme un aspetto omogeneo.
-    \item \textbf{RNF19: Dispositivi}: la griglia delle card si adatta alla larghezza dello schermo, passando da pi\`u colonne su desktop a una colonna su mobile senza perdere informazioni.
+    \item \textbf{RF2: Accesso alla Dashboard}: qui mostriamo la dashbaord del cittadino, che raccoglie in un'unica vista le attivit\`a partecipative e i collegamenti alle diverse sezioni.
+    \item \textbf{RF13: Visualizzazione votazioni e sondaggi}: la sezione ``Attivit\`a in corso'', con i filtri ``Votazioni attive'' e ``Sondaggi disponibili'', permette di navigare tra le varie
+    \item \textbf{RF12: Votazioni}: dalle card attive i pulsanti ``Vota'' e ``Rispondi'' conducono direttamente all'espressione del voto o della risposta.
+    \item \textbf{RF10: Creazione iniziative}: la card ``Proponi un'idea'' è una call to action che permette di creare una nuova iniziativa dalla dashboard stessa.
+    \item \textbf{RF11: Votazione iniziativa}: la card ``Bacheca iniziative'' porta alla bacheca, dove il cittadino sostiene le proposte esistenti.
+    \item \textbf{RF3: Riepilogo}: la card ``Votazioni concluse'' d\`a accesso ai risultati sintetici delle votazioni terminate.
+    \item \textbf{RNF1: Interfaccia intuitiva}: la gerarchia visiva guida lo sguardo dalle azioni principali alle attivit\`a in corso e di interesse.
+    \item \textbf{RNF3: Consistenza visiva}: le card delle attivit\`a e i pulsanti riutilizzano gli stessi stili presenti in bacheca e nelle pagine di voto, dando all'insieme un aspetto omogeneo.  Usare elementi di grafica chiari e intuitivi permette al cittadino di avere una consistente familiarita 
+    \item \textbf{RNF19: Dispositivi}: E' un design che è facilmente ri adattabile su i diversi dispositivi e che quindi ha una responsiveness.
 \end{itemize}
 
-La dashboard funge da centro di smistamento: da qui il cittadino raggiunge in un solo passaggio ci\`o su cui pu\`o esprimersi, mantenendo coerenza grafica e piena leggibilit\`a su ogni dispositivo.
+Dalla dashboard il cittadino raggiunge in un solo passaggio le attivit\`a su cui pu\`o esprimersi --- votare, consultare i risultati o proporre iniziative --- con piena leggibilit\`a su ogni dispositivo.
 
 % -------------------------------------------------------
 
@@ -1395,7 +1400,7 @@ La schermata mostra la bacheca delle iniziative cittadine. Di seguito descriviam
     \item \textbf{RNF3: Consistenza visiva}: le card delle iniziative condividono impaginazione e palette con le altre sezioni dell'app, cos\`i che la bacheca non appaia come un corpo estraneo rispetto a dashboard e votazioni.
 \end{itemize}
 
-La bacheca \`e il cuore della partecipazione dal basso: in una sola pagina il cittadino propone, cerca e sostiene le idee, con un'interazione leggera e coerente con il resto della piattaforma.
+In un'unica pagina il cittadino propone, cerca e sostiene le iniziative, con un'interazione coerente con il resto della piattaforma.
 
 % -------------------------------------------------------
 
@@ -1403,7 +1408,7 @@ La bacheca \`e il cuore della partecipazione dal basso: in una sola pagina il ci
 
 \schermata{7}{Creazione di un'iniziativa}{07-crea-iniziativa}
 
-La Figura 7 mostra il modulo ``Crea iniziativa'', che può essere raggiunto dalla  dashboard o altrimenti nella bacheca stessa. Di seguito, ne segue una descrizione in relazione ai requsiti funzionali e non funzionali . Il modulo \`e volutamente essenziale.
+La Figura 7 mostra il modulo ``Crea iniziativa'', che può essere raggiunto dalla  dashboard o altrimenti nella bacheca stessa. Di seguito, ne segue una descrizione in relazione ai requsiti funzionali e non funzionali . Il modulo \`e volutamente essenziale per non aggiungere ulteriori difficoltà al cittadino che usufruisce della piattaforma.
  (\textbf{RF10}), mentre autore e contatore dei voti sono aggiunti automaticamente dal sistema 
  
  i messaggi di validazione segnalano in modo chiaro gli inserimenti mancanti senza perdere il testo gi\`a digitato (\textbf{RNF14}). 
@@ -1418,7 +1423,8 @@ La Figura 7 mostra il modulo ``Crea iniziativa'', che può essere raggiunto dall
 La Figura 8 mostra la schermata con cui il cittadino esprime il proprio voto su una votazione. Di seguito una descrizione usando i riferimenti ai requisiti funzionali e non funzionali.
 \begin{itemize}
     \item \textbf{RF12: Votazioni}: l'interfaccia consente di selezionare la propria preferenza e inviarla una sola volta; dopo la conferma il voto non \`e pi\`u modificabile, coerentemente con il vincolo di un solo voto per tema. 
-    \item \textbf{RNF6: Anonimato dei voti}: la schermata non espone alcun dato identificativo accanto alla scelta; la preferenza viene registrata in forma anonima e non riconducibile al cittadino che l'ha espressa nella fase di smistamento dei voti. 
+    Vengono mostrate le opzioni di risposta della domanda o dell'affermazione. Il cittadino può (se permesso) dare più risposte.
+    \item \textbf{RNF6: Anonimato dei voti}: La preferenza viene registrata in forma anonima e non riconducibile al cittadino che l'ha espressa nella fase di smistamento dei voti. 
     \item \textbf{RNF1: Interfaccia intuitiva}: le opzioni di voto sono degli  elementi ben distanziati e ben posizionate a livello U,  rendendo evidente cosa fare. A fine voto, cliccando il pulsante invia voto, viene reso noto  quando esso \`e stato effettivamente acquisito. 
 \end{itemize}
 
@@ -1435,10 +1441,10 @@ La Figura 9 mostra la schermata con cui il cittadino risponde a un sondaggio. Ve
 \begin{itemize}
     \item \textbf{RF12: Votazioni}: la schermata presenta il titolo e la descrizione del sondaggio seguiti dalla sequenza di domande; il sistema accetta un solo invio di risposte per cittadino e, una volta confermato con il messaggio ``Sondaggio completato!'', l'insieme delle risposte non \`e pi\`u modificabile.
     \item \textbf{RNF6: Anonimato dei voti}: le risposte sono raccolte in forma anonima e non collegate al profilo del rispondente, in coerenza con la natura anonima dei sondaggi.
-    \item \textbf{RNF1: Interfaccia intuitiva}: le domande, a risposta chiusa o multipla, sono presentate una di seguito all'altra con gli stessi controlli usati nella votazione, cos\`i che il cittadino non debba imparare un nuovo modo di rispondere.
+    \item \textbf{RNF1: Interfaccia intuitiva}: le domande, a risposta chiusa o multipla, possono essere visualizzate utilizzando il bottone successiva. Essendo il design una ripresa di come sia stato fatto la pagina di votazione, al cittadino risulta familiare e non deve imparare un nuovo modo di rispondere.
 \end{itemize}
 
-La struttura riprende quella della votazione, garantendo un'esperienza familiare anche in presenza di pi\`u domande.
+Questo mockup quindi riprende similitudini della votazione, garantendo un'esperienza familiare anche in presenza di pi\`u domande e rende intuitivo ciò che l'utente deve fare, anche per l'assenza di elementi fuorvianti.
 
 % -------------------------------------------------------
 
@@ -1449,10 +1455,10 @@ La struttura riprende quella della votazione, garantendo un'esperienza familiare
 La Figura 10 mostra la pagina d'archivio, che raccoglie consultazioni e sondaggi ormai conclusi. Di seguito una descrizione in relazione ai requisiti funzionali e non funzionali.
 
 \begin{itemize}
-    \item \textbf{RF13: Visualizzazione votazioni e sondaggi}: la pagina d\`a continuit\`a alla dashboard mostrando, in un unico luogo, ci\`o che si \`e concluso, cos\`i che il cittadino possa ritrovare e consultare le attivit\`a passate.
-    \item \textbf{RF3: Riepilogo}: da ciascun elemento archiviato si accede al relativo riepilogo dei risultati, collegando l'archivio alle pagine di sintesi descritte pi\`u avanti.
-    \item \textbf{RNF1: Interfaccia intuitiva}: il selettore tra le due viste evita di moltiplicare le pagine e tiene insieme contenuti analoghi, mentre la ricerca rende rapido raggiungere una specifica consultazione.
-    \item \textbf{RNF3: Consistenza visiva}: gli elementi conclusi sono rappresentati con le stesse card della dashboard, semplicemente in stato chiuso, mantenendo riconoscibile la natura di ciascun contenuto.
+    \item \textbf{RF13: Visualizzazione votazioni e sondaggi}: la pagina d\`a continuit\`a alla dashboard mostrando, in un unico luogo, mostrando ci\`o che si \`e concluso, cos\`i che il cittadino possa ritrovare e consultare le attivit\`a passate.
+    \item \textbf{RF3: Riepilogo}: da ciascun elemento concluso si accede al relativo riepilogo dei risultati, che sono una sintesi.
+    \item \textbf{RNF1: Interfaccia intuitiva}: Con un selettore tra le due viste votazioni e sondaggi conclusi, si permette al cittadino di rimanere nello stesso ambiente in modo da poter navigare tra le votazioni e sondaggi secondo i propri interessi.
+    \item \textbf{RNF3: Consistenza visiva}: gli elementi conclusi sono rappresentati con le stesse card della dashboard e che ritroviamo anche in altre pagine, semplicemente in stato chiuso, permettedno cosi di arrivare alla pagina di riepilogo specifico
 \end{itemize}
 
 % -------------------------------------------------------
@@ -1461,7 +1467,7 @@ La Figura 10 mostra la pagina d'archivio, che raccoglie consultazioni e sondaggi
 
 \schermata{11}{Risultato di una votazione (vista cittadino)}{11-risultato-votazione-cittadino}
 
-La Figura 11 mostra il riepilogo che il cittadino vede al termine di una votazione: per ciascuna opzione sono indicati la percentuale e il numero di voti, insieme al totale dei voti espressi. La schermata presenta il riepilogo sintetico previsto per i cittadini, con percentuale e valore assoluto per ogni scelta e senza il dettaglio demografico riservato agli operatori (\textbf{RF3}); i risultati sono mostrati solo in forma aggregata, senza alcun modo di risalire a come abbia votato il singolo (\textbf{RNF6}), e le barre proporzionali rendono il confronto tra le opzioni leggibile a colpo d'occhio (\textbf{RNF1}). Il cittadino ottiene cos\`i una lettura chiara e immediata dell'esito, nel rispetto della riservatezza delle singole preferenze.
+La Figura 11 mostra il riepilogo che il cittadino vede al termine di una votazione: per ciascuna opzione sono indicati la percentuale e il numero di voti, insieme al totale dei voti espressi. Si tratta di un riepilogo sintetico, con percentuale e valore assoluto per ogni scelta e senza il dettaglio demografico riservato agli operatori (\textbf{RF3}. Essendo che i risultati sono mostrati solo in forma aggregata, non vi è  alcun modo di risalire a come e chi abbia votato il singolo cittadino (\textbf{RNF6}), e le barre proporzionali rendono il confronto tra le opzioni leggibile a colpo d'occhio (\textbf{RNF1}). Il cittadino ottiene cos\`i una lettura chiara e immediata dell'esito, nel rispetto della riservatezza delle singole preferenze.
 
 % -------------------------------------------------------
 
@@ -1469,7 +1475,7 @@ La Figura 11 mostra il riepilogo che il cittadino vede al termine di una votazio
 
 \schermata{12}{Risultato di un sondaggio (vista cittadino)}{12-risultato-sondaggio-cittadino}
 
-La Figura 12 mostra il riepilogo di un sondaggio dal punto di vista del cittadino, con la distribuzione delle risposte domanda per domanda e l'indicazione dei partecipanti totali. Come per le votazioni, il cittadino accede a una sintesi aggregata articolata per le diverse domande (\textbf{RF3}); le risposte restano anonime e la vista mostra solo dati complessivi (\textbf{RNF6}), riprendendo la stessa logica di lettura del risultato di votazione perch\'e l'utente non debba adattarsi a una nuova presentazione (\textbf{RNF1}). Anche per i sondaggi, dunque, la restituzione dei risultati privilegia chiarezza e riservatezza.
+La Figura 12 mostra il riepilogo di un sondaggio dal punto di vista del cittadino, con la distribuzione delle risposte domanda per domanda e l'indicazione dei partecipanti totali. Come per le votazioni, il cittadino accede a una sintesi aggregata articolata per le diverse domande (\textbf{RF3}). Le risposte sono anonime. Difatti la schermata mostra solo dati complessivi come la precentuale dei voti per ciasucna opzione(\textbf{RNF6}), riprendendo la stessa logica di lettura del risultato di votazione perch\'e l'utente non debba adattarsi a una nuova presentazione (\textbf{RNF1}). Anche per i sondaggi, dunque, la restituzione dei risultati privilegia chiarezza e riservatezza.
 
 % =========================================================
 %  OPERATORE
@@ -1482,12 +1488,18 @@ La Figura 12 mostra il riepilogo di un sondaggio dal punto di vista del cittadin
 La Figura 13 mostra la dashboard riservata all'operatore comunale, da cui si avviano e si controllano le attivit\`a di consultazione. Di seguito una descrizione in relazione ai requisiti funzionali e non funzionali.
 
 \begin{itemize}
-    \item \textbf{RF2: Accesso alla Dashboard}: la pagina realizza la dashboard estesa prevista per gli operatori; dai comandi ``Crea una nuova votazione'' e ``Crea un nuovo sondaggio'' si avviano le consultazioni, mentre l'elenco delle attivit\`a in corso e le proposte in attesa di moderazione ne permettono il monitoraggio e la gestione da un'unica vista.
-    \item \textbf{RNF1: Interfaccia intuitiva}: le azioni principali sono presentate come riquadri descrittivi che ne anticipano l'effetto, mentre lo stato delle attivit\`a e le proposte da esaminare sono raccolti in elenchi ordinati.
-    \item \textbf{RNF3: Consistenza visiva}: l'impaginazione riprende quella della dashboard cittadino, adattata a un'utenza che gestisce contenuti; un operatore riconosce subito i componenti, pur disponendo di pi\`u strumenti.
+    \item \textbf{RF2: Accesso alla Dashboard}: la pagina realizza la dashboard estesa riservata all'operatore, che raccoglie in un'unica vista le funzioni amministrative e i collegamenti alle sezioni di gestione.
+    \item \textbf{RF5: Creazione delle votazioni}: il comando ``Crea una nuova votazione'' apre il form di creazione di una votazione.
+    \item \textbf{RF7: Creazione dei sondaggi}: il comando ``Crea un nuovo sondaggio'' avvia la creazione di un sondaggio tramite l'apposito form.
+    \item \textbf{RF6: Gestione dello stato delle votazioni}: la card ``Gestione votazioni'' conduce alla pagina in cui le votazioni sono organizzate per stato e su cui si eseguono le azioni di modifica, pubblicazione ed eliminazione.
+    \item \textbf{RF8: Gestione dei sondaggi}: la card ``Gestione sondaggi'' porta al monitoraggio dei sondaggi con chiusura anticipata, analisi dei risultati e archiviazione.
+    \item \textbf{RF9: Moderazione dei contenuti}: la card ``Moderazione bacheca'' apre la revisione delle iniziative proposte dai cittadini, con approvazione o rifiuto motivato.
+    \item \textbf{RF4: Ricerca iniziative}: la barra ``Ricerca una proposta o iniziativa'' consente di filtrare rapidamente i contenuti per parola chiave.
+    \item \textbf{RNF1: Interfaccia intuitiva}: Grazie ai riquadri e card call to action , si possono cosi raggiungere le altre sezioni della piattaforma, mentre le \emph{Attivit\`a recenti} e le proposte da esaminare sono raccolte in elenchi filtrabili (``Votazioni attive'', ``Sondaggi attivi'', ``Proposte in arrivo'').
+    \item \textbf{RNF3: Consistenza visiva}: l'impaginazione riprende quella della dashboard cittadino, ma con chiaramente elementi customizzati e più specifici. Un operatore quindi ha familiarità in entrambi i casi.
 \end{itemize}
 
-La dashboard operatore concentra in un solo schermo le leve di gestione, fungendo da plancia di comando per l'intero ciclo di vita delle consultazioni.
+La dashboard operatore raccoglie in un'unica schermata le funzioni di gestione dell'intero ciclo di vita delle consultazioni.
 
 % -------------------------------------------------------
 
@@ -1498,9 +1510,9 @@ La dashboard operatore concentra in un solo schermo le leve di gestione, fungend
 La Figura 14 mostra il modulo con cui l'operatore crea una votazione consultiva. Di seguito una descrizione in relazione ai requisiti funzionali e non funzionali.
 
 \begin{itemize}
-    \item \textbf{RF5: Creazione delle votazioni}: i campi del modulo coprono tutti gli elementi previsti per una votazione, ovvero titolo, descrizione, opzioni a numero fisso, tipologia singola o multipla e date di apertura e chiusura, consentendone la definizione completa prima della pubblicazione.
-    \item \textbf{RNF1: Interfaccia intuitiva}: il modulo \`e organizzato per blocchi (informazioni, periodo, opzioni), accompagnando l'operatore lungo una sequenza logica di compilazione.
-    \item \textbf{RNF14: Gestione degli errori}: la validazione dei campi e delle date segnala in modo comprensibile eventuali incongruenze (campi mancanti o intervalli non validi) prima che la votazione venga creata.
+    \item \textbf{RF5: Creazione delle votazioni}: L'operatore può riempire i campi del modulo che coprono tutti gli elementi previsti per una votazione, inserendo titolo, descrizione, opzioni a numero fisso, tipologia singola o multipla e date di apertura e chiusura, consentendone la definizione completa prima della pubblicazione.
+    \item \textbf{RNF1: Interfaccia intuitiva}: il modulo \`e organizzato graficamenti per aree (informazioni, periodo, opzioni), accompagnando l'operatore lungo una sequenza logica di compilazione. Infatti, l'operatore può facilmente capire che aree compilare e quali siano i pezzi mancanti.
+    \item \textbf{RNF14: Gestione degli errori}: la validazione dei campi e delle date segnala in modo comprensibile eventuali incongruenze (campi mancanti o intervalli non validi) prima che la votazione venga creata. Dunque, vengono generati testi di errore, indicando dove sia l'errore.
 \end{itemize}
 
 % -------------------------------------------------------
@@ -1512,9 +1524,15 @@ La Figura 14 mostra il modulo con cui l'operatore crea una votazione consultiva.
 La Figura 15 mostra il modulo di creazione di un sondaggio. Di seguito una descrizione in relazione ai requisiti funzionali e non funzionali.
 
 \begin{itemize}
-    \item \textbf{RF7: Creazione dei sondaggi}: il modulo permette di comporre titolo, descrizione, periodo e un insieme di domande a risposta chiusa o multipla in numero variabile, oltre al salvataggio come bozza, in linea con quanto previsto per i sondaggi.
-    \item \textbf{RNF1: Interfaccia intuitiva}: l'aggiunta delle domande avviene in modo incrementale e con controlli analoghi a quelli della votazione, mantenendo gestibile anche un sondaggio articolato.
-    \item \textbf{RNF14: Gestione degli errori}: i controlli sui campi obbligatori e sulle date prevengono la pubblicazione di un sondaggio incompleto, con segnalazioni chiare all'operatore.
+    \item \textbf{RF7: Creazione dei sondaggi}: il modulo di creazione permette di creare un sondaggio fornendo, e quindi inserendo campi come - titolo
+    - descrizione
+    - periodo 
+    - un certo numero di domande
+    - indicare se la domanda è a risposta singola o multipla
+    - salvataggio in bozza.
+    Dopo aver effetuato ciò, il sondaggio comparirà nella pagina di gestione sondaggi.
+    \item \textbf{RNF1: Interfaccia intuitiva}: l'aggiunta delle domande avviene in modo incrementale con il pulsante "aggiungi domanda". Ogni domanda può avere un numero diverso di opzioni.
+    \item \textbf{RNF14: Gestione degli errori}: i controlli sui campi obbligatori e sulle date prevengono la pubblicazione di un sondaggio incompleto, con segnalazioni chiare all'operatore prima del salvataggio in bozza
 \end{itemize}
 
 % -------------------------------------------------------
@@ -1526,8 +1544,8 @@ La Figura 15 mostra il modulo di creazione di un sondaggio. Di seguito una descr
 La Figura 16 mostra la pagina di gestione delle votazioni. Di seguito una descrizione in relazione ai requisiti funzionali e non funzionali.
 
 \begin{itemize}
-    \item \textbf{RF6: Gestione dello stato delle votazioni}: le schede ``Bozze'', ``Attive'' e ``Concluse'' rispecchiano il ciclo di vita previsto (bozza, attiva, conclusa, archiviata); le bozze possono essere modificate o eliminate, le votazioni attive risultano bloccate e le concluse rendono disponibili i risultati. La modifica di una bozza avviene in una schermata dedicata (\textit{Modifica votazione}), raggiungibile dall'elenco, che ripropone lo stesso form della creazione precompilato.
-    \item \textbf{RNF1: Interfaccia intuitiva}: il raggruppamento per stato e la ricerca per titolo permettono all'operatore di individuare rapidamente la votazione su cui intervenire, con azioni contestuali coerenti con lo stato di ciascun elemento.
+    \item \textbf{RF6: Gestione dello stato delle votazioni}: le schede ``Bozze'', ``Attive'' e ``Concluse'' rispecchiano il ciclo di vita previsto. Le bozze possono essere modificate o eliminate, le votazioni attive risultano bloccate e le concluse rendono disponibili i risultati. La modifica di una bozza avviene in una schermata dedicata (\textit{Modifica votazione}), che è possibile fare solo se la votazione si trova in bozza.
+    \item \textbf{RNF1: Interfaccia intuitiva}: il raggruppamento per stato permette all'operatore di individuare rapidamente la votazione su cui intervenire, con azioni contestuali coerenti con lo stato di ciascuna votazione.
 \end{itemize}
 
 % -------------------------------------------------------
@@ -1536,7 +1554,7 @@ La Figura 16 mostra la pagina di gestione delle votazioni. Di seguito una descri
 
 \schermata{17}{Gestione dei sondaggi}{17-gestione-sondaggi}
 
-La Figura 17 mostra la gestione dei sondaggi, organizzata come quella delle votazioni: schede ``Bozze'', ``Attive'' e ``Concluse'', ricerca per titolo ed elenco con le azioni di gestione. Dall'elenco l'operatore visualizza i sondaggi con il relativo stato, pu\`o modificarne le bozze tramite una schermata dedicata (\textit{Modifica sondaggio}), chiuderli anticipatamente, consultarne i risultati una volta conclusi e archiviarli per conservarne i dati (\textbf{RF8}); riproporre la stessa struttura della gestione votazioni evita di apprendere due modelli diversi per attivit\`a affini (\textbf{RNF1}). Anche per i sondaggi, dunque, monitoraggio e intervento si svolgono in un ambiente familiare e coerente.
+La Figura 17 mostra la gestione dei sondaggi, organizzata come quella delle votazioni: abbiamo diversi stati che sono ``Bozze'', ``Attive'' e ``Concluse'', ricerca per titolo ed elenco con le azioni di gestione. Dall'elenco l'operatore visualizza i sondaggi con il relativo stato, pu\`o modificarne le bozze tramite una schermata dedicata (\textit{Modifica sondaggio}), chiuderli anticipatamente, consultarne i risultati una volta conclusi e archiviarli per conservarne i dati (\textbf{RF8}); riproporre la stessa struttura della gestione votazioni evita di apprendere due modelli diversi per attivit\`a affini (\textbf{RNF1}). Quindi anche per i sondaggi, il monitoraggio e intervento si svolgono in un ambiente familiare e coerente.
 
 % -------------------------------------------------------
 
@@ -1544,15 +1562,15 @@ La Figura 17 mostra la gestione dei sondaggi, organizzata come quella delle vota
 
 \schermata{18}{Riepilogo di una votazione (vista operatore)}{18-riepilogo-votazione-operatore}
 
-La Figura 18 mostra l'analisi dei risultati riservata all'operatore. Di seguito una descrizione in relazione ai requisiti funzionali e non funzionali.
+La Figura 18 mostra l'analisi dei risultati riservata all'operatore. E' una delle pagine più importanti della piattaforma. Di seguito una descrizione in relazione ai requisiti funzionali e non funzionali.
 
 \begin{itemize}
-    \item \textbf{RF3: Riepilogo}: la vista offre il livello di dettaglio riservato agli operatori; accanto al totale dei votanti e alla distribuzione complessiva, i risultati sono analizzabili in forma aggregata per categorie demografiche, cos\`i da valutare come il voto si distribuisce nella popolazione.
-    \item \textbf{RNF6: Anonimato dei voti}: le aggregazioni demografiche non scendono mai al singolo individuo; i grafici mostrano insiemi di voti per categoria, senza alcuna possibilit\`a di risalire all'identit\`a dei partecipanti.
-    \item \textbf{RNF1: Interfaccia intuitiva}: i filtri demografici e i grafici (distribuzione dei voti, partecipazione nel tempo, confronto per fascia d'et\`a, genere e occupazione) traducono dati complessi in rappresentazioni leggibili, utili a sostenere le valutazioni dell'amministrazione.
+    \item \textbf{RF3: Riepilogo}: la vista offre il livello di dettaglio riservato agli operatori di cui si parlava nel requisito funzionale. Accanto al totale dei votanti e alla distribuzione complessiva, i risultati sono analizzabili in forma aggregata per categorie demografiche, cos\`i da valutare come il voto si distribuisce nella popolazione e in base diverse caratteristiche.
+    \item \textbf{RNF6: Anonimato dei voti}: le aggregazioni demografiche non scendono mai al singolo individuo. I grafici mostrano insiemi di voti per categoria, senza alcuna possibilit\`a di risalire all'identit\`a dei partecipanti.
+    \item \textbf{RNF1: Interfaccia intuitiva}: i filtri demografici e i grafici (distribuzione dei voti, partecipazione nel tempo, confronto per fascia d'et\`a, genere e occupazione) traducono dati complessi in rappresentazioni leggibili, utili a sostenere le valutazioni dell'amministrazione. I grafici esattamente mirano al loro compito.
 \end{itemize}
 
-Questa schermata \`e lo strumento di lettura politica del voto: fornisce all'operatore un quadro analitico ricco, mantenendo invariata la garanzia di anonimato dovuta ai cittadini.
+La schermata fornisce all'operatore un quadro analitico dettagliato, mantenendo l'anonimato dei cittadini e consentendo un'analisi mirata in base alle categorie di interesse.
 
 % -------------------------------------------------------
 
@@ -1560,16 +1578,16 @@ Questa schermata \`e lo strumento di lettura politica del voto: fornisce all'ope
 
 \schermata{19}{Riepilogo di un sondaggio (vista operatore)}{19-riepilogo-sondaggio-operatore}
 
-La Figura 19 mostra l'analisi dei risultati di un sondaggio dal lato operatore. Di seguito si descrivono i requisiti funzionali e non funzionali soddisfatti.
+La Figura 19 mostra l'analisi dei risultati di un sondaggio come operatore. E' una delle schermate piu importanti della piattaforma. Di seguito si descrivono i requisiti funzionali e non funzionali soddisfatti.
 
 \begin{itemize}
-    \item \textbf{RF3: Riepilogo}: accanto al totale dei rispondenti, l'operatore accede al dettaglio dei risultati domanda per domanda, secondo lo stesso principio applicato alle votazioni ma adattato alla struttura del sondaggio.
-    \item \textbf{RF8: Gestione dei sondaggi}: la pagina completa la gestione dei sondaggi, rendendo consultabili e analizzabili i risultati delle rilevazioni concluse direttamente dall'area amministrativa.
+    \item \textbf{RF3: Riepilogo}: accanto al totale dei rispondenti, l'operatore accede al dettaglio dei risultati domanda per domanda, e in base alle caratteristiche desiderate ovvero occupazione, fascia d'età e genere.
+    \item \textbf{RF8: Gestione dei sondaggi}: la pagina completa la gestione dei sondaggi, rendendo consultabili e analizzabili i risultati dei sondaggi conclusi direttamente dall'area amministrativa.
     \item \textbf{RNF6: Anonimato dei voti}: anche qui i dati sono mostrati solo in forma aggregata, senza collegamento alle identit\`a dei rispondenti.
     \item \textbf{RNF1: Interfaccia intuitiva}: la coerenza con il riepilogo delle votazioni consente all'operatore di leggere i risultati senza adattarsi a una nuova logica di presentazione.
 \end{itemize}
 
-Il riepilogo dei sondaggi chiude il ciclo di gestione lato operatore, restituendo in forma chiara e anonima il valore informativo della consultazione.
+Il riepilogo dei sondaggi presenta all'operatore i risultati in forma aggregata e anonima.
 
 % -------------------------------------------------------
 
@@ -1582,10 +1600,10 @@ La Figura 20 mostra la schermata con cui l'operatore modera le iniziative propos
 \begin{itemize}
     \item \textbf{RF9: Moderazione dei contenuti}: la pagina consente di esaminare le proposte dei cittadini prima della loro pubblicazione e di approvarle o respingerle; ogni iniziativa resta infatti in stato ``in attesa'' finch\'e un operatore non la approva, realizzando una revisione preventiva dei contenuti generati dagli utenti.
     \item \textbf{RNF1: Interfaccia intuitiva}: la suddivisione per stato (``In attesa'', ``Approvate'' e ``Rifiutate'') e la ricerca per titolo rendono evidente cosa resta da valutare e cosa \`e gi\`a stato deciso, riducendo il rischio di trascurare proposte in attesa.
-    \item \textbf{RNF14: Gestione degli errori}: il campo per spiegare al cittadino perch\'e una proposta non pu\`o essere pubblicata trasforma un'azione potenzialmente opaca in una comunicazione chiara e tracciabile, riducendo fraintendimenti e contestazioni.
+    \item \textbf{RNF14: Gestione degli errori}: l'operatore esaminando la proposta, può non approvare una proposta e indicare il motivo del perch\'e una proposta non pu\`o essere pubblicata, trasformando un'azione potenzialmente opaca in una comunicazione chiara e tracciabile, riducendo fraintendimenti e contestazioni.
 \end{itemize}
 
-La moderazione coniuga cos\`i controllo e trasparenza: l'operatore presidia la qualit\`a della bacheca, ma ogni rifiuto resta motivato e comprensibile per il cittadino.
+L'operatore controlla la qualit\`a della bacheca e ogni rifiuto resta motivato e comprensibile per il cittadino.
 
 % =========================================================
 %  PROFILO / IMPOSTAZIONI
@@ -1598,8 +1616,8 @@ La moderazione coniuga cos\`i controllo e trasparenza: l'operatore presidia la q
 La Figura 21 mostra la pagina ``Il tuo profilo'' del cittadino, da cui gestisce i propri dati e la sessione. Di seguito una descrizione in relazione ai requisiti funzionali e non funzionali.
 
 \begin{itemize}
-    \item \textbf{RF1: Gestione accessi}: la sezione ``Sessione'' ricorda che l'accesso avviene tramite provider esterno (``Accedi con Google'') e mette a disposizione il pulsante ``Esci dall'account'' per terminare esplicitamente la sessione; l'account resta legato all'identificativo univoco associato al primo accesso.
-    \item \textbf{RNF8: Gestione sicura delle sessioni}: il logout esplicito consente al cittadino di chiudere la sessione in qualsiasi momento, riducendo i rischi legati all'uso di dispositivi condivisi, in aggiunta alla scadenza automatica del token.
+    \item \textbf{RF1: Gestione accessi}: la sezione ``Sessione'' ricorda che l'accesso avviene tramite provider esterno (``Accedi con Google'') e mette a disposizione il pulsante ``Esci dall'account'' uscire dall'app web.  L'account resta legato all'identificativo univoco associato al primo accesso.
+    \item \textbf{RNF8: Gestione sicura delle sessioni}: il logout esplicito consente al cittadino di chiudere la sessione in qualsiasi momento, riducendo i rischi legati all'uso di dispositivi condivisi o individui non autorizzati.
     \item \textbf{RNF5: Protezione dei dati personali}: dalla scheda ``Informazioni personali'' l'utente consulta e aggiorna i propri dati (data di nascita, circoscrizione, genere, occupazione), mantenendo il controllo sulle informazioni trattate dalla piattaforma in linea con il GDPR.
     \item \textbf{RNF1: Interfaccia intuitiva}: la modifica avviene in linea tramite il pulsante ``Modifica'', e un avviso ``Profilo incompleto'' segnala in modo evidente eventuali dati mancanti, guidando l'utente al completamento.
     \item \textbf{RNF2: Accessibilit\`a}: ogni campo ha un'etichetta esplicita e i menu a tendina (circoscrizione, genere, occupazione) riducono gli errori di inserimento anche per chi usa tecnologie assistive.
