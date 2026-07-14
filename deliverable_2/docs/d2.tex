@@ -428,16 +428,24 @@ Dalla cartella \code{deliverable\_2/}:
 Verifiche rapide: \textit{health check} su \code{http://localhost:8000/health} e
 documentazione API su \code{http://localhost:8000/docs}.
 
-\paragraph{Deployment futuro \textnormal{(da completare)}.}
-È prevista la pubblicazione dell'applicazione su una piattaforma di hosting cloud, con
-configurazione di una pipeline CI/CD basata su GitHub Actions che esegua automaticamente il
-deploy del branch \code{main} al superamento dei test.
+\paragraph{Deployment.}
+L'applicazione è pubblicata su Render in un monorepo con due servizi distinti,
+con deploy automatico ad ogni commit sul branch \code{main} tramite integrazione
+nativa con GitHub.
 
 \begin{itemize}
-	\item Backend deployato all'indirizzo: \texttt{<<link backend>>}
-	\item Frontend deployato all'indirizzo: \texttt{<<link frontend>>}
-	\item Account dimostrativi di accesso: \texttt{<<credenziali demo>>}
-	\item Riferimento per problemi di deploy: \texttt{<<contatto/mail>>}
+  \item Backend (Web Service): \url{https://ingegneria-software.onrender.com} —
+        root directory \texttt{deliverable\_2/backend},
+        build command \texttt{npm install},
+        start command \texttt{npm run dev}
+  \item Frontend (Static Site): \url{https://ingegneria-software-7gs8.onrender.com} —
+        root directory \texttt{deliverable\_2/frontend},
+        build command \texttt{npm install \&\& npm run build},
+        publish directory \texttt{dist}
+  \item Account dimostrativo operatore: username \texttt{root}, password \texttt{IoSonoTrento123!}
+  \item \textbf{Nota:} il backend è ospitato sul piano gratuito di Render; dopo un periodo
+        di inattività il servizio va in sleep e la prima richiesta può richiedere fino a
+        30--60 secondi prima di rispondere.
 \end{itemize}
 
 \newpage
