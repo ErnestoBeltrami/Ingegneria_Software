@@ -6,6 +6,7 @@ import { Save, Plus } from 'lucide-react';
 import TopBar from '@/components/TopBar';
 import BackButton from '@/components/BackButton';
 import DomandaCard from '@/components/DomandaCard';
+import { API_BASE } from '../../config/api';
 import './CreaSondaggioPage.css';
 
 function buildIso(dateString) {
@@ -122,7 +123,7 @@ export default function CreaSondaggioPage() {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/sondaggio', {
+      const res = await fetch(`${API_BASE}/sondaggio`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

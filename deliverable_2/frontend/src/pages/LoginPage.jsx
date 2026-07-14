@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, CheckSquare, Users, MapPin, ShieldCheck } from 'lucide-react';
+import { API_BASE } from '../config/api';
 import './LoginPage.css';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
@@ -22,7 +23,7 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('/operatore/login', {
+      const res = await fetch(`${API_BASE}/operatore/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password_inserita: password }),

@@ -1,3 +1,5 @@
+import { API_BASE } from '../config/api';
+
 const getAuthHeaders = () => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -11,7 +13,7 @@ const getAuthHeaders = () => {
 
 const apiFetch = async (url, options = {}) => {
     const headers = getAuthHeaders();
-    const res = await fetch(url, { ...options, headers });
+    const res = await fetch(`${API_BASE}${url}`, { ...options, headers });
 
     if (res.status === 401) {
         // Token expired or invalid — clear and redirect to login

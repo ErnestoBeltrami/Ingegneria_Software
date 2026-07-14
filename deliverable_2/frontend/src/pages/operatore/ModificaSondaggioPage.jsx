@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Plus } from 'lucide-react';
+import { API_BASE } from '../../config/api';
 import TopBar from '@/components/TopBar';
 import BackButton from '@/components/BackButton';
 import DomandaCard from '@/components/DomandaCard';
@@ -26,7 +27,7 @@ function buildDiscussione(dataApertura) {
 
 async function apiFetch(url, options) {
   const token = localStorage.getItem('token');
-  const res = await fetch(url, {
+  const res = await fetch(`${API_BASE}${url}`, {
     ...options,
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, ...options?.headers },
   });

@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate, useSearchParams, useNavigate } from 'react-router-dom';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { API_BASE } from './config/api';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import DashboardOperatorePage from './pages/operatore/DashboardOperatorePage';
@@ -38,7 +39,7 @@ function CompletaProfiloRoute() {
   const onboardingToken = params.get('onboardingToken');
 
   const handleSubmit = async ({ dataNascita, circoscrizione, genere, categoria }) => {
-    const res = await fetch('/auth/complete-profile', {
+    const res = await fetch(`${API_BASE}/auth/complete-profile`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
