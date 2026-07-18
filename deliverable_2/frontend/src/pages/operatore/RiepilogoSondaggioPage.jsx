@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Filter } from 'lucide-react';
+import { API_BASE } from '../../config/api';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts';
@@ -43,7 +44,7 @@ function formatDate(iso) {
 
 async function apiFetch(url, method = 'GET') {
   const token = localStorage.getItem('token');
-  const res = await fetch(url, { method, headers: { Authorization: `Bearer ${token}` } });
+  const res = await fetch(`${API_BASE}${url}`, { method, headers: { Authorization: `Bearer ${token}` } });
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || `Errore ${res.status}`);
   return data;

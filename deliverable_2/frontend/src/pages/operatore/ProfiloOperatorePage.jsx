@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Shield, LogOut } from 'lucide-react';
 import TopBar from '@/components/TopBar';
 import BackButton from '@/components/BackButton';
+import { API_BASE } from '../../config/api';
 import './ProfiloOperatorePage.css';
 
 function RoleBadge({ ruolo }) {
@@ -90,7 +91,7 @@ export default function ProfiloOperatorePage() {
     setSaving(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/operatore/me/password', {
+      const res = await fetch(`${API_BASE}/operatore/me/password`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ vecchia_password: passwordAttuale, nuova_password: nuovaPassword }),

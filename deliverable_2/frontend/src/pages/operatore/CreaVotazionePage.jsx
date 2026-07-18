@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Save, Plus, X } from 'lucide-react';
 import TopBar from '@/components/TopBar';
 import BackButton from '@/components/BackButton';
+import { API_BASE } from '../../config/api';
 import './CreaVotazionePage.css';
 
 function buildIso(dateString) {
@@ -72,7 +73,7 @@ export default function CreaVotazionePage() {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/votazioni', {
+      const res = await fetch(`${API_BASE}/votazioni`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

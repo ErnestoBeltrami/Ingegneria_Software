@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Lightbulb } from 'lucide-react';
 import TopBarCittadino from '../../../components/TopBarCittadino';
 import BackButton from '../../../components/BackButton';
+import { API_BASE } from '../../../config/api';
 import './CreaIniziativaPage.css';
 
 export default function CreaIniziativaPage() {
@@ -23,7 +24,7 @@ export default function CreaIniziativaPage() {
     const token = localStorage.getItem('token');
     const headers = { Authorization: `Bearer ${token}` };
 
-    fetch('/cittadino/profile', { headers })
+    fetch(`${API_BASE}/cittadino/profile`, { headers })
       .then((r) => r.json())
       .then((data) => {
         if (data?.data) {
@@ -33,7 +34,7 @@ export default function CreaIniziativaPage() {
       })
       .catch(() => {});
 
-    fetch('/categorie', { headers })
+    fetch(`${API_BASE}/categorie`, { headers })
       .then((r) => r.json())
       .then((data) => setCategorie(data.categorie || []))
       .catch(() => {});
@@ -49,7 +50,7 @@ export default function CreaIniziativaPage() {
     setSaving(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/iniziative', {
+      const res = await fetch(`${API_BASE}/iniziative`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

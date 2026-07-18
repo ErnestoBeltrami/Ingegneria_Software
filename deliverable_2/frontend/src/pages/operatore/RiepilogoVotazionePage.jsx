@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Filter, Download, CheckCircle, XCircle } from 'lucide-react';
+import { API_BASE } from '../../config/api';
 import {
   PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer,
   LineChart, Line, XAxis, YAxis, CartesianGrid,
@@ -50,7 +51,7 @@ function formatShortDate(iso) {
 
 async function apiFetch(url) {
   const token = localStorage.getItem('token');
-  const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+  const res = await fetch(`${API_BASE}${url}`, { headers: { Authorization: `Bearer ${token}` } });
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || `Errore ${res.status}`);
   return data;

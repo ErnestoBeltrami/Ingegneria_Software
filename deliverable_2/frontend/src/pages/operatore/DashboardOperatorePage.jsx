@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import TopBar from '@/components/TopBar';
 import { ConsultazioneCard } from '@/components/ConsultazioneCard';
+import { API_BASE } from '../../config/api';
 import './DashboardOperatorePage.css';
 
 const NAV_CARDS = [
@@ -42,7 +43,7 @@ const FILTERS = ['Tutte le attività', 'Votazioni attive', 'Sondaggi attivi', 'P
 
 async function fetchWithAuth(url, navigate) {
   const token = localStorage.getItem('token');
-  const res = await fetch(url, {
+  const res = await fetch(`${API_BASE}${url}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (res.status === 401 || res.status === 403) {
@@ -95,7 +96,7 @@ export default function DashboardOperatorePage() {
     setModalError('');
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`/iniziative/${modalIniziativa._id}/modera`, {
+      const res = await fetch(`${API_BASE}/iniziative/${modalIniziativa._id}/modera`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ stato, motivazione: motivazione.trim() || undefined }),

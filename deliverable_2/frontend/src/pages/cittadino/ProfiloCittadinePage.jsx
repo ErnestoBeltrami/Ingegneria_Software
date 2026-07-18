@@ -4,6 +4,7 @@ import TopBarCittadino from '../../components/TopBarCittadino';
 import BackButton from '../../components/BackButton';
 import { LogOut, AlertTriangle, Pencil, X, Check } from 'lucide-react';
 import { CIRCOSCRIZIONI_TRENTO } from '../../constants/circoscrizioni';
+import { API_BASE } from '../../config/api';
 import './ProfiloCittadinePage.css';
 
 const GENERI = ['Uomo', 'Donna'];
@@ -44,7 +45,7 @@ export default function ProfiloCittadinePage() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    fetch('/cittadino/profile', {
+    fetch(`${API_BASE}/cittadino/profile`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => {
@@ -66,7 +67,7 @@ export default function ProfiloCittadinePage() {
     setLoggingOut(true);
     try {
       const token = localStorage.getItem('token');
-      await fetch('/cittadino/logout', {
+      await fetch(`${API_BASE}/cittadino/logout`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -107,12 +108,12 @@ export default function ProfiloCittadinePage() {
       const token = localStorage.getItem('token');
 
       const [resNome, resCompleta] = await Promise.all([
-        fetch('/cittadino/me', {
+        fetch(`${API_BASE}/cittadino/me`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
           body: JSON.stringify({ nome: editData.nome.trim(), cognome: editData.cognome.trim() }),
         }),
-        fetch('/auth/complete-profile', {
+        fetch(`${API_BASE}/auth/complete-profile`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
           body: JSON.stringify({

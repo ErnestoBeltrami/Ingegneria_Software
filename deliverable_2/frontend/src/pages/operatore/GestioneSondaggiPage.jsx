@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Trash2, Pencil, ChevronRight, Search } from 'lucide-react';
+import { API_BASE } from '../../config/api';
 import TopBar from '@/components/TopBar';
 import BackButton from '@/components/BackButton';
 import './GestioneSondaggiPage.css';
@@ -16,7 +17,7 @@ function formatDate(iso) {
 
 async function apiFetch(url, options = {}) {
   const token = localStorage.getItem('token');
-  const res = await fetch(url, {
+  const res = await fetch(`${API_BASE}${url}`, {
     ...options,
     headers: {
       'Content-Type': 'application/json',

@@ -5,6 +5,7 @@ import TopBarCittadino from '../../../components/TopBarCittadino';
 import BackButton from '../../../components/BackButton';
 import IniziativaCard from './IniziativaCard';
 import { sosteniIniziativa } from '../../../services/api';
+import { API_BASE } from '../../../config/api';
 import './BachecaPage.css';
 
 function formatData(iso) {
@@ -31,12 +32,12 @@ export default function BachecaPage() {
         const token = localStorage.getItem('token');
         const headers = { Authorization: `Bearer ${token}` };
 
-        fetch('/cittadino/profile', { headers })
+        fetch(`${API_BASE}/cittadino/profile`, { headers })
             .then(r => r.json())
             .then(data => { if (data?.data) setProfilo(data.data); })
             .catch(() => {});
 
-        fetch('/iniziative', { headers })
+        fetch(`${API_BASE}/iniziative`, { headers })
             .then(r => r.json())
             .then(data => {
                 const items = (data.iniziative || []).map(i => ({
