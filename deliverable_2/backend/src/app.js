@@ -13,7 +13,17 @@ import iniziativaRouter from "./routes/iniziativa.route.js";
 import categoriaRouter from "./routes/categoria.route.js";
 import sondaggioRouter from "./routes/sondaggio.route.js";
 import notificaRouter from "./routes/notifica.route.js";
+import cors from 'cors';
+
 const app = express();
+
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'https://ingegneria-software-7gs8.onrender.com'
+  ],
+  credentials: true
+}));
 
 app.get("/health", (_req, res) => {
   if (mongoose.connection.readyState !== 1) {
